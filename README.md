@@ -6,7 +6,11 @@
 
 #### *It's a prototype of an oncoming game.*
 
-## Contributing
+### See Also
+
+(EscapeWild.Forms)[https://github.com/liplum/EscapeWild.Forms]
+
+## Licence
 
 escape_wild_flutter is open source under GUN v3.0 license.
 
