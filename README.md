@@ -8,7 +8,7 @@
 
 ### See Also
 
-(EscapeWild.Forms)[https://github.com/liplum/EscapeWild.Forms]
+The deprecated [EscapeWild.Forms](https://github.com/liplum/EscapeWild.Forms) is written in C# and Xamarin.
 
 ## Licence
 
