@@ -8,9 +8,10 @@ part of 'item.dart';
 
 ToolItemMeta _$ToolItemMetaFromJson(Map<String, dynamic> json) => ToolItemMeta(
       json['name'] as String,
-      $enumDecode(_$ToolLevelEnumMap, json['level']),
-      ToolType.named(json['toolType'] as String),
-      (json['maxDurability'] as num).toDouble(),
+      toolLevel: $enumDecodeNullable(_$ToolLevelEnumMap, json['toolLevel']) ??
+          ToolLevel.normal,
+      toolType: ToolType.named(json['toolType'] as String),
+      maxDurability: (json['maxDurability'] as num).toDouble(),
     );
 
 const _$ToolLevelEnumMap = {

@@ -108,7 +108,7 @@ class ToolType {
 abstract class ToolItemMetaProtocol extends ItemMetaProtocol {
   const ToolItemMetaProtocol();
 
-  ToolLevel get level;
+  ToolLevel get toolLevel;
 
   ToolType get toolType;
 
@@ -120,14 +120,19 @@ class ToolItemMeta extends ToolItemMetaProtocol {
   @override
   final String name;
   @override
-  final ToolLevel level;
+  final ToolLevel toolLevel;
   @override
   final double maxDurability;
   @override
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
-  const ToolItemMeta(this.name, this.level, this.toolType, this.maxDurability);
+  const ToolItemMeta(
+    this.name,{
+    this.toolLevel = ToolLevel.normal,
+    required this.toolType,
+    required this.maxDurability,
+  });
 
   factory ToolItemMeta.fromJson(Map<String, dynamic> json) => _$ToolItemMetaFromJson(json);
 }
