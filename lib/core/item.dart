@@ -4,6 +4,7 @@ import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'attribute.dart';
+import 'extra.dart';
 import 'player.dart';
 
 part 'item.g.dart';
@@ -39,13 +40,15 @@ abstract class ItemMetaProtocol {
 String _getItemMetaName(ItemMetaProtocol meta) => meta.name;
 
 class EmptyItemMeta extends ItemMetaProtocol {
+  static const EmptyItemMeta instance = EmptyItemMeta();
+
   const EmptyItemMeta();
 
   @override
   String get name => "empty";
 }
 
-abstract class ItemProtocol implements JConvertibleProtocol {
+abstract class ItemProtocol with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final ItemMetaProtocol meta;
 
@@ -53,6 +56,22 @@ abstract class ItemProtocol implements JConvertibleProtocol {
 
   @override
   int get version => 1;
+}
+
+class ItemMeta extends ItemMetaProtocol {
+  @override
+  final String name;
+
+  const ItemMeta(this.name);
+}
+
+class Item extends ItemProtocol {
+  static const type = "item.Item";
+
+  Item(super.meta);
+
+  @override
+  String get typeName => type;
 }
 
 @JsonEnum()
@@ -89,9 +108,11 @@ class ToolType {
 abstract class ToolItemMetaProtocol extends ItemMetaProtocol {
   const ToolItemMetaProtocol();
 
-  ToolLevel get level;
+  ToolLevel get toolLevel;
 
   ToolType get toolType;
+
+  double get maxDurability;
 }
 
 @JsonSerializable(createToJson: false)
@@ -99,12 +120,19 @@ class ToolItemMeta extends ToolItemMetaProtocol {
   @override
   final String name;
   @override
-  final ToolLevel level;
+  final ToolLevel toolLevel;
+  @override
+  final double maxDurability;
   @override
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
-  const ToolItemMeta(this.name, this.level, this.toolType);
+  const ToolItemMeta(
+    this.name,{
+    this.toolLevel = ToolLevel.normal,
+    required this.toolType,
+    required this.maxDurability,
+  });
 
   factory ToolItemMeta.fromJson(Map<String, dynamic> json) => _$ToolItemMetaFromJson(json);
 }
