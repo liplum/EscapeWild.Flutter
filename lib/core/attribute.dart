@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'attribute.g.dart';
 
 @JsonEnum()
-enum AttrType { health, food, water, energy }
+enum Attr { health, food, water, energy }
 
 abstract class AttributeModelProtocol {
   double get health;
@@ -26,17 +26,17 @@ abstract class AttributeModelProtocol {
 }
 
 abstract class AttributeManagerProtocol {
-  void setAttr(AttrType attr, double value);
+  void setAttr(Attr attr, double value);
 
-  double getAttr(AttrType attr);
+  double getAttr(Attr attr);
 
-  void modify(AttrType attr, double delta);
+  void modify(Attr attr, double delta);
 }
 
 extension AttributeManagerProtocolX on AttributeManagerProtocol {
-  operator [](AttrType attr) => getAttr(attr);
+  operator [](Attr attr) => getAttr(attr);
 
-  operator []=(AttrType attr, double value) => setAttr(attr, value);
+  operator []=(Attr attr, double value) => setAttr(attr, value);
 }
 
 class AttributeManager with AttributeManagerMixin implements AttributeManagerProtocol {
@@ -54,7 +54,7 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
 
   /// If the result should be is more than [maxValue], the [delta] will be attenuated based on overflow.
   @override
-  void modify(AttrType attr, double delta) {
+  void modify(Attr attr, double delta) {
     // [1] former = 0.8, delta = 0.5
     // [2] former = 1.2, delta = 0.6
     var former = getAttr(attr);
@@ -77,13 +77,13 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
       if (after < 0) {
         var underflow = after.abs();
         switch (attr) {
-          case AttrType.food:
-          case AttrType.water:
-          case AttrType.energy:
+          case Attr.food:
+          case Attr.water:
+          case Attr.energy:
             setAttr(attr, 0);
-            setAttr(AttrType.health, getAttr(AttrType.health) - underflow * underflowPunishmentRadio);
+            setAttr(Attr.health, getAttr(Attr.health) - underflow * underflowPunishmentRadio);
             break;
-          case AttrType.health:
+          case Attr.health:
             setAttr(attr, after);
             break;
         }
@@ -94,31 +94,31 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   }
 
   @override
-  void setAttr(AttrType attr, double value) {
+  void setAttr(Attr attr, double value) {
     switch (attr) {
-      case AttrType.health:
+      case Attr.health:
         model.health = min(value, 1);
         break;
-      case AttrType.food:
+      case Attr.food:
         model.food = value;
         break;
-      case AttrType.water:
+      case Attr.water:
         model.water = value;
         break;
-      case AttrType.energy:
+      case Attr.energy:
         model.energy = value;
         break;
     }
   }
 
   @override
-  double getAttr(AttrType attr) {
+  double getAttr(Attr attr) {
     switch (attr) {
-      case AttrType.food:
+      case Attr.food:
         return model.food;
-      case AttrType.water:
+      case Attr.water:
         return model.water;
-      case AttrType.health:
+      case Attr.health:
         return model.health;
       default:
         return model.energy;
@@ -142,7 +142,7 @@ mixin DefaultAttributeModelMixin implements AttributeModelProtocol {
 @JsonSerializable(createToJson: false)
 class AttrModifier {
   @JsonKey()
-  final AttrType attr;
+  final Attr attr;
   final double delta;
 
   const AttrModifier(this.attr, this.delta);
@@ -150,7 +150,7 @@ class AttrModifier {
   factory AttrModifier.fromJson(Map<String, dynamic> json) => _$AttrModifierFromJson(json);
 }
 
-extension AttrTypeX on AttrType {
+extension AttrTypeX on Attr {
   AttrModifier operator +(double delta) => AttrModifier(this, delta);
 }
 

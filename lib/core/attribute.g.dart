@@ -12,8 +12,8 @@ AttrModifier _$AttrModifierFromJson(Map<String, dynamic> json) => AttrModifier(
     );
 
 const _$AttrTypeEnumMap = {
-  AttrType.health: 'health',
-  AttrType.food: 'food',
-  AttrType.water: 'water',
-  AttrType.energy: 'energy',
+  Attr.health: 'health',
+  Attr.food: 'food',
+  Attr.water: 'water',
+  Attr.energy: 'energy',
 };

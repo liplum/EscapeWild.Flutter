@@ -5,20 +5,19 @@ import 'package:escape_wild_flutter/core/item.dart';
 import 'stuff.dart';
 
 class Foods {
-  static late AttrModifyItemMeta energyBar;
-  static late AttrModifyItemMeta bottledWater;
+  static late AttrModifyItemMeta energyBar, bottledWater;
 
   static void registerAll() {
     Contents.items.addAll([
       energyBar = AttrModifyItemMeta("energy-bar", UseType.eat, [
-        AttrType.food + 0.32,
-        AttrType.energy + 0.1,
+        Attr.food + 0.32,
+        Attr.energy + 0.1,
       ]),
       bottledWater = AttrModifyItemMeta(
         "bottled-water",
         UseType.drink,
         [
-          AttrType.food + 0.28,
+          Attr.food + 0.28,
         ],
         afterUsedItem: () => Stuff.plasticBottle,
       )
