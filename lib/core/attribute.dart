@@ -7,7 +7,7 @@ part 'attribute.g.dart';
 @JsonEnum()
 enum Attr { health, food, water, energy }
 
-abstract class AttributeModelProtocol {
+abstract class AttrModelProtocol {
   double get health;
 
   set health(double value);
@@ -41,7 +41,7 @@ extension AttributeManagerProtocolX on AttributeManagerProtocol {
 
 class AttributeManager with AttributeManagerMixin implements AttributeManagerProtocol {
   @override
-  final AttributeModelProtocol model;
+  final AttrModelProtocol model;
 
   const AttributeManager(this.model);
 }
@@ -50,7 +50,7 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   static const maxValue = 1.0;
   static const underflowPunishmentRadio = 2.0;
 
-  AttributeModelProtocol get model;
+  AttrModelProtocol get model;
 
   /// If the result should be is more than [maxValue], the [delta] will be attenuated based on overflow.
   @override
@@ -126,16 +126,20 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   }
 }
 
-class DefaultAttributeModel with DefaultAttributeModelMixin implements AttributeModelProtocol {}
+class DefaultAttributeModel with DefaultAttrModelMixin implements AttrModelProtocol {}
 
-mixin DefaultAttributeModelMixin implements AttributeModelProtocol {
+mixin DefaultAttrModelMixin implements AttrModelProtocol {
   @override
+  @JsonKey()
   double health = 0.0;
   @override
+  @JsonKey()
   double food = 0.0;
   @override
+  @JsonKey()
   double water = 0.0;
   @override
+  @JsonKey()
   double energy = 0.0;
 }
 
