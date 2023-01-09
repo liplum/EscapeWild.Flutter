@@ -27,11 +27,11 @@ class EmptyItemMeta extends ItemMetaProtocol {
   String get name => "empty";
 }
 
-abstract class Item implements JConvertibleProtocol {
+abstract class ItemProtocol implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final ItemMetaProtocol meta;
 
-  const Item(this.meta);
+  ItemProtocol(this.meta);
 
   @override
   int get version => 1;
@@ -92,7 +92,7 @@ class ToolItemMeta extends ToolItemMetaProtocol {
 }
 
 @JsonSerializable()
-class ToolItem extends Item {
+class ToolItem extends ItemProtocol {
   static const type = "item.ToolItem";
   @JsonKey()
   double durability = 0.0;
@@ -158,20 +158,90 @@ enum CookType {
   boil,
   roast;
 }
-/*
 
-abstract class ICookableItem extends ItemMetaProtocol {
+/// Player can cook the CookableItem in campfire.
+/// It will be transformed to another item.
+abstract class CookableItemMetaProtocol extends ItemMetaProtocol {
+  const CookableItemMetaProtocol();
+
   CookType get cookType;
 
-  /// <summary>
-  /// Call this only once.
-  /// </summary>
   ItemMetaProtocol cook();
 
   double get flueCost;
 }
 
-abstract class IFuelItem extends ItemMetaProtocol {
-  double get fuel;
+@JsonSerializable(createToJson: false)
+class CookableItemMeta extends CookableItemMetaProtocol {
+  @override
+  @JsonKey()
+  final String name;
+
+  @override
+  @JsonKey()
+  final double flueCost;
+
+  @JsonKey(fromJson: Contents.getItemMetaByName)
+  final ItemMetaProtocol cookOutput;
+
+  @override
+  @JsonKey()
+  final CookType cookType;
+
+  const CookableItemMeta(this.name, this.flueCost, this.cookOutput, this.cookType);
+
+  factory CookableItemMeta.fromJson(Map<String, dynamic> json) => _$CookableItemMetaFromJson(json);
+
+  @override
+  ItemMetaProtocol cook() {
+    return cookOutput;
+  }
 }
-*/
+
+@JsonSerializable()
+class CookableItem extends ItemProtocol {
+  static const type = "item.CookableItem";
+
+  CookableItem(super.meta);
+
+  @override
+  String get typeName => type;
+
+  factory CookableItem.fromJson(Map<String, dynamic> json) => _$CookableItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CookableItemToJson(this);
+}
+
+abstract class FuelItemMetaProtocol extends ItemMetaProtocol {
+  const FuelItemMetaProtocol();
+
+  double get heatValue;
+}
+
+@JsonSerializable(createToJson: false)
+class FuelItemMeta extends FuelItemMetaProtocol {
+  @override
+  @JsonKey()
+  final String name;
+  @override
+  @JsonKey()
+  final double heatValue;
+
+  const FuelItemMeta(this.name, this.heatValue);
+
+  factory FuelItemMeta.fromJson(Map<String, dynamic> json) => _$FuelItemMetaFromJson(json);
+}
+
+@JsonSerializable()
+class FuelItem extends ItemProtocol {
+  static const type = "item.FuelItem";
+
+  FuelItem(super.meta);
+
+  @override
+  String get typeName => type;
+
+  factory FuelItem.fromJson(Map<String, dynamic> json) => _$FuelItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FuelItemToJson(this);
+}

@@ -42,3 +42,39 @@ const _$UseTypeEnumMap = {
   UseType.drink: 'drink',
   UseType.eat: 'eat',
 };
+
+CookableItemMeta _$CookableItemMetaFromJson(Map<String, dynamic> json) =>
+    CookableItemMeta(
+      json['name'] as String,
+      (json['flueCost'] as num).toDouble(),
+      Contents.getItemMetaByName(json['cookOutput'] as String),
+      $enumDecode(_$CookTypeEnumMap, json['cookType']),
+    );
+
+const _$CookTypeEnumMap = {
+  CookType.cook: 'cook',
+  CookType.boil: 'boil',
+  CookType.roast: 'roast',
+};
+
+CookableItem _$CookableItemFromJson(Map<String, dynamic> json) => CookableItem(
+      Contents.getItemMetaByName(json['meta'] as String),
+    );
+
+Map<String, dynamic> _$CookableItemToJson(CookableItem instance) =>
+    <String, dynamic>{
+      'meta': _getItemMetaName(instance.meta),
+    };
+
+FuelItemMeta _$FuelItemMetaFromJson(Map<String, dynamic> json) => FuelItemMeta(
+      json['name'] as String,
+      (json['heatValue'] as num).toDouble(),
+    );
+
+FuelItem _$FuelItemFromJson(Map<String, dynamic> json) => FuelItem(
+      Contents.getItemMetaByName(json['meta'] as String),
+    );
+
+Map<String, dynamic> _$FuelItemToJson(FuelItem instance) => <String, dynamic>{
+      'meta': _getItemMetaName(instance.meta),
+    };
