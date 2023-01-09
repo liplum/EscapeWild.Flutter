@@ -35,6 +35,7 @@ AttrModifyItemMeta _$AttrModifyItemMetaFromJson(Map<String, dynamic> json) =>
       (json['modifiers'] as List<dynamic>)
           .map((e) => AttrModifier.fromJson(e as Map<String, dynamic>))
           .toList(),
+      afterUsedItem: _namedItemGetter(json['afterUsedItem'] as String),
     );
 
 const _$UseTypeEnumMap = {

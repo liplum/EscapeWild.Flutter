@@ -1,39 +1,32 @@
- import 'package:escape_wild_flutter/core/attribute.dart';
+import 'package:escape_wild_flutter/core/attribute.dart';
+import 'package:escape_wild_flutter/core/content.dart';
 import 'package:escape_wild_flutter/core/item.dart';
 
+import 'stuff.dart';
+
+class Foods {
+  static late AttrModifyItemMeta energyBar;
+  static late AttrModifyItemMeta bottledWater;
+
+  static void registerAll() {
+    Contents.items.addAll([
+      energyBar = AttrModifyItemMeta("energy-bar", UseType.eat, [
+        AttrType.food + 0.32,
+        AttrType.energy + 0.1,
+      ]),
+      bottledWater = AttrModifyItemMeta(
+        "bottled-water",
+        UseType.drink,
+        [
+          AttrType.food + 0.28,
+        ],
+        afterUsedItem: () => Stuff.plasticBottle,
+      )
+    ]);
+  }
+}
+
 /*
-class EnergyBar extends IUsableItem
-{
- static const double DefaultFoodRestore = 0.32;
- double FoodRestore = DefaultFoodRestore;
- static const double DefaultEnergyRestore = 0.1;
- double EnergyRestore = DefaultEnergyRestore;
- @override String get name => "EnergyBar";
- @override UseType get useType => UseType.eat;
-
- @override void buildAttrModification(AttrModifierBuilder builder)
-{
-  builder.add(AttrType.food+ FoodRestore);
-  builder.add(AttrType.energy + EnergyRestore);
-}
-}
-
-
- class BottledWater extends IUsableItem
-{
- static const double DefaultRestore = 0.28;
- double Restore = DefaultRestore;
- @override String get name =>"BottledWater";
- @override UseType get useType => UseType.drink;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.add(AttrType.water + Restore);
-}
-
- @override IItem afterUsed() => PlasticBottle();
-}
-
  class RawRabbit extends IUsableItem, ICookableItem
 {
  double FlueCost => 18;

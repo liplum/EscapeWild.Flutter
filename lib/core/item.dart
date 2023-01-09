@@ -8,8 +8,26 @@ import 'player.dart';
 
 part 'item.g.dart';
 
+typedef ItemGetter<T extends ItemMetaProtocol> = T Function();
+
+class _NamedItemGetterImpl<T extends ItemMetaProtocol> {
+  final String name;
+
+  const _NamedItemGetterImpl(this.name);
+
+  T get() => Contents.getItemMetaByName(name) as T;
+}
+
+_namedItemGetter(String name) => _NamedItemGetterImpl(name).get;
+
+extension NamedItemGetterX on String {
+  ItemGetter<T> getAsItem<T extends ItemMetaProtocol>() => _namedItemGetter(this);
+}
+
 abstract class ItemMetaProtocol {
   const ItemMetaProtocol();
+
+  ItemMetaProtocol getSelf() => this;
 
   String get name;
 
@@ -132,12 +150,22 @@ class AttrModifyItemMeta extends UsableItemMetaProtocol {
   final List<AttrModifier> modifiers;
 
   @override
+  @JsonKey()
   final String name;
 
   @override
+  @JsonKey()
   final UseType useType;
 
-  const AttrModifyItemMeta(this.name, this.useType, this.modifiers);
+  @JsonKey(fromJson: _namedItemGetter)
+  final ItemGetter<ItemMetaProtocol>? afterUsedItem;
+
+  const AttrModifyItemMeta(
+    this.name,
+    this.useType,
+    this.modifiers, {
+    this.afterUsedItem,
+  });
 
   factory AttrModifyItemMeta.fromJson(Map<String, dynamic> json) => _$AttrModifyItemMetaFromJson(json);
 
