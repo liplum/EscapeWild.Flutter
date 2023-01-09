@@ -6,13 +6,13 @@ class Tools {
 
   void register() {
     Contents.items.addAll([
-      survivalKnife = const ToolItemMeta(
+      survivalKnife = ToolItemMeta(
         "survival-knife",
         toolLevel: ToolLevel.high,
         toolType: ToolType.cutting,
         maxDurability: 40.0,
       ),
-      oldOxe = const ToolItemMeta(
+      oldOxe = ToolItemMeta(
         "old-oxe",
         toolType: ToolType.oxe,
         toolLevel: ToolLevel.low,

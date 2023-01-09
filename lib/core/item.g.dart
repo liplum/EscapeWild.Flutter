@@ -62,7 +62,7 @@ CookableItemMeta _$CookableItemMetaFromJson(Map<String, dynamic> json) =>
     CookableItemMeta(
       json['name'] as String,
       (json['flueCost'] as num).toDouble(),
-      Contents.getItemMetaByName(json['cookOutput'] as String),
+      _namedItemGetter(json['cookOutput'] as String),
       $enumDecode(_$CookTypeEnumMap, json['cookType']),
     );
 

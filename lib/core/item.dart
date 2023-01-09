@@ -1,4 +1,5 @@
 import 'package:escape_wild_flutter/core/content.dart';
+import 'package:escape_wild_flutter/core/mod.dart';
 import 'package:escape_wild_flutter/i18n.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -26,7 +27,8 @@ extension NamedItemGetterX on String {
 }
 
 abstract class ItemMetaProtocol {
-  const ItemMetaProtocol();
+  @JsonKey(ignore: true)
+  ModProtocol mod = Vanilla.instance;
 
   ItemMetaProtocol getSelf() => this;
 
@@ -40,9 +42,9 @@ abstract class ItemMetaProtocol {
 String _getItemMetaName(ItemMetaProtocol meta) => meta.name;
 
 class EmptyItemMeta extends ItemMetaProtocol {
-  static const EmptyItemMeta instance = EmptyItemMeta();
+  static final EmptyItemMeta instance = EmptyItemMeta._();
 
-  const EmptyItemMeta();
+  EmptyItemMeta._();
 
   @override
   String get name => "empty";
@@ -62,7 +64,7 @@ class ItemMeta extends ItemMetaProtocol {
   @override
   final String name;
 
-  const ItemMeta(this.name);
+  ItemMeta(this.name);
 }
 
 class Item extends ItemProtocol {
@@ -106,8 +108,6 @@ class ToolType {
 }
 
 abstract class ToolItemMetaProtocol extends ItemMetaProtocol {
-  const ToolItemMetaProtocol();
-
   ToolLevel get toolLevel;
 
   ToolType get toolType;
@@ -127,8 +127,8 @@ class ToolItemMeta extends ToolItemMetaProtocol {
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
-  const ToolItemMeta(
-    this.name,{
+  ToolItemMeta(
+    this.name, {
     this.toolLevel = ToolLevel.normal,
     required this.toolType,
     required this.maxDurability,
@@ -161,8 +161,6 @@ enum UseType {
 }
 
 abstract class UsableItemMetaProtocol extends ItemMetaProtocol {
-  const UsableItemMetaProtocol();
-
   bool canUse(Player player) => true;
 
   ItemMetaProtocol? afterUsed() => null;
@@ -188,7 +186,7 @@ class AttrModifyItemMeta extends UsableItemMetaProtocol {
   @JsonKey(fromJson: _namedItemGetter)
   final ItemGetter<ItemMetaProtocol>? afterUsedItem;
 
-  const AttrModifyItemMeta(
+  AttrModifyItemMeta(
     this.name,
     this.useType,
     this.modifiers, {
@@ -218,8 +216,6 @@ enum CookType {
 /// Player can cook the CookableItem in campfire.
 /// It will be transformed to another item.
 abstract class CookableItemMetaProtocol extends ItemMetaProtocol {
-  const CookableItemMetaProtocol();
-
   CookType get cookType;
 
   ItemMetaProtocol cook();
@@ -237,20 +233,20 @@ class CookableItemMeta extends CookableItemMetaProtocol {
   @JsonKey()
   final double flueCost;
 
-  @JsonKey(fromJson: Contents.getItemMetaByName)
-  final ItemMetaProtocol cookOutput;
+  @JsonKey(fromJson: _namedItemGetter)
+  final ItemGetter<ItemMetaProtocol> cookOutput;
 
   @override
   @JsonKey()
   final CookType cookType;
 
-  const CookableItemMeta(this.name, this.flueCost, this.cookOutput, this.cookType);
+  CookableItemMeta(this.name, this.flueCost, this.cookOutput, this.cookType);
 
   factory CookableItemMeta.fromJson(Map<String, dynamic> json) => _$CookableItemMetaFromJson(json);
 
   @override
   ItemMetaProtocol cook() {
-    return cookOutput;
+    return cookOutput();
   }
 }
 
@@ -269,8 +265,6 @@ class CookableItem extends ItemProtocol {
 }
 
 abstract class FuelItemMetaProtocol extends ItemMetaProtocol {
-  const FuelItemMetaProtocol();
-
   double get heatValue;
 }
 
@@ -283,7 +277,7 @@ class FuelItemMeta extends FuelItemMetaProtocol {
   @JsonKey()
   final double heatValue;
 
-  const FuelItemMeta(this.name, this.heatValue);
+  FuelItemMeta(this.name, this.heatValue);
 
   factory FuelItemMeta.fromJson(Map<String, dynamic> json) => _$FuelItemMetaFromJson(json);
 }
