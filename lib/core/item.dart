@@ -26,10 +26,7 @@ extension NamedItemGetterX on String {
   ItemGetter<T> getAsItem<T extends ItemMetaProtocol>() => _namedItemGetter(this);
 }
 
-abstract class ItemMetaProtocol {
-  @JsonKey(ignore: true)
-  ModProtocol mod = Vanilla.instance;
-
+abstract class ItemMetaProtocol with Moddable {
   ItemMetaProtocol getSelf() => this;
 
   String get name;

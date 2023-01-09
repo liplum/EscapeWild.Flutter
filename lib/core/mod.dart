@@ -1,3 +1,5 @@
+import 'package:json_annotation/json_annotation.dart';
+
 abstract class ModProtocol {
   String get modId;
 
@@ -28,4 +30,15 @@ class Vanilla implements ModProtocol {
 
   @override
   String decorateRegisterName(String name) => name;
+}
+
+mixin Moddable {
+  @JsonKey(ignore: true)
+  ModProtocol mod = Vanilla.instance;
+}
+
+extension ModdableX on Moddable {
+  bool get isVanilla => mod.isVanilla;
+
+  bool get isModded => !mod.isVanilla;
 }
