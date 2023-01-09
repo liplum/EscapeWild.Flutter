@@ -31,9 +31,9 @@ abstract class ItemMetaProtocol with Moddable {
 
   String get name;
 
-  String get localizedName => I18n["item.$name.name"];
+  String get localizedName => I18n["item.${mod.decorateRegisterName(name)}.name"];
 
-  String get localizedDescription => I18n["item.$name.desc"];
+  String get localizedDescription => I18n["item.${mod.decorateRegisterName(name)}.desc"];
 }
 
 String _getItemMetaName(ItemMetaProtocol meta) => meta.name;
