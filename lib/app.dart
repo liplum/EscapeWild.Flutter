@@ -57,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Hud(attr: attr).inCard().sized(h: 180).padAll(10),
+      body: Hud(attr: attr).padAll(12).inCard().sized(h: 240).padAll(10),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
