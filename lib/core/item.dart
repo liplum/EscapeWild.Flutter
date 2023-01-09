@@ -152,7 +152,8 @@ class ToolType {
 
   static const ToolType cutting = ToolType("cutting"),
       oxe = ToolType("oxe"),
-      hunting = ToolType("hunting"),
+      trap = ToolType("trap"),
+      gun = ToolType("gun"),
       fishing = ToolType("fishing");
 
   @override
