@@ -5,7 +5,7 @@ import 'package:escape_wild_flutter/core/item.dart';
 import 'stuff.dart';
 
 class Foods {
-  static late AttrModifyItemMeta energyBar, bottledWater;
+  static late AttrModifyItemMeta energyBar, bottledWater, longicornLarva,wetLichen;
 
   static void registerAll() {
     Contents.items.addAll([
@@ -20,7 +20,16 @@ class Foods {
           Attr.food + 0.28,
         ],
         afterUsedItem: () => Stuff.plasticBottle,
-      )
+      ),
+      longicornLarva = AttrModifyItemMeta(
+        "longicorn-larva",
+        UseType.eat,
+        [
+          Attr.food + 0.1,
+          Attr.water + 0.1,
+        ],
+      ),
+      wetLichen = AttrModifyItemMeta("wet-lichen", UseType.eat, [Attr.food + 0.05,Attr.water+ 0.2])
     ]);
   }
 }
