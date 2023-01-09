@@ -6,8 +6,8 @@ class Contents {
   static final ItemContents items = ItemContents();
   static final ModContents mods = ModContents();
 
-  static ItemMetaProtocol getItemMetaByName(String name) {
-    return items[name] ?? EmptyItemMeta.instance;
+  static Item getItemMetaByName(String name) {
+    return items[name] ?? Item.empty;
   }
 
   static ModProtocol? getModById(String modId) {
@@ -17,15 +17,15 @@ class Contents {
 }
 
 class ItemContents {
-  Map<String, ItemMetaProtocol> name2Item = {};
+  Map<String, Item> name2Item = {};
 }
 
 extension ItemContentsX on ItemContents {
-  ItemMetaProtocol? operator [](String name) => name2Item[name];
+  Item? operator [](String name) => name2Item[name];
 
-  void operator <<(ItemMetaProtocol item) => name2Item[item.name] = item;
+  void operator <<(Item item) => name2Item[item.name] = item;
 
-  void addAll(List<ItemMetaProtocol> items) {
+  void addAll(List<Item> items) {
     for (final item in items) {
       name2Item[item.name] = item;
     }

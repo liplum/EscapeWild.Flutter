@@ -10,9 +10,9 @@ import 'player.dart';
 
 part 'item.g.dart';
 
-typedef ItemGetter<T extends ItemMetaProtocol> = T Function();
+typedef ItemGetter<T extends Item> = T Function();
 
-class _NamedItemGetterImpl<T extends ItemMetaProtocol> {
+class _NamedItemGetterImpl<T extends Item> {
   final String name;
 
   const _NamedItemGetterImpl(this.name);
@@ -23,55 +23,78 @@ class _NamedItemGetterImpl<T extends ItemMetaProtocol> {
 _namedItemGetter(String name) => _NamedItemGetterImpl(name).get;
 
 extension NamedItemGetterX on String {
-  ItemGetter<T> getAsItem<T extends ItemMetaProtocol>() => _namedItemGetter(this);
+  ItemGetter<T> getAsItem<T extends Item>() => _namedItemGetter(this);
 }
 
-abstract class ItemMetaProtocol with Moddable {
-  ItemMetaProtocol getSelf() => this;
+@JsonSerializable(createToJson: false)
+class Item with Moddable {
+  static final empty = Item("empty");
+  final String name;
+  @JsonKey(toJson: directConvertFunc)
+  final Map<Type, ItemComp> components = {};
 
-  String get name;
+  Item(this.name);
+
+  Item self() => this;
 
   String get localizedName => I18n["item.${mod.decorateRegisterName(name)}.name"];
 
   String get localizedDescription => I18n["item.${mod.decorateRegisterName(name)}.desc"];
+
+  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 }
 
-String _getItemMetaName(ItemMetaProtocol meta) => meta.name;
+extension ItemMetaProtocolX<TItem extends Item> on TItem {
+  TItem addCompOfExactType<T extends ItemComp>(T comp) {
+    components[T] = comp;
+    return this;
+  }
 
-class EmptyItemMeta extends ItemMetaProtocol {
-  static final EmptyItemMeta instance = EmptyItemMeta._();
+  T? tryGetComp<T extends ItemComp>() {
+    return components[T] as T?;
+  }
 
-  EmptyItemMeta._();
+  T getComp<T extends ItemComp>() {
+    return components[T] as T;
+  }
 
-  @override
-  String get name => "empty";
+  bool hasComp<T extends ItemComp>() {
+    return components.containsKey(T);
+  }
 }
 
-abstract class ItemProtocol with ExtraMixin implements JConvertibleProtocol {
+@JsonSerializable()
+class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
-  final ItemMetaProtocol meta;
+  final Item meta;
+  static const type = "Item";
 
-  ItemProtocol(this.meta);
+  ItemEntry(this.meta);
 
   @override
-  int get version => 1;
+  String get typeName => type;
+
+  factory ItemEntry.fromJson(Map<String, dynamic> json) => _$ItemEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemEntryToJson(this);
 }
 
-class ItemMeta extends ItemMetaProtocol {
-  @override
-  final String name;
-
-  ItemMeta(this.name);
+extension ItemEntryX on ItemEntry {
+  String get name => meta.name;
 }
 
-class Item extends ItemProtocol {
-  static const type = "item.Item";
+abstract class ItemComp implements JConvertibleProtocol {
+  const ItemComp();
+}
 
-  Item(super.meta);
+class _EmptyComp extends ItemComp {
+  static const type = "Empty";
 
   @override
   String get typeName => type;
 }
+
+String _getItemMetaName(Item meta) => meta.name;
 
 @JsonEnum()
 enum ToolLevel {
@@ -104,50 +127,44 @@ class ToolType {
   int get hashCode => name.hashCode;
 }
 
-abstract class ToolItemMetaProtocol extends ItemMetaProtocol {
-  ToolLevel get toolLevel;
-
-  ToolType get toolType;
-
-  double get maxDurability;
-}
-
 @JsonSerializable(createToJson: false)
-class ToolItemMeta extends ToolItemMetaProtocol {
-  @override
-  final String name;
-  @override
+class ToolComp extends ItemComp {
+  @JsonKey()
   final ToolLevel toolLevel;
-  @override
+  @JsonKey()
   final double maxDurability;
-  @override
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
-  ToolItemMeta(
-    this.name, {
+  ToolComp({
     this.toolLevel = ToolLevel.normal,
     required this.toolType,
     required this.maxDurability,
   });
 
-  factory ToolItemMeta.fromJson(Map<String, dynamic> json) => _$ToolItemMetaFromJson(json);
-}
+  double getDurability(ItemEntry item) => item["Tool.durability"] ?? 0.0;
 
-@JsonSerializable()
-class ToolItem extends ItemProtocol {
-  static const type = "item.ToolItem";
-  @JsonKey()
-  double durability = 0.0;
+  void setDurability(ItemEntry item, double value) => item["Tool.durability"] = value;
 
-  ToolItem(super.meta);
+  factory ToolComp.fromJson(Map<String, dynamic> json) => _$ToolCompFromJson(json);
+  static const type = "Tool";
 
   @override
   String get typeName => type;
+}
 
-  factory ToolItem.fromJson(Map<String, dynamic> json) => _$ToolItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ToolItemToJson(this);
+extension ToolCompX on Item {
+  Item asTool({
+    required ToolType type,
+    ToolLevel level = ToolLevel.normal,
+    required double maxDurability,
+  }) {
+    return addCompOfExactType<ToolComp>(ToolComp(
+      toolLevel: level,
+      toolType: type,
+      maxDurability: maxDurability,
+    ));
+  }
 }
 
 @JsonEnum()
@@ -157,49 +174,99 @@ enum UseType {
   eat;
 }
 
-abstract class UsableItemMetaProtocol extends ItemMetaProtocol {
-  bool canUse(Player player) => true;
-
-  ItemMetaProtocol? afterUsed() => null;
-
-  UseType get useType;
-
-  bool get displayPreview => true;
-}
-
-@JsonSerializable(createToJson: false)
-class AttrModifyItemMeta extends UsableItemMetaProtocol {
-  @JsonKey()
-  final List<AttrModifier> modifiers;
-
-  @override
-  @JsonKey()
-  final String name;
-
-  @override
+abstract class UsableItemComp extends ItemComp {
   @JsonKey()
   final UseType useType;
 
-  @JsonKey(fromJson: _namedItemGetter)
-  final ItemGetter<ItemMetaProtocol>? afterUsedItem;
+  UsableItemComp(this.useType);
 
-  AttrModifyItemMeta(
-    this.name,
-    this.useType,
+  bool canUse(Player player) => true;
+
+  Future<void> onUse(Player player) async {}
+
+  bool get displayPreview => true;
+  static const type = "Usable";
+
+  @override
+  String get typeName => type;
+}
+
+@JsonSerializable(createToJson: false)
+class ModifyAttrComp extends UsableItemComp {
+  @JsonKey()
+  final List<AttrModifier> modifiers;
+  @JsonKey(fromJson: _namedItemGetter)
+  final ItemGetter<Item>? afterUsedItem;
+
+  ModifyAttrComp(
+    super.useType,
     this.modifiers, {
     this.afterUsedItem,
   });
 
-  factory AttrModifyItemMeta.fromJson(Map<String, dynamic> json) => _$AttrModifyItemMetaFromJson(json);
+  factory ModifyAttrComp.fromJson(Map<String, dynamic> json) => _$ModifyAttrCompFromJson(json);
 
   void buildAttrModification(AttrModifierBuilder builder) {
     builder.addAll(modifiers);
   }
 
-  Future<void> use(Player player) async {
+  @override
+  Future<void> onUse(Player player) async {
     var builder = AttrModifierBuilder();
     buildAttrModification(builder);
     builder.performModification(player);
+  }
+
+  static const type = "AttrModify";
+
+  @override
+  String get typeName => type;
+}
+
+extension ModifyAttrCompX on Item {
+  Item modifyAttr(
+    UseType useType,
+    List<AttrModifier> modifiers, {
+    ItemGetter<Item>? afterUsedItem,
+  }) {
+    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+      useType,
+      modifiers,
+      afterUsedItem: afterUsedItem,
+    ));
+  }
+
+  Item asEatable(
+    List<AttrModifier> modifiers, {
+    ItemGetter<Item>? afterUsedItem,
+  }) {
+    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+      UseType.eat,
+      modifiers,
+      afterUsedItem: afterUsedItem,
+    ));
+  }
+
+  Item asUsable(
+    List<AttrModifier> modifiers, {
+    ItemGetter<Item>? afterUsedItem,
+  }) {
+    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+      UseType.use,
+      modifiers,
+      afterUsedItem: afterUsedItem,
+    ));
+  }
+
+  Item asDrinkable(
+    List<AttrModifier> modifiers, {
+    ItemGetter<Item>? afterUsed,
+  }) {
+    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+      UseType.drink,
+      modifiers,
+      afterUsedItem: afterUsed,
+    ));
   }
 }
 
@@ -212,83 +279,56 @@ enum CookType {
 
 /// Player can cook the CookableItem in campfire.
 /// It will be transformed to another item.
-abstract class CookableItemMetaProtocol extends ItemMetaProtocol {
-  CookType get cookType;
-
-  ItemMetaProtocol cook();
-
-  double get flueCost;
-}
-
 @JsonSerializable(createToJson: false)
-class CookableItemMeta extends CookableItemMetaProtocol {
-  @override
-  @JsonKey()
-  final String name;
-
-  @override
-  @JsonKey()
-  final double flueCost;
-
-  @JsonKey(fromJson: _namedItemGetter)
-  final ItemGetter<ItemMetaProtocol> cookOutput;
-
-  @override
+class CookableComp extends ItemComp {
   @JsonKey()
   final CookType cookType;
+  @JsonKey()
+  final double flueCost;
+  @JsonKey(fromJson: _namedItemGetter)
+  final ItemGetter<Item> cookedOutput;
 
-  CookableItemMeta(this.name, this.flueCost, this.cookOutput, this.cookType);
+  CookableComp(this.cookType, this.flueCost, this.cookedOutput);
 
-  factory CookableItemMeta.fromJson(Map<String, dynamic> json) => _$CookableItemMetaFromJson(json);
+  static const type = "Cookable";
 
   @override
-  ItemMetaProtocol cook() {
-    return cookOutput();
+  String get typeName => type;
+
+  factory CookableComp.fromJson(Map<String, dynamic> json) => _$CookableCompFromJson(json);
+}
+
+extension CookableCompX on Item {
+  Item asCookable(
+    CookType cookType, {
+    required double fuelCost,
+    required ItemGetter<Item> output,
+  }) {
+    return addCompOfExactType<CookableComp>(
+      CookableComp(cookType, fuelCost, output),
+    );
   }
 }
 
-@JsonSerializable()
-class CookableItem extends ItemProtocol {
-  static const type = "item.CookableItem";
-
-  CookableItem(super.meta);
-
-  @override
-  String get typeName => type;
-
-  factory CookableItem.fromJson(Map<String, dynamic> json) => _$CookableItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CookableItemToJson(this);
-}
-
-abstract class FuelItemMetaProtocol extends ItemMetaProtocol {
-  double get heatValue;
-}
-
 @JsonSerializable(createToJson: false)
-class FuelItemMeta extends FuelItemMetaProtocol {
-  @override
-  @JsonKey()
-  final String name;
-  @override
+class FuelComp extends ItemComp {
   @JsonKey()
   final double heatValue;
 
-  FuelItemMeta(this.name, this.heatValue);
+  FuelComp(this.heatValue);
 
-  factory FuelItemMeta.fromJson(Map<String, dynamic> json) => _$FuelItemMetaFromJson(json);
-}
-
-@JsonSerializable()
-class FuelItem extends ItemProtocol {
-  static const type = "item.FuelItem";
-
-  FuelItem(super.meta);
+  static const type = "Fuel";
 
   @override
   String get typeName => type;
 
-  factory FuelItem.fromJson(Map<String, dynamic> json) => _$FuelItemFromJson(json);
+  factory FuelComp.fromJson(Map<String, dynamic> json) => _$FuelCompFromJson(json);
+}
 
-  Map<String, dynamic> toJson() => _$FuelItemToJson(this);
+extension FuelCompX on Item {
+  Item asFuel({required double heatValue}) {
+    return addCompOfExactType<FuelComp>(
+      FuelComp(heatValue),
+    );
+  }
 }

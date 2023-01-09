@@ -5,61 +5,47 @@ import 'package:escape_wild_flutter/core/item.dart';
 import 'stuff.dart';
 
 class Foods {
-  static late AttrModifyItemMeta energyBar, bottledWater, longicornLarva,wetLichen;
+  static late Item energyBar, bottledWater, longicornLarva, wetLichen;
+  static late Item rawRabbit;
+  static late Item cookedRabbit;
 
   static void registerAll() {
+    // food
     Contents.items.addAll([
-      energyBar = AttrModifyItemMeta("energy-bar", UseType.eat, [
+      energyBar = Item("energy-bar").asEatable([
         Attr.food + 0.32,
         Attr.energy + 0.1,
       ]),
-      bottledWater = AttrModifyItemMeta(
-        "bottled-water",
-        UseType.drink,
-        [
-          Attr.food + 0.28,
-        ],
-        afterUsedItem: () => Stuff.plasticBottle,
+      bottledWater = Item("bottled-water").asDrinkable([
+        Attr.food + 0.28,
+      ], afterUsed: () => Stuff.plasticBottle),
+      longicornLarva = Item("longicorn-larva").asEatable([
+        Attr.food + 0.1,
+        Attr.water + 0.1,
+      ]),
+      wetLichen = Item("wet-lichen").asEatable([
+        Attr.food + 0.05,
+        Attr.water + 0.2,
+      ])
+    ]);
+    // cookable
+    Contents.items.addAll([
+      rawRabbit = Item("raw-rabbit").asEatable([
+        Attr.food + 0.45,
+        Attr.water + 0.05,
+      ]).asCookable(
+        CookType.cook,
+        fuelCost: 20,
+        output: () => cookedRabbit,
       ),
-      longicornLarva = AttrModifyItemMeta(
-        "longicorn-larva",
-        UseType.eat,
-        [
-          Attr.food + 0.1,
-          Attr.water + 0.1,
-        ],
-      ),
-      wetLichen = AttrModifyItemMeta("wet-lichen", UseType.eat, [Attr.food + 0.05,Attr.water+ 0.2])
+      cookedRabbit = Item("cooked-rabbit").asEatable([
+        Attr.food + 0.68,
+      ]),
     ]);
   }
 }
 
 /*
- class RawRabbit extends IUsableItem, ICookableItem
-{
- double FlueCost => 18;
- static const double DefaultFoodRestore = 0.45;
- static const double DefaultWaterRestore = 0.05;
- double FoodRestore = DefaultFoodRestore;
- double WaterRestore = DefaultWaterRestore;
- @override String get name =>RawRabbit);
-
- CookType CookType => CookType.Cook;
- @override UseType get useType => UseType.Eat;
-
- IItem Cook() => new CookedRabbit
-{
-// add bounce from raw food
-FoodRestore = RoastedBerry.DefaultFoodRestore + FoodRestore * 0.15,
-};
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(FoodRestore));
-  builder.Add(AttrType.Food.WithEffect(WaterRestore));
-}
-}
-
  class CookedRabbit extends IUsableItem
 {
  static const double DefaultFoodRestore = 0.5;

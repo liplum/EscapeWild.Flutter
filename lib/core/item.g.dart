@@ -6,8 +6,29 @@ part of 'item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ToolItemMeta _$ToolItemMetaFromJson(Map<String, dynamic> json) => ToolItemMeta(
+Item _$ItemFromJson(Map<String, dynamic> json) => Item(
       json['name'] as String,
+    );
+
+ItemEntry _$ItemEntryFromJson(Map<String, dynamic> json) => ItemEntry(
+      Contents.getItemMetaByName(json['meta'] as String),
+    )..extra = json['extra'] as Map<String, dynamic>?;
+
+Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['meta'] = _getItemMetaName(instance.meta);
+  return val;
+}
+
+ToolComp _$ToolCompFromJson(Map<String, dynamic> json) => ToolComp(
       toolLevel: $enumDecodeNullable(_$ToolLevelEnumMap, json['toolLevel']) ??
           ToolLevel.normal,
       toolType: ToolType.named(json['toolType'] as String),
@@ -21,30 +42,8 @@ const _$ToolLevelEnumMap = {
   ToolLevel.max: 'max',
 };
 
-ToolItem _$ToolItemFromJson(Map<String, dynamic> json) => ToolItem(
-      Contents.getItemMetaByName(json['meta'] as String),
-    )
-      ..extra = json['extra'] as Map<String, dynamic>?
-      ..durability = (json['durability'] as num).toDouble();
-
-Map<String, dynamic> _$ToolItemToJson(ToolItem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['meta'] = _getItemMetaName(instance.meta);
-  val['durability'] = instance.durability;
-  return val;
-}
-
-AttrModifyItemMeta _$AttrModifyItemMetaFromJson(Map<String, dynamic> json) =>
-    AttrModifyItemMeta(
-      json['name'] as String,
+ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>
+    ModifyAttrComp(
       $enumDecode(_$UseTypeEnumMap, json['useType']),
       (json['modifiers'] as List<dynamic>)
           .map((e) => AttrModifier.fromJson(e as Map<String, dynamic>))
@@ -58,12 +57,10 @@ const _$UseTypeEnumMap = {
   UseType.eat: 'eat',
 };
 
-CookableItemMeta _$CookableItemMetaFromJson(Map<String, dynamic> json) =>
-    CookableItemMeta(
-      json['name'] as String,
-      (json['flueCost'] as num).toDouble(),
-      _namedItemGetter(json['cookOutput'] as String),
+CookableComp _$CookableCompFromJson(Map<String, dynamic> json) => CookableComp(
       $enumDecode(_$CookTypeEnumMap, json['cookType']),
+      (json['flueCost'] as num).toDouble(),
+      _namedItemGetter(json['cookedOutput'] as String),
     );
 
 const _$CookTypeEnumMap = {
@@ -72,43 +69,6 @@ const _$CookTypeEnumMap = {
   CookType.roast: 'roast',
 };
 
-CookableItem _$CookableItemFromJson(Map<String, dynamic> json) => CookableItem(
-      Contents.getItemMetaByName(json['meta'] as String),
-    )..extra = json['extra'] as Map<String, dynamic>?;
-
-Map<String, dynamic> _$CookableItemToJson(CookableItem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['meta'] = _getItemMetaName(instance.meta);
-  return val;
-}
-
-FuelItemMeta _$FuelItemMetaFromJson(Map<String, dynamic> json) => FuelItemMeta(
-      json['name'] as String,
+FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
       (json['heatValue'] as num).toDouble(),
     );
-
-FuelItem _$FuelItemFromJson(Map<String, dynamic> json) => FuelItem(
-      Contents.getItemMetaByName(json['meta'] as String),
-    )..extra = json['extra'] as Map<String, dynamic>?;
-
-Map<String, dynamic> _$FuelItemToJson(FuelItem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['meta'] = _getItemMetaName(instance.meta);
-  return val;
-}

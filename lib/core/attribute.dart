@@ -179,6 +179,7 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
 class AttrModifier {
   @JsonKey()
   final Attr attr;
+  @JsonKey()
   final double delta;
 
   const AttrModifier(this.attr, this.delta);

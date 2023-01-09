@@ -1,9 +1,10 @@
 import 'package:escape_wild_flutter/core/attribute.dart';
+import 'package:escape_wild_flutter/core/backpack.dart';
 import 'package:flutter/cupertino.dart';
 
 class Player with AttributeManagerMixin, ChangeNotifier {
   AttrModel _model = AttrModel();
-
+  Backpack backpack = Backpack();
   @override
   AttrModel get model => _model;
 
