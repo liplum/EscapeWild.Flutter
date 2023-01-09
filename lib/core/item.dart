@@ -50,6 +50,13 @@ extension ItemMetaProtocolX<TItem extends Item> on TItem {
     return this;
   }
 
+  TItem addCompOfExactTypes(List<Type> types, ItemComp comp) {
+    for (final type in types) {
+      components[type] = comp;
+    }
+    return this;
+  }
+
   T? tryGetComp<T extends ItemComp>() {
     return components[T] as T?;
   }

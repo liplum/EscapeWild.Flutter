@@ -1,10 +1,12 @@
 import 'package:escape_wild_flutter/core/attribute.dart';
 import 'package:escape_wild_flutter/core/backpack.dart';
+import 'package:escape_wild_flutter/core/extra.dart';
 import 'package:flutter/cupertino.dart';
 
-class Player with AttributeManagerMixin, ChangeNotifier {
+class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   AttrModel _model = AttrModel();
   Backpack backpack = Backpack();
+
   @override
   AttrModel get model => _model;
 

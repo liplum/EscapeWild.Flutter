@@ -5,9 +5,13 @@ import 'package:escape_wild_flutter/core/item.dart';
 import 'stuff.dart';
 
 class Foods {
-  static late Item energyBar, bottledWater, longicornLarva, wetLichen;
-  static late Item rawRabbit;
-  static late Item cookedRabbit;
+  static late final Item energyBar, energyDrink;
+  static late final Item longicornLarva, wetLichen;
+  static late final Item rawRabbit, cookedRabbit;
+  static late final Item rawFish, cookedFish;
+  static late final Item berry, roastedBerry;
+  static late final Item nuts, toastedNuts;
+  static late final Item bottledWater, dirtyWater, cleanWater, boiledWater, filteredWater;
 
   static void registerAll() {
     // food
@@ -16,9 +20,6 @@ class Foods {
         Attr.food + 0.32,
         Attr.energy + 0.1,
       ]),
-      bottledWater = Item("bottled-water").asDrinkable([
-        Attr.food + 0.28,
-      ], afterUsed: () => Stuff.plasticBottle),
       longicornLarva = Item("longicorn-larva").asEatable([
         Attr.food + 0.1,
         Attr.water + 0.1,
@@ -28,8 +29,46 @@ class Foods {
         Attr.water + 0.2,
       ])
     ]);
+    // water
+    Contents.items.addAll([
+      bottledWater = Item("bottled-water").asDrinkable([
+        Attr.food + 0.28,
+      ], afterUsed: () => Stuff.plasticBottle),
+      dirtyWater = Item("dirty-water").asDrinkable([
+        Attr.health - 0.085,
+        Attr.water + 0.15,
+      ]).asCookable(CookType.boil, fuelCost: 3.0, output: () => boiledWater),
+      cleanWater = Item("clean-water").asDrinkable([
+        Attr.health - 0.005,
+        Attr.water + 0.235,
+      ]),
+      boiledWater = Item("boiled-water").asDrinkable([
+        Attr.water + 0.28,
+      ]),
+      filteredWater = Item("filtered-water").asDrinkable([
+        Attr.health - 0.005,
+        Attr.water + 0.2,
+      ]),
+      energyDrink = Item("energy-drink").asDrinkable([
+        Attr.water + 0.28,
+        Attr.energy + 0.12,
+      ]),
+    ]);
     // cookable
     Contents.items.addAll([
+      berry = Item("berry").asEatable([
+        Attr.food + 0.12,
+        Attr.water + 0.06,
+      ]).asCookable(CookType.roast, fuelCost: 3.0, output: () => roastedBerry),
+      roastedBerry = Item("roasted-berry").asEatable([
+        Attr.food + 0.185,
+      ]),
+      nuts = Item("nuts").asEatable([
+        Attr.food + 0.08,
+      ]).asCookable(CookType.roast, fuelCost: 2.5, output: () => toastedNuts),
+      toastedNuts = Item("toasted-nuts").asEatable([
+        Attr.food + 0.12,
+      ]),
       rawRabbit = Item("raw-rabbit").asEatable([
         Attr.food + 0.45,
         Attr.water + 0.05,
@@ -41,286 +80,17 @@ class Foods {
       cookedRabbit = Item("cooked-rabbit").asEatable([
         Attr.food + 0.68,
       ]),
+      rawFish = Item("raw-fish").asEatable([
+        Attr.food + 0.35,
+        Attr.water + 0.08,
+      ]).asCookable(
+        CookType.cook,
+        fuelCost: 12.5,
+        output: () => cookedFish,
+      ),
+      cookedFish = Item("cooked-fish").asEatable([
+        Attr.food + 0.52,
+      ]),
     ]);
   }
 }
-
-/*
- class CookedRabbit extends IUsableItem
-{
- static const double DefaultFoodRestore = 0.5;
- double FoodRestore = DefaultFoodRestore;
- @override String get name =>CookedRabbit);
- @override UseType get useType => UseType.Eat;
-
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(FoodRestore));
-}
-}
-
-
- class Berry extends IUsableItem, ICookableItem
-{
- double FlueCost => 3;
- static const double DefaultFoodRestore = 0.12;
- static const double DefaultWaterRestore = 0.08;
- double FoodRestore = DefaultFoodRestore;
- double WaterRestore = DefaultWaterRestore;
- @override String get name =>Berry);
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(FoodRestore));
-  builder.Add(AttrType.Water.WithEffect(WaterRestore));
-}
-
- CookType CookType => CookType.Roast;
-
- IItem Cook() => new RoastedBerry
-{
-// add bounce from raw food
-FoodRestore = RoastedBerry.DefaultFoodRestore + FoodRestore * 0.2,
-};
-}
-
- class RoastedBerry extends IUsableItem
-{
- static const double DefaultFoodRestore = 0.14;
- double FoodRestore = DefaultFoodRestore;
- @override String get name =>RoastedBerry);
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(FoodRestore));
-}
-}
-
- class DirtyWater extends IUsableItem, ICookableItem
-{
- double FlueCost => 3;
- static const double DefaultWaterRestore = 0.15;
- double WaterRestore = DefaultWaterRestore;
- static const double DefaultHealthDelta = -0.08;
- double HealthDelta = DefaultHealthDelta;
- @override String get name =>DirtyWater);
- CookType CookType => CookType.Boil;
- @override UseType get useType => UseType.Drink;
-
- IItem Cook() => new CleanWater
-{
-Restore = CleanWater.DefaultRestore + WaterRestore * 0.1,
-};
-
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Water.WithEffect(WaterRestore));
-  builder.Add(AttrType.Health.WithEffect(HealthDelta));
-}
-}
-
- class CleanWater extends IUsableItem
-{
- static const double DefaultRestore = 0.3;
- double Restore = DefaultRestore;
- @override String get name =>CleanWater);
- @override UseType get useType => UseType.Drink;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Water.WithEffect(Restore));
-}
-}
-
- class Nuts extends IUsableItem, ICookableItem
-{
- double FlueCost => 3;
- static const double DefaultRestore = 0.08;
- double Restore = DefaultRestore;
- @override String get name =>Nuts);
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(Restore));
-}
-
- CookType CookType => CookType.Roast;
-
- IItem Cook() => new ToastedNuts
-{
-Restore = ToastedNuts.DefaultRestore + Restore * 0.3,
-};
-}
-
- class ToastedNuts extends IUsableItem
-{
- static const double DefaultRestore = 0.1;
- double Restore = DefaultRestore;
- @override String get name =>ToastedNuts);
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(Restore));
-}
-
- @override UseType get useType => UseType.Eat;
-}
-
- class EnergyDrink extends IUsableItem
-{
- double WaterRestore = 0.3;
- double EnergyRestore = 0.2;
- @override String get name =>EnergyDrink);
- @override UseType get useType => UseType.Drink;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Water.WithEffect(WaterRestore));
-  builder.Add(AttrType.Energy.WithEffect(EnergyRestore));
-}
-}
-
- class RawFish extends IUsableItem, ICookableItem
-{
- double FlueCost => 12;
- static const double DefaultFoodRestore = 0.35;
- double FoodRestore = DefaultFoodRestore;
- static const double DefaultWaterRestore = 0.1;
- double WaterRestore = DefaultWaterRestore;
- @override String get name =>RawFish);
- CookType CookType => CookType.Cook;
- @override UseType get useType => UseType.Eat;
-
- IItem Cook() => new CookedFish
-{
-Restore = CookedFish.DefaultRestore + FoodRestore * 0.2,
-};
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(FoodRestore));
-  builder.Add(AttrType.Water.WithEffect(WaterRestore));
-}
-}
-
- class CookedFish extends IUsableItem
-{
- static const double DefaultRestore = 0.35;
- double Restore = DefaultRestore;
- @override String get name =>CookedFish);
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Food.WithEffect(Restore));
-}
-}
-
- class UnknownMushrooms extends IUsableItem, ICookableItem
-{
- static const double DefaultHpDelta = 0.45;
- double HpDelta = DefaultHpDelta;
- static const double DefaultFoodDelta = 0.15;
- double FoodDelta = DefaultFoodDelta;
- static const double DefaultEnergyDelta = 0.15;
- double EnergyDelta = DefaultEnergyDelta;
- double FlueCost { get; set; } = 2;
-
- static UnknownMushrooms Poisonous(double ratio) => new UnknownMushrooms
-{
-HpDelta = -DefaultHpDelta * ratio,
-FoodDelta = -DefaultFoodDelta * ratio,
-EnergyDelta = -DefaultEnergyDelta * ratio,
-FlueCost = 2 * (1 + ratio),
-};
-
- static UnknownMushrooms Safe(double ratio) => new UnknownMushrooms
-{
-FoodDelta = DefaultFoodDelta * ratio,
-EnergyDelta = DefaultEnergyDelta * ratio,
-FlueCost = 2 * (1 + ratio),
-};
-
- static UnknownMushrooms Random() => new UnknownMushrooms
-{
-HpDelta = Rand.double(-0.4, 0.1),
-FoodDelta = Rand.double(-0.2, 0.15),
-EnergyDelta = Rand.double(-0.15, 0.05),
-FlueCost = Rand.double(2, 4),
-};
-
- @override bool DisplayPreview => false;
- @override String get name =>UnknownMushrooms);
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Health.WithEffect(HpDelta));
-}
-
- CookType CookType => CookType.Roast;
-
- IItem Cook() => new GrilledUnknownMushrooms
-{
-HpDelta = Math.Abs(HpDelta),
-FoodDelta = Math.Abs(FoodDelta),
-EnergyDelta = Math.Abs(EnergyDelta),
-};
-}
-
- class GrilledUnknownMushrooms extends IUsableItem
-{
- double HpDelta;
- double FoodDelta;
- double EnergyDelta;
-
- @override String get name =>GrilledUnknownMushrooms);
-
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder)
-{
-  builder.Add(AttrType.Health.WithEffect(HpDelta));
-  builder.Add(AttrType.Food.WithEffect(FoodDelta));
-  builder.Add(AttrType.Energy.WithEffect(EnergyDelta));
-}
-}
-
- class CookableItem extends IUsableItem, ICookableItem
-{
- CookableItem(String name)
-{
-  Name = name;
-}
-
- ItemMaker<IItem> Cooked { get; set; }
- AttrModifier[] Modifiers { get; set; } = Array.Empty<AttrModifier>();
- @override String Name { get; }
- @override UseType get useType => UseType.Eat;
-
- double FlueCost { get; set; }
-
- @override void BuildAttrModification(AttrModifierBuilder builder) => builder.Add(Modifiers);
-
- CookType CookType => CookType.Roast;
- IItem Cook() => Cooked();
-}
-
- class CookedItem extends IUsableItem
-{
- CookedItem(String name)
-{
-  Name = name;
-}
-
- AttrModifier[] Modifiers { get; set; } = Array.Empty<AttrModifier>();
- @override String Name { get; }
- @override UseType get useType => UseType.Eat;
-
- @override void BuildAttrModification(AttrModifierBuilder builder) => builder.Add(Modifiers);
-}*/
