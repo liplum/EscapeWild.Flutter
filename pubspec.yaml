@@ -41,10 +41,13 @@ dependencies:
     git:
       url: https://github.com/liplum/DartPackage.git
       path: jconverter
+  json_serializable: ^6.5.4
+  json_annotation: ^4.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  build_runner: ^2.3.3
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

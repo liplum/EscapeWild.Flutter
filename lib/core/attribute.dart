@@ -1,5 +1,10 @@
 import 'dart:math';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'attribute.g.dart';
+
+@JsonEnum()
 enum AttrType { health, food, water, energy }
 
 abstract class AttributeModelProtocol {
@@ -134,11 +139,15 @@ mixin DefaultAttributeModelMixin implements AttributeModelProtocol {
   double energy = 0.0;
 }
 
+@JsonSerializable(createToJson: false)
 class AttrModifier {
+  @JsonKey()
   final AttrType attr;
   final double delta;
 
   const AttrModifier(this.attr, this.delta);
+
+  factory AttrModifier.fromJson(Map<String, dynamic> json) => _$AttrModifierFromJson(json);
 }
 
 extension AttrTypeX on AttrType {

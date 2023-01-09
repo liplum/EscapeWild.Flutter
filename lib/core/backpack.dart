@@ -6,35 +6,35 @@ import 'player.dart';
 
 class Backpack {
   final Player owner;
-  final List<IItem> items;
+  final List<ItemMetaProtocol> items;
 
   const Backpack(this.owner, this.items);
 }
 
 extension BackpackX on Backpack {
-  void addItem(IItem item) => items.add(item);
+  void addItem(ItemMetaProtocol item) => items.add(item);
 
-  bool removeItem(IItem item) => items.remove(item);
+  bool removeItem(ItemMetaProtocol item) => items.remove(item);
 
-  void addItems(Iterable<IItem> items) => this.items.addAll(items);
+  void addItems(Iterable<ItemMetaProtocol> items) => this.items.addAll(items);
 
-  IItem? getItemByName(String name) => items.firstWhereOrNull((e) => e.name == name);
+  ItemMetaProtocol? getItemByName(String name) => items.firstWhereOrNull((e) => e.name == name);
 
   bool hasItemOfName(String name) => items.any((e) => e.name == name);
 
   int countItemOfName(String name) => items.count((e) => e.name == name);
 
-  int countItemWhere(bool Function(IItem) predicate) => items.count(predicate);
+  int countItemWhere(bool Function(ItemMetaProtocol) predicate) => items.count(predicate);
 
-  IItem? popItemByName(String name) {
+  ItemMetaProtocol? popItemByName(String name) {
     var removed = getItemByName(name);
     items.remove(removed);
     return removed;
   }
 
-  void removeItemsWhere(bool Function(IItem) predicate) => items.removeWhere(predicate);
+  void removeItemsWhere(bool Function(ItemMetaProtocol) predicate) => items.removeWhere(predicate);
 
-  IItem? popItemByType<T>() {
+  ItemMetaProtocol? popItemByType<T>() {
     var removed = items.firstWhereOrNull((e) => e is T);
     items.remove(removed);
     return removed;
