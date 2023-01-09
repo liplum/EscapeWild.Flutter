@@ -1,28 +1,51 @@
 import 'dart:math';
 
+import 'package:escape_wild_flutter/i18n.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'attribute.g.dart';
-
 @JsonEnum()
-enum Attr { health, food, water, energy }
+enum Attr {
+  health,
+  food,
+  water,
+  energy;
+  String localizedName() => I18n["attr.$name"];
+}
 
-abstract class AttrModelProtocol {
-  double get health;
+@JsonSerializable()
+class AttrModel {
+  @JsonKey()
+  final double health;
+  @JsonKey()
+  final double food;
+  @JsonKey()
+  final double water;
+  @JsonKey()
+  final double energy;
 
-  set health(double value);
+  factory AttrModel.fromJson(Map<String, dynamic> json) => _$AttrModelFromJson(json);
 
-  double get food;
+  AttrModel({
+    this.health = 1.0,
+    this.food = 1.0,
+    this.water = 1.0,
+    this.energy = 1.0,
+  });
 
-  set food(double value);
-
-  double get water;
-
-  set water(double value);
-
-  double get energy;
-
-  set energy(double value);
+  AttrModel copyWith({
+    double? health,
+    double? food,
+    double? water,
+    double? energy,
+  }) =>
+      AttrModel(
+        health: health ?? this.health,
+        food: food ?? this.food,
+        water: water ?? this.water,
+        energy: energy ?? this.energy,
+      );
 }
 
 abstract class AttributeManagerProtocol {
@@ -37,20 +60,46 @@ extension AttributeManagerProtocolX on AttributeManagerProtocol {
   operator [](Attr attr) => getAttr(attr);
 
   operator []=(Attr attr, double value) => setAttr(attr, value);
+
+  double get health => this[Attr.health];
+
+  set health(double value) => this[Attr.health] = value;
+
+  double get food => this[Attr.food];
+
+  set food(double value) => this[Attr.food] = value;
+
+  double get water => this[Attr.water];
+
+  set water(double value) => this[Attr.water] = value;
+
+  double get energy => this[Attr.energy];
+
+  set energy(double value) => this[Attr.energy] = value;
 }
 
-class AttributeManager with AttributeManagerMixin implements AttributeManagerProtocol {
-  @override
-  final AttrModelProtocol model;
+class AttributeManager with AttributeManagerMixin, ChangeNotifier implements AttributeManagerProtocol {
+  AttrModel _model;
 
-  const AttributeManager(this.model);
+  @override
+  AttrModel get model => _model;
+
+  @override
+  set model(AttrModel value) {
+    _model = value;
+    notifyListeners();
+  }
+
+  AttributeManager(this._model);
 }
 
 mixin AttributeManagerMixin implements AttributeManagerProtocol {
   static const maxValue = 1.0;
   static const underflowPunishmentRadio = 2.0;
 
-  AttrModelProtocol get model;
+  AttrModel get model;
+
+  set model(AttrModel value);
 
   /// If the result should be is more than [maxValue], the [delta] will be attenuated based on overflow.
   @override
@@ -97,16 +146,16 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   void setAttr(Attr attr, double value) {
     switch (attr) {
       case Attr.health:
-        model.health = min(value, 1);
+        model = model.copyWith(health: min(value, 1));
         break;
       case Attr.food:
-        model.food = value;
+        model = model.copyWith(food: value);
         break;
       case Attr.water:
-        model.water = value;
+        model = model.copyWith(food: value);
         break;
       case Attr.energy:
-        model.energy = value;
+        model = model.copyWith(food: value);
         break;
     }
   }
@@ -124,23 +173,6 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
         return model.energy;
     }
   }
-}
-
-class DefaultAttributeModel with DefaultAttrModelMixin implements AttrModelProtocol {}
-
-mixin DefaultAttrModelMixin implements AttrModelProtocol {
-  @override
-  @JsonKey()
-  double health = 0.0;
-  @override
-  @JsonKey()
-  double food = 0.0;
-  @override
-  @JsonKey()
-  double water = 0.0;
-  @override
-  @JsonKey()
-  double energy = 0.0;
 }
 
 @JsonSerializable(createToJson: false)

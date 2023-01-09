@@ -45,6 +45,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   provider: ^6.0.5
+  rettulf: ^0.0.9
 
 dev_dependencies:
   flutter_test:
