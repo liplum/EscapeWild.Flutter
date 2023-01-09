@@ -4,6 +4,7 @@ import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'attribute.dart';
+import 'extra.dart';
 import 'player.dart';
 
 part 'item.g.dart';
@@ -47,26 +48,14 @@ class EmptyItemMeta extends ItemMetaProtocol {
   String get name => "empty";
 }
 
-abstract class ItemProtocol implements JConvertibleProtocol {
+abstract class ItemProtocol with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final ItemMetaProtocol meta;
-  @JsonKey(includeIfNull: false)
-  Map<String, dynamic>? extra;
 
   ItemProtocol(this.meta);
 
   @override
   int get version => 1;
-}
-
-extension ItemProtocolX on ItemProtocol {
-  dynamic operator [](String key) {
-    return extra?[key];
-  }
-
-  void operator []=(String key, dynamic value) {
-    (extra ??= {})[key] = value;
-  }
 }
 
 class ItemMeta extends ItemMetaProtocol {

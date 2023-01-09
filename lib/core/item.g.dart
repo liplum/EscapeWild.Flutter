@@ -27,9 +27,7 @@ ToolItem _$ToolItemFromJson(Map<String, dynamic> json) => ToolItem(
       ..durability = (json['durability'] as num).toDouble();
 
 Map<String, dynamic> _$ToolItemToJson(ToolItem instance) {
-  final val = <String, dynamic>{
-    'meta': _getItemMetaName(instance.meta),
-  };
+  final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -38,6 +36,7 @@ Map<String, dynamic> _$ToolItemToJson(ToolItem instance) {
   }
 
   writeNotNull('extra', instance.extra);
+  val['meta'] = _getItemMetaName(instance.meta);
   val['durability'] = instance.durability;
   return val;
 }
@@ -77,9 +76,7 @@ CookableItem _$CookableItemFromJson(Map<String, dynamic> json) => CookableItem(
     )..extra = json['extra'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$CookableItemToJson(CookableItem instance) {
-  final val = <String, dynamic>{
-    'meta': _getItemMetaName(instance.meta),
-  };
+  final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -88,6 +85,7 @@ Map<String, dynamic> _$CookableItemToJson(CookableItem instance) {
   }
 
   writeNotNull('extra', instance.extra);
+  val['meta'] = _getItemMetaName(instance.meta);
   return val;
 }
 
@@ -101,9 +99,7 @@ FuelItem _$FuelItemFromJson(Map<String, dynamic> json) => FuelItem(
     )..extra = json['extra'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$FuelItemToJson(FuelItem instance) {
-  final val = <String, dynamic>{
-    'meta': _getItemMetaName(instance.meta),
-  };
+  final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
     if (value != null) {
@@ -112,5 +108,6 @@ Map<String, dynamic> _$FuelItemToJson(FuelItem instance) {
   }
 
   writeNotNull('extra', instance.extra);
+  val['meta'] = _getItemMetaName(instance.meta);
   return val;
 }
