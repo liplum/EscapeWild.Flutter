@@ -1,6 +1,7 @@
 import 'package:escape_wild_flutter/core/content.dart';
 import 'package:escape_wild_flutter/core/mod.dart';
 import 'package:escape_wild_flutter/i18n.dart';
+import 'package:escape_wild_flutter/utils/enum.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -45,12 +46,17 @@ class Item with Moddable {
 }
 
 extension ItemMetaProtocolX<TItem extends Item> on TItem {
+  TItem addCompOfType<T extends ItemComp>(Type type, T comp) {
+    components[type] = comp;
+    return this;
+  }
+
   TItem addCompOfExactType<T extends ItemComp>(T comp) {
     components[T] = comp;
     return this;
   }
 
-  TItem addCompOfExactTypes(List<Type> types, ItemComp comp) {
+  TItem addCompOfExactTypes(Iterable<Type> types, ItemComp comp) {
     for (final type in types) {
       components[type] = comp;
     }
@@ -68,6 +74,26 @@ extension ItemMetaProtocolX<TItem extends Item> on TItem {
   bool hasComp<T extends ItemComp>() {
     return components.containsKey(T);
   }
+
+  T? getCompOfTypes<T extends ItemComp>(Iterable<Type> types) {
+    ItemComp? comp;
+    for (final type in types) {
+      final found = components[type];
+      if (found == null || found is! T) {
+        return null;
+      } else {
+        comp = found;
+      }
+    }
+    return comp as T?;
+  }
+}
+
+class CompPair<T extends ItemComp> {
+  final ItemEntry item;
+  final T comp;
+
+  const CompPair(this.item, this.comp);
 }
 
 @JsonSerializable()
@@ -88,6 +114,12 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 
 extension ItemEntryX on ItemEntry {
   String get name => meta.name;
+
+  T? tryGetComp<T extends ItemComp>() => meta.tryGetComp<T>();
+
+  T getComp<T extends ItemComp>() => meta.getComp<T>();
+
+  bool hasComp<T extends ItemComp>() => meta.hasComp<T>();
 }
 
 abstract class ItemComp implements JConvertibleProtocol {
@@ -104,7 +136,7 @@ class _EmptyComp extends ItemComp {
 String _getItemMetaName(Item meta) => meta.name;
 
 @JsonEnum()
-enum ToolLevel {
+enum ToolLevel with EnumCompareByIndexMixin {
   low,
   normal,
   high,

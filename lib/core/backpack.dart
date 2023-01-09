@@ -15,6 +15,7 @@ class Backpack {
   Backpack();
 
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
+
   Map<String, dynamic> toJson() => _$BackpackToJson(this);
 }
 
@@ -45,5 +46,20 @@ extension BackpackX on Backpack {
     var removed = items.firstWhereOrNull((e) => e is T);
     items.remove(removed);
     return removed;
+  }
+}
+
+extension BackpackItemFinderX on Backpack {
+  Iterable<CompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
+    for (final item in items) {
+      final asTool = item.tryGetComp<ToolComp>();
+      if (asTool != null && asTool.toolType == toolType) {
+        yield CompPair(item, asTool);
+      }
+    }
+  }
+
+  CompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
+    return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.toolLevel);
   }
 }
