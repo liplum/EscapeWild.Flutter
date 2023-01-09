@@ -37,6 +37,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   collection: ^1.16.0
+  jconverter:
+    git:
+      url: https://github.com/liplum/DartPackage.git
+      path: jconverter
 
 dev_dependencies:
   flutter_test:

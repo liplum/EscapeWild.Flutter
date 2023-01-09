@@ -29,7 +29,7 @@ class ToolType {
       fishing = ToolType("Fishing");
 }
 
-abstract class IToolItem implements IItem {
+abstract class IToolItem extends IItem {
   ToolLevel get level;
 
   ToolType get toolType;
@@ -45,7 +45,7 @@ enum UseType {
   eat;
 }
 
-abstract class IUsableItem implements IItem {
+abstract class IUsableItem extends IItem {
   void buildAttrModification(AttrModifierBuilder builder);
 
   bool canUse(Player player) => true;
@@ -69,7 +69,7 @@ enum CookType {
   roast;
 }
 
-abstract class ICookableItem implements IItem {
+abstract class ICookableItem extends IItem {
   CookType get cookType;
 
   /// <summary>
@@ -80,6 +80,6 @@ abstract class ICookableItem implements IItem {
   double get flueCost;
 }
 
-abstract class IFuelItem implements IItem {
+abstract class IFuelItem extends IItem {
   double get fuel;
 }
