@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild_flutter/core/attribute.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+
+part 'hud.i18n.dart';
 
 class Hud extends StatefulWidget {
   final AttrModel attr;
@@ -23,7 +26,7 @@ class _HudState extends State<Hud> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        childAspectRatio: 8,
+        childAspectRatio: 5.5,
       ),
       children: [
         label(Attr.health),
@@ -38,15 +41,18 @@ class _HudState extends State<Hud> {
     );
   }
 
-  Widget label(Attr attr){
-    return attr.localizedName().text(textAlign: TextAlign.center);
+  Widget label(Attr attr) {
+    return _I.attr(attr).text(
+          textAlign: TextAlign.center,
+          style: context.textTheme.headlineLarge,
+        );
   }
 
   Widget buildBar(double value) {
     return ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(8)),
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: AttrProgress(value: value),
-    ).padAll(2);
+    ).padSymmetric(v: 8);
   }
 }
 

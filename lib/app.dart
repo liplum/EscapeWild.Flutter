@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild_flutter/core/attribute.dart';
 import 'package:escape_wild_flutter/ui/hud.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +12,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: Colors.blue,
+        brightness: Brightness.dark,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -52,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Hud(attr: attr).sized(h: 180),
+      body: Hud(attr: attr).inCard().sized(h: 180).padAll(10),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
