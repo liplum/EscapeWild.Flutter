@@ -7,11 +7,11 @@ part of 'attribute.dart';
 // **************************************************************************
 
 AttrModifier _$AttrModifierFromJson(Map<String, dynamic> json) => AttrModifier(
-      $enumDecode(_$AttrTypeEnumMap, json['attr']),
+      $enumDecode(_$AttrEnumMap, json['attr']),
       (json['delta'] as num).toDouble(),
     );
 
-const _$AttrTypeEnumMap = {
+const _$AttrEnumMap = {
   Attr.health: 'health',
   Attr.food: 'food',
   Attr.water: 'water',

@@ -152,6 +152,8 @@ class AttrModifier {
 
 extension AttrTypeX on Attr {
   AttrModifier operator +(double delta) => AttrModifier(this, delta);
+
+  AttrModifier operator -(double delta) => AttrModifier(this, -delta);
 }
 
 class AttrModifierBuilder {

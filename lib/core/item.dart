@@ -39,6 +39,8 @@ abstract class ItemMetaProtocol {
 String _getItemMetaName(ItemMetaProtocol meta) => meta.name;
 
 class EmptyItemMeta extends ItemMetaProtocol {
+  static const EmptyItemMeta instance = EmptyItemMeta();
+
   const EmptyItemMeta();
 
   @override
@@ -48,11 +50,39 @@ class EmptyItemMeta extends ItemMetaProtocol {
 abstract class ItemProtocol implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final ItemMetaProtocol meta;
+  @JsonKey(includeIfNull: false)
+  Map<String, dynamic>? extra;
 
   ItemProtocol(this.meta);
 
   @override
   int get version => 1;
+}
+
+extension ItemProtocolX on ItemProtocol {
+  dynamic operator [](String key) {
+    return extra?[key];
+  }
+
+  void operator []=(String key, dynamic value) {
+    (extra ??= {})[key] = value;
+  }
+}
+
+class ItemMeta extends ItemMetaProtocol {
+  @override
+  final String name;
+
+  const ItemMeta(this.name);
+}
+
+class Item extends ItemProtocol {
+  static const type = "item.Item";
+
+  Item(super.meta);
+
+  @override
+  String get typeName => type;
 }
 
 @JsonEnum()
@@ -92,6 +122,8 @@ abstract class ToolItemMetaProtocol extends ItemMetaProtocol {
   ToolLevel get level;
 
   ToolType get toolType;
+
+  double get maxDurability;
 }
 
 @JsonSerializable(createToJson: false)
@@ -101,10 +133,12 @@ class ToolItemMeta extends ToolItemMetaProtocol {
   @override
   final ToolLevel level;
   @override
+  final double maxDurability;
+  @override
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
-  const ToolItemMeta(this.name, this.level, this.toolType);
+  const ToolItemMeta(this.name, this.level, this.toolType, this.maxDurability);
 
   factory ToolItemMeta.fromJson(Map<String, dynamic> json) => _$ToolItemMetaFromJson(json);
 }

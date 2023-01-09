@@ -10,6 +10,7 @@ ToolItemMeta _$ToolItemMetaFromJson(Map<String, dynamic> json) => ToolItemMeta(
       json['name'] as String,
       $enumDecode(_$ToolLevelEnumMap, json['level']),
       ToolType.named(json['toolType'] as String),
+      (json['maxDurability'] as num).toDouble(),
     );
 
 const _$ToolLevelEnumMap = {
@@ -21,12 +22,25 @@ const _$ToolLevelEnumMap = {
 
 ToolItem _$ToolItemFromJson(Map<String, dynamic> json) => ToolItem(
       Contents.getItemMetaByName(json['meta'] as String),
-    )..durability = (json['durability'] as num).toDouble();
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..durability = (json['durability'] as num).toDouble();
 
-Map<String, dynamic> _$ToolItemToJson(ToolItem instance) => <String, dynamic>{
-      'meta': _getItemMetaName(instance.meta),
-      'durability': instance.durability,
-    };
+Map<String, dynamic> _$ToolItemToJson(ToolItem instance) {
+  final val = <String, dynamic>{
+    'meta': _getItemMetaName(instance.meta),
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['durability'] = instance.durability;
+  return val;
+}
 
 AttrModifyItemMeta _$AttrModifyItemMetaFromJson(Map<String, dynamic> json) =>
     AttrModifyItemMeta(
@@ -60,12 +74,22 @@ const _$CookTypeEnumMap = {
 
 CookableItem _$CookableItemFromJson(Map<String, dynamic> json) => CookableItem(
       Contents.getItemMetaByName(json['meta'] as String),
-    );
+    )..extra = json['extra'] as Map<String, dynamic>?;
 
-Map<String, dynamic> _$CookableItemToJson(CookableItem instance) =>
-    <String, dynamic>{
-      'meta': _getItemMetaName(instance.meta),
-    };
+Map<String, dynamic> _$CookableItemToJson(CookableItem instance) {
+  final val = <String, dynamic>{
+    'meta': _getItemMetaName(instance.meta),
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  return val;
+}
 
 FuelItemMeta _$FuelItemMetaFromJson(Map<String, dynamic> json) => FuelItemMeta(
       json['name'] as String,
@@ -74,8 +98,19 @@ FuelItemMeta _$FuelItemMetaFromJson(Map<String, dynamic> json) => FuelItemMeta(
 
 FuelItem _$FuelItemFromJson(Map<String, dynamic> json) => FuelItem(
       Contents.getItemMetaByName(json['meta'] as String),
-    );
+    )..extra = json['extra'] as Map<String, dynamic>?;
 
-Map<String, dynamic> _$FuelItemToJson(FuelItem instance) => <String, dynamic>{
-      'meta': _getItemMetaName(instance.meta),
-    };
+Map<String, dynamic> _$FuelItemToJson(FuelItem instance) {
+  final val = <String, dynamic>{
+    'meta': _getItemMetaName(instance.meta),
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  return val;
+}
