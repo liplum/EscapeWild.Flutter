@@ -1,0 +1,22 @@
+item:
+  energy-bar:
+    name: Energy Bar
+    desc: You're not you when you're hungry.
+  bottled-water:
+    name: Bottled Water
+    desc: A bottle of water. The production date is unknow.
+  dirty-water:
+    name: Dirty Water
+    desc: Ugh! It's best to boil it anyway.
+  clean-water:
+    name: Clean Water
+    desc: Mmmm, a bit sweet.
+  boiled-water:
+    name: Boiled Water
+    desc: ...
+  filtered-water:
+    name: Filter Water
+    desc: It lools clean now. What a magic!
+  energy-drink:
+    name: Energy Drink
+    desc: Watch out the beast.
