@@ -12,6 +12,6 @@ The deprecated [EscapeWild.Forms](https://github.com/liplum/EscapeWild.Forms) is
 
 ## Licence
 
-escape_wild_flutter is open source under GUN v3.0 license.
+EscapeWild.Flutter is open source under GUN v3.0 license.
 
 </div>
