@@ -1,9 +1,13 @@
+import 'package:escape_wild/i18n.dart';
+
 class ActionType {
   final String name;
 
   const ActionType(this.name);
 
   factory ActionType.named(String name) => ActionType(name);
+
+  String localizedName() => I18n["action.$name"];
 
   @override
   String toString() => name;

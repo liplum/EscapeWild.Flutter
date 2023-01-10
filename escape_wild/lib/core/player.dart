@@ -14,15 +14,19 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     await location?.performAction(action);
   }
 
-  Future<void> init() async {
+  Iterable<ActionType> getAvailableActions() {
+    return location?.getAvailableActions() ?? const [];
+  }
+
+  Future<void> init() async {}
+
+  Future<void> restart() async {
     final generator = SubtropicsRouteGenerator();
     final ctx = RouteGenerateContext(hardness: hardness);
     final generatedRoute = generator.generateRoute(ctx);
     route = generatedRoute;
     location = generatedRoute.initialPlace;
   }
-
-  Future<void> restart() async {}
 
   PlaceProtocol? get location => $location.value;
 

@@ -1,3 +1,10 @@
+action:
+  move: Move
+  explore: Explore
+  rest: Rest
+  hunt: Hunt
+  cut-down-tree: Cut Down
+  fish: Fish
 item:
   energy-bar:
     name: Energy Bar
@@ -26,3 +33,7 @@ item:
   roasted-berry:
     name: Roasted Berry
     desc: Slimy.
+route:
+  subtropics:
+    plain:
+      name: Plain

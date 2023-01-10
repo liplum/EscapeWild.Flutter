@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -52,35 +53,58 @@ class _ActionPageState extends State<ActionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: player.$location << (ctx, l, __) => ">> ${l?.localizedName()} <<".text(),
+        title: player.$location << (ctx, l, __) => ">> ${l?.displayName()} <<".text(),
         centerTitle: true,
       ),
       body: buildBody(),
-      floatingActionButton: [
-        FloatingActionButton(
-          onPressed: increment,
-          child: const Icon(Icons.add),
-        ),
-        FloatingActionButton(
-          onPressed: decrement,
-          child: const Icon(Icons.remove),
-        ),
-      ].row(maa: MainAxisAlignment.center), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
   Widget buildHud(AttrModel attr) {
-    return Hud(attr: attr).padAll(12).inCard().sized(h: 240).padAll(10);
+    return Hud(attr: attr).padAll(12).inCard().sized(h: 240);
   }
 
   Widget buildBody() {
     return [
       player.$attrs << (ctx, attr, __) => buildHud(attr),
       player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
-    ].column();
+      buildActionBtnArea().expanded(),
+    ].column().padAll(10);
   }
 
   Widget buildJourneyProgress(double v) {
     return AttrProgress(value: v).padAll(10);
+  }
+
+  Widget buildActionBtnArea() {
+    return GridView(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 180, childAspectRatio: 2),
+      children: buildActions(),
+    );
+  }
+
+  List<Widget> buildActions() {
+    var res = <Widget>[];
+    for (final action in player.getAvailableActions()) {
+      res.add(buildActionBtn(action));
+    }
+    return res;
+  }
+
+  Widget buildActionBtn(ActionType action) {
+    return InkWell(
+      borderRadius: context.cardBorderRadius,
+      onTap: () async {
+        player.performAction(action);
+      },
+
+      child: action
+          .localizedName()
+          .text(
+            style: context.textTheme.headlineSmall,
+          )
+          .center(),
+    ).inCard();
   }
 }

@@ -1,3 +1,5 @@
+import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/ui/home.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -36,7 +38,7 @@ class _MainPageState extends State<MainPage> {
 
   Widget buildTitle() {
     return _I.title.text(
-      style: context.textTheme.displayLarge,
+      style: context.textTheme.displayMedium,
     );
   }
 
@@ -53,7 +55,12 @@ class _MainPageState extends State<MainPage> {
 
   Widget buildNewGameBtn() {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () async {
+        await onNewGame();
+        context.navigator.pushReplacement(MaterialPageRoute(
+          builder: (_) => const Homepage(),
+        ));
+      },
       child: _I.newGame
           .text(
             style: TextStyle(fontSize: 28),

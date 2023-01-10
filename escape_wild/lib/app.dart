@@ -20,10 +20,11 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
   @override
   void initState() {
     super.initState();
-   Future.delayed(Duration(milliseconds: 500),() {
+    Future.delayed(Duration(milliseconds: 500), () {
       loadL10n();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,12 +33,20 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      theme: ThemeData(
-        useMaterial3: true,
-        primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
-      ),
+      theme: bakeTheme(context, ThemeData.light()),
+      darkTheme: bakeTheme(context, ThemeData.dark()),
       home: const MainPage(),
+    );
+  }
+
+  ThemeData bakeTheme(BuildContext ctx, ThemeData raw) {
+    return raw.copyWith(
+      cardTheme: raw.cardTheme.copyWith(
+        shape: const RoundedRectangleBorder(
+            side: BorderSide(color: Colors.transparent), //the outline color
+            borderRadius: BorderRadius.all(Radius.circular(14))),
+      ),
+      useMaterial3: true,
     );
   }
 }

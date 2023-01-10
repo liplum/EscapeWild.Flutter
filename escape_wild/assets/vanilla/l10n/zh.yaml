@@ -1,3 +1,10 @@
+action:
+  move: 前进
+  explore: 探索
+  rest: 休息
+  hunt: 捕猎
+  cut-down-tree: 砍树
+  fish: 捕鱼
 item:
   energy-bar:
     name: 能力棒
@@ -38,3 +45,7 @@ item:
   dry-dandelion:
     name: 蒲公英
     desc: 据说泡水喝可以清肠通便。
+route:
+  subtropics:
+    plain:
+      name: 平原

@@ -41,7 +41,7 @@ class _HudState extends State<Hud> {
   }
 
   Widget label(Attr attr) {
-    return _I.attr(attr).text(style: context.textTheme.headlineLarge).center();
+    return _I.attr(attr).text(style: context.textTheme.headlineMedium).center();
   }
 
   Widget buildBar(double value, Color color) {
