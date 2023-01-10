@@ -13,6 +13,11 @@ class ActionType {
       hunt = ActionType("hunt"),
       cutDownTree = ActionType("cut-down-tree"),
       fish = ActionType("fish");
+  static const List<ActionType> defaultActions = [
+    move,
+    explore,
+    rest,
+  ];
 
   @override
   bool operator ==(Object other) {
