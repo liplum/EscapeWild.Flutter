@@ -22,7 +22,7 @@ extension NamedItemGetterX on String {
 }
 
 @JsonSerializable(createToJson: false)
-class Item with Moddable, CompMixin {
+class Item with Moddable, CompMixin<ItemComp> {
   static final empty = Item("empty");
   final String name;
 
@@ -37,11 +37,13 @@ class Item with Moddable, CompMixin {
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 }
 
-class CompPair<T extends Comp> {
+abstract class ItemComp extends Comp {}
+
+class ItemCompPair<T extends Comp> {
   final ItemEntry item;
   final T comp;
 
-  const CompPair(this.item, this.comp);
+  const ItemCompPair(this.item, this.comp);
 }
 
 @JsonSerializable()
@@ -63,11 +65,11 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 extension ItemEntryX on ItemEntry {
   String get name => meta.name;
 
-  T? tryGetComp<T extends Comp>() => meta.tryGetComp<T>();
+  T? tryGetComp<T extends ItemComp>() => meta.tryGetComp<T>();
 
-  T getComp<T extends Comp>() => meta.getComp<T>();
+  T getComp<T extends ItemComp>() => meta.getComp<T>();
 
-  bool hasComp<T extends Comp>() => meta.hasComp<T>();
+  bool hasComp<T extends ItemComp>() => meta.hasComp<T>();
 }
 
 class _EmptyComp extends Comp {
@@ -112,7 +114,7 @@ class ToolType {
 }
 
 @JsonSerializable(createToJson: false)
-class ToolComp extends Comp {
+class ToolComp extends ItemComp {
   @JsonKey()
   final ToolLevel toolLevel;
   @JsonKey()
@@ -159,7 +161,7 @@ enum UseType {
   eat;
 }
 
-abstract class UsableItemComp extends Comp {
+abstract class UsableItemComp extends ItemComp {
   @JsonKey()
   final UseType useType;
 
@@ -269,7 +271,7 @@ enum CookType {
 /// Player can cook the CookableItem in campfire.
 /// It will be transformed to another item.
 @JsonSerializable(createToJson: false)
-class CookableComp extends Comp {
+class CookableComp extends ItemComp {
   @JsonKey()
   final CookType cookType;
   @JsonKey()
@@ -301,7 +303,7 @@ extension CookableCompX on Item {
 }
 
 @JsonSerializable(createToJson: false)
-class FuelComp extends Comp {
+class FuelComp extends ItemComp {
   @JsonKey()
   final double heatValue;
 

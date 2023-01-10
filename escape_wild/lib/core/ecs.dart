@@ -25,40 +25,40 @@ abstract class Comp implements JConvertibleProtocol {
   const Comp();
 }
 
-mixin CompMixin {
+mixin CompMixin<TComp extends Comp> {
   @JsonKey(toJson: directConvertFunc)
-  final Map<Type, Comp> components = {};
+  final Map<Type, TComp> components = {};
 }
 
-extension CompMixinX on CompMixin {
-  void addCompOfType(Type type, Comp comp) {
+extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
+  void addCompOfType(Type type, TComp comp) {
     components[type] = comp;
   }
 
-  void addCompOfExactType<T extends Comp>(T comp) {
+  void addCompOfExactType<T extends TComp>(T comp) {
     components[T] = comp;
   }
 
-  void addCompOfExactTypes(Iterable<Type> types, Comp comp) {
+  void addCompOfExactTypes(Iterable<Type> types, TComp comp) {
     for (final type in types) {
       components[type] = comp;
     }
   }
 
-  T? tryGetComp<T extends Comp>() {
+  T? tryGetComp<T extends TComp>() {
     return components[T] as T?;
   }
 
-  T getComp<T extends Comp>() {
+  T getComp<T extends TComp>() {
     return components[T] as T;
   }
 
-  bool hasComp<T extends Comp>() {
+  bool hasComp<T extends TComp>() {
     return components.containsKey(T);
   }
 
-  T? getCompOfTypes<T extends Comp>(Iterable<Type> types) {
-    Comp? comp;
+  T? getCompOfTypes<T extends TComp>(Iterable<Type> types) {
+    TComp? comp;
     for (final type in types) {
       final found = components[type];
       if (found == null || found is! T) {

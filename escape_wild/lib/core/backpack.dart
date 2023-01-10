@@ -55,16 +55,16 @@ extension BackpackX on Backpack {
 }
 
 extension BackpackItemFinderX on Backpack {
-  Iterable<CompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
+  Iterable<ItemCompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
     for (final item in _items) {
       final asTool = item.tryGetComp<ToolComp>();
       if (asTool != null && asTool.toolType == toolType) {
-        yield CompPair(item, asTool);
+        yield ItemCompPair(item, asTool);
       }
     }
   }
 
-  CompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
+  ItemCompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
     return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.toolLevel);
   }
 
