@@ -34,6 +34,16 @@ mixin CompMixin<TComp extends Comp> {
 }
 
 extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
+  Iterable<TComp> iterateComps([List<Type>? filter]) sync* {
+    for (final p in _components.entries) {
+      if (filter == null || filter.contains(p.key)) {
+        for (final comp in p.value) {
+          yield comp;
+        }
+      }
+    }
+  }
+
   void addComp(TComp comp) {
     final type = comp.compType;
     final comps = _components[type];

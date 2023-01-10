@@ -11,6 +11,7 @@ class Backpack {
   List<ItemEntry> items = [];
   @JsonKey()
   double mass = 0.0;
+
   Backpack();
 
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
@@ -19,13 +20,24 @@ class Backpack {
 }
 
 extension BackpackX on Backpack {
+  void addItemOrMerge(ItemEntry item) {
+    if (item.meta.mergeable) {
+      final existed = getItemByIdenticalMeta(item);
+      if (existed != null) {
+        item.mergeTo(existed);
+      } else {
+        items.add(item);
+      }
+    } else {
+      items.add(item);
+    }
+    mass += item.getActualMassOr();
+  }
+
   double sumMass() {
     var sum = 0.0;
     for (final item in items) {
-      final mass = item.tryGetActualMass();
-      if (mass != null) {
-        sum += mass;
-      }
+      sum += item.getActualMassOr();
     }
     return sum;
   }
@@ -34,33 +46,15 @@ extension BackpackX on Backpack {
 
   ItemEntry operator [](int index) => items[index];
 
-  void addItem(ItemEntry item) => items.add(item);
-
-  bool removeItem(ItemEntry item) => items.remove(item);
-
-  void addItems(Iterable<ItemEntry> more) => items.addAll(more);
-
   ItemEntry? getItemByName(String name) => items.firstWhereOrNull((e) => e.meta.name == name);
+
+  ItemEntry? getItemByIdenticalMeta(ItemEntry item) => items.firstWhereOrNull((e) => e.meta == item.meta);
 
   bool hasItemOfName(String name) => items.any((e) => e.meta.name == name);
 
   int countItemOfName(String name) => items.count((e) => e.meta.name == name);
 
   int countItemWhere(bool Function(ItemEntry) predicate) => items.count(predicate);
-
-  ItemEntry? popItemByName(String name) {
-    var removed = getItemByName(name);
-    items.remove(removed);
-    return removed;
-  }
-
-  void removeItemsWhere(bool Function(ItemEntry) predicate) => items.removeWhere(predicate);
-
-  ItemEntry? popItemByType<T>() {
-    var removed = items.firstWhereOrNull((e) => e is T);
-    items.remove(removed);
-    return removed;
-  }
 }
 
 extension BackpackItemFinderX on Backpack {

@@ -15,7 +15,7 @@ class _BackpackPageState extends State<BackpackPage> {
   @override
   void initState() {
     super.initState();
-    player.backpack.addItem(ItemEntry(Foods.berry));
+    player.backpack.addItemOrMerge(ItemEntry(Foods.berry, mass: 10));
   }
 
   @override
@@ -43,9 +43,6 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Widget buildItem(ItemEntry item) {
-    return item.meta.localizedName.text(
-      style: context.textTheme.titleLarge,
-      textAlign: TextAlign.center
-    );
+    return item.meta.localizedName.text(style: context.textTheme.titleLarge, textAlign: TextAlign.center);
   }
 }

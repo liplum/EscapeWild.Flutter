@@ -46,27 +46,33 @@ extension ItemX on Item {
   bool get mergeable => mass == null;
 }
 
-class MergeableCompConflictError implements Exception {
+class ItemMergeableCompConflictError implements Exception {
   final String message;
   final Item item;
   final bool mergeableShouldBe;
 
-  MergeableCompConflictError(
+  const ItemMergeableCompConflictError(
     this.message,
     this.item, {
     required this.mergeableShouldBe,
   });
+
+  @override
+  String toString() => "[${item.name}]$message";
 }
 
-class CompConflictError implements Exception {
+class ItemCompConflictError implements Exception {
   final String message;
   final Item item;
+  final Comp conflictWith;
 
-  CompConflictError(this.message, this.item);
+  const ItemCompConflictError(this.message, this.item, this.conflictWith);
 }
 
 abstract class ItemComp extends Comp {
   void validateItemConfig(Item item) {}
+
+  void onMerge(ItemEntry from, ItemEntry to) {}
 }
 
 class ItemCompPair<T extends Comp> {
@@ -84,18 +90,50 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(includeIfNull: false)
   double? mass;
 
-  ItemEntry(this.meta);
+  ItemEntry(
+    this.meta, {
+    this.mass,
+  });
 
   @override
   String get typeName => type;
+
+  bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
+
+  void mergeTo(ItemEntry to) {
+    if (!meta.mergeable) {
+      throw MergeNotAllowedError("${meta.name} is not mergeable.", meta);
+    }
+    final selfMass = mass ?? 0.0;
+    final toMass = to.mass ?? 0.0;
+    if (!hasIdenticalMeta(to)) {
+      throw MergeNotAllowedError("Can't merge ${meta.name} with ${to.meta}.", meta);
+    }
+    for (final comp in meta.iterateComps()) {
+      comp.onMerge(this, to);
+    }
+    to.mass = selfMass + toMass;
+  }
 
   factory ItemEntry.fromJson(Map<String, dynamic> json) => _$ItemEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemEntryToJson(this);
 }
 
+class MergeNotAllowedError implements Exception {
+  final String message;
+  final Item item;
+
+  const MergeNotAllowedError(this.message, this.item);
+
+  @override
+  String toString() => "[${item.name}]$message";
+}
+
 extension ItemEntryX on ItemEntry {
   double? tryGetActualMass() => meta.mass ?? mass;
+
+  double getActualMassOr([double fallback = 0.0]) => meta.mass ?? mass ?? fallback;
 }
 
 class EmptyComp extends Comp {
@@ -161,7 +199,7 @@ class ToolComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$ToolComp doesn't conform to mergeable item.",
         item,
         mergeableShouldBe: false,
@@ -256,14 +294,14 @@ class ModifyAttrComp extends UsableItemComp {
   @override
   void validateItemConfig(Item item) {
     if (modifierUnit == null && item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$ModifyAttrComp requires `unit` in mergeable.",
         item,
         mergeableShouldBe: false,
       );
     }
     if (modifierUnit != null && !item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$ModifyAttrComp doesn't allow `unit` in unmergeable.",
         item,
         mergeableShouldBe: true,
@@ -369,14 +407,14 @@ class CookableComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (fuelCostUnit == null && item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$CookableComp requires `unit` in mergeable.",
         item,
         mergeableShouldBe: false,
       );
     }
     if (fuelCostUnit != null && !item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$CookableComp doesn't allow `unit` in unmergeable.",
         item,
         mergeableShouldBe: true,
@@ -426,14 +464,14 @@ class FuelComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (fuelUnit == null && item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$FuelComp requires `unit` in mergeable.",
         item,
         mergeableShouldBe: false,
       );
     }
     if (fuelUnit != null && !item.mergeable) {
-      throw MergeableCompConflictError(
+      throw ItemMergeableCompConflictError(
         "$FuelComp doesn't allow `unit` in unmergeable.",
         item,
         mergeableShouldBe: true,
@@ -466,11 +504,46 @@ extension FuelCompX on Item {
 
 class WetComp extends ItemComp {
   static const type = "Wet";
+  static const _wetK = "Wet.wet";
 
-  Ratio getWet(ItemEntry item) => item["Wet.wet"] ?? 0.0;
+  Ratio getWet(ItemEntry item) => item[_wetK] ?? 0.0;
 
-  void setWet(ItemEntry item, Ratio value) => item["Wet.wet"] = value;
+  void setWet(ItemEntry item, Ratio value) => item[_wetK] = value;
+
+  @override
+  void onMerge(ItemEntry from, ItemEntry to) {
+    if (!from.hasIdenticalMeta(to)) return;
+    final fromMass = from.getActualMassOr();
+    final toMass = to.getActualMassOr();
+    final fromWet = getWet(from) * fromMass;
+    final toWet = getWet(to) * toMass;
+    final average = (fromWet + toWet) / (fromMass + toMass);
+    setWet(to, average);
+  }
 
   @override
   String get typeName => "Wet";
+}
+
+class FreshnessComp extends ItemComp {
+  static const type = "Freshness";
+  static const _freshnessK = "Freshness.freshness";
+
+  Ratio geFreshness(ItemEntry item) => item[_freshnessK] ?? 1.0;
+
+  void setFreshness(ItemEntry item, Ratio value) => item[_freshnessK] = value;
+
+  @override
+  void onMerge(ItemEntry from, ItemEntry to) {
+    if (!from.hasIdenticalMeta(to)) return;
+    final fromMass = from.getActualMassOr();
+    final toMass = to.getActualMassOr();
+    final fromFreshness = geFreshness(from) * fromMass;
+    final toFreshness = geFreshness(to) * toMass;
+    final average = (toFreshness + fromFreshness) / (fromMass + toMass);
+    setFreshness(to, average);
+  }
+
+  @override
+  String get typeName => type;
 }
