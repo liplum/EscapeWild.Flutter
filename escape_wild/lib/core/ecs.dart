@@ -23,6 +23,9 @@ mixin TagsMixin {
 }
 
 abstract class Comp implements JConvertibleProtocol {
+  @JsonKey(ignore: true)
+  Type get compType => runtimeType;
+
   const Comp();
 }
 
@@ -31,22 +34,13 @@ mixin CompMixin<TComp extends Comp> {
 }
 
 extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
-  void addCompOfType(Type type, TComp comp) {
+  void addComp(TComp comp) {
+    final type = comp.compType;
     final comps = _components[type];
     if (comps != null) {
       comps.add(comp);
     } else {
       _components[type] = [comp];
-    }
-  }
-
-  void addCompOfExactType<T extends TComp>(T comp) {
-    addCompOfType(T, comp);
-  }
-
-  void addCompOfTypes(Iterable<Type> types, TComp comp) {
-    for (final type in types) {
-      addCompOfType(type, comp);
     }
   }
 
@@ -57,17 +51,4 @@ extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
   bool hasComp<T extends TComp>() {
     return _components.containsKey(T);
   }
-
-/* T? getCompOfTypes<T extends TComp>(Iterable<Type> types) {
-    TComp? comp;
-    for (final type in types) {
-      final found = components[type];
-      if (found == null || found is! T) {
-        return null;
-      } else {
-        comp = found;
-      }
-    }
-    return comp as T?;
-  }*/
 }

@@ -7,8 +7,10 @@ part 'backpack.g.dart';
 
 @JsonSerializable()
 class Backpack {
+  @JsonKey()
   List<ItemEntry> items = [];
-
+  @JsonKey()
+  double mass = 0.0;
   Backpack();
 
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);

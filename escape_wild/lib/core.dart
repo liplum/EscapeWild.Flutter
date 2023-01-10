@@ -5,6 +5,7 @@ export 'package:escape_wild/core/content.dart';
 export 'package:escape_wild/core/ecs.dart';
 export 'package:escape_wild/core/hardness.dart';
 export 'package:escape_wild/core/item.dart';
+export 'package:escape_wild/core/explore.dart';
 export 'package:escape_wild/core/mod.dart';
 export 'package:escape_wild/core/player.dart';
 export 'package:escape_wild/core/route.dart';

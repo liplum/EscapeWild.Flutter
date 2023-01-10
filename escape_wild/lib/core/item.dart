@@ -98,7 +98,7 @@ extension ItemEntryX on ItemEntry {
   double? tryGetActualMass() => meta.mass ?? mass;
 }
 
-class _EmptyComp extends Comp {
+class EmptyComp extends Comp {
   static const type = "Empty";
 
   @override
@@ -188,7 +188,7 @@ extension ToolCompX on Item {
       maxDurability: maxDurability,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<ToolComp>(comp);
+    addComp(comp);
     return this;
   }
 }
@@ -219,6 +219,8 @@ abstract class UsableItemComp extends ItemComp {
 
 @JsonSerializable(createToJson: false)
 class ModifyAttrComp extends UsableItemComp {
+  @override
+  Type get compType => UsableItemComp;
   @JsonKey()
   final List<AttrModifier> modifiers;
   @JsonKey(fromJson: _namedItemGetter)
@@ -284,7 +286,7 @@ extension ModifyAttrCompX on Item {
       afterUsedItem: afterUsed,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<UsableItemComp>(comp);
+    addComp(comp);
     return this;
   }
 
@@ -300,7 +302,7 @@ extension ModifyAttrCompX on Item {
       afterUsedItem: afterUsedItem,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<UsableItemComp>(comp);
+    addComp(comp);
     return this;
   }
 
@@ -316,7 +318,7 @@ extension ModifyAttrCompX on Item {
       afterUsedItem: afterUsedItem,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<UsableItemComp>(comp);
+    addComp(comp);
     return this;
   }
 
@@ -332,7 +334,7 @@ extension ModifyAttrCompX on Item {
       afterUsedItem: afterUsed,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<UsableItemComp>(comp);
+    addComp(comp);
     return this;
   }
 }
@@ -404,7 +406,7 @@ extension CookableCompX on Item {
       fuelCostUnit: unit,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<CookableComp>(comp);
+    addComp(comp);
     return this;
   }
 }
@@ -457,7 +459,18 @@ extension FuelCompX on Item {
       fuelUnit: unit,
     );
     comp.validateItemConfig(this);
-    addCompOfExactType<FuelComp>(comp);
+    addComp(comp);
     return this;
   }
+}
+
+class WetComp extends ItemComp {
+  static const type = "Wet";
+
+  Ratio getWet(ItemEntry item) => item["Wet.wet"] ?? 0.0;
+
+  void setWet(ItemEntry item, Ratio value) => item["Wet.wet"] = value;
+
+  @override
+  String get typeName => "Wet";
 }
