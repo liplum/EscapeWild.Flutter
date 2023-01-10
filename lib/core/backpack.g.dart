@@ -7,10 +7,10 @@ part of 'backpack.dart';
 // **************************************************************************
 
 Backpack _$BackpackFromJson(Map<String, dynamic> json) => Backpack()
-  ..items = (json['items'] as List<dynamic>)
+  .._items = (json['items'] as List<dynamic>)
       .map((e) => ItemEntry.fromJson(e as Map<String, dynamic>))
       .toList();
 
 Map<String, dynamic> _$BackpackToJson(Backpack instance) => <String, dynamic>{
-      'items': directConvertFunc(instance.items),
+      'items': directConvertFunc(instance._items),
     };

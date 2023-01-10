@@ -10,7 +10,10 @@ part 'backpack.g.dart';
 @JsonSerializable()
 class Backpack {
   @JsonKey(toJson: directConvertFunc)
-  List<ItemEntry> items = [];
+  // ignore: prefer_final_fields
+  List<ItemEntry> _items = [];
+
+  int get itemCount => _items.length;
 
   Backpack();
 
@@ -20,38 +23,40 @@ class Backpack {
 }
 
 extension BackpackX on Backpack {
-  void addItem(ItemEntry item) => items.add(item);
+  ItemEntry operator [](int index) => _items[index];
 
-  bool removeItem(ItemEntry item) => items.remove(item);
+  void addItem(ItemEntry item) => _items.add(item);
 
-  void addItems(Iterable<ItemEntry> items) => this.items.addAll(items);
+  bool removeItem(ItemEntry item) => _items.remove(item);
 
-  ItemEntry? getItemByName(String name) => items.firstWhereOrNull((e) => e.name == name);
+  void addItems(Iterable<ItemEntry> items) => _items.addAll(items);
 
-  bool hasItemOfName(String name) => items.any((e) => e.name == name);
+  ItemEntry? getItemByName(String name) => _items.firstWhereOrNull((e) => e.name == name);
 
-  int countItemOfName(String name) => items.count((e) => e.name == name);
+  bool hasItemOfName(String name) => _items.any((e) => e.name == name);
 
-  int countItemWhere(bool Function(ItemEntry) predicate) => items.count(predicate);
+  int countItemOfName(String name) => _items.count((e) => e.name == name);
+
+  int countItemWhere(bool Function(ItemEntry) predicate) => _items.count(predicate);
 
   ItemEntry? popItemByName(String name) {
     var removed = getItemByName(name);
-    items.remove(removed);
+    _items.remove(removed);
     return removed;
   }
 
-  void removeItemsWhere(bool Function(ItemEntry) predicate) => items.removeWhere(predicate);
+  void removeItemsWhere(bool Function(ItemEntry) predicate) => _items.removeWhere(predicate);
 
   ItemEntry? popItemByType<T>() {
-    var removed = items.firstWhereOrNull((e) => e is T);
-    items.remove(removed);
+    var removed = _items.firstWhereOrNull((e) => e is T);
+    _items.remove(removed);
     return removed;
   }
 }
 
 extension BackpackItemFinderX on Backpack {
   Iterable<CompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
-    for (final item in items) {
+    for (final item in _items) {
       final asTool = item.tryGetComp<ToolComp>();
       if (asTool != null && asTool.toolType == toolType) {
         yield CompPair(item, asTool);

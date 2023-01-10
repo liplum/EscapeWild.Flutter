@@ -6,9 +6,10 @@ class Tools {
   static late final Item oldOxe;
   static late final Item oldFishRod;
   static late final Item bearTrap;
+  static late final Item oldShotgun;
   static late final Item catchingNet;
 
-  void register() {
+  static void registerAll() {
     // cutting
     Contents.items.addAll([
       survivalKnife = Item("survival-knife").asTool(
@@ -35,7 +36,7 @@ class Tools {
     ]);
     // gun
     Contents.items.addAll([
-      bearTrap = Item("old-shotgun").asTool(
+      oldShotgun = Item("old-shotgun").asTool(
         type: ToolType.gun,
         level: ToolLevel.low,
         maxDurability: 50.0,

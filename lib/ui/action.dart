@@ -1,4 +1,5 @@
 import 'package:escape_wild_flutter/core.dart';
+import 'package:escape_wild_flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
