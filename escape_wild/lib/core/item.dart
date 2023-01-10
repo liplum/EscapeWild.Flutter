@@ -81,6 +81,8 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final Item meta;
   static const type = "Item";
+  @JsonKey(includeIfNull: false)
+  double? mass;
 
   ItemEntry(this.meta);
 
@@ -93,11 +95,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 }
 
 extension ItemEntryX on ItemEntry {
-  String get name => meta.name;
-
-  T? tryGetFirstComp<T extends ItemComp>() => meta.tryGetFirstComp<T>();
-
-  bool hasComp<T extends ItemComp>() => meta.hasComp<T>();
+  double? tryGetActualMass() => meta.mass ?? mass;
 }
 
 class _EmptyComp extends Comp {

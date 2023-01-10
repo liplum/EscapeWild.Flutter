@@ -6,13 +6,11 @@ part of 'item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Item _$ItemFromJson(Map<String, dynamic> json) => Item(
-      json['name'] as String,
-    );
-
 ItemEntry _$ItemEntryFromJson(Map<String, dynamic> json) => ItemEntry(
       Contents.getItemMetaByName(json['meta'] as String),
-    )..extra = json['extra'] as Map<String, dynamic>?;
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..mass = (json['mass'] as num?)?.toDouble();
 
 Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
   final val = <String, dynamic>{};
@@ -25,6 +23,7 @@ Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
 
   writeNotNull('extra', instance.extra);
   val['meta'] = _getItemMetaName(instance.meta);
+  writeNotNull('mass', instance.mass);
   return val;
 }
 
@@ -48,6 +47,7 @@ ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>
       (json['modifiers'] as List<dynamic>)
           .map((e) => AttrModifier.fromJson(e as Map<String, dynamic>))
           .toList(),
+      modifierUnit: (json['modifierUnit'] as num?)?.toDouble(),
       afterUsedItem: _namedItemGetter(json['afterUsedItem'] as String),
     );
 
@@ -59,8 +59,9 @@ const _$UseTypeEnumMap = {
 
 CookableComp _$CookableCompFromJson(Map<String, dynamic> json) => CookableComp(
       $enumDecode(_$CookTypeEnumMap, json['cookType']),
-      (json['flueCost'] as num).toDouble(),
+      (json['fuelCost'] as num).toDouble(),
       _namedItemGetter(json['cookedOutput'] as String),
+      fuelCostUnit: (json['fuelCostUnit'] as num?)?.toDouble(),
     );
 
 const _$CookTypeEnumMap = {
@@ -71,4 +72,5 @@ const _$CookTypeEnumMap = {
 
 FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
       (json['heatValue'] as num).toDouble(),
+      fuelUnit: (json['fuelUnit'] as num?)?.toDouble(),
     );
