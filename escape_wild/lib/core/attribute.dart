@@ -160,10 +160,10 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
         attrs = attrs.copyWith(food: value);
         break;
       case Attr.water:
-        attrs = attrs.copyWith(food: value);
+        attrs = attrs.copyWith(water: value);
         break;
       case Attr.energy:
-        attrs = attrs.copyWith(food: value);
+        attrs = attrs.copyWith(energy: value);
         break;
     }
   }

@@ -13,3 +13,7 @@ ui:
     food: FOOD
     water: WATER
     energy: ENERGY
+  home:
+    action: Action
+    backpack: Backpack
+    campfire: Campfire

@@ -1,8 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/ui/backpack.dart';
 import 'package:escape_wild/ui/campfire.dart';
 import 'package:flutter/material.dart';
 
 import 'action.dart';
+
+part 'home.i18n.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -37,16 +40,16 @@ class _HomePageState extends State<Homepage> {
         },
         items: [
           BottomNavigationBarItem(
-            label: "Action",
+            label: _I.action,
             icon: Icon(Icons.menu),
           ),
           BottomNavigationBarItem(
-            label: "Backpack",
+            label: _I.backpack,
             icon: Icon(Icons.backpack_outlined),
             activeIcon: Icon(Icons.backpack),
           ),
           BottomNavigationBarItem(
-            label: "Compfire",
+            label: _I.campfire,
             icon: Icon(Icons.local_fire_department_outlined),
             activeIcon: Icon(Icons.local_fire_department_rounded),
           ),

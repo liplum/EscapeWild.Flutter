@@ -79,7 +79,10 @@ class _ActionPageState extends State<ActionPage> {
   Widget buildActionBtnArea() {
     return GridView(
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(maxCrossAxisExtent: 180, childAspectRatio: 2),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 256,
+        childAspectRatio: 3,
+      ),
       children: buildActions(),
     );
   }
@@ -98,9 +101,9 @@ class _ActionPageState extends State<ActionPage> {
       onTap: () async {
         player.performAction(action);
       },
-
       child: action
           .localizedName()
+          .toUpperCase()
           .text(
             style: context.textTheme.headlineSmall,
           )
