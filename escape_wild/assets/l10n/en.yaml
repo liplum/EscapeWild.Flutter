@@ -16,4 +16,5 @@ ui:
   home:
     action: Action
     backpack: Backpack
+    craft: Craft
     campfire: Campfire

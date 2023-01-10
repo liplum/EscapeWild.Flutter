@@ -9,5 +9,7 @@ class _I {
 
   static String get backpack => "$_n.backpack".tr();
 
+  static String get craft => "$_n.craft".tr();
+
   static String get campfire => "$_n.campfire".tr();
 }

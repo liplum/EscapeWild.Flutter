@@ -9,4 +9,5 @@ export 'package:escape_wild/core/mod.dart';
 export 'package:escape_wild/core/player.dart';
 export 'package:escape_wild/core/route.dart';
 export 'package:escape_wild/core/i18n.dart';
+export 'package:escape_wild/core/campfire.dart';
 export 'package:escape_wild/ambiguous.dart';

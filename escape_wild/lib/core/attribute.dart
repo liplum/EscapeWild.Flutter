@@ -29,6 +29,8 @@ class AttrModel {
 
   factory AttrModel.fromJson(Map<String, dynamic> json) => _$AttrModelFromJson(json);
 
+  Map<String, dynamic> toJson() => _$AttrModelToJson(this);
+
   const AttrModel({
     this.health = 1.0,
     this.food = 1.0,
@@ -152,18 +154,20 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
 
   @override
   void setAttr(Attr attr, double value) {
+    value = max(0.0, value);
     switch (attr) {
       case Attr.health:
-        attrs = attrs.copyWith(health: min(value, 1));
+        value = min(value, 1);
+        if (attrs.health != value) attrs = attrs.copyWith(health: value);
         break;
       case Attr.food:
-        attrs = attrs.copyWith(food: value);
+        if (attrs.food != value) attrs = attrs.copyWith(food: value);
         break;
       case Attr.water:
-        attrs = attrs.copyWith(water: value);
+        if (attrs.water != value) attrs = attrs.copyWith(water: value);
         break;
       case Attr.energy:
-        attrs = attrs.copyWith(energy: value);
+        if (attrs.energy != value) attrs = attrs.copyWith(energy: value);
         break;
     }
   }

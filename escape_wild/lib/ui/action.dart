@@ -86,7 +86,7 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   Widget buildHud(AttrModel attr) {
-    return Hud(attr: attr).padAll(12).inCard().sized(h: 240);
+    return Hud(attr: attr).padAll(12).inCard(elevation: 2).sized(h: 240);
   }
 
   Widget buildJourneyProgress(double v) {

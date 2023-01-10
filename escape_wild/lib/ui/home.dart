@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:escape_wild/core.dart';
 import 'package:escape_wild/ui/backpack.dart';
 import 'package:escape_wild/ui/campfire.dart';
 import 'package:flutter/material.dart';
-
+import 'package:rettulf/rettulf.dart';
 import 'action.dart';
 
 part 'home.i18n.dart';
@@ -29,32 +30,44 @@ class _HomePageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: curIndex,
-        onTap: (newIndex) {
-          if (newIndex != curIndex) {
-            setState(() {
-              curIndex = newIndex;
-            });
-          }
-        },
-        items: [
-          BottomNavigationBarItem(
-            label: _I.action,
-            icon: Icon(Icons.menu),
-          ),
-          BottomNavigationBarItem(
-            label: _I.backpack,
-            icon: Icon(Icons.backpack_outlined),
-            activeIcon: Icon(Icons.backpack),
-          ),
-          BottomNavigationBarItem(
-            label: _I.campfire,
-            icon: Icon(Icons.local_fire_department_outlined),
-            activeIcon: Icon(Icons.local_fire_department_rounded),
-          ),
-        ],
-      ),
+      bottomNavigationBar: buildBottom(),
+    );
+  }
+
+  Widget buildBottom() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+      currentIndex: curIndex,
+      onTap: (newIndex) {
+        if (newIndex != curIndex) {
+          setState(() {
+            curIndex = newIndex;
+          });
+        }
+      },
+      items: [
+        BottomNavigationBarItem(
+          label: _I.action,
+          icon: const Icon(Icons.grid_view_outlined),
+          activeIcon: const Icon(Icons.grid_view_rounded),
+        ),
+        BottomNavigationBarItem(
+          label: _I.backpack,
+          icon: const Icon(Icons.backpack_outlined),
+          activeIcon: const Icon(Icons.backpack),
+        ),
+        BottomNavigationBarItem(
+          label: _I.craft,
+          icon: const Icon(Icons.build_outlined),
+          activeIcon: const Icon(Icons.build),
+        ),
+        BottomNavigationBarItem(
+          label: _I.campfire,
+          icon: const Icon(Icons.local_fire_department_outlined),
+          activeIcon: const Icon(Icons.local_fire_department_rounded),
+        ),
+      ],
     );
   }
 
