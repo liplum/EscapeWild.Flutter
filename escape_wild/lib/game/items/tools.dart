@@ -12,7 +12,7 @@ class Tools {
   static void registerAll() {
     // cutting
     Contents.items.addAll([
-      survivalKnife = Item("survival-knife").asTool(
+      survivalKnife = Item.unmergeable("survival-knife", mass: 100).asTool(
         level: ToolLevel.high,
         type: ToolType.cutting,
         maxDurability: 40.0,
@@ -20,7 +20,7 @@ class Tools {
     ]);
     // oxe
     Contents.items.addAll([
-      oldOxe = Item("old-oxe").asTool(
+      oldOxe = Item.unmergeable("old-oxe", mass: 3000).asTool(
         type: ToolType.oxe,
         level: ToolLevel.low,
         maxDurability: 30.0,
@@ -28,7 +28,7 @@ class Tools {
     ]);
     // fishing
     Contents.items.addAll([
-      oldFishRod = Item("old-fish-rod").asTool(
+      oldFishRod = Item.unmergeable("old-fish-rod", mass: 500).asTool(
         type: ToolType.fishing,
         level: ToolLevel.normal,
         maxDurability: 50.0,
@@ -36,7 +36,7 @@ class Tools {
     ]);
     // gun
     Contents.items.addAll([
-      oldShotgun = Item("old-shotgun").asTool(
+      oldShotgun = Item.unmergeable("old-shotgun", mass: 3000).asTool(
         type: ToolType.gun,
         level: ToolLevel.low,
         maxDurability: 50.0,
@@ -44,7 +44,7 @@ class Tools {
     ]);
     // trap
     Contents.items.addAll([
-      bearTrap = Item("bear-trap").asTool(
+      bearTrap = Item.unmergeable("bear-trap", mass: 2000).asTool(
         type: ToolType.trap,
         level: ToolLevel.high,
         maxDurability: 30.0,

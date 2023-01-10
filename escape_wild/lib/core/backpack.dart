@@ -57,7 +57,7 @@ extension BackpackX on Backpack {
 extension BackpackItemFinderX on Backpack {
   Iterable<ItemCompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
     for (final item in _items) {
-      final asTool = item.tryGetComp<ToolComp>();
+      final asTool = item.tryGetFirstComp<ToolComp>();
       if (asTool != null && asTool.toolType == toolType) {
         yield ItemCompPair(item, asTool);
       }
@@ -70,7 +70,7 @@ extension BackpackItemFinderX on Backpack {
 
   bool hasAnyToolOfTypes(List<ToolType> toolTypes) {
     for (final item in _items) {
-      final asTool = item.tryGetComp<ToolComp>();
+      final asTool = item.tryGetFirstComp<ToolComp>();
       if (asTool != null && toolTypes.contains(asTool.toolType)) {
         return true;
       }

@@ -14,11 +14,20 @@ class Stuff {
 
   static void registerAll() {
     Contents.items.addAll([
-      plasticBottle = Item("plastic-bottle").asFuel(heatValue: 5.0),
-      sticks = Item("sticks").asFuel(heatValue: 2.0),
-      cutGrass = Item("cut-grass").asFuel(heatValue: 5.0),
-      log = Item("log").asFuel(heatValue: 20.0),
-      dryLichen = Item("dry-lichen").asFuel(heatValue: 10.0),
+      plasticBottle = Item.unmergeable("plastic-bottle", mass: 20).asFuel(heatValue: 5.0),
+      sticks = Item("sticks").asFuel(
+        heatValue: 2.0,
+        unit: 100,
+      ),
+      cutGrass = Item("cut-grass").asFuel(
+        heatValue: 4.5,
+        unit: 200,
+      ),
+      log = Item("log").asFuel(
+        heatValue: 20.0,
+        unit: 500,
+      ),
+      dryLichen = Item("dry-lichen").asFuel(unit: 10, heatValue: 10.0),
       dandelion = Item("dandelion"),
       //It is said that dandelion boiled with water can relieve some constipation
       saveKindlingCartridge = Item("save-kindling-cartridge"),
@@ -27,7 +36,6 @@ class Stuff {
       sharpStone = Item("sharp-stone"),
       ///////People's greatest wisdom comes from using tools
       wasteEmptyCans = Item("waste-empty-cans"),
-
     ]);
   }
 }

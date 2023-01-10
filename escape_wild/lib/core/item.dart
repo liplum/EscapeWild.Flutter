@@ -21,23 +21,53 @@ extension NamedItemGetterX on String {
   ItemGetter<T> getAsItem<T extends Item>() => _namedItemGetter(this);
 }
 
-@JsonSerializable(createToJson: false)
 class Item with Moddable, CompMixin<ItemComp> {
   static final empty = Item("empty");
   final String name;
 
-  Item(this.name);
+  /// If mass is more than 0, it means the item is unmergeable.
+  /// Unit: [g] gram
+  final double? mass;
+
+  Item(this.name, {this.mass});
+
+  Item.unmergeable(this.name, {required this.mass});
+
+  Item.mergeable(this.name) : mass = null;
 
   Item self() => this;
 
   String get localizedName => i18n("item.$name.name");
 
   String get localizedDescription => i18n("item.$name.desc");
-
-  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 }
 
-abstract class ItemComp extends Comp {}
+extension ItemX on Item {
+  bool get mergeable => mass == null;
+}
+
+class MergeableCompConflictError implements Exception {
+  final String message;
+  final Item item;
+  final bool mergeableShouldBe;
+
+  MergeableCompConflictError(
+    this.message,
+    this.item, {
+    required this.mergeableShouldBe,
+  });
+}
+
+class CompConflictError implements Exception {
+  final String message;
+  final Item item;
+
+  CompConflictError(this.message, this.item);
+}
+
+abstract class ItemComp extends Comp {
+  void validateItemConfig(Item item) {}
+}
 
 class ItemCompPair<T extends Comp> {
   final ItemEntry item;
@@ -65,9 +95,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 extension ItemEntryX on ItemEntry {
   String get name => meta.name;
 
-  T? tryGetComp<T extends ItemComp>() => meta.tryGetComp<T>();
-
-  T getComp<T extends ItemComp>() => meta.getComp<T>();
+  T? tryGetFirstComp<T extends ItemComp>() => meta.tryGetFirstComp<T>();
 
   bool hasComp<T extends ItemComp>() => meta.hasComp<T>();
 }
@@ -132,6 +160,17 @@ class ToolComp extends ItemComp {
 
   void setDurability(ItemEntry item, double value) => item["Tool.durability"] = value;
 
+  @override
+  void validateItemConfig(Item item) {
+    if (item.mergeable) {
+      throw MergeableCompConflictError(
+        "$ToolComp doesn't conform to mergeable item.",
+        item,
+        mergeableShouldBe: false,
+      );
+    }
+  }
+
   factory ToolComp.fromJson(Map<String, dynamic> json) => _$ToolCompFromJson(json);
   static const type = "Tool";
 
@@ -145,11 +184,13 @@ extension ToolCompX on Item {
     ToolLevel level = ToolLevel.normal,
     required double maxDurability,
   }) {
-    addCompOfExactType<ToolComp>(ToolComp(
+    final comp = ToolComp(
       toolLevel: level,
       toolType: type,
       maxDurability: maxDurability,
-    ));
+    );
+    comp.validateItemConfig(this);
+    addCompOfExactType<ToolComp>(comp);
     return this;
   }
 }
@@ -184,10 +225,13 @@ class ModifyAttrComp extends UsableItemComp {
   final List<AttrModifier> modifiers;
   @JsonKey(fromJson: _namedItemGetter)
   final ItemGetter<Item>? afterUsedItem;
+  @JsonKey(includeIfNull: true)
+  final double? modifierUnit;
 
   ModifyAttrComp(
     super.useType,
     this.modifiers, {
+    this.modifierUnit,
     this.afterUsedItem,
   });
 
@@ -208,55 +252,89 @@ class ModifyAttrComp extends UsableItemComp {
 
   @override
   String get typeName => type;
+
+  @override
+  void validateItemConfig(Item item) {
+    if (modifierUnit == null && item.mergeable) {
+      throw MergeableCompConflictError(
+        "$ModifyAttrComp requires `unit` in mergeable.",
+        item,
+        mergeableShouldBe: false,
+      );
+    }
+    if (modifierUnit != null && !item.mergeable) {
+      throw MergeableCompConflictError(
+        "$ModifyAttrComp doesn't allow `unit` in unmergeable.",
+        item,
+        mergeableShouldBe: true,
+      );
+    }
+  }
 }
 
 extension ModifyAttrCompX on Item {
   Item modifyAttr(
     UseType useType,
     List<AttrModifier> modifiers, {
-    ItemGetter<Item>? afterUsedItem,
+    double? unit,
+    ItemGetter<Item>? afterUsed,
   }) {
-    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    final comp = ModifyAttrComp(
       useType,
       modifiers,
-      afterUsedItem: afterUsedItem,
-    ));
+      modifierUnit: unit,
+      afterUsedItem: afterUsed,
+    );
+    comp.validateItemConfig(this);
+    addCompOfExactType<UsableItemComp>(comp);
     return this;
   }
 
   Item asEatable(
     List<AttrModifier> modifiers, {
+    double? unit,
     ItemGetter<Item>? afterUsedItem,
   }) {
-    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    final comp = ModifyAttrComp(
       UseType.eat,
       modifiers,
+      modifierUnit: unit,
       afterUsedItem: afterUsedItem,
-    ));
+    );
+    comp.validateItemConfig(this);
+    addCompOfExactType<UsableItemComp>(comp);
     return this;
   }
 
   Item asUsable(
     List<AttrModifier> modifiers, {
+    double? unit,
     ItemGetter<Item>? afterUsedItem,
   }) {
-    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    final comp = ModifyAttrComp(
       UseType.use,
       modifiers,
+      modifierUnit: unit,
       afterUsedItem: afterUsedItem,
-    ));
+    );
+    comp.validateItemConfig(this);
+    addCompOfExactType<UsableItemComp>(comp);
     return this;
   }
 
   Item asDrinkable(
     List<AttrModifier> modifiers, {
+    double? unit,
     ItemGetter<Item>? afterUsed,
   }) {
-    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    final comp = ModifyAttrComp(
       UseType.drink,
       modifiers,
+      modifierUnit: unit,
       afterUsedItem: afterUsed,
-    ));
+    );
+    comp.validateItemConfig(this);
+    addCompOfExactType<UsableItemComp>(comp);
     return this;
   }
 }
@@ -275,11 +353,36 @@ class CookableComp extends ItemComp {
   @JsonKey()
   final CookType cookType;
   @JsonKey()
-  final double flueCost;
+  final double fuelCost;
   @JsonKey(fromJson: _namedItemGetter)
   final ItemGetter<Item> cookedOutput;
+  @JsonKey()
+  final double? fuelCostUnit;
 
-  CookableComp(this.cookType, this.flueCost, this.cookedOutput);
+  CookableComp(
+    this.cookType,
+    this.fuelCost,
+    this.cookedOutput, {
+    this.fuelCostUnit,
+  });
+
+  @override
+  void validateItemConfig(Item item) {
+    if (fuelCostUnit == null && item.mergeable) {
+      throw MergeableCompConflictError(
+        "$CookableComp requires `unit` in mergeable.",
+        item,
+        mergeableShouldBe: false,
+      );
+    }
+    if (fuelCostUnit != null && !item.mergeable) {
+      throw MergeableCompConflictError(
+        "$CookableComp doesn't allow `unit` in unmergeable.",
+        item,
+        mergeableShouldBe: true,
+      );
+    }
+  }
 
   static const type = "Cookable";
 
@@ -294,10 +397,16 @@ extension CookableCompX on Item {
     CookType cookType, {
     required double fuelCost,
     required ItemGetter<Item> output,
+    double? unit,
   }) {
-    addCompOfExactType<CookableComp>(
-      CookableComp(cookType, fuelCost, output),
+    final comp = CookableComp(
+      cookType,
+      fuelCost,
+      output,
+      fuelCostUnit: unit,
     );
+    comp.validateItemConfig(this);
+    addCompOfExactType<CookableComp>(comp);
     return this;
   }
 }
@@ -306,8 +415,31 @@ extension CookableCompX on Item {
 class FuelComp extends ItemComp {
   @JsonKey()
   final double heatValue;
+  @JsonKey(includeIfNull: true)
+  final double? fuelUnit;
 
-  FuelComp(this.heatValue);
+  FuelComp(
+    this.heatValue, {
+    this.fuelUnit,
+  });
+
+  @override
+  void validateItemConfig(Item item) {
+    if (fuelUnit == null && item.mergeable) {
+      throw MergeableCompConflictError(
+        "$FuelComp requires `unit` in mergeable.",
+        item,
+        mergeableShouldBe: false,
+      );
+    }
+    if (fuelUnit != null && !item.mergeable) {
+      throw MergeableCompConflictError(
+        "$FuelComp doesn't allow `unit` in unmergeable.",
+        item,
+        mergeableShouldBe: true,
+      );
+    }
+  }
 
   static const type = "Fuel";
 
@@ -318,10 +450,16 @@ class FuelComp extends ItemComp {
 }
 
 extension FuelCompX on Item {
-  Item asFuel({required double heatValue}) {
-    addCompOfExactType<FuelComp>(
-      FuelComp(heatValue),
+  Item asFuel({
+    required double heatValue,
+    double? unit,
+  }) {
+    final comp = FuelComp(
+      heatValue,
+      fuelUnit: unit,
     );
+    comp.validateItemConfig(this);
+    addCompOfExactType<FuelComp>(comp);
     return this;
   }
 }

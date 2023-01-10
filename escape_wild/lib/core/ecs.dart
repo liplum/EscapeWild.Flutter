@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -26,38 +27,38 @@ abstract class Comp implements JConvertibleProtocol {
 }
 
 mixin CompMixin<TComp extends Comp> {
-  @JsonKey(toJson: directConvertFunc)
-  final Map<Type, TComp> components = {};
+  final Map<Type, List<TComp>> _components = {};
 }
 
 extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
   void addCompOfType(Type type, TComp comp) {
-    components[type] = comp;
-  }
-
-  void addCompOfExactType<T extends TComp>(T comp) {
-    components[T] = comp;
-  }
-
-  void addCompOfExactTypes(Iterable<Type> types, TComp comp) {
-    for (final type in types) {
-      components[type] = comp;
+    final comps = _components[type];
+    if (comps != null) {
+      comps.add(comp);
+    } else {
+      _components[type] = [comp];
     }
   }
 
-  T? tryGetComp<T extends TComp>() {
-    return components[T] as T?;
+  void addCompOfExactType<T extends TComp>(T comp) {
+    addCompOfType(T, comp);
   }
 
-  T getComp<T extends TComp>() {
-    return components[T] as T;
+  void addCompOfTypes(Iterable<Type> types, TComp comp) {
+    for (final type in types) {
+      addCompOfType(type, comp);
+    }
+  }
+
+  T? tryGetFirstComp<T extends TComp>() {
+    return _components[T]?.firstOrNull as T?;
   }
 
   bool hasComp<T extends TComp>() {
-    return components.containsKey(T);
+    return _components.containsKey(T);
   }
 
-  T? getCompOfTypes<T extends TComp>(Iterable<Type> types) {
+/* T? getCompOfTypes<T extends TComp>(Iterable<Type> types) {
     TComp? comp;
     for (final type in types) {
       final found = components[type];
@@ -68,5 +69,5 @@ extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
       }
     }
     return comp as T?;
-  }
+  }*/
 }
