@@ -51,25 +51,42 @@ class _ActionPageState extends State<ActionPage> {
 
   @override
   Widget build(BuildContext context) {
+    return context.isPortrait ? buildPortrait() : buildLandscape();
+  }
+
+  Widget buildLandscape() {
+    return [
+      Scaffold(
+        appBar: AppBar(
+          title: player.$location << (ctx, l, __) => ">> ${l?.displayName()} <<".text(),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+        ),
+        body: [
+          player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
+          (player.$attrs << (ctx, attr, __) => buildHud(attr)).expanded(),
+        ].column(maa: MainAxisAlignment.center),
+      ).expanded(),
+      buildActionBtnArea().expanded(),
+    ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(10);
+  }
+
+  Widget buildPortrait() {
     return Scaffold(
       appBar: AppBar(
         title: player.$location << (ctx, l, __) => ">> ${l?.displayName()} <<".text(),
         centerTitle: true,
       ),
-      body: buildBody(),
+      body: [
+        player.$attrs << (ctx, attr, __) => buildHud(attr),
+        player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
+        buildActionBtnArea().expanded(),
+      ].column().padAll(10),
     );
   }
 
   Widget buildHud(AttrModel attr) {
-    return Hud(attr: attr).padAll(12).inCard().sized(h: 240);
-  }
-
-  Widget buildBody() {
-    return [
-      player.$attrs << (ctx, attr, __) => buildHud(attr),
-      player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
-      buildActionBtnArea().expanded(),
-    ].column().padAll(10);
+    return Hud(attr: attr).padAll(12).inCard().sized(h:240);
   }
 
   Widget buildJourneyProgress(double v) {
