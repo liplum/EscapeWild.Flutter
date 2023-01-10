@@ -503,7 +503,6 @@ extension FuelCompX on Item {
 }
 
 class WetComp extends ItemComp {
-  static const type = "Wet";
   static const _wetK = "Wet.wet";
 
   Ratio getWet(ItemEntry item) => item[_wetK] ?? 0.0;
@@ -521,12 +520,13 @@ class WetComp extends ItemComp {
     setWet(to, average);
   }
 
+  static const type = "Wet";
+
   @override
   String get typeName => "Wet";
 }
 
 class FreshnessComp extends ItemComp {
-  static const type = "Freshness";
   static const _freshnessK = "Freshness.freshness";
 
   Ratio geFreshness(ItemEntry item) => item[_freshnessK] ?? 1.0;
@@ -543,6 +543,8 @@ class FreshnessComp extends ItemComp {
     final average = (toFreshness + fromFreshness) / (fromMass + toMass);
     setFreshness(to, average);
   }
+
+  static const type = "Freshness";
 
   @override
   String get typeName => type;

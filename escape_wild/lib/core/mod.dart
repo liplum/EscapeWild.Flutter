@@ -1,10 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/app.dart';
+import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/i18n.dart';
 import 'package:escape_wild/r.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 import 'i18n.dart';
 
 abstract class ModProtocol extends L10nProvider {
@@ -140,11 +140,15 @@ Map<String, String> _flattenString2Map(Map<String, dynamic> string2Map) {
 }
 
 mixin Moddable implements I18nScopeProtocol {
-  @JsonKey(ignore: true)
+  @JsonKey(toJson: mod2ModIdFunc, fromJson: modId2ModFunc)
   ModProtocol mod = Vanilla.instance;
 
   @override
   String get i18nNamespace => mod.modId;
+
+  static String mod2ModIdFunc(ModProtocol mod) => mod.modId;
+
+  static ModProtocol modId2ModFunc(String modId) => Contents.getModById(modId) ?? Vanilla.instance;
 }
 
 extension ModdableX on Moddable {

@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:jconverter/jconverter.dart';
 
 abstract class RouteProtocol with Moddable {
   String get name;
@@ -12,7 +13,7 @@ abstract class RouteProtocol with Moddable {
   String localizedDescription() => i18n("route.$name.desc");
 }
 
-abstract class PlaceProtocol with TagsMixin, Moddable {
+abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertibleProtocol{
   String get name;
 
   RouteProtocol get route;
@@ -72,9 +73,9 @@ extension PlaceProps on PlaceProtocol {
   /// default: 0.0
   static const wetK = "wet";
 
-  double get wet => tags[wetK] ?? 0.0;
+  double get wet => this[wetK] ?? 0.0;
 
-  set wet(double v) => tags[wetK] = v;
+  set wet(double v) => this[wetK] = v;
 }
 
 mixin PlaceActionDelegateMixin on PlaceProtocol {

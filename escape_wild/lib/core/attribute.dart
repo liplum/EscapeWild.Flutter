@@ -114,6 +114,7 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   /// If the result should be is more than [maxValue], the [delta] will be attenuated based on overflow.
   @override
   void modify(Attr attr, double delta) {
+    // TODO: Better formula
     // [1] former = 0.8, delta = 0.5
     // [2] former = 1.2, delta = 0.6
     var former = getAttr(attr);

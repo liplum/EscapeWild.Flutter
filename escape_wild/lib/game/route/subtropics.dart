@@ -1,4 +1,7 @@
 import 'package:escape_wild/core.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'subtropics.g.dart';
 
 /// As the first route generator, the generating is hardcoded and not mod-friendly.
 class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
@@ -8,7 +11,9 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     // now just try to fill the route with plain.
     final dst = ctx.hardness.journeyDistance().toInt();
     for (var i = 0; i < dst; i++) {
-      route.places.add(SubtropicsPlace("plain", route));
+      final place = SubtropicsPlace("plain");
+      place.route = route;
+      route.places.add(place);
     }
     return route;
   }
@@ -40,13 +45,18 @@ class SubtropicsRoute extends RouteProtocol {
   }
 }
 
+@JsonSerializable()
 class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   @override
-  final SubtropicsRoute route;
+  @JsonKey(ignore: true)
+  late SubtropicsRoute route;
   @override
-  final String name;
+  @JsonKey()
+  String name;
+  @JsonKey()
+  int exploreCount = 0;
 
-  SubtropicsPlace(this.name, this.route);
+  SubtropicsPlace(this.name);
 
   Future<void> onLeave() async {}
 
@@ -84,8 +94,29 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
       player.modifyX(Attr.energy, 0.05);
     }
   }
+
+  static const type = "SubtropicsPlace";
+
+  @override
+  String get typeName => type;
+
+  factory SubtropicsPlace.fromJson(Map<String, dynamic> json) => _$SubtropicsPlaceFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SubtropicsPlaceToJson(this);
 }
 
 class PlainPlace extends SubtropicsPlace {
-  PlainPlace(super.name, super.route);
+  PlainPlace(super.name);
+
+  @override
+  Future<void> performExplore() async {
+    player.modifyX(Attr.water, -0.04);
+    player.modifyX(Attr.energy, -0.08);
+    exploreCount++;
+  }
+
+  static const type = "PlainPlace";
+
+  @override
+  String get typeName => type;
 }

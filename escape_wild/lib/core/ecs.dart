@@ -19,7 +19,7 @@ extension ExtraX on ExtraMixin {
 
 mixin TagsMixin {
   @JsonKey(includeIfNull: false)
-  Map<String, dynamic> tags = {};
+  List<String> tags = [];
 }
 
 abstract class Comp implements JConvertibleProtocol {

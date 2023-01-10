@@ -37,3 +37,11 @@ route:
   subtropics:
     plain:
       name: Plain
+    forest:
+      name: Forest
+    riverside:
+      name: Riverside
+    cave:
+      name: Cave
+    hut:
+      name: Hut

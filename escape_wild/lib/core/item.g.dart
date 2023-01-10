@@ -8,9 +8,8 @@ part of 'item.dart';
 
 ItemEntry _$ItemEntryFromJson(Map<String, dynamic> json) => ItemEntry(
       Contents.getItemMetaByName(json['meta'] as String),
-    )
-      ..extra = json['extra'] as Map<String, dynamic>?
-      ..mass = (json['mass'] as num?)?.toDouble();
+      mass: (json['mass'] as num?)?.toDouble(),
+    )..extra = json['extra'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
   final val = <String, dynamic>{};
