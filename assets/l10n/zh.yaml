@@ -1,0 +1,11 @@
+attr:
+  health: 血量值
+  food: 饱食度
+  water: 水分值
+  energy: 体力值
+ui:
+  attr:
+    health: 健康
+    food: 饥饿
+    water: 水分
+    energy: 体力

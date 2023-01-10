@@ -15,7 +15,9 @@ class Foods {
       dirtyWater,
       cleanWater,
       boiledWater,
-      filteredWater;
+      filteredWater,
+      rockSalt;
+
   static late final Item dandelionTea;
 
   static void registerAll() {
@@ -96,9 +98,14 @@ class Foods {
       cookedFish = Item("cooked-fish").asEatable([
         Attr.food + 0.52,
       ]),
-      dandelionTea = Item("dandelion_tea").asDrinkable([
+      dandelionTea = Item("dandelion-tea").asDrinkable([
         Attr.water + 0.20,
-        //喝了之后稍微减便秘泻带来的伤痛
+        //After drinking this, the pain caused by constipation will be slightly reduced
+      ]),
+      rockSalt = Item("rock-salt").asEatable([
+        Attr.water - 0.3,
+        Attr.energy + 0.3,
+        //
       ]),
     ]);
   }

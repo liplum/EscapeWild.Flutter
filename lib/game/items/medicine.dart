@@ -16,7 +16,8 @@ class Medicines {
       ]),
       licorice = Item("licorice").asUsable([
         Attr.health + 0.1,
-        //It can relieve phlegm and cough. Boiling water with it can relieve dehydration caused by diarrhea
+        //Boiling water with it can alleviate the dehydration caused by diarrhea,
+        // and can also reduce phlegm and cough
       ]),
     ]);
   }

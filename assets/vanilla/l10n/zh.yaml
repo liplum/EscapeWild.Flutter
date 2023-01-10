@@ -1,0 +1,34 @@
+item:
+  energy-bar:
+    name: 能力棒
+    desc: 饿货，做回你自己。
+  bottled-water:
+    name: 瓶装水
+    desc: 一瓶纯净水，无法知道它的生产日期。
+  dirty-water:
+    name: 脏水
+    desc: 呕！最好把它煮开再喝。
+  clean-water:
+    name: 干净水
+    desc: 嗯~有点甜.
+  boiled-water:
+    name: 开水
+    desc: ...
+  filtered-water:
+    name: 过滤水
+    desc: 现在看起来很干净，真神奇!
+  energy-drink:
+    name: 能量饮料
+    desc: 小心野兽.
+  sharp-stone:
+    name: 尖锐的石头
+    desc: 人类最大的智慧就是使用工具。
+  waste-empty-cans:
+    name: 废弃的空罐头
+    desc: 你污染环境的垃圾造福了野外求生者，现在装水很方便。
+  save-kindling-cartridge:
+    name: 火种保存筒
+    desc: 求生的99%精力都用在生火，于是有了这个用半潮湿可燃物和树皮制作的火种盒子。
+  dry-dandelion:
+    name: 蒲公英
+    desc: 据说泡水喝可以清肠通便。
