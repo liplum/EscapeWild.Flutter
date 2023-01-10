@@ -2,25 +2,36 @@ import 'package:escape_wild/core.dart';
 import 'package:flutter/cupertino.dart';
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
-  AttrModel _model = const AttrModel();
+  final $attrs = ValueNotifier(const AttrModel());
   Backpack backpack = Backpack();
   Hardness hardness = Hardness.normal;
-  var journeyProgress = 0.0;
-  late PlaceProtocol location;
+  final $journeyProgress = ValueNotifier(0.0);
 
-  Future<void> performAction(ActionType action) async {}
+  ValueNotifier<PlaceProtocol?> $location = ValueNotifier(null);
+
+  PlaceProtocol? get location => $location.value;
+
+  set location(PlaceProtocol? v) => $location.value = v;
+
+  Future<void> performAction(ActionType action) async {
+    await location?.performAction(action);
+  }
 
   @override
-  AttrModel get model => _model;
+  AttrModel get attrs => $attrs.value;
 
   @override
-  set model(AttrModel value) {
-    _model = value;
+  set attrs(AttrModel value) {
+    $attrs.value = value;
     notifyListeners();
   }
 
+  double get journeyProgress => $journeyProgress.value;
+
+  set journeyProgress(double v) => $journeyProgress.value = v;
+
   void loadFromJson(Map<String, dynamic> json) {
-    model = AttrModel(
+    attrs = AttrModel(
       health: json["health"],
       water: json["water"],
       food: json["food"],

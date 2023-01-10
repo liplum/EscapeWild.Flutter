@@ -1,17 +1,16 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/i18n.dart';
 
-abstract class RouteProtocol {
+abstract class RouteProtocol with Moddable {
   final String name;
 
-  const RouteProtocol(this.name);
+  RouteProtocol(this.name);
 
-  String localizedName() => I18n["route.$name.name"];
+  String localizedName() => i18n("route.$name.name");
 
-  String localizedDescription() => I18n["route.$name.desc"];
+  String localizedDescription() => i18n("route.$name.desc");
 }
 
-abstract class PlaceProtocol with TagsMixin {
+abstract class PlaceProtocol with TagsMixin, Moddable {
   final String name;
 
   RouteProtocol get route;
@@ -20,16 +19,24 @@ abstract class PlaceProtocol with TagsMixin {
 
   String displayName() => localizedName();
 
-  String localizedName() => I18n["route.${route.name}.$name.name"];
+  String localizedName() => i18n("route.${route.name}.$name.name");
 
-  String localizedDescription() => I18n["route.${route.name}.$name.desc"];
+  String localizedDescription() => i18n("route.${route.name}.$name.desc");
 
   Future<void> performAction(ActionType action);
 
   Set<ActionType> getAvailableActions();
 }
 
-class RouteGenerateContext {}
+class RouteGenerateContext {
+  ModProtocol mod = Vanilla.instance;
+
+  RouteGenerateContext({
+    ModProtocol? mod,
+  }) {
+    this.mod = mod ?? Vanilla.instance;
+  }
+}
 
 abstract class RouteGeneratorProtocol {
   RouteProtocol generateRoute(RouteGenerateContext ctx);

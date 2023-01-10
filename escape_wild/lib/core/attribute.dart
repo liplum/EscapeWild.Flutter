@@ -90,10 +90,10 @@ class AttributeManager with AttributeManagerMixin, ChangeNotifier implements Att
   AttrModel _model;
 
   @override
-  AttrModel get model => _model;
+  AttrModel get attrs => _model;
 
   @override
-  set model(AttrModel value) {
+  set attrs(AttrModel value) {
     _model = value;
     notifyListeners();
   }
@@ -105,9 +105,9 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   static const maxValue = 1.0;
   static const underflowPunishmentRadio = 2.0;
 
-  AttrModel get model;
+  AttrModel get attrs;
 
-  set model(AttrModel value);
+  set attrs(AttrModel value);
 
   /// If the result should be is more than [maxValue], the [delta] will be attenuated based on overflow.
   @override
@@ -154,16 +154,16 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   void setAttr(Attr attr, double value) {
     switch (attr) {
       case Attr.health:
-        model = model.copyWith(health: min(value, 1));
+        attrs = attrs.copyWith(health: min(value, 1));
         break;
       case Attr.food:
-        model = model.copyWith(food: value);
+        attrs = attrs.copyWith(food: value);
         break;
       case Attr.water:
-        model = model.copyWith(food: value);
+        attrs = attrs.copyWith(food: value);
         break;
       case Attr.energy:
-        model = model.copyWith(food: value);
+        attrs = attrs.copyWith(food: value);
         break;
     }
   }
@@ -172,13 +172,13 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   double getAttr(Attr attr) {
     switch (attr) {
       case Attr.food:
-        return model.food;
+        return attrs.food;
       case Attr.water:
-        return model.water;
+        return attrs.water;
       case Attr.health:
-        return model.health;
+        return attrs.health;
       default:
-        return model.energy;
+        return attrs.energy;
     }
   }
 }

@@ -45,28 +45,23 @@ class _HudState extends State<Hud> {
   }
 
   Widget buildBar(double value, Color color) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: AttrProgress(
-        value: value,
-        color: color,
-        curve: Curves.fastLinearToSlowEaseIn,
-        duration: const Duration(milliseconds: 1200),
-      ),
+    return AttrProgress(
+      value: value,
+      color: color,
     ).center().padSymmetric(h: 12);
   }
 }
 
 class AttrProgress extends ImplicitlyAnimatedWidget {
   final double value;
-  final Color color;
+  final Color? color;
 
   const AttrProgress({
     super.key,
-    required super.duration,
+    super.duration = const Duration(milliseconds: 1200),
     required this.value,
-    required this.color,
-    super.curve,
+    this.color,
+    super.curve = Curves.fastLinearToSlowEaseIn,
   });
 
   @override
@@ -90,7 +85,10 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return buildBar($progress.evaluate(animation));
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      child: buildBar($progress.evaluate(animation)),
+    );
   }
 
   Widget buildBar(double v) {

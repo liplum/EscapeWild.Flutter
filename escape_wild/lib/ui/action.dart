@@ -43,17 +43,19 @@ class _ActionPageState extends State<ActionPage> {
     return (raw + Rand.float(-0.08, 0)).clamp(0, 1);
   }
 
-  var attr = const AttrModel.all(0.5);
+  AttrModel get attr => player.attrs;
+
+  set attr(AttrModel v) => player.attrs = v;
   var isAdd = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: ">> Plain <<".text(),
+        title: player.$location << (ctx, l, __) => ">> ${l?.localizedName()} <<".text(),
         centerTitle: true,
       ),
-      body: Hud(attr: attr).padAll(12).inCard().sized(h: 240).padAll(10),
+      body: buildBody(),
       floatingActionButton: [
         FloatingActionButton(
           onPressed: increment,
@@ -65,5 +67,20 @@ class _ActionPageState extends State<ActionPage> {
         ),
       ].row(maa: MainAxisAlignment.center), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Widget buildHud(AttrModel attr) {
+    return Hud(attr: attr).padAll(12).inCard().sized(h: 240).padAll(10);
+  }
+
+  Widget buildBody() {
+    return [
+      player.$attrs << (ctx, attr, __) => buildHud(attr),
+      player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
+    ].column();
+  }
+
+  Widget buildJourneyProgress(double v) {
+    return AttrProgress(value: v).padAll(10);
   }
 }
