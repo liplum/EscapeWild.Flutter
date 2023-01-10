@@ -11,7 +11,7 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   initFoundation();
   runApp(
-    const MyApp().withEasyLocalization(),
+    const EscapeWildApp().withEasyLocalization(),
   );
 }
 
@@ -22,7 +22,7 @@ extension _AppX on Widget {
       path: 'assets/l10n',
       fallbackLocale: R.defaultLocale,
       useFallbackTranslations: true,
-      assetLoader: YamlAssetLoader(),
+      assetLoader: yamlAssetsLoader,
       child: this,
     );
   }

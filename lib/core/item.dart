@@ -6,7 +6,7 @@ import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'attribute.dart';
-import 'extra.dart';
+import 'ecs.dart';
 import 'player.dart';
 
 part 'item.g.dart';
@@ -28,11 +28,9 @@ extension NamedItemGetterX on String {
 }
 
 @JsonSerializable(createToJson: false)
-class Item with Moddable {
+class Item with Moddable, CompMixin {
   static final empty = Item("empty");
   final String name;
-  @JsonKey(toJson: directConvertFunc)
-  final Map<Type, ItemComp> components = {};
 
   Item(this.name);
 
@@ -45,51 +43,7 @@ class Item with Moddable {
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 }
 
-extension ItemMetaProtocolX<TItem extends Item> on TItem {
-  TItem addCompOfType<T extends ItemComp>(Type type, T comp) {
-    components[type] = comp;
-    return this;
-  }
-
-  TItem addCompOfExactType<T extends ItemComp>(T comp) {
-    components[T] = comp;
-    return this;
-  }
-
-  TItem addCompOfExactTypes(Iterable<Type> types, ItemComp comp) {
-    for (final type in types) {
-      components[type] = comp;
-    }
-    return this;
-  }
-
-  T? tryGetComp<T extends ItemComp>() {
-    return components[T] as T?;
-  }
-
-  T getComp<T extends ItemComp>() {
-    return components[T] as T;
-  }
-
-  bool hasComp<T extends ItemComp>() {
-    return components.containsKey(T);
-  }
-
-  T? getCompOfTypes<T extends ItemComp>(Iterable<Type> types) {
-    ItemComp? comp;
-    for (final type in types) {
-      final found = components[type];
-      if (found == null || found is! T) {
-        return null;
-      } else {
-        comp = found;
-      }
-    }
-    return comp as T?;
-  }
-}
-
-class CompPair<T extends ItemComp> {
+class CompPair<T extends Comp> {
   final ItemEntry item;
   final T comp;
 
@@ -115,18 +69,14 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 extension ItemEntryX on ItemEntry {
   String get name => meta.name;
 
-  T? tryGetComp<T extends ItemComp>() => meta.tryGetComp<T>();
+  T? tryGetComp<T extends Comp>() => meta.tryGetComp<T>();
 
-  T getComp<T extends ItemComp>() => meta.getComp<T>();
+  T getComp<T extends Comp>() => meta.getComp<T>();
 
-  bool hasComp<T extends ItemComp>() => meta.hasComp<T>();
+  bool hasComp<T extends Comp>() => meta.hasComp<T>();
 }
 
-abstract class ItemComp implements JConvertibleProtocol {
-  const ItemComp();
-}
-
-class _EmptyComp extends ItemComp {
+class _EmptyComp extends Comp {
   static const type = "Empty";
 
   @override
@@ -168,7 +118,7 @@ class ToolType {
 }
 
 @JsonSerializable(createToJson: false)
-class ToolComp extends ItemComp {
+class ToolComp extends Comp {
   @JsonKey()
   final ToolLevel toolLevel;
   @JsonKey()
@@ -199,11 +149,12 @@ extension ToolCompX on Item {
     ToolLevel level = ToolLevel.normal,
     required double maxDurability,
   }) {
-    return addCompOfExactType<ToolComp>(ToolComp(
+    addCompOfExactType<ToolComp>(ToolComp(
       toolLevel: level,
       toolType: type,
       maxDurability: maxDurability,
     ));
+    return this;
   }
 }
 
@@ -214,7 +165,7 @@ enum UseType {
   eat;
 }
 
-abstract class UsableItemComp extends ItemComp {
+abstract class UsableItemComp extends Comp {
   @JsonKey()
   final UseType useType;
 
@@ -269,44 +220,48 @@ extension ModifyAttrCompX on Item {
     List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsedItem,
   }) {
-    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
       useType,
       modifiers,
       afterUsedItem: afterUsedItem,
     ));
+    return this;
   }
 
   Item asEatable(
     List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsedItem,
   }) {
-    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
       UseType.eat,
       modifiers,
       afterUsedItem: afterUsedItem,
     ));
+    return this;
   }
 
   Item asUsable(
     List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsedItem,
   }) {
-    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
       UseType.use,
       modifiers,
       afterUsedItem: afterUsedItem,
     ));
+    return this;
   }
 
   Item asDrinkable(
     List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsed,
   }) {
-    return addCompOfExactType<UsableItemComp>(ModifyAttrComp(
+    addCompOfExactType<UsableItemComp>(ModifyAttrComp(
       UseType.drink,
       modifiers,
       afterUsedItem: afterUsed,
     ));
+    return this;
   }
 }
 
@@ -320,7 +275,7 @@ enum CookType {
 /// Player can cook the CookableItem in campfire.
 /// It will be transformed to another item.
 @JsonSerializable(createToJson: false)
-class CookableComp extends ItemComp {
+class CookableComp extends Comp {
   @JsonKey()
   final CookType cookType;
   @JsonKey()
@@ -344,14 +299,15 @@ extension CookableCompX on Item {
     required double fuelCost,
     required ItemGetter<Item> output,
   }) {
-    return addCompOfExactType<CookableComp>(
+    addCompOfExactType<CookableComp>(
       CookableComp(cookType, fuelCost, output),
     );
+    return this;
   }
 }
 
 @JsonSerializable(createToJson: false)
-class FuelComp extends ItemComp {
+class FuelComp extends Comp {
   @JsonKey()
   final double heatValue;
 
@@ -367,8 +323,9 @@ class FuelComp extends ItemComp {
 
 extension FuelCompX on Item {
   Item asFuel({required double heatValue}) {
-    return addCompOfExactType<FuelComp>(
+    addCompOfExactType<FuelComp>(
       FuelComp(heatValue),
     );
+    return this;
   }
 }
