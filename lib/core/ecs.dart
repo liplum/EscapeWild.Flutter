@@ -16,6 +16,11 @@ extension ExtraX on ExtraMixin {
   }
 }
 
+mixin TagsMixin {
+  @JsonKey(includeIfNull: false)
+  Map<String, dynamic> tags = {};
+}
+
 abstract class Comp implements JConvertibleProtocol {
   const Comp();
 }
@@ -26,7 +31,7 @@ mixin CompMixin {
 }
 
 extension CompMixinX on CompMixin {
-  void addCompOfType<T extends Comp>(Type type, T comp) {
+  void addCompOfType(Type type, Comp comp) {
     components[type] = comp;
   }
 

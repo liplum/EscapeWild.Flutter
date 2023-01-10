@@ -1,17 +1,18 @@
+import 'package:escape_wild_flutter/core.dart';
 import 'package:escape_wild_flutter/i18n.dart';
 import 'package:escape_wild_flutter/utils/random.dart';
 import 'package:flutter/foundation.dart';
 
 typedef ValueFixer = double Function(double raw);
 
-class Hardness {
+class Hardness with TagsMixin {
   final String name;
   final ValueFixer attrCostFix;
   final ValueGetter<int> maxFireMakingPrompt;
   final ValueFixer attrBounceFix;
   final ValueGetter<double> journeyLength;
 
-  const Hardness({
+  Hardness({
     required this.name,
     required this.attrCostFix,
     required this.attrBounceFix,
