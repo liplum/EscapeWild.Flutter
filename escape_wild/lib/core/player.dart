@@ -1,21 +1,32 @@
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/game/route/subtropics.dart';
 import 'package:flutter/cupertino.dart';
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
-  Backpack backpack = Backpack();
-  Hardness hardness = Hardness.normal;
+  var backpack = Backpack();
+  var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
-
-  ValueNotifier<PlaceProtocol?> $location = ValueNotifier(null);
-
-  PlaceProtocol? get location => $location.value;
-
-  set location(PlaceProtocol? v) => $location.value = v;
+  final $location = ValueNotifier<PlaceProtocol?>(null);
+  RouteProtocol? route;
 
   Future<void> performAction(ActionType action) async {
     await location?.performAction(action);
   }
+
+  Future<void> init() async {
+    final generator = SubtropicsRouteGenerator();
+    final ctx = RouteGenerateContext(hardness: hardness);
+    final generatedRoute = generator.generateRoute(ctx);
+    route = generatedRoute;
+    location = generatedRoute.initialPlace;
+  }
+
+  Future<void> restart() async {}
+
+  PlaceProtocol? get location => $location.value;
+
+  set location(PlaceProtocol? v) => $location.value = v;
 
   @override
   AttrModel get attrs => $attrs.value;

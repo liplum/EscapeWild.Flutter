@@ -4,6 +4,10 @@ attr:
   water: Water
   energy: Energy
 ui:
+  main:
+    title: Escape Wild
+    new-game: New Game
+    continue: Continue
   attr:
     health: HEALTH
     food: FOOD

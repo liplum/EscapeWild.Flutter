@@ -1,9 +1,11 @@
 import 'package:escape_wild/core.dart';
 
 abstract class RouteProtocol with Moddable {
-  final String name;
+  String get name;
 
-  RouteProtocol(this.name);
+  RouteProtocol();
+
+  PlaceProtocol get initialPlace;
 
   String localizedName() => i18n("route.$name.name");
 
@@ -11,11 +13,11 @@ abstract class RouteProtocol with Moddable {
 }
 
 abstract class PlaceProtocol with TagsMixin, Moddable {
-  final String name;
+  String get name;
 
   RouteProtocol get route;
 
-  PlaceProtocol(this.name);
+  PlaceProtocol();
 
   String displayName() => localizedName();
 
@@ -30,6 +32,7 @@ abstract class PlaceProtocol with TagsMixin, Moddable {
 
 class RouteGenerateContext {
   ModProtocol mod = Vanilla.instance;
+
   // hardness decides the total journey distance and resource intensity.
   Hardness hardness = Hardness.normal;
 

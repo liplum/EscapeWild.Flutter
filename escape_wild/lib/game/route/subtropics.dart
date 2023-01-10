@@ -1,15 +1,25 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 
+/// As the first route generator, the generating is hardcoded and not mod-friendly.
 class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
   @override
   RouteProtocol generateRoute(RouteGenerateContext ctx) {
-    throw UnimplementedError();
+    final route = SubtropicsRoute("subtropics");
+    // now just try to fill the route with plain.
+    final dst = ctx.hardness.journeyDistance().toInt();
+    for (var i = 0; i < dst; i++) {
+      route.places.add(SubtropicsPlace("plain", route));
+    }
+    return route;
   }
 }
 
 class SubtropicsRoute extends RouteProtocol {
-  SubtropicsRoute(super.name);
+  @override
+  final String name;
+
+  SubtropicsRoute(this.name);
 
   List<SubtropicsPlace> places = [];
   double routeProgress = 0.0;
@@ -19,6 +29,9 @@ class SubtropicsRoute extends RouteProtocol {
   SubtropicsPlace get current => places[routeProgress.toInt().clamp(0, places.length - 1)];
 
   double get journeyProgress => routeProgress / (places.length - 1);
+
+  @override
+  PlaceProtocol get initialPlace => places[0];
 
   Future<void> setRouteProgress(double value) async {
     var old = current;
@@ -31,8 +44,10 @@ class SubtropicsRoute extends RouteProtocol {
 class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   @override
   final SubtropicsRoute route;
+  @override
+  final String name;
 
-  SubtropicsPlace(super.name, this.route);
+  SubtropicsPlace(this.name, this.route);
 
   Future<void> onLeave() async {}
 

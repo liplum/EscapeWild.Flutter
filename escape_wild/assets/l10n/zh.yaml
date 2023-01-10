@@ -4,6 +4,10 @@ attr:
   water: 水分
   energy: 体力
 ui:
+  main:
+    title: 逃出荒野
+    new-game: 新的游戏
+    continue: 继续游戏
   attr:
     health: 生命
     food: 饱腹

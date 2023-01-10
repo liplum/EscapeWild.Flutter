@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/ui/home.dart';
+import 'package:escape_wild/ui/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -37,7 +37,7 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
         primarySwatch: Colors.blue,
         brightness: Brightness.dark,
       ),
-      home: const Homepage(),
+      home: const MainPage(),
     );
   }
 }
