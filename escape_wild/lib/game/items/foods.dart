@@ -5,20 +5,28 @@ import 'package:escape_wild/core/item.dart';
 import 'stuff.dart';
 
 class Foods {
+  // energy food
   static late final Item energyBar, energyDrink;
   static late final Item longicornLarva, wetLichen;
-  static late final Item rawRabbit, cookedRabbit;
-  static late final Item rawFish, cookedFish;
-  static late final Item berry, roastedBerry;
-  static late final Item nuts, toastedNuts;
-  static late final Item bottledWater,
-      dirtyWater,
-      cleanWater,
-      boiledWater,
-      filteredWater,
-      rockSalt;
 
+  // rabbit
+  static late final Item rawRabbit, cookedRabbit;
+
+  // fish
+  static late final Item rawFish, cookedFish;
+
+  // berry
+  static late final Item berry, roastedBerry;
+
+  // nuts
+  static late final Item nuts, toastedNuts;
+
+  // water
+  static late final Item bottledWater, dirtyWater, cleanWater, boiledWater, filteredWater;
+
+  // tea
   static late final Item dandelionTea;
+  static late final Item rockSalt;
 
   static void registerAll() {
     // food
@@ -48,7 +56,7 @@ class Foods {
       cleanWater = Item("clean-water").asDrinkable([
         Attr.health - 0.005,
         Attr.water + 0.235,
-      ]),
+      ])  ,
       boiledWater = Item("boiled-water").asDrinkable([
         Attr.water + 0.28,
       ]),

@@ -5,7 +5,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
   Backpack backpack = Backpack();
   Hardness hardness = Hardness.normal;
-  final $journeyProgress = ValueNotifier(0.0);
+  final $journeyProgress = ValueNotifier<Progress>(0.0);
 
   ValueNotifier<PlaceProtocol?> $location = ValueNotifier(null);
 

@@ -30,11 +30,15 @@ abstract class PlaceProtocol with TagsMixin, Moddable {
 
 class RouteGenerateContext {
   ModProtocol mod = Vanilla.instance;
+  // hardness decides the total journey distance and resource intensity.
+  Hardness hardness = Hardness.normal;
 
   RouteGenerateContext({
     ModProtocol? mod,
+    Hardness? hardness,
   }) {
     this.mod = mod ?? Vanilla.instance;
+    this.hardness = hardness ?? Hardness.normal;
   }
 }
 
