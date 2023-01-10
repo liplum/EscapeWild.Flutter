@@ -48,6 +48,7 @@ dependencies:
   rettulf: ^0.0.9
   easy_localization: ^3.0.1
   flutter_layout_grid: ^2.0.1
+  easy_localization_loader: ^1.0.1+1
 
 dev_dependencies:
   flutter_test:

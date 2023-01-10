@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization_loader/easy_localization_loader.dart';
 import 'package:flutter/widgets.dart';
 
 import 'app.dart';
@@ -19,6 +20,7 @@ extension _AppX on Widget {
       path: 'assets/l10n',
       fallbackLocale: R.defaultLocale,
       useFallbackTranslations: true,
+      assetLoader: YamlAssetLoader(),
       child: this,
     );
   }
