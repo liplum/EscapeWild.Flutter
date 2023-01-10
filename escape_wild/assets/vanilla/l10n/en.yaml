@@ -20,3 +20,9 @@ item:
   energy-drink:
     name: Energy Drink
     desc: Watch out the beast.
+  berry:
+    name: Berry
+    desc: It reminds me of jam.
+  roasted-berry:
+    name: Roasted Berry
+    desc: Sweet and slimy.

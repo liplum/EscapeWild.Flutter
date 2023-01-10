@@ -1,3 +1,4 @@
+import 'package:escape_wild/core.dart';
 import 'package:escape_wild/core/content.dart';
 import 'package:escape_wild/core/mod.dart';
 import 'package:escape_wild/i18n.dart';
@@ -36,9 +37,9 @@ class Item with Moddable, CompMixin {
 
   Item self() => this;
 
-  String get localizedName => I18n["item.${mod.decorateRegisterName(name)}.name"];
+  String get localizedName => i18n("item.$name.name");
 
-  String get localizedDescription => I18n["item.${mod.decorateRegisterName(name)}.desc"];
+  String get localizedDescription => i18n("item.$name.desc");
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 }

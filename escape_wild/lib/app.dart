@@ -1,16 +1,29 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 // ignore: non_constant_identifier_names
 final AppKey = GlobalKey<NavigatorState>();
 // ignore: non_constant_identifier_names
 BuildContext get AppCtx => AppKey.currentState!.context;
 
-class EscapeWildApp extends StatelessWidget {
+class EscapeWildApp extends StatefulWidget {
   const EscapeWildApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<EscapeWildApp> createState() => _EscapeWildAppState();
+}
+
+class _EscapeWildAppState extends State<EscapeWildApp> {
+  @override
+  void initState() {
+    super.initState();
+   Future.delayed(Duration(milliseconds: 500),() {
+      loadL10n();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

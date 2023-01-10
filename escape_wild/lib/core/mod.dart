@@ -1,17 +1,20 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/app.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/i18n.dart';
 import 'package:escape_wild/r.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-abstract class ModProtocol {
+import 'i18n.dart';
+
+abstract class ModProtocol extends L10nProvider{
   String get modId;
 
   String decorateRegisterName(String name);
 
-  String getL10n(String key);
-
   Future<void> load();
+
+  Future<void> loadL10n();
 
   Future<void> unload();
 
@@ -24,9 +27,7 @@ extension ModProtocolX on ModProtocol {
   bool get isVanilla => identical(this, Vanilla.instance);
 }
 
-class ModAssetsLoader {
-
-}
+class ModAssetsLoader {}
 
 class Mod implements ModProtocol {
   @override
@@ -43,15 +44,15 @@ class Mod implements ModProtocol {
   String decorateRegisterName(String name) => "$modId-$name";
 
   @override
-  String getL10n(String key) {
-    return _key2Translated[key] ?? _defaultKey2Translated[key] ?? key;
+  String? tryGetL10n(String key){
+    return _key2Translated[key] ?? _defaultKey2Translated[key];
   }
 
   @override
   Future<void> load() async {
+    // TODO: Mod loader
+    loadL10n();
     final locale = AppCtx.locale;
-    final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", locale);
-    _key2Translated = _flattenString2Map(string2Map);
     if (locale != R.defaultLocale) {
       final defaultString2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", R.defaultLocale);
       _defaultKey2Translated = _flattenString2Map(defaultString2Map);
@@ -59,16 +60,21 @@ class Mod implements ModProtocol {
   }
 
   @override
-  Future<void> unload() {
-    throw UnimplementedError();
-  }
+  Future<void> unload() async {}
 
   @override
   get unloadable => true;
 
   @override
-  Future<void> onLocaleChange() {
-    throw UnimplementedError();
+  Future<void> onLocaleChange() async {
+    await loadL10n();
+  }
+
+  @override
+  Future<void> loadL10n() async {
+    final locale = AppCtx.locale;
+    final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", locale);
+    _key2Translated = _flattenString2Map(string2Map);
   }
 }
 
@@ -85,14 +91,13 @@ class Vanilla implements ModProtocol {
   String decorateRegisterName(String name) => name;
 
   @override
-  String getL10n(String key) {
-    return _key2Translated[key] ?? key;
+  String? tryGetL10n(String key){
+    return _key2Translated[key];
   }
 
   @override
   Future<void> load() async {
     loadVanilla();
-    _loadL10n();
   }
 
   @override
@@ -103,13 +108,15 @@ class Vanilla implements ModProtocol {
 
   @override
   Future<void> onLocaleChange() async {
-    _loadL10n();
+    loadL10n();
   }
 
-  Future<void> _loadL10n() async {
+  @override
+  Future<void> loadL10n() async {
     final locale = AppCtx.locale;
     final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", locale);
     _key2Translated = _flattenString2Map(string2Map);
+    I18n.load(modId, this);
   }
 }
 
@@ -132,9 +139,12 @@ Map<String, String> _flattenString2Map(Map<String, dynamic> string2Map) {
   return res;
 }
 
-mixin Moddable {
+mixin Moddable implements I18nScopeProtocol {
   @JsonKey(ignore: true)
   ModProtocol mod = Vanilla.instance;
+
+  @override
+  String get i18nNamespace => mod.modId;
 }
 
 extension ModdableX on Moddable {
