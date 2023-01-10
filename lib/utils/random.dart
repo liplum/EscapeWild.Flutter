@@ -11,6 +11,9 @@ class Rand {
   static core.int int(core.int min, core.int max) {
     return _rand.nextInt(max - min) + min;
   }
+  static core.bool bool() {
+    return _rand.nextInt(2) == 1;
+  }
 
   static core.double float(core.double min, core.double max) {
     return _rand.nextDouble() * (max - min) + min;

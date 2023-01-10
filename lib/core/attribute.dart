@@ -5,12 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'attribute.g.dart';
+
 @JsonEnum()
 enum Attr {
   health,
   food,
   water,
   energy;
+
   String localizedName() => I18n["attr.$name"];
 }
 
@@ -27,12 +29,18 @@ class AttrModel {
 
   factory AttrModel.fromJson(Map<String, dynamic> json) => _$AttrModelFromJson(json);
 
-  AttrModel({
+  const AttrModel({
     this.health = 1.0,
     this.food = 1.0,
     this.water = 1.0,
     this.energy = 1.0,
   });
+
+  const AttrModel.all(double v)
+      : health = v,
+        food = v,
+        water = v,
+        energy = v;
 
   AttrModel copyWith({
     double? health,

@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild_flutter/core/attribute.dart';
 import 'package:escape_wild_flutter/ui/hud.dart';
+import 'package:escape_wild_flutter/utils/random.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -35,20 +38,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  void _incrementCounter() {
+  void increment() {
     setState(() {
-      if (attr.health <= 0) {
-        isAdd = true;
-      } else if (attr.health >= 1) {
-        isAdd = false;
-      }
       attr = attr.copyWith(
-        health: attr.health + (isAdd ? 0.05 : -0.05),
+        health: up(attr.health),
+        food: up(attr.food),
+        water: up(attr.water),
+        energy: up(attr.energy),
       );
     });
   }
 
-  var attr = AttrModel();
+  void decrement() {
+    setState(() {
+      attr = attr.copyWith(
+        health: down(attr.health),
+        food: down(attr.food),
+        water: down(attr.water),
+        energy: down(attr.energy),
+      );
+    });
+  }
+
+  double up(double raw) {
+    return (raw + Rand.float(0, 0.08)).clamp(0, 1);
+  }
+
+  double down(double raw) {
+    return (raw + Rand.float(-0.08, 0)).clamp(0, 1);
+  }
+
+  var attr = const AttrModel.all(0.5);
   var isAdd = false;
 
   @override
@@ -58,11 +78,16 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Hud(attr: attr).padAll(12).inCard().sized(h: 240).padAll(10),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: [
+        FloatingActionButton(
+          onPressed: increment,
+          child: const Icon(Icons.add),
+        ),
+        FloatingActionButton(
+          onPressed: decrement,
+          child: const Icon(Icons.remove),
+        ),
+      ].row(maa: MainAxisAlignment.center), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
