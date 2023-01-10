@@ -20,6 +20,12 @@ item:
   energy-drink:
     name: 能量饮料
     desc: 小心野兽.
+  berry:
+    name: 浆果
+    desc: 在别的游戏里，我可是主角。
+  roasted-berry:
+    name: 热煨浆果
+    desc: 黏糊糊的。
   sharp-stone:
     name: 尖锐的石头
     desc: 人类最大的智慧就是使用工具。

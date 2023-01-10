@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'i18n.dart';
 
-abstract class ModProtocol extends L10nProvider{
+abstract class ModProtocol extends L10nProvider {
   String get modId;
 
   String decorateRegisterName(String name);
@@ -44,19 +44,14 @@ class Mod implements ModProtocol {
   String decorateRegisterName(String name) => "$modId-$name";
 
   @override
-  String? tryGetL10n(String key){
+  String? tryGetL10n(String key) {
     return _key2Translated[key] ?? _defaultKey2Translated[key];
   }
 
   @override
   Future<void> load() async {
     // TODO: Mod loader
-    loadL10n();
     final locale = AppCtx.locale;
-    if (locale != R.defaultLocale) {
-      final defaultString2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", R.defaultLocale);
-      _defaultKey2Translated = _flattenString2Map(defaultString2Map);
-    }
   }
 
   @override
@@ -73,8 +68,6 @@ class Mod implements ModProtocol {
   @override
   Future<void> loadL10n() async {
     final locale = AppCtx.locale;
-    final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", locale);
-    _key2Translated = _flattenString2Map(string2Map);
   }
 }
 
@@ -91,7 +84,7 @@ class Vanilla implements ModProtocol {
   String decorateRegisterName(String name) => name;
 
   @override
-  String? tryGetL10n(String key){
+  String? tryGetL10n(String key) {
     return _key2Translated[key];
   }
 
@@ -113,8 +106,9 @@ class Vanilla implements ModProtocol {
 
   @override
   Future<void> loadL10n() async {
-    final locale = AppCtx.locale;
-    final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", locale);
+    final userLocale = AppCtx.locale;
+    final actualLocale = tryFindBestMatchedLocale(userLocale, R.defaultLocale, R.supportedLocales);
+    final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", actualLocale);
     _key2Translated = _flattenString2Map(string2Map);
     I18n.load(modId, this);
   }
