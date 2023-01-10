@@ -11,7 +11,12 @@ class Foods {
   static late final Item rawFish, cookedFish;
   static late final Item berry, roastedBerry;
   static late final Item nuts, toastedNuts;
-  static late final Item bottledWater, dirtyWater, cleanWater, boiledWater, filteredWater;
+  static late final Item bottledWater,
+      dirtyWater,
+      cleanWater,
+      boiledWater,
+      filteredWater;
+  static late final Item dandelionTea;
 
   static void registerAll() {
     // food
@@ -90,6 +95,10 @@ class Foods {
       ),
       cookedFish = Item("cooked-fish").asEatable([
         Attr.food + 0.52,
+      ]),
+      dandelionTea = Item("dandelion_tea").asDrinkable([
+        Attr.water + 0.20,
+        //喝了之后稍微减便秘泻带来的伤痛
       ]),
     ]);
   }
