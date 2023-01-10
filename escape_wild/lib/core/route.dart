@@ -27,7 +27,25 @@ abstract class PlaceProtocol with TagsMixin, Moddable {
 
   Future<void> performAction(ActionType action);
 
-  Set<ActionType> getAvailableActions();
+  List<PlaceAction> getAvailableActions();
+}
+
+class PlaceAction {
+  final ActionType type;
+  final bool Function() canPerform;
+
+  const PlaceAction(this.type, this.canPerform);
+
+  static final moveWithEnergy = PlaceAction(ActionType.move, () => player.energy > 0.0);
+  static final exploreWithEnergy = PlaceAction(ActionType.explore, () => player.energy > 0.0);
+  static final huntWithTool = PlaceAction(
+    ActionType.hunt,
+    () => player.backpack.hasAnyToolOfTypes([
+      ToolType.trap,
+      ToolType.gun,
+    ]),
+  );
+  static final rest = PlaceAction(ActionType.rest, () => true);
 }
 
 class RouteGenerateContext {

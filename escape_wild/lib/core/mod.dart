@@ -123,6 +123,12 @@ Map<String, String> _flattenString2Map(Map<String, dynamic> string2Map) {
       final pos = parent != null ? "$parent.$k" : "$k";
       if (v is Map) {
         walk(pos, v);
+      } else if (v is List) {
+        var i = 0;
+        for (final item in v) {
+          res["$pos$i"] = item.toString();
+          i++;
+        }
       } else {
         res[pos] = v.toString();
       }

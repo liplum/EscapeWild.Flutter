@@ -1,5 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/foundation.dart';
 
 /// As the first route generator, the generating is hardcoded and not mod-friendly.
 class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
@@ -54,10 +53,13 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   Future<void> onEnter() async {}
 
   @override
-  Set<ActionType> getAvailableActions() {
-    return {
-      ...ActionType.defaultActions,
-    };
+  List<PlaceAction> getAvailableActions() {
+    return [
+      PlaceAction.moveWithEnergy,
+      PlaceAction.exploreWithEnergy,
+      PlaceAction.rest,
+      PlaceAction.huntWithTool,
+    ];
   }
 
   @override
@@ -69,6 +71,18 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     await route.setRouteProgress(routeProgress + 1.0);
     player.journeyProgress = route.journeyProgress;
     player.location = route.current;
+  }
+
+  @override
+  Future<void> performRest() async {
+    player.modifyX(Attr.food, -0.03);
+    player.modifyX(Attr.water, -0.03);
+    if (player.food > 0.0 && player.water > 0.0) {
+      player.modifyX(Attr.health, 0.1);
+      player.modifyX(Attr.energy, 0.25);
+    } else {
+      player.modifyX(Attr.energy, 0.05);
+    }
   }
 }
 

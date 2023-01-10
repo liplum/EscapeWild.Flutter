@@ -67,4 +67,14 @@ extension BackpackItemFinderX on Backpack {
   CompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
     return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.toolLevel);
   }
+
+  bool hasAnyToolOfTypes(List<ToolType> toolTypes) {
+    for (final item in _items) {
+      final asTool = item.tryGetComp<ToolComp>();
+      if (asTool != null && toolTypes.contains(asTool.toolType)) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

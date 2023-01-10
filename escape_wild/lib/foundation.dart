@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 export 'package:escape_wild/utils/random.dart';
 export 'package:escape_wild/utils/collection.dart';
 
-final player = Player();
 final yamlAssetsLoader = YamlAssetLoader();
 final isGameContentLoaded = ValueNotifier(false);
 var _isGameContentLoaded = false;

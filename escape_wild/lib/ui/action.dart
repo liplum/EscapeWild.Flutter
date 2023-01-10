@@ -86,7 +86,7 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   Widget buildHud(AttrModel attr) {
-    return Hud(attr: attr).padAll(12).inCard().sized(h:240);
+    return Hud(attr: attr).padAll(12).inCard().sized(h: 240);
   }
 
   Widget buildJourneyProgress(double v) {
@@ -112,19 +112,25 @@ class _ActionPageState extends State<ActionPage> {
     return res;
   }
 
-  Widget buildActionBtn(ActionType action) {
+  Widget buildActionBtn(PlaceAction action) {
+    final type = action.type;
+    final canPerform = action.canPerform();
     return InkWell(
       borderRadius: context.cardBorderRadius,
-      onTap: () async {
-        player.performAction(action);
-      },
-      child: action
+      onTap: !canPerform
+          ? null
+          : () async {
+              player.performAction(type);
+            },
+      child: type
           .localizedName()
           .toUpperCase()
           .text(
-            style: context.textTheme.headlineSmall,
+            style: context.textTheme.headlineSmall?.copyWith(
+              color: canPerform ? null : Colors.grey,
+            ),
           )
           .center(),
-    ).inCard();
+    ).inCard(elevation: canPerform ? 4 : 0);
   }
 }

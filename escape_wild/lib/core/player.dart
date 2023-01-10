@@ -2,6 +2,8 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/game/route/subtropics.dart';
 import 'package:flutter/cupertino.dart';
 
+final player = Player();
+
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
   var backpack = Backpack();
@@ -14,7 +16,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     await location?.performAction(action);
   }
 
-  Iterable<ActionType> getAvailableActions() {
+  Iterable<PlaceAction> getAvailableActions() {
     return location?.getAvailableActions() ?? const [];
   }
 

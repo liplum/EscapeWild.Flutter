@@ -1,14 +1,8 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/content.dart';
-import 'package:escape_wild/core/mod.dart';
-import 'package:escape_wild/i18n.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/utils/enum.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'attribute.dart';
-import 'ecs.dart';
-import 'player.dart';
 
 part 'item.g.dart';
 
@@ -172,9 +166,9 @@ abstract class UsableItemComp extends Comp {
 
   UsableItemComp(this.useType);
 
-  bool canUse(Player player) => true;
+  bool canUse() => true;
 
-  Future<void> onUse(Player player) async {}
+  Future<void> onUse() async {}
 
   bool get displayPreview => true;
   static const type = "Usable";
@@ -203,7 +197,7 @@ class ModifyAttrComp extends UsableItemComp {
   }
 
   @override
-  Future<void> onUse(Player player) async {
+  Future<void> onUse() async {
     var builder = AttrModifierBuilder();
     buildAttrModification(builder);
     builder.performModification(player);
