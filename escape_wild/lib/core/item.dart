@@ -170,6 +170,10 @@ extension ItemEntryX on ItemEntry {
   int get actualMass => mass ?? meta.mass;
 
   double get massMultiplier => actualMass / meta.mass;
+
+  bool canMergeTo(ItemEntry to) {
+    return hasIdenticalMeta(to) && meta.mergeable;
+  }
 }
 
 class EmptyComp extends Comp {

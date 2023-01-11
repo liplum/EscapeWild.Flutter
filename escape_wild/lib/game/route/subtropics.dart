@@ -6,6 +6,8 @@ import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/game/items/foods.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'shared.dart';
+
 part 'subtropics.g.dart';
 
 /// As the first route generator, the generating is hardcoded and not mod-friendly.
@@ -110,34 +112,6 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   Map<String, dynamic> toJson() => _$SubtropicsPlaceToJson(this);
 }
 
-Future<void> _showGain(ActionType action, List<ItemEntry> gain) async {
-  if (gain.isEmpty) {
-    await AppCtx.showTip(
-      title: action.localizedName(),
-      desc: "action.got-nothing".tr(),
-      ok: "alright".tr(),
-    );
-  } else {
-    final result = gain.map((e) => e.meta.localizedName()).join(", ");
-    await AppCtx.showTip(
-      title: action.localizedName(),
-      desc: "action.got-items".tr(args: [result]),
-      ok: "ok".tr(),
-    );
-  }
-}
-
-void _randGain(double probability, List<ItemEntry> gain, ItemEntry Function() ctor, [int times = 1]) {
-  for (var i = 0; i < times; i++) {
-    if (Rand.one() < probability) {
-      gain.add(ctor());
-    } else {
-      break;
-    }
-  }
-}
-
-///
 class PlainPlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.6;
@@ -151,11 +125,11 @@ class PlainPlace extends SubtropicsPlace {
     player.modifyX(Attr.energy, -0.08);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
     final gain = <ItemEntry>[];
-    _randGain(berry * p, gain, () => Foods.berry.create(massFactor: Rand.fluctuate(0.2)), 2);
-    _randGain(berry * p, gain, () => Foods.dirtyWater.create(massFactor: Rand.fluctuate(0.2)), 1);
+    randGain(berry * p, gain, () => Foods.berry.create(massFactor: Rand.fluctuate(0.2)), 2);
+    randGain(berry * p, gain, () => Foods.dirtyWater.create(massFactor: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await _showGain(ActionType.explore, gain);
+    await showGain(ActionType.explore, gain);
   }
 
   static const type = "PlainPlace";
