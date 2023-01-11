@@ -1,10 +1,14 @@
 import 'package:easy_localization_loader/easy_localization_loader.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/game/items/foods.dart';
 import 'package:escape_wild/game/items/medicine.dart';
 import 'package:escape_wild/game/items/stuff.dart';
 import 'package:escape_wild/game/items/tools.dart';
-import 'package:flutter/cupertino.dart';
+export 'package:escape_wild/game/items/foods.dart';
+export 'package:escape_wild/game/items/medicine.dart';
+export 'package:escape_wild/game/items/stuff.dart';
+export 'package:escape_wild/game/items/tools.dart';
 export 'package:escape_wild/utils/random.dart';
 export 'package:escape_wild/utils/collection.dart';
 

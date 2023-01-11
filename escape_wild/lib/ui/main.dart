@@ -43,8 +43,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget buildContinueGameBtn() {
+    // TODO: Game save
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: null,
       child: _I.$continue
           .text(
             style: TextStyle(fontSize: 28),

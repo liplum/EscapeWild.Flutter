@@ -13,7 +13,7 @@ abstract class RouteProtocol with Moddable {
   String localizedDescription() => i18n("route.$name.desc");
 }
 
-abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertibleProtocol{
+abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertibleProtocol {
   String get name;
 
   RouteProtocol get route;
@@ -78,6 +78,8 @@ extension PlaceProps on PlaceProtocol {
   set wet(double v) => this[wetK] = v;
 }
 
+/// [PlaceActionDelegateMixin] will create delegates for each [ActionType].
+/// It's easy to provide default behaviors.
 mixin PlaceActionDelegateMixin on PlaceProtocol {
   @override
   Future<void> performAction(ActionType action) async {

@@ -3,6 +3,8 @@ import 'package:escape_wild/core/content.dart';
 import 'package:escape_wild/core/item.dart';
 
 class Medicines {
+  Medicines._();
+
   static late Item bandage, firstAidKit, licorice;
 
   static void registerAll() {
