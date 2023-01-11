@@ -36,14 +36,14 @@ class Mod implements ModProtocol {
   Map<String, String> _key2Translated = const {};
 
   /// Used when key not found in current locale.
-  Map<String, String> _defaultKey2Translated = const {};
+  Map<String, String> _fallbackKey2Translated = const {};
 
   @override
   String decorateRegisterName(String name) => "$modId-$name";
 
   @override
   String? tryGetL10n(String key) {
-    return _key2Translated[key] ?? _defaultKey2Translated[key];
+    return _key2Translated[key] ?? _fallbackKey2Translated[key];
   }
 
   @override
@@ -75,6 +75,9 @@ class Vanilla implements ModProtocol {
   static final instance = Vanilla._();
   Map<String, String> _key2Translated = const {};
 
+  /// Used when key not found in current locale.
+  Map<String, String> _fallbackKey2Translated = const {};
+
   @override
   String get modId => "vanilla";
 
@@ -83,7 +86,7 @@ class Vanilla implements ModProtocol {
 
   @override
   String? tryGetL10n(String key) {
-    return _key2Translated[key];
+    return _key2Translated[key] ?? _fallbackKey2Translated[key];
   }
 
   @override
@@ -108,6 +111,10 @@ class Vanilla implements ModProtocol {
     final actualLocale = tryFindBestMatchedLocale(userLocale, R.defaultLocale, R.supportedLocales);
     final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", actualLocale);
     _key2Translated = _flattenString2Map(string2Map);
+    if (actualLocale != R.defaultLocale) {
+      final fallbackString2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", R.defaultLocale);
+      _fallbackKey2Translated = _flattenString2Map(fallbackString2Map);
+    }
     I18n.load(modId, this);
   }
 }

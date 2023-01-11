@@ -79,10 +79,10 @@ int _evaluateLocaleMatchScore(Locale target, Locale test) {
     score += 10;
   }
   if (target.countryCode == test.countryCode) {
-    score += 8;
+    score += 6;
   }
   if (target.scriptCode == test.scriptCode) {
-    score += 5;
+    score += 3;
   }
   return score;
 }
