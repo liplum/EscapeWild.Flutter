@@ -58,11 +58,7 @@ extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
     return _components[T]?.firstOrNull as T?;
   }
 
-  bool hasCompOf<T extends TComp>() {
+  bool hasComp<T extends TComp>() {
     return _components.containsKey(T);
-  }
-
-  bool hasComp(Type type) {
-    return _components.containsKey(type);
   }
 }

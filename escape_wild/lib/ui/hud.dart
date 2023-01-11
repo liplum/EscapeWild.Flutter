@@ -48,7 +48,7 @@ class _HudState extends State<Hud> {
     return AttrProgress(
       value: value,
       color: color,
-    ).center().padOnly(l: 12);
+    ).center().padSymmetric(h: 12);
   }
 }
 

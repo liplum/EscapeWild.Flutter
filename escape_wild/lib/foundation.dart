@@ -29,11 +29,9 @@ void _checkGameLoadState() {
     isGameContentLoaded.value = true;
   }
 }
-
-Future<void> initPlayer() async {
+Future<void> initPlayer() async{
   await player.init();
 }
-
 Future<void> onNewGame() async {
   await player.restart();
 }
