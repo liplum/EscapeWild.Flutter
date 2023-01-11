@@ -20,7 +20,7 @@ extension NamedItemGetterX on String {
   ItemGetter<T> getAsItem<T extends Item>() => _namedItemGetter(this);
 }
 
-class Item with Moddable, CompMixin<ItemComp> {
+class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   static final empty = Item("empty", mergeable: true, mass: 0);
   final String name;
 

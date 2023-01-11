@@ -19,7 +19,33 @@ extension ExtraX on ExtraMixin {
 
 mixin TagsMixin {
   @JsonKey(includeIfNull: false)
-  List<String> tags = [];
+  final List<String> tags = [];
+}
+
+extension TagsMixinX<T extends TagsMixin> on T {
+  T tagged(dynamic tag) {
+    if (tag is Iterable) {
+      for (final t in tag) {
+        tags.add(t.toString());
+      }
+    } else {
+      tags.add(tag.toString());
+    }
+    return this;
+  }
+
+  T untag(dynamic tag) {
+    if (tag is Iterable) {
+      for (final t in tag) {
+        tags.remove(t.toString());
+      }
+    } else {
+      tags.remove(tag.toString());
+    }
+    return this;
+  }
+
+  bool hasTag(String tag) => tags.contains(tag);
 }
 
 abstract class Comp implements JConvertibleProtocol {
