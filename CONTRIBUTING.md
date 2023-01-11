@@ -21,16 +21,22 @@ and it will retrieve localization files in [assets](escape_wild/assets).
 
 The localization is formatted in [yaml](https://yaml.org/), which has a good-looking syntax.
 
+The localizations of UI and game content are separate:
+
+- The localization of UI folder: [l10n](escape_wild/assets/l10n).
+- The localization of game content folder: [l10n](escape_wild/assets/vanilla/l10n).
+- The default UI localization file: [en.yaml](escape_wild/assets/l10n/en.yaml).
+- The default game content localization file: [en.yaml](escape_wild/assets/vanilla/l10n/en.yaml).
+
 ### Your language is not here?
 
-If your language is not under [l10n folder](escape_wild/assets/l10n),
-please follow this step-by-step guide to create it.
+If your language is not listed in localization folder, please follow this step-by-step guide to create it.
 
-1. Copy the [en.yaml](escape_wild/assets/l10n/en.yaml) and paste in the same folder with a different name,
+1. Copy the `en.yaml` in the localization folder, and paste it in the same folder with a different name,
    for example, if the target language is French, you should rename it to `fr.yaml`.
 
 2. Now do the localization! Just translate all English words to your language.
-3. Please keep it in the same ordered as [en.yaml](escape_wild/assets/l10n/en.yaml).
+3. Please keep it in the same order with `en.yaml`.
 4. Finally, add locale into `R.supporrtedLocales` in [R class](escape_wild/lib/r.dart).
    ```dart
    static const supportedLocales = [
@@ -44,7 +50,7 @@ please follow this step-by-step guide to create it.
 If your language is under [l10n folder](escape_wild/assets/l10n),
 but it lacks further localization, or you want to improve it, please follow this step-by-step guide.
 
-1. Find it under [l10n folder](escape_wild/assets/l10n).
+1. Find it under localization folder, UI or game content.
 2. Now do the localization! For missing words,
-   you can just copy from the default localization in [en.yaml](escape_wild/assets/l10n/en.yaml).
-3. Please keep it in the same ordered as [en.yaml](escape_wild/assets/l10n/en.yaml).
+   you can just copy from `en.yaml`, the default localization.
+3. Please keep it in the same order with `en.yaml`.

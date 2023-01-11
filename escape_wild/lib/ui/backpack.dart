@@ -52,7 +52,7 @@ class _BackpackPageState extends State<BackpackPage> {
         title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
         centerTitle: true,
       ),
-      body: buildPortraitBody(),
+      body: buildPortraitBody().safeArea().padAll(10),
     );
   }
 
@@ -61,9 +61,9 @@ class _BackpackPageState extends State<BackpackPage> {
       appBar: AppBar(
         title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
         centerTitle: true,
-        toolbarHeight: context.isLandscape ? 40 : null,
+        toolbarHeight: 40,
       ),
-      body: buildLandscapeBody(),
+      body: buildLandscapeBody().safeArea().padAll(10),
     );
   }
 
