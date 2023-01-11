@@ -58,7 +58,10 @@ class _ActionPageState extends State<ActionPage> {
     return [
       Scaffold(
         appBar: AppBar(
-          title: player.$location << (ctx, l, __) => ">> ${l?.displayName()} <<".text(),
+          title: player.$location <<
+              (ctx, l, __) => "${l?.displayName()}".text(
+                    style: ctx.textTheme.headlineMedium,
+                  ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
         ),
@@ -74,7 +77,10 @@ class _ActionPageState extends State<ActionPage> {
   Widget buildPortrait() {
     return Scaffold(
       appBar: AppBar(
-        title: player.$location << (ctx, l, __) => ">> ${l?.displayName()} <<".text(),
+        title: player.$location <<
+            (ctx, l, __) => "${l?.displayName()}".text(
+                  style: ctx.textTheme.headlineMedium,
+                ),
         centerTitle: true,
       ),
       body: [
@@ -131,7 +137,7 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
           ? null
           : () async {
               player.performAction(type);
-              if(!mounted) return;
+              if (!mounted) return;
               // force to refresh the area, because it's hard to listen to all changes of player.
               setState(() {});
             },

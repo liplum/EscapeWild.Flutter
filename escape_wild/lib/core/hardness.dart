@@ -37,7 +37,7 @@ class Hardness with TagsMixin {
     attrCostFix: (e) => e * Rand.float(0.8, 1.2),
     maxFireMakingPrompt: () => 4,
     attrBounceFix: (e) => e * Rand.float(0.8, 1.2),
-    journeyDistance: () => 40 * Rand.float(0.8, 1.2),
+    journeyDistance: () => 48 * Rand.float(1, 1.2),
     resourceIntensity: () => Rand.float(0.8, 1.2),
   );
   static final Hardness hard = Hardness(
@@ -45,7 +45,7 @@ class Hardness with TagsMixin {
     attrCostFix: (e) => e * Rand.float(1.1, 1.5),
     maxFireMakingPrompt: () => 8,
     attrBounceFix: (e) => e * Rand.float(0.8, 1.0),
-    journeyDistance: () => 40 * Rand.float(0.8, 1.2),
+    journeyDistance: () => 55 * Rand.float(1.2, 1.8),
     resourceIntensity: () => Rand.float(0.8, 1.2),
   );
 }

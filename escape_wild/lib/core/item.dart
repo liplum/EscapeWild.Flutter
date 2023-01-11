@@ -22,18 +22,29 @@ extension NamedItemGetterX on String {
 }
 
 class Item with Moddable, CompMixin<ItemComp> {
-  static final empty = Item("empty");
+  static final empty = Item("empty", mergeable: true, mass: 0);
   final String name;
 
-  /// If mass is more than 0, it means the item is unmergeable.
+  /// ## When [mergeable] is false
+  /// It means the item is unmergeable, and [mass] is for one ItemEntry.
+  /// ### Example
+  /// [mass] of `Tinned Tomatoes` is 500. So each ItemEntry takes 500g room in backpack.
+  /// When player eat or cook it, if possible, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply full changes.
+  /// ## When [mergeable] is true
+  /// It means the item is mergeable, and [mass] is the unit for each ItemEntry.
+  /// ### Example
+  /// [mass] of `Berry` is 10. However, ItemEntry doesn't care that, it could have an independent [ItemEntry.mass] instead.
+  /// When player eat or cook it, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply changes based [ItemEntry.mass].
+  /// If [ItemEntry.mass] is 25, and player has eaten 15g, then [ModifyAttrComp.modifiers] will apply `(15.0 / 10.0) * modifier`.
   /// Unit: [g] gram
-  final double? mass;
+  final int mass;
+  final bool mergeable;
 
-  Item(this.name, {this.mass});
+  Item(this.name, {required this.mergeable, required this.mass});
 
-  Item.unmergeable(this.name, {required this.mass});
+  Item.unmergeable(this.name, {required this.mass}) : mergeable = false;
 
-  Item.mergeable(this.name) : mass = null;
+  Item.mergeable(this.name, {required this.mass}) : mergeable = true;
 
   Item self() => this;
 
@@ -43,9 +54,22 @@ class Item with Moddable, CompMixin<ItemComp> {
 }
 
 extension ItemX on Item {
-  bool get mergeable => mass == null;
-
-  ItemEntry create({double? mass}) => ItemEntry(this, mass: mass);
+  ItemEntry create({int? mass, double? massFactor}) {
+    if (mergeable) {
+      assert(mass != null || massFactor != null, "`mass` and `massFactor` can't be both null for mergeable");
+      if (mass != null) {
+        return ItemEntry(this, mass: mass);
+      }
+      if (massFactor != null) {
+        return ItemEntry(this, mass: (this.mass * massFactor).toInt());
+      }
+      // should not be reached.
+      return ItemEntry(this, mass: this.mass);
+    } else {
+      assert(mass == null && massFactor == null, "`mass` and `massFactor` should be both null for unmergeable");
+      return ItemEntry(this);
+    }
+  }
 }
 
 class ItemMergeableCompConflictError implements Exception {
@@ -53,10 +77,11 @@ class ItemMergeableCompConflictError implements Exception {
   final Item item;
   final bool mergeableShouldBe;
 
-  const ItemMergeableCompConflictError(this.message,
-      this.item, {
-        required this.mergeableShouldBe,
-      });
+  const ItemMergeableCompConflictError(
+    this.message,
+    this.item, {
+    required this.mergeableShouldBe,
+  });
 
   @override
   String toString() => "[${item.name}]$message";
@@ -88,9 +113,10 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   final Item meta;
   static const type = "Item";
   @JsonKey(includeIfNull: false)
-  double? mass;
+  int? mass;
 
-  ItemEntry(this.meta, {
+  ItemEntry(
+    this.meta, {
     this.mass,
   });
 
@@ -114,8 +140,8 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     if (!meta.mergeable) {
       throw MergeNotAllowedError("${meta.name} is not mergeable.", meta);
     }
-    final selfMass = mass ?? 0.0;
-    final toMass = to.mass ?? 0.0;
+    final selfMass = actualMass;
+    final toMass = to.actualMass;
     if (!hasIdenticalMeta(to)) {
       throw MergeNotAllowedError("Can't merge ${meta.name} with ${to.meta}.", meta);
     }
@@ -141,9 +167,9 @@ class MergeNotAllowedError implements Exception {
 }
 
 extension ItemEntryX on ItemEntry {
-  double? tryGetActualMass() => meta.mass ?? mass;
+  int get actualMass => mass ?? meta.mass;
 
-  double getActualMassOr([double fallback = 0.0]) => meta.mass ?? mass ?? fallback;
+  double get massMultiplier => actualMass / meta.mass;
 }
 
 class EmptyComp extends Comp {
@@ -256,7 +282,7 @@ abstract class UsableItemComp extends ItemComp {
 
   bool canUse() => true;
 
-  Future<void> onUse() async {}
+  Future<void> onUse(ItemEntry item) async {}
 
   bool get displayPreview => true;
   static const type = "Usable";
@@ -273,25 +299,31 @@ class ModifyAttrComp extends UsableItemComp {
   final List<AttrModifier> modifiers;
   @JsonKey(fromJson: _namedItemGetter)
   final ItemGetter<Item>? afterUsedItem;
-  @JsonKey(includeIfNull: true)
-  final double? modifierUnit;
 
-  ModifyAttrComp(super.useType,
-      this.modifiers, {
-        this.modifierUnit,
-        this.afterUsedItem,
-      });
+  ModifyAttrComp(
+    super.useType,
+    this.modifiers, {
+    this.afterUsedItem,
+  });
 
   factory ModifyAttrComp.fromJson(Map<String, dynamic> json) => _$ModifyAttrCompFromJson(json);
 
-  void buildAttrModification(AttrModifierBuilder builder) {
-    builder.addAll(modifiers);
+  void buildAttrModification(ItemEntry item, AttrModifierBuilder builder) {
+    if (item.meta.mergeable) {
+      for (final modifier in modifiers) {
+        builder.add(modifier * item.massMultiplier);
+      }
+    } else {
+      for (final modifier in modifiers) {
+        builder.add(modifier);
+      }
+    }
   }
 
   @override
-  Future<void> onUse() async {
+  Future<void> onUse(ItemEntry item) async {
     var builder = AttrModifierBuilder();
-    buildAttrModification(builder);
+    buildAttrModification(item, builder);
     builder.performModification(player);
   }
 
@@ -299,36 +331,17 @@ class ModifyAttrComp extends UsableItemComp {
 
   @override
   String get typeName => type;
-
-  @override
-  void validateItemConfig(Item item) {
-    if (modifierUnit == null && item.mergeable) {
-      throw ItemMergeableCompConflictError(
-        "$ModifyAttrComp requires `unit` in mergeable.",
-        item,
-        mergeableShouldBe: false,
-      );
-    }
-    if (modifierUnit != null && !item.mergeable) {
-      throw ItemMergeableCompConflictError(
-        "$ModifyAttrComp doesn't allow `unit` in unmergeable.",
-        item,
-        mergeableShouldBe: true,
-      );
-    }
-  }
 }
 
 extension ModifyAttrCompX on Item {
-  Item modifyAttr(UseType useType,
-      List<AttrModifier> modifiers, {
-        double? unit,
-        ItemGetter<Item>? afterUsed,
-      }) {
+  Item modifyAttr(
+    UseType useType,
+    List<AttrModifier> modifiers, {
+    ItemGetter<Item>? afterUsed,
+  }) {
     final comp = ModifyAttrComp(
       useType,
       modifiers,
-      modifierUnit: unit,
       afterUsedItem: afterUsed,
     );
     comp.validateItemConfig(this);
@@ -336,14 +349,13 @@ extension ModifyAttrCompX on Item {
     return this;
   }
 
-  Item asEatable(List<AttrModifier> modifiers, {
-    double? unit,
+  Item asEatable(
+    List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsedItem,
   }) {
     final comp = ModifyAttrComp(
       UseType.eat,
       modifiers,
-      modifierUnit: unit,
       afterUsedItem: afterUsedItem,
     );
     comp.validateItemConfig(this);
@@ -351,14 +363,13 @@ extension ModifyAttrCompX on Item {
     return this;
   }
 
-  Item asUsable(List<AttrModifier> modifiers, {
-    double? unit,
+  Item asUsable(
+    List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsedItem,
   }) {
     final comp = ModifyAttrComp(
       UseType.use,
       modifiers,
-      modifierUnit: unit,
       afterUsedItem: afterUsedItem,
     );
     comp.validateItemConfig(this);
@@ -366,14 +377,13 @@ extension ModifyAttrCompX on Item {
     return this;
   }
 
-  Item asDrinkable(List<AttrModifier> modifiers, {
-    double? unit,
+  Item asDrinkable(
+    List<AttrModifier> modifiers, {
     ItemGetter<Item>? afterUsed,
   }) {
     final comp = ModifyAttrComp(
       UseType.drink,
       modifiers,
-      modifierUnit: unit,
       afterUsedItem: afterUsed,
     );
     comp.validateItemConfig(this);
@@ -402,11 +412,12 @@ class CookableComp extends ItemComp {
   @JsonKey()
   final double? fuelCostUnit;
 
-  CookableComp(this.cookType,
-      this.fuelCost,
-      this.cookedOutput, {
-        this.fuelCostUnit,
-      });
+  CookableComp(
+    this.cookType,
+    this.fuelCost,
+    this.cookedOutput, {
+    this.fuelCostUnit,
+  });
 
   @override
   void validateItemConfig(Item item) {
@@ -414,20 +425,6 @@ class CookableComp extends ItemComp {
       throw ItemCompConflictError(
         "Only allow one $CookableComp.",
         item,
-      );
-    }
-    if (fuelCostUnit == null && item.mergeable) {
-      throw ItemMergeableCompConflictError(
-        "$CookableComp requires `unit` in mergeable.",
-        item,
-        mergeableShouldBe: false,
-      );
-    }
-    if (fuelCostUnit != null && !item.mergeable) {
-      throw ItemMergeableCompConflictError(
-        "$CookableComp doesn't allow `unit` in unmergeable.",
-        item,
-        mergeableShouldBe: true,
       );
     }
   }
@@ -441,7 +438,8 @@ class CookableComp extends ItemComp {
 }
 
 extension CookableCompX on Item {
-  Item asCookable(CookType cookType, {
+  Item asCookable(
+    CookType cookType, {
     required double fuelCost,
     required ItemGetter<Item> output,
     double? unit,
@@ -462,42 +460,14 @@ extension CookableCompX on Item {
 class FuelComp extends ItemComp {
   @JsonKey()
   final double heatValue;
-  @JsonKey(includeIfNull: true)
-  final double? fuelUnit;
 
-  FuelComp(this.heatValue, {
-    this.fuelUnit,
-  });
+  FuelComp(this.heatValue);
 
   /// If the [item] has [WetComp], reduce the [heatValue] based on its wet.
   double getActualHeatValue(ItemEntry item) {
     final wetComp = item.meta.tryGetFirstComp<WetComp>();
     final wet = wetComp?.getWet(item) ?? 0.0;
     return heatValue * (1.0 - wet);
-  }
-
-  @override
-  void validateItemConfig(Item item) {
-    if (item.hasComp(FuelComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $FuelComp.",
-        item,
-      );
-    }
-    if (fuelUnit == null && item.mergeable) {
-      throw ItemMergeableCompConflictError(
-        "$FuelComp requires `unit` in mergeable.",
-        item,
-        mergeableShouldBe: false,
-      );
-    }
-    if (fuelUnit != null && !item.mergeable) {
-      throw ItemMergeableCompConflictError(
-        "$FuelComp doesn't allow `unit` in unmergeable.",
-        item,
-        mergeableShouldBe: true,
-      );
-    }
   }
 
   static const type = "Fuel";
@@ -511,11 +481,9 @@ class FuelComp extends ItemComp {
 extension FuelCompX on Item {
   Item asFuel({
     required double heatValue,
-    double? unit,
   }) {
     final comp = FuelComp(
       heatValue,
-      fuelUnit: unit,
     );
     comp.validateItemConfig(this);
     addComp(comp);
@@ -533,12 +501,12 @@ class WetComp extends ItemComp {
   @override
   void onMerge(ItemEntry from, ItemEntry to) {
     if (!from.hasIdenticalMeta(to)) return;
-    final fromMass = from.getActualMassOr();
-    final toMass = to.getActualMassOr();
+    final fromMass = from.actualMass;
+    final toMass = to.actualMass;
     final fromWet = getWet(from) * fromMass;
     final toWet = getWet(to) * toMass;
-    final average = (fromWet + toWet) / (fromMass + toMass);
-    setWet(to, average);
+    final merged = (fromWet + toWet) / (fromMass + toMass);
+    setWet(to, merged);
   }
 
   @override
@@ -576,12 +544,12 @@ class FreshnessComp extends ItemComp {
   @override
   void onMerge(ItemEntry from, ItemEntry to) {
     if (!from.hasIdenticalMeta(to)) return;
-    final fromMass = from.getActualMassOr();
-    final toMass = to.getActualMassOr();
+    final fromMass = from.actualMass;
+    final toMass = to.actualMass;
     final fromFreshness = geFreshness(from) * fromMass;
     final toFreshness = geFreshness(to) * toMass;
-    final average = (toFreshness + fromFreshness) / (fromMass + toMass);
-    setFreshness(to, average);
+    final merged = (toFreshness + fromFreshness) / (fromMass + toMass);
+    setFreshness(to, merged);
   }
 
   @override

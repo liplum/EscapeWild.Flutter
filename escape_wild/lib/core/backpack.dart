@@ -37,13 +37,13 @@ extension BackpackX on Backpack {
     } else {
       items.add(item);
     }
-    mass += item.getActualMassOr();
+    mass += item.actualMass;
   }
 
   double sumMass() {
     var sum = 0.0;
     for (final item in items) {
-      sum += item.getActualMassOr();
+      sum += item.actualMass;
     }
     return sum;
   }

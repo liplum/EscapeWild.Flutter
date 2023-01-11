@@ -127,6 +127,17 @@ Future<void> _showGain(ActionType action, List<ItemEntry> gain) async {
   }
 }
 
+void _randGain(double probability, List<ItemEntry> gain, ItemEntry Function() ctor, [int times = 1]) {
+  for (var i = 0; i < times; i++) {
+    if (Rand.one() < probability) {
+      gain.add(ctor());
+    } else {
+      break;
+    }
+  }
+}
+
+///
 class PlainPlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.6;
@@ -140,10 +151,8 @@ class PlainPlace extends SubtropicsPlace {
     player.modifyX(Attr.energy, -0.08);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
     final gain = <ItemEntry>[];
-    if (Rand.one() < berry * p) {
-      final b = Foods.berry.create(mass: Rand.float(10, 30));
-      gain.add(b);
-    }
+    _randGain(berry * p, gain, () => Foods.berry.create(massFactor: Rand.fluctuate(0.2)), 2);
+    _randGain(berry * p, gain, () => Foods.dirtyWater.create(massFactor: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await _showGain(ActionType.explore, gain);
