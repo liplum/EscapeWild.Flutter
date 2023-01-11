@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 // ignore: non_constant_identifier_names
 final AppKey = GlobalKey<NavigatorState>();
@@ -17,16 +16,25 @@ class EscapeWildApp extends StatefulWidget {
 }
 
 class _EscapeWildAppState extends State<EscapeWildApp> {
+  Locale? lastLocale;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 500), () {
-      loadL10n();
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      await loadL10n();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final newLocale = context.locale;
+    if (newLocale != lastLocale) {
+      lastLocale = newLocale;
+      if (isL10nLoaded) {
+        onLocaleChange();
+      }
+    }
     return MaterialApp(
       title: 'Escape Wild',
       navigatorKey: AppKey,

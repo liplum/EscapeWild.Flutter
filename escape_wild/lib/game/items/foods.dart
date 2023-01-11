@@ -55,7 +55,7 @@ class Foods {
     // water
     Contents.items.addAll([
       bottledWater = Item.unmergeable("bottled-water", mass: 220).asDrinkable([
-        Attr.food + 0.28,
+        Attr.water + 0.28,
       ], afterUsed: () => Stuff.plasticBottle).tagged(["water", "packaged"]),
       dirtyWater = Item.mergeable("dirty-water", mass: 200)
           .asDrinkable([

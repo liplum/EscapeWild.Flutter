@@ -14,24 +14,30 @@ export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/utils/collection.dart';
 
 final yamlAssetsLoader = YamlAssetLoader();
-final isGameContentLoaded = ValueNotifier(false);
-var _isGameContentLoaded = false;
-var _isL10nLoaded = false;
+final isGameLoaded = ValueNotifier(false);
+var isGameContentLoaded = false;
+var isL10nLoaded = false;
 
 Future<void> loadGameContent() async {
   // load vanilla
   await Vanilla.instance.load();
+  isGameContentLoaded = true;
   _checkGameLoadState();
 }
 
 Future<void> loadL10n() async {
   await Vanilla.instance.loadL10n();
+  isL10nLoaded = true;
   _checkGameLoadState();
 }
 
+Future<void> onLocaleChange() async {
+  await Vanilla.instance.onLocaleChange();
+}
+
 void _checkGameLoadState() {
-  if (_isGameContentLoaded && _isL10nLoaded) {
-    isGameContentLoaded.value = true;
+  if (isGameContentLoaded && isL10nLoaded) {
+    isGameLoaded.value = true;
   }
 }
 
