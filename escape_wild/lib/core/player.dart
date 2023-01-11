@@ -11,6 +11,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $journeyProgress = ValueNotifier<Progress>(0.0);
   final $fireState = ValueNotifier(const FireState.off());
   final $location = ValueNotifier<PlaceProtocol?>(null);
+  final $maxMassLoad = ValueNotifier(2000);
   RouteProtocol? route;
 
   Future<void> performAction(ActionType action) async {
@@ -78,6 +79,10 @@ extension PlayerX on Player {
   bool get isDead => health <= 0;
 
   bool get isAlive => !isDead;
+
+  int get maxMassLoad => $maxMassLoad.value;
+
+  set maxMassLoad(int v) => $maxMassLoad.value = v;
 
   FireState get fireState => $fireState.value;
 

@@ -11,8 +11,8 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['exploreCount'] as int
-      ..mod = Moddable.modId2ModFunc(json['mod'] as String);
+      ..mod = Moddable.modId2ModFunc(json['mod'] as String)
+      ..exploreCount = json['exploreCount'] as int;
 
 Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   final val = <String, dynamic>{};
@@ -24,8 +24,8 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   }
 
   writeNotNull('extra', instance.extra);
+  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
   val['name'] = instance.name;
   val['exploreCount'] = instance.exploreCount;
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
   return val;
 }

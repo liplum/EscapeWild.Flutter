@@ -11,7 +11,7 @@ class Backpack with ChangeNotifier {
   @JsonKey()
   List<ItemEntry> items = [];
   @JsonKey()
-  double mass = 0.0;
+  int mass = 0;
 
   Backpack();
 
@@ -33,8 +33,15 @@ class Backpack with ChangeNotifier {
 
   bool removeItem(ItemEntry item) {
     final hasRemoved = items.remove(item);
+    if (hasRemoved) {
+      mass -= item.actualMass;
+    }
     notifyListeners();
     return hasRemoved;
+  }
+
+  int indexOfItem(ItemEntry item) {
+    return items.indexOf(item);
   }
 }
 

@@ -58,6 +58,15 @@ extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
     return _components[T]?.firstOrNull as T?;
   }
 
+  List<T> getCompsOf<T extends TComp>() {
+    final comps = _components[T];
+    if (comps == null) {
+      return const [];
+    } else {
+      return comps.cast<T>();
+    }
+  }
+
   bool hasCompOf<T extends TComp>() {
     return _components.containsKey(T);
   }

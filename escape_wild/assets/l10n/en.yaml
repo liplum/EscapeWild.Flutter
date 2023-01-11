@@ -18,6 +18,10 @@ ui:
     backpack: Backpack
     craft: Craft
     campfire: Campfire
+  backpack:
+    mass-load: >
+      {cur}g / {max}g
+    discard: Discard
 ok: OK
 yes: Yes
 no: No

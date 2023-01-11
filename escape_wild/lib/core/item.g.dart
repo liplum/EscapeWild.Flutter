@@ -52,6 +52,7 @@ const _$UseTypeEnumMap = {
   UseType.use: 'use',
   UseType.drink: 'drink',
   UseType.eat: 'eat',
+  UseType.equip: 'equip',
 };
 
 CookableComp _$CookableCompFromJson(Map<String, dynamic> json) => CookableComp(

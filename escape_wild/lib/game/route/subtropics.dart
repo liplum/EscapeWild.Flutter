@@ -347,13 +347,13 @@ class HutPlace extends SubtropicsPlace {
     player.modifyX(Attr.energy, -0.10);
     final gain = <ItemEntry>[];
     if (exploreCount == 0) {
-      gain.addItemOrMerge(Foods.boiledWater.create());
+      gain.addItemOrMerge(Foods.bottledWater.create());
       gain.addItemOrMerge(Foods.energyBar.create());
       if (Rand.one() < oxe) {
         gain.addItemOrMerge(Tools.oldOxe.create());
       }
     } else if (exploreCount == 1) {
-      gain.addItemOrMerge(Foods.boiledWater.create());
+      gain.addItemOrMerge(Foods.bottledWater.create());
       gain.addItemOrMerge(Foods.energyBar.create());
       if (Rand.one() < fishRod) {
         gain.addItemOrMerge(Tools.oldFishRod.create());

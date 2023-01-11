@@ -9,6 +9,7 @@ use-type:
   use: Use
   eat: Eat
   drink: Drink
+  equip: Equip
 item:
   energy-bar:
     name: Energy Bar
@@ -16,6 +17,9 @@ item:
   bottled-water:
     name: Bottled Water
     desc: A bottle of water. The production date is unknow.
+  plastic-bottle:
+    name: Plastic Bottle
+    desc: The best material, gift from industry.
   dirty-water:
     name: Dirty Water
     desc: Ugh! It's best to boil it anyway.
@@ -40,6 +44,9 @@ item:
   sticks:
     name: Sticks
     desc: You can find them anywhere.
+  log:
+    name: Log
+    desc: It's a piece of wood.
   nuts:
     name: Nuts
     desc: Where is my nutcracker?

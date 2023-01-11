@@ -35,7 +35,7 @@ class Foods {
   static void registerAll() {
     // food
     Contents.items.addAll([
-      energyBar = Item.mergeable("energy-bar", mass: 150).asEatable([
+      energyBar = Item.unmergeable("energy-bar", mass: 150).asEatable([
         Attr.food + 0.32,
         Attr.energy + 0.1,
       ]),

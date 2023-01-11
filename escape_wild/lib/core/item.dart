@@ -62,7 +62,7 @@ extension ItemX on Item {
       if (massF != null) {
         return ItemEntry(this, mass: (this.mass * massF).toInt());
       }
-      // should not be reached.
+      // If the `ItemEntry.mass` is not specified, use `Item.mass`.
       return ItemEntry(this, mass: this.mass);
     } else {
       assert(mass == null && massF == null, "`mass` and `massFactor` should be both null for unmergeable");
@@ -342,16 +342,17 @@ extension ToolCompX on Item {
 enum UseType {
   use,
   drink,
-  eat;
+  eat,
+  equip;
 
   String localizeName() => I18n["use-type.$name"];
 }
 
-abstract class UsableItemComp extends ItemComp {
+abstract class UsableComp extends ItemComp {
   @JsonKey()
   final UseType useType;
 
-  UsableItemComp(this.useType);
+  UsableComp(this.useType);
 
   bool canUse() => true;
 
@@ -365,9 +366,9 @@ abstract class UsableItemComp extends ItemComp {
 }
 
 @JsonSerializable(createToJson: false)
-class ModifyAttrComp extends UsableItemComp {
+class ModifyAttrComp extends UsableComp {
   @override
-  Type get compType => UsableItemComp;
+  Type get compType => UsableComp;
   @JsonKey()
   final List<AttrModifier> modifiers;
   @JsonKey(fromJson: _namedItemGetter)
@@ -398,6 +399,12 @@ class ModifyAttrComp extends UsableItemComp {
     var builder = AttrModifierBuilder();
     buildAttrModification(item, builder);
     builder.performModification(player);
+    final afterUsedItem = this.afterUsedItem;
+    if (afterUsedItem != null) {
+      final item = afterUsedItem();
+      final entry = item.create();
+      player.backpack.addItemOrMerge(entry);
+    }
   }
 
   static const type = "AttrModify";
