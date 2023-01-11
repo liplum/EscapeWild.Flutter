@@ -5,9 +5,11 @@ class R {
 
   static const defaultLocale = Locale('en');
   static const zhLocale = Locale('zh');
+  static const frLocale = Locale('fr')
   static const supportedLocales = [
     defaultLocale,
     zhLocale,
+    frLocale,
   ];
   static const healthColor = Color(0xfffc3545);
   static const foodColor = Color(0xfffeaa1a);

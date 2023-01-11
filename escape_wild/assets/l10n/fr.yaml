@@ -1,0 +1,40 @@
+attr:
+  health: Vie
+  food: Nourriture
+  water: Eau
+  energy: Énergie
+ui:
+  main:
+    title: Escape Wild
+    new-game: Nouvelle Partie
+    continue: Continuer
+  attr:
+    health: VIE
+    food: NOURRITURE
+    water: EAU
+    energy: ÉNERGIE
+  home:
+    action: Action
+    backpack: Sac à dos
+    craft: Fabriquer
+    campfire: Feu de camp
+  backpack:
+    mass-load: >
+      {cur}g / {max}g
+    discard: Jeter
+    empty-tip: Votre sac à dos est vide.
+item:
+  mass-with-unit: >
+    {}g
+ok: OK
+yes: Oui
+no: Non
+got-it: Compris
+not-now: Pas maintenant
+cancel: Annuler
+alright: D'accord
+action:
+  got-items: Vous avez obtenu {}.
+  got-nothing: Vous n'avez rien eu.
+  tool-broken: >
+    {} est complètement cassé, il ne peut plus fonctionner.
