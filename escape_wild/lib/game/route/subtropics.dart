@@ -151,6 +151,7 @@ class PlainPlace extends SubtropicsPlace {
 
   static const type = "PlainPlace";
 
+
   @override
   String get typeName => type;
 }
