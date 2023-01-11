@@ -22,6 +22,7 @@ ui:
     mass-load: >
       {cur}g / {max}g
     discard: Discard
+    empty-tip: Your backpack is empty.
 ok: OK
 yes: Yes
 no: No

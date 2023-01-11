@@ -11,4 +11,5 @@ class _I {
       });
 
   static String get discard => "$_n.discard".tr();
+  static String get emptyTip => "$_n.empty-tip".tr();
 }

@@ -51,6 +51,7 @@ dependencies:
   easy_localization_loader: ^1.0.1+1
   yaml: ^3.1.1
   auto_size_text: ^3.0.0
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:

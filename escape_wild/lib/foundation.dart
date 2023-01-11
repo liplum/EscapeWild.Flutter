@@ -10,6 +10,7 @@ export 'package:escape_wild/game/items/medicine.dart';
 export 'package:escape_wild/game/items/stuff.dart';
 export 'package:escape_wild/game/items/tools.dart';
 export 'package:escape_wild/utils/random.dart';
+export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/utils/collection.dart';
 
 final yamlAssetsLoader = YamlAssetLoader();

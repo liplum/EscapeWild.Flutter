@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -65,7 +66,10 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Widget buildEmptyBackpack() {
-    return Icon(Icons.no_backpack_outlined);
+    return LeavingBlank(
+      icon: Icons.no_backpack_outlined,
+      desc: _I.emptyTip,
+    );
   }
 
   Widget buildItems(Backpack backpack) {
