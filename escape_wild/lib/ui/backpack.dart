@@ -61,6 +61,7 @@ class _BackpackPageState extends State<BackpackPage> {
       appBar: AppBar(
         title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
         centerTitle: true,
+        toolbarHeight: context.isLandscape ? 40 : null,
       ),
       body: buildLandscapeBody(),
     );
@@ -197,6 +198,8 @@ class _BackpackPageState extends State<BackpackPage> {
         textAlign: TextAlign.center,
       ),
       subtitle: I.item.massWithUnit(item.actualMass).text(textAlign: TextAlign.right),
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
     ).center();
     return CardButton(
       elevation: isSelected ? 20 : 1,

@@ -40,7 +40,7 @@ class Foods {
         Attr.food + 0.32,
         Attr.energy + 0.1,
       ]).tagged(["packaged"]),
-      bugMeat = Item.mergeable("longicorn-larva", mass: 10).asEatable([
+      bugMeat = Item.mergeable("bug-meat", mass: 10).asEatable([
         Attr.food + 0.1,
         Attr.water + 0.1,
       ]).tagged(["bug"]),

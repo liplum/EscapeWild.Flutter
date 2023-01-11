@@ -359,7 +359,7 @@ class HutPlace extends SubtropicsPlace {
         gain.addItemOrMerge(Tools.oldFishRod.create());
       }
     } else if (exploreCount == 2) {
-      gain.addItemOrMergeAll(Stuff.log.repeat(2));
+      gain.addItemOrMerge(Stuff.log.create(massF: Rand.float(1.0, 2.0)));
       final r = Rand.float(0.0, trap + gun);
       if (r < trap) {
         gain.addItemOrMerge(Tools.bearTrap.create());

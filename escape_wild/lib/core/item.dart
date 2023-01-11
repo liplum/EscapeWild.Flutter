@@ -72,9 +72,10 @@ extension ItemX on Item {
 
   List<ItemEntry> repeat(int number) {
     assert(number > 0, "`number` should be over than 0.");
-    assert(!mergeable, "only unmergeable can be generated repeatedly.");
+    assert(!mergeable, "only unmergeable can be generated repeatedly, but $name is given.");
     if (mergeable) {
-      return [];
+      // For mergeable, it will multiply the mass.
+      return [ItemEntry(this, mass: mass * number)];
     } else {
       return List.generate(number.abs(), (i) => ItemEntry(this));
     }

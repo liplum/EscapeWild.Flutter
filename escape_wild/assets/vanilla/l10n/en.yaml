@@ -14,12 +14,9 @@ item:
   energy-bar:
     name: Energy Bar
     desc: You're not you when you're hungry.
-  bottled-water:
-    name: Bottled Water
-    desc: A bottle of water. The production date is unknow.
-  plastic-bottle:
-    name: Plastic Bottle
-    desc: The best material, gift from industry.
+  energy-drink:
+    name: Energy Drink
+    desc: Watch out the beast.
   dirty-water:
     name: Dirty Water
     desc: Ugh! It's best to boil it anyway.
@@ -31,13 +28,17 @@ item:
     desc: It looks clear.
   boiled-water:
     name: Boiled Water
-    desc: ...
+    desc: >
+      Title: 10 Health Benefits of Drinking Hot Water
+  bottled-water:
+    name: Bottled Water
+    desc: A bottle of water. The production date is unknown.
+  plastic-bottle:
+    name: Plastic Bottle
+    desc: The best material, gift from industry.
   filtered-water:
     name: Filter Water
-    desc: It lools clean now. What a magic!
-  energy-drink:
-    name: Energy Drink
-    desc: Watch out the beast.
+    desc: It looks clean now. What a magic!
   cut-grass:
     name: Cut Grass
     desc: It's not green and but still renewable.
@@ -59,6 +60,22 @@ item:
   roasted-berry:
     name: Roasted Berry
     desc: Slimy.
+  survival-knife:
+    name: Survival Knife
+    desc: >
+      Ad: It offers a Black Anodize 440 stainless steel...
+  old-oxe:
+    name: Old Oxe
+    desc: Old but still sharp.
+  old-fish-rod:
+    name: Old Fish Rod
+    desc: Wait and see.
+  old-shotgun:
+    name: Old Shotgun
+    desc: Hope nothing goes wrong when it's critical.
+  bear-trap:
+    name: Bear Trap
+    desc: Wait and see.
 route:
   subtropics:
     plain:
