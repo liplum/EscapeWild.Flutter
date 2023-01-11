@@ -20,6 +20,12 @@ class Backpack {
 }
 
 extension BackpackX on Backpack {
+  void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
+    for (final item in addition) {
+      addItemOrMerge(item);
+    }
+  }
+
   void addItemOrMerge(ItemEntry item) {
     if (item.meta.mergeable) {
       final existed = getItemByIdenticalMeta(item);

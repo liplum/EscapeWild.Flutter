@@ -67,7 +67,7 @@ class _ActionPageState extends State<ActionPage> {
           (player.$attrs << (ctx, attr, __) => buildHud(attr)).expanded(),
         ].column(maa: MainAxisAlignment.center),
       ).expanded(),
-      buildActionBtnArea().expanded(),
+      const ActionButtonArea().expanded(),
     ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(10);
   }
 
@@ -80,7 +80,7 @@ class _ActionPageState extends State<ActionPage> {
       body: [
         player.$attrs << (ctx, attr, __) => buildHud(attr),
         player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
-        buildActionBtnArea().expanded(),
+        const ActionButtonArea().expanded(),
       ].column().padAll(10),
     );
   }
@@ -92,8 +92,18 @@ class _ActionPageState extends State<ActionPage> {
   Widget buildJourneyProgress(double v) {
     return AttrProgress(value: v).padAll(10);
   }
+}
 
-  Widget buildActionBtnArea() {
+class ActionButtonArea extends StatefulWidget {
+  const ActionButtonArea({Key? key}) : super(key: key);
+
+  @override
+  State<ActionButtonArea> createState() => _ActionButtonAreaState();
+}
+
+class _ActionButtonAreaState extends State<ActionButtonArea> {
+  @override
+  Widget build(BuildContext context) {
     return GridView(
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -121,6 +131,9 @@ class _ActionPageState extends State<ActionPage> {
           ? null
           : () async {
               player.performAction(type);
+              if(!mounted) return;
+              // force to refresh the area, because it's hard to listen to all changes of player.
+              setState(() {});
             },
       child: type
           .localizedName()
