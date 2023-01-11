@@ -24,7 +24,7 @@ class Foods {
   static late final Item nuts, toastedNuts;
 
   // water
-  static late final Item bottledWater, dirtyWater, cleanWater, boiledWater, filteredWater;
+  static late final Item bottledWater, dirtyWater, clearWater, cleanWater, boiledWater, filteredWater;
 
   // tea
   static late final Item dandelionTea;
@@ -55,8 +55,11 @@ class Foods {
         Attr.health - 0.085,
         Attr.water + 0.15,
       ]).asCookable(CookType.boil, unit: 200, fuelCost: 30, output: () => boiledWater),
+      clearWater = Item.mergeable("clear-water", mass: 200).asDrinkable([
+        Attr.health - 0.02,
+        Attr.water + 0.18,
+      ]).asCookable(CookType.boil, unit: 200, fuelCost: 30, output: () => boiledWater),
       cleanWater = Item.mergeable("clean-water", mass: 200).asDrinkable([
-        Attr.health - 0.005,
         Attr.water + 0.235,
       ]),
       boiledWater = Item.mergeable("boiled-water", mass: 200).asDrinkable([

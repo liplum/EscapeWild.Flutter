@@ -7,7 +7,10 @@ class Stuff {
   // fire related
   static late final Item plasticBottle, sticks, cutGrass, log, dryLichen, ember, tinder;
   static late final Item dandelion;
-  static late final Item sharpStone;
+  static late final Item strawRope;
+
+  // stone
+  static late final Item stone, sharpStone;
   static late final Item can;
 
   static void registerAll() {
@@ -23,9 +26,14 @@ class Stuff {
       tinder = Item.mergeable("tinder", mass: 5),
       //Put the semi-wet moss or grass into the wooden tube rolled by the bark,
       // and Mars can carry it
+      stone = Item.mergeable("stone", mass: 100),
       sharpStone = Item.mergeable("sharp-stone", mass: 100),
       ///////People's greatest wisdom comes from using tools
       can = Item.unmergeable("can", mass: 30),
+    ]);
+    // Craft
+    Contents.items.addAll([
+      strawRope = Item.unmergeable("straw-rope", mass: 200)
     ]);
   }
 }

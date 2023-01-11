@@ -169,3 +169,33 @@ class ForestPlace extends SubtropicsPlace {
   @override
   String get typeName => type;
 }
+
+class RiversidePlace extends SubtropicsPlace {
+  static const maxExploreTimes = 3;
+  static const berry = 0.1;
+  static const stone = 0.1;
+  static const dirtyWater = 0.8;
+
+  RiversidePlace(super.name);
+
+  @override
+  Future<void> performExplore() async {
+    player.modifyX(Attr.food, -0.03);
+    player.modifyX(Attr.water, -0.03);
+    player.modifyX(Attr.energy, -0.10);
+    final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
+    final gain = <ItemEntry>[];
+    randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 2);
+    randGain(stone * p, gain, () => Stuff.log.create(massF: Rand.fluctuate(0.2)), 1);
+    player.backpack.addItemsOrMergeAll(gain);
+    exploreCount++;
+    await showGain(ActionType.explore, gain);
+  }
+
+  static const type = "Subtropics.ForestPlace";
+
+  @override
+  String get typeName => type;
+}
+
