@@ -5,7 +5,7 @@ class R {
 
   static const defaultLocale = Locale('en');
   static const zhLocale = Locale('zh');
-  static const frLocale = Locale('fr')
+  static const frLocale = Locale('fr');
   static const supportedLocales = [
     defaultLocale,
     zhLocale,
