@@ -18,13 +18,3 @@ ui:
     backpack: Backpack
     craft: Craft
     campfire: Campfire
-ok: OK
-yes: Yes
-no: No
-got-it: Got it
-not-now: Not Now
-cancel: Cancel
-alright: Alright
-action:
-  got-items: You got {}.
-  got-nothing: You got nothing.

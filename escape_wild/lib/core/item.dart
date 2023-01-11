@@ -37,15 +37,13 @@ class Item with Moddable, CompMixin<ItemComp> {
 
   Item self() => this;
 
-  String localizedName() => i18n("item.$name.name");
+  String get localizedName => i18n("item.$name.name");
 
-  String localizedDescription() => i18n("item.$name.desc");
+  String get localizedDescription => i18n("item.$name.desc");
 }
 
 extension ItemX on Item {
   bool get mergeable => mass == null;
-
-  ItemEntry create({double? mass}) => ItemEntry(this, mass: mass);
 }
 
 class ItemMergeableCompConflictError implements Exception {
@@ -53,10 +51,11 @@ class ItemMergeableCompConflictError implements Exception {
   final Item item;
   final bool mergeableShouldBe;
 
-  const ItemMergeableCompConflictError(this.message,
-      this.item, {
-        required this.mergeableShouldBe,
-      });
+  const ItemMergeableCompConflictError(
+    this.message,
+    this.item, {
+    required this.mergeableShouldBe,
+  });
 
   @override
   String toString() => "[${item.name}]$message";
@@ -65,8 +64,9 @@ class ItemMergeableCompConflictError implements Exception {
 class ItemCompConflictError implements Exception {
   final String message;
   final Item item;
+  final Comp conflictWith;
 
-  const ItemCompConflictError(this.message, this.item);
+  const ItemCompConflictError(this.message, this.item, this.conflictWith);
 }
 
 abstract class ItemComp extends Comp {
@@ -90,7 +90,8 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(includeIfNull: false)
   double? mass;
 
-  ItemEntry(this.meta, {
+  ItemEntry(
+    this.meta, {
     this.mass,
   });
 
@@ -98,17 +99,6 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   String get typeName => type;
 
   bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
-
-  @override
-  String toString() {
-    final m = mass;
-    final name = meta.localizedName();
-    if (m == null) {
-      return name;
-    } else {
-      return "$name ${m.toStringAsFixed(1)}g";
-    }
-  }
 
   void mergeTo(ItemEntry to) {
     if (!meta.mergeable) {
@@ -276,11 +266,12 @@ class ModifyAttrComp extends UsableItemComp {
   @JsonKey(includeIfNull: true)
   final double? modifierUnit;
 
-  ModifyAttrComp(super.useType,
-      this.modifiers, {
-        this.modifierUnit,
-        this.afterUsedItem,
-      });
+  ModifyAttrComp(
+    super.useType,
+    this.modifiers, {
+    this.modifierUnit,
+    this.afterUsedItem,
+  });
 
   factory ModifyAttrComp.fromJson(Map<String, dynamic> json) => _$ModifyAttrCompFromJson(json);
 
@@ -320,11 +311,12 @@ class ModifyAttrComp extends UsableItemComp {
 }
 
 extension ModifyAttrCompX on Item {
-  Item modifyAttr(UseType useType,
-      List<AttrModifier> modifiers, {
-        double? unit,
-        ItemGetter<Item>? afterUsed,
-      }) {
+  Item modifyAttr(
+    UseType useType,
+    List<AttrModifier> modifiers, {
+    double? unit,
+    ItemGetter<Item>? afterUsed,
+  }) {
     final comp = ModifyAttrComp(
       useType,
       modifiers,
@@ -336,7 +328,8 @@ extension ModifyAttrCompX on Item {
     return this;
   }
 
-  Item asEatable(List<AttrModifier> modifiers, {
+  Item asEatable(
+    List<AttrModifier> modifiers, {
     double? unit,
     ItemGetter<Item>? afterUsedItem,
   }) {
@@ -351,7 +344,8 @@ extension ModifyAttrCompX on Item {
     return this;
   }
 
-  Item asUsable(List<AttrModifier> modifiers, {
+  Item asUsable(
+    List<AttrModifier> modifiers, {
     double? unit,
     ItemGetter<Item>? afterUsedItem,
   }) {
@@ -366,7 +360,8 @@ extension ModifyAttrCompX on Item {
     return this;
   }
 
-  Item asDrinkable(List<AttrModifier> modifiers, {
+  Item asDrinkable(
+    List<AttrModifier> modifiers, {
     double? unit,
     ItemGetter<Item>? afterUsed,
   }) {
@@ -402,20 +397,15 @@ class CookableComp extends ItemComp {
   @JsonKey()
   final double? fuelCostUnit;
 
-  CookableComp(this.cookType,
-      this.fuelCost,
-      this.cookedOutput, {
-        this.fuelCostUnit,
-      });
+  CookableComp(
+    this.cookType,
+    this.fuelCost,
+    this.cookedOutput, {
+    this.fuelCostUnit,
+  });
 
   @override
   void validateItemConfig(Item item) {
-    if (item.hasComp(CookableComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $CookableComp.",
-        item,
-      );
-    }
     if (fuelCostUnit == null && item.mergeable) {
       throw ItemMergeableCompConflictError(
         "$CookableComp requires `unit` in mergeable.",
@@ -441,7 +431,8 @@ class CookableComp extends ItemComp {
 }
 
 extension CookableCompX on Item {
-  Item asCookable(CookType cookType, {
+  Item asCookable(
+    CookType cookType, {
     required double fuelCost,
     required ItemGetter<Item> output,
     double? unit,
@@ -465,25 +456,13 @@ class FuelComp extends ItemComp {
   @JsonKey(includeIfNull: true)
   final double? fuelUnit;
 
-  FuelComp(this.heatValue, {
+  FuelComp(
+    this.heatValue, {
     this.fuelUnit,
   });
 
-  /// If the [item] has [WetComp], reduce the [heatValue] based on its wet.
-  double getActualHeatValue(ItemEntry item) {
-    final wetComp = item.meta.tryGetFirstComp<WetComp>();
-    final wet = wetComp?.getWet(item) ?? 0.0;
-    return heatValue * (1.0 - wet);
-  }
-
   @override
   void validateItemConfig(Item item) {
-    if (item.hasComp(FuelComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $FuelComp.",
-        item,
-      );
-    }
     if (fuelUnit == null && item.mergeable) {
       throw ItemMergeableCompConflictError(
         "$FuelComp requires `unit` in mergeable.",
@@ -541,29 +520,10 @@ class WetComp extends ItemComp {
     setWet(to, average);
   }
 
-  @override
-  void validateItemConfig(Item item) {
-    if (item.hasComp(WetComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $WetComp.",
-        item,
-      );
-    }
-  }
-
   static const type = "Wet";
 
   @override
   String get typeName => "Wet";
-}
-
-extension WetCompX on Item {
-  Item hasWet() {
-    final comp = WetComp();
-    comp.validateItemConfig(this);
-    addComp(comp);
-    return this;
-  }
 }
 
 class FreshnessComp extends ItemComp {
@@ -584,27 +544,8 @@ class FreshnessComp extends ItemComp {
     setFreshness(to, average);
   }
 
-  @override
-  void validateItemConfig(Item item) {
-    if (item.hasComp(FreshnessComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $FreshnessComp.",
-        item,
-      );
-    }
-  }
-
   static const type = "Freshness";
 
   @override
   String get typeName => type;
-}
-
-extension FreshnessCompX on Item {
-  Item hasFreshness() {
-    final comp = FreshnessComp();
-    comp.validateItemConfig(this);
-    addComp(comp);
-    return this;
-  }
 }

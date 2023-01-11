@@ -1,4 +1,4 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/i18n.dart';
 
 class ActionType {
   final String name;
