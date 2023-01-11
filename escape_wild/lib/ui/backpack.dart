@@ -41,18 +41,32 @@ class _BackpackPageState extends State<BackpackPage> {
     return AnimatedBuilder(
       animation: player.backpack,
       builder: (ctx, _) {
-        return Scaffold(
-          appBar: AppBar(
-            title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
-            centerTitle: true,
-          ),
-          body: buildBody(),
-        );
+        return ctx.isPortrait ? buildPortrait() : buildLandscape();
       },
     );
   }
 
-  Widget buildBody() {
+  Widget buildPortrait() {
+    return Scaffold(
+      appBar: AppBar(
+        title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
+        centerTitle: true,
+      ),
+      body: buildPortraitBody(),
+    );
+  }
+
+  Widget buildLandscape() {
+    return Scaffold(
+      appBar: AppBar(
+        title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
+        centerTitle: true,
+      ),
+      body: buildLandscapeBody(),
+    );
+  }
+
+  Widget buildPortraitBody() {
     final backpack = player.backpack;
     if (backpack.isEmpty) {
       return buildEmptyBackpack();
@@ -62,6 +76,21 @@ class _BackpackPageState extends State<BackpackPage> {
         buildItems(player.backpack).flexible(flex: 5),
         buildButtonArea(_selected).flexible(flex: 1),
       ].column(maa: MainAxisAlignment.spaceBetween);
+    }
+  }
+
+  Widget buildLandscapeBody() {
+    final backpack = player.backpack;
+    if (backpack.isEmpty) {
+      return buildEmptyBackpack();
+    } else {
+      return [
+        [
+          buildDetailArea(_selected).flexible(flex: 4),
+          buildButtonArea(_selected).flexible(flex: 2),
+        ].column(maa: MainAxisAlignment.spaceBetween).expanded(),
+        buildItems(player.backpack).expanded(),
+      ].row();
     }
   }
 
@@ -161,11 +190,14 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Widget buildItem(ItemEntry item) {
     final isSelected = _selected == item;
-    Widget label = AutoSizeText(
-      item.meta.localizedName(),
-      style: context.textTheme.titleLarge,
-      textAlign: TextAlign.center,
-    ).center().padSymmetric(h: 2);
+    Widget label = ListTile(
+      title: AutoSizeText(
+        item.meta.localizedName(),
+        style: context.textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ),
+      subtitle: I.item.massWithUnit(item.actualMass).text(textAlign: TextAlign.right),
+    ).center();
     return CardButton(
       elevation: isSelected ? 20 : 1,
       onTap: () {

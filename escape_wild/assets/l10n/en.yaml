@@ -23,6 +23,9 @@ ui:
       {cur}g / {max}g
     discard: Discard
     empty-tip: Your backpack is empty.
+item:
+  mass-with-unit: >
+    {}g
 ok: OK
 yes: Yes
 no: No
