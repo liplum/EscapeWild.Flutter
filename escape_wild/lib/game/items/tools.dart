@@ -15,41 +15,41 @@ class Tools {
     // cutting
     Contents.items.addAll([
       survivalKnife = Item.unmergeable("survival-knife", mass: 100).asTool(
-        level: ToolLevel.high,
+        eff: ToolAttr.high,
         type: ToolType.cutting,
-        maxDurability: 40.0,
+        health: 40.0,
       ),
     ]);
     // oxe
     Contents.items.addAll([
       oldOxe = Item.unmergeable("old-oxe", mass: 3000).asTool(
         type: ToolType.oxe,
-        level: ToolLevel.low,
-        maxDurability: 30.0,
+        eff: ToolAttr.low,
+        health: 30.0,
       )
     ]);
     // fishing
     Contents.items.addAll([
       oldFishRod = Item.unmergeable("old-fish-rod", mass: 500).asTool(
         type: ToolType.fishing,
-        level: ToolLevel.normal,
-        maxDurability: 50.0,
+        eff: ToolAttr.normal,
+        health: 50.0,
       )
     ]);
     // gun
     Contents.items.addAll([
       oldShotgun = Item.unmergeable("old-shotgun", mass: 3000).asTool(
         type: ToolType.gun,
-        level: ToolLevel.low,
-        maxDurability: 50.0,
+        eff: ToolAttr.low,
+        health: 50.0,
       )
     ]);
     // trap
     Contents.items.addAll([
       bearTrap = Item.unmergeable("bear-trap", mass: 2000).asTool(
         type: ToolType.trap,
-        level: ToolLevel.high,
-        maxDurability: 30.0,
+        eff: ToolAttr.high,
+        health: 30.0,
       )
     ]);
   }

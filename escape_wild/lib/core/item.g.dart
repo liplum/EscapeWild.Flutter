@@ -26,19 +26,18 @@ Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
   return val;
 }
 
-ToolComp _$ToolCompFromJson(Map<String, dynamic> json) => ToolComp(
-      toolLevel: $enumDecodeNullable(_$ToolLevelEnumMap, json['toolLevel']) ??
-          ToolLevel.normal,
-      toolType: ToolType.named(json['toolType'] as String),
-      maxDurability: (json['maxDurability'] as num).toDouble(),
+ToolAttr _$ToolAttrFromJson(Map<String, dynamic> json) => ToolAttr(
+      efficiency: (json['efficiency'] as num).toDouble(),
+      durability: (json['durability'] as num).toDouble(),
     );
 
-const _$ToolLevelEnumMap = {
-  ToolLevel.low: 'low',
-  ToolLevel.normal: 'normal',
-  ToolLevel.high: 'high',
-  ToolLevel.max: 'max',
-};
+ToolComp _$ToolCompFromJson(Map<String, dynamic> json) => ToolComp(
+      attr: json['attr'] == null
+          ? ToolAttr.normal
+          : ToolAttr.fromJson(json['attr'] as Map<String, dynamic>),
+      toolType: ToolType.named(json['toolType'] as String),
+      maxHealth: (json['maxHealth'] as num).toDouble(),
+    );
 
 ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>
     ModifyAttrComp(

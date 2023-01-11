@@ -27,6 +27,16 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     return true;
   }
 
+  /// return whether the tool is broken and removed.
+  bool damageTool(ItemEntry item, ToolComp comp, double damage) {
+    comp.damageTool(item, damage);
+    if (comp.isBroken(item)) {
+      backpack.removeItem(item);
+      return true;
+    }
+    return false;
+  }
+
   @override
   AttrModel get attrs => $attrs.value;
 

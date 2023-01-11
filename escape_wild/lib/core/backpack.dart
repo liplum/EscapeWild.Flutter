@@ -1,12 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'backpack.g.dart';
 
 @JsonSerializable()
-class Backpack {
+class Backpack with ChangeNotifier {
   @JsonKey()
   List<ItemEntry> items = [];
   @JsonKey()
@@ -17,6 +18,24 @@ class Backpack {
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
 
   Map<String, dynamic> toJson() => _$BackpackToJson(this);
+
+  void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
+    for (final item in addition) {
+      addItemOrMerge(item);
+    }
+    notifyListeners();
+  }
+
+  void addItemOrMerge(ItemEntry item) {
+    _addItemOrMerge(item);
+    notifyListeners();
+  }
+
+  bool removeItem(ItemEntry item) {
+    final hasRemoved = items.remove(item);
+    notifyListeners();
+    return hasRemoved;
+  }
 }
 
 extension ItemEntryListX on List<ItemEntry> {
@@ -42,13 +61,7 @@ extension ItemEntryListX on List<ItemEntry> {
 }
 
 extension BackpackX on Backpack {
-  void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
-    for (final item in addition) {
-      addItemOrMerge(item);
-    }
-  }
-
-  void addItemOrMerge(ItemEntry item) {
+  void _addItemOrMerge(ItemEntry item) {
     if (item.meta.mergeable) {
       final existed = getItemByIdenticalMeta(item);
       if (existed != null) {
@@ -95,8 +108,8 @@ extension BackpackItemFinderX on Backpack {
     }
   }
 
-  ItemCompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
-    return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.toolLevel);
+  ItemCompPair<ToolComp>? findBesToolOfType(ToolType toolType) {
+    return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
   }
 
   bool hasAnyToolOfTypes(List<ToolType> toolTypes) {

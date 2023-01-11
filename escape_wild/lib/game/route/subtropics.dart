@@ -175,6 +175,7 @@ class RiversidePlace extends SubtropicsPlace {
   static const berry = 0.1;
   static const stone = 0.1;
   static const clearWater = 0.8;
+  static const fishing = 0.8;
 
   RiversidePlace(super.name);
 
@@ -187,7 +188,21 @@ class RiversidePlace extends SubtropicsPlace {
 
   @override
   Future<void> performFish() async {
-
+    final tool = player.backpack.findBesToolOfType(ToolType.fishing);
+    if (tool == null) return;
+    final comp = tool.comp;
+    final eff = comp.attr.efficiency;
+    final m = 1.5 - eff;
+    player.modifyX(Attr.food, -0.08 * m);
+    player.modifyX(Attr.water, -0.05 * m);
+    player.modifyX(Attr.energy, -0.10 * m);
+    final gain = <ItemEntry>[];
+    final any = randGain(fishing, gain, () => Foods.rawFish.create(massF: Rand.fluctuate(0.2)));
+    player.backpack.addItemsOrMergeAll(gain);
+    if (any && player.damageTool(tool.item, comp, 15.0)) {
+      await showToolBroken(ActionType.explore, tool.item);
+    }
+    await showGain(ActionType.explore, gain);
   }
 
   @override

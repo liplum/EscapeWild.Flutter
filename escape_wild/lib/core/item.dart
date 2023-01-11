@@ -1,5 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/utils/enum.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -129,7 +128,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     this.meta, {
     this.mass,
   });
-
+  String displayName() => meta.localizedName();
   @override
   String get typeName => type;
 
@@ -195,12 +194,52 @@ class EmptyComp extends Comp {
 
 String _getItemMetaName(Item meta) => meta.name;
 
-@JsonEnum()
-enum ToolLevel with EnumCompareByIndexMixin {
-  low,
-  normal,
-  high,
-  max;
+@JsonSerializable(createToJson: false)
+class ToolAttr implements Comparable<ToolAttr> {
+  @JsonKey()
+  final double efficiency;
+  @JsonKey()
+  final double durability;
+
+  const ToolAttr({required this.efficiency, required this.durability});
+
+  static const ToolAttr low = ToolAttr(
+        efficiency: 0.6,
+        durability: 0.6,
+      ),
+      normal = ToolAttr(
+        efficiency: 1.0,
+        durability: 1.0,
+      ),
+      high = ToolAttr(
+        efficiency: 1.8,
+        durability: 1.5,
+      ),
+      max = ToolAttr(
+        efficiency: 2.0,
+        durability: 2.0,
+      );
+
+  /// When [durability] is under zero, tool will suffer more damage.
+  double fixDamage(double damage) {
+    // TODO: Better formula
+    return damage / durability;
+  }
+
+  factory ToolAttr.fromJson(Map<String, dynamic> json) => _$ToolAttrFromJson(json);
+
+  @override
+  int compareTo(ToolAttr other) => efficiency.compareTo(other.efficiency);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ToolAttr || runtimeType != other.runtimeType) return false;
+    return efficiency == other.efficiency;
+  }
+
+  @override
+  int get hashCode => efficiency.hashCode;
 }
 
 class ToolType {
@@ -211,6 +250,7 @@ class ToolType {
   factory ToolType.named(String name) => ToolType(name);
 
   static const ToolType cutting = ToolType("cutting");
+
   /// Use to cut down tree
   static const ToolType oxe = ToolType("oxe");
 
@@ -219,6 +259,7 @@ class ToolType {
 
   /// Use to hunt
   static const ToolType gun = ToolType("gun");
+
   /// Use to fish
   static const ToolType fishing = ToolType("fishing");
 
@@ -235,22 +276,30 @@ class ToolType {
 
 @JsonSerializable(createToJson: false)
 class ToolComp extends ItemComp {
+  @JsonKey(fromJson: ToolAttr.fromJson)
+  final ToolAttr attr;
   @JsonKey()
-  final ToolLevel toolLevel;
-  @JsonKey()
-  final double maxDurability;
+  final double maxHealth;
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
   ToolComp({
-    this.toolLevel = ToolLevel.normal,
+    this.attr = ToolAttr.normal,
     required this.toolType,
-    required this.maxDurability,
+    required this.maxHealth,
   });
 
-  double getDurability(ItemEntry item) => item["Tool.durability"] ?? 0.0;
+  void damageTool(ItemEntry item, double damage) {
+    damage = attr.fixDamage(damage);
+    final former = getHealth(item);
+    setHealth(item, former - damage);
+  }
 
-  void setDurability(ItemEntry item, double value) => item["Tool.durability"] = value;
+  double getHealth(ItemEntry item) => item["Tool.health"] ?? 0.0;
+
+  bool isBroken(ItemEntry item) => getHealth(item) <= 0;
+
+  void setHealth(ItemEntry item, double value) => item["Tool.health"] = value;
 
   @override
   void validateItemConfig(Item item) {
@@ -273,13 +322,13 @@ class ToolComp extends ItemComp {
 extension ToolCompX on Item {
   Item asTool({
     required ToolType type,
-    ToolLevel level = ToolLevel.normal,
-    required double maxDurability,
+    ToolAttr eff = ToolAttr.normal,
+    required double health,
   }) {
     final comp = ToolComp(
-      toolLevel: level,
+      attr: eff,
       toolType: type,
-      maxDurability: maxDurability,
+      maxHealth: health,
     );
     comp.validateItemConfig(this);
     addComp(comp);

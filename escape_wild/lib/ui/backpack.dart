@@ -28,7 +28,12 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Widget buildBody() {
-    return buildItems(player.backpack);
+    return AnimatedBuilder(
+      animation: player.backpack,
+      builder: (ctx, _) {
+        return buildItems(player.backpack);
+      },
+    );
   }
 
   Widget buildItems(Backpack backpack) {
