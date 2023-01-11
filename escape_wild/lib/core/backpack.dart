@@ -20,18 +20,23 @@ class Backpack with ChangeNotifier {
   Map<String, dynamic> toJson() => _$BackpackToJson(this);
 
   void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
+    var addedOrMerged = false;
     for (final item in addition) {
-      addItemOrMerge(item);
+      addedOrMerged |= _addItemOrMerge(item);
     }
-    notifyListeners();
+    if (addedOrMerged) {
+      notifyListeners();
+    }
   }
 
   void addItemOrMerge(ItemEntry item) {
-    _addItemOrMerge(item);
-    notifyListeners();
+    if (_addItemOrMerge(item)) {
+      notifyListeners();
+    }
   }
 
   bool removeItem(ItemEntry item) {
+    if (item.isEmpty) return true;
     final hasRemoved = items.remove(item);
     if (hasRemoved) {
       mass -= item.actualMass;
@@ -41,6 +46,7 @@ class Backpack with ChangeNotifier {
   }
 
   int indexOfItem(ItemEntry item) {
+    if (item.isEmpty) return -1;
     return items.indexOf(item);
   }
 }
@@ -68,7 +74,9 @@ extension ItemEntryListX on List<ItemEntry> {
 }
 
 extension BackpackX on Backpack {
-  void _addItemOrMerge(ItemEntry item) {
+  /// return whether [item] is added or merged.
+  bool _addItemOrMerge(ItemEntry item) {
+    if (item.isEmpty) return false;
     if (item.meta.mergeable) {
       final existed = getItemByIdenticalMeta(item);
       if (existed != null) {
@@ -80,6 +88,7 @@ extension BackpackX on Backpack {
       items.add(item);
     }
     mass += item.actualMass;
+    return true;
   }
 
   double sumMass() {

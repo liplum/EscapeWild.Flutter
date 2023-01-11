@@ -106,7 +106,18 @@ class ItemCompConflictError implements Exception {
 abstract class ItemComp extends Comp {
   void validateItemConfig(Item item) {}
 
+  /// ## preconditions:
+  /// - The [ItemEntry.mass] of [from] and [to] are not changed.
+  /// ## contrarians:
+  /// - Implementation mustn't change [ItemEntry.mass].
   void onMerge(ItemEntry from, ItemEntry to) {}
+
+  /// ## preconditions:
+  /// - The [ItemEntry.mass] of [from] and [to] are not changed.
+  /// - [to] has an [Item.extra] clone from [from].
+  /// ## contrarians:
+  /// - Implementation mustn't change [ItemEntry.mass].
+  void onSplit(ItemEntry from, ItemEntry to) {}
 }
 
 class ItemCompPair<T extends Comp> {
@@ -118,6 +129,7 @@ class ItemCompPair<T extends Comp> {
 
 @JsonSerializable()
 class ItemEntry with ExtraMixin implements JConvertibleProtocol {
+  static final empty = ItemEntry(Item.empty);
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final Item meta;
   static const type = "Item";
@@ -136,6 +148,10 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 
   bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
 
+  bool get canSplit => meta.mergeable;
+
+  bool get isEmpty => identical(this, empty) || meta == Item.empty || actualMass <= 0;
+
   @override
   String toString() {
     final m = mass;
@@ -148,33 +164,49 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 
   void mergeTo(ItemEntry to) {
-    if (!meta.mergeable) {
-      throw MergeNotAllowedError("${meta.name} is not mergeable.", meta);
-    }
+    assert(meta.mergeable, "${meta.name} is not mergeable.");
+    if (!meta.mergeable) return;
+    assert(hasIdenticalMeta(to), "Can't merge ${meta.name} with ${to.meta.name}.");
+    if (!hasIdenticalMeta(to)) return;
     final selfMass = actualMass;
     final toMass = to.actualMass;
-    if (!hasIdenticalMeta(to)) {
-      throw MergeNotAllowedError("Can't merge ${meta.name} with ${to.meta}.", meta);
-    }
+    // handle components
     for (final comp in meta.iterateComps()) {
       comp.onMerge(this, to);
     }
     to.mass = selfMass + toMass;
   }
 
+  ItemEntry split(int mass) {
+    assert(mass > 0, "`mass` to split must be more than 0");
+    if (mass <= 0) return empty;
+    assert(actualMass >= mass, "Self `mass` must be more than `mass` to split.");
+    if (actualMass < mass) return empty;
+    assert(canSplit, "${meta.name} can't be split.");
+    if (!canSplit) return empty;
+    final selfMass = actualMass;
+    // if self mass is less than or equal to mass to split, return a clone.
+    if (selfMass <= mass) return clone();
+    final part = ItemEntry(meta, mass: mass);
+    // clone extra
+    part.extra = cloneExtra();
+    // handle components
+    for (final comp in meta.iterateComps()) {
+      comp.onSplit(this, part);
+    }
+    this.mass = selfMass - mass;
+    return part;
+  }
+
   factory ItemEntry.fromJson(Map<String, dynamic> json) => _$ItemEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemEntryToJson(this);
-}
 
-class MergeNotAllowedError implements Exception {
-  final String message;
-  final Item item;
-
-  const MergeNotAllowedError(this.message, this.item);
-
-  @override
-  String toString() => "[${item.name}]$message";
+  ItemEntry clone() {
+    final cloned = ItemEntry(meta, mass: mass);
+    cloned.extra = cloneExtra();
+    return cloned;
+  }
 }
 
 extension ItemEntryX on ItemEntry {
