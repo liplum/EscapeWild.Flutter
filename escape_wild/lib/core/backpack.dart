@@ -83,7 +83,13 @@ extension BackpackX on Backpack {
     return sum;
   }
 
+  ItemEntry? get firstOrNull => items.first;
+
   int get itemCount => items.length;
+
+  bool get isEmpty => items.isEmpty;
+
+  bool get isNotEmpty => items.isNotEmpty;
 
   ItemEntry operator [](int index) => items[index];
 

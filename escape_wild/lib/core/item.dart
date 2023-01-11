@@ -128,7 +128,9 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     this.meta, {
     this.mass,
   });
+
   String displayName() => meta.localizedName();
+
   @override
   String get typeName => type;
 
@@ -341,6 +343,8 @@ enum UseType {
   use,
   drink,
   eat;
+
+  String localizeName() => I18n["use-type.$name"];
 }
 
 abstract class UsableItemComp extends ItemComp {

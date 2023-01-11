@@ -1,6 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/ui/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -131,8 +132,8 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
   Widget buildActionBtn(PlaceAction action) {
     final type = action.type;
     final canPerform = action.canPerform();
-    return InkWell(
-      borderRadius: context.cardBorderRadius,
+    return CardButton(
+      elevation: canPerform ? 10 : 0,
       onTap: !canPerform
           ? null
           : () async {
@@ -150,6 +151,6 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
             ),
           )
           .center(),
-    ).inCard(elevation: canPerform ? 4 : 0);
+    );
   }
 }

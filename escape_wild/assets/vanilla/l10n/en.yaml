@@ -5,6 +5,10 @@ action:
   hunt: Hunt
   cut-down-tree: Cut Down
   fish: Fish
+use-type:
+  use: Use
+  eat: Eat
+  drink: Drink
 item:
   energy-bar:
     name: Energy Bar
@@ -30,6 +34,12 @@ item:
   energy-drink:
     name: Energy Drink
     desc: Watch out the beast.
+  cut-grass:
+    name: Cut Grass
+    desc: It's not green and but still renewable.
+  sticks:
+    name: Sticks
+    desc: You can find them anywhere.
   nuts:
     name: Nuts
     desc: Where is my nutcracker?

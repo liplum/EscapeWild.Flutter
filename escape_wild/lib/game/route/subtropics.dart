@@ -18,7 +18,7 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     route.addAll(genRiverside(route, (dst * 0.2).toInt()));
     route.addAll(genCave(route, (dst * 0.1).toInt()));
     route.addAll(genPlain(route, (dst * 0.15).toInt()));
-    // random add a hut.
+    // randomly add a hut.
     route.insert(Rand.int(0, route.placeCount - 1), HutPlace("hut"));
     return route;
   }
