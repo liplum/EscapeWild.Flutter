@@ -32,8 +32,6 @@ class Foods {
   static late final Item bearMeat, cookedBearMeat, bearExcrement;
   static late final Item reindeerMeat, cookedReindeerMeat;
 
-
-
   static void registerAll() {
     // food
     Contents.items.addAll([
@@ -61,11 +59,11 @@ class Foods {
       dirtyWater = Item.mergeable("dirty-water", mass: 200).asDrinkable([
         Attr.health - 0.085,
         Attr.water + 0.15,
-      ]).asCookable(CookType.boil, unit: 200, fuelCost: 30, output: () => boiledWater),
+      ]).asCookable(CookType.boil, fuelCost: 30, output: () => boiledWater),
       clearWater = Item.mergeable("clear-water", mass: 200).asDrinkable([
         Attr.health - 0.02,
         Attr.water + 0.18,
-      ]).asCookable(CookType.boil, unit: 200, fuelCost: 30, output: () => boiledWater),
+      ]).asCookable(CookType.boil, fuelCost: 30, output: () => boiledWater),
       cleanWater = Item.mergeable("clean-water", mass: 200).asDrinkable([
         Attr.water + 0.235,
       ]),
@@ -86,13 +84,13 @@ class Foods {
       berry = Item.mergeable("berry", mass: 80).asEatable([
         Attr.food + 0.12,
         Attr.water + 0.06,
-      ]).asCookable(CookType.roast, unit: 80, fuelCost: 30, output: () => roastedBerry),
+      ]).asCookable(CookType.roast, fuelCost: 30, output: () => roastedBerry),
       roastedBerry = Item.mergeable("roasted-berry", mass: 80).asEatable([
         Attr.food + 0.185,
       ]),
       nuts = Item.mergeable("nuts", mass: 80).asEatable([
         Attr.food + 0.08,
-      ]).asCookable(CookType.roast, unit: 80, fuelCost: 25, output: () => toastedNuts),
+      ]).asCookable(CookType.roast, fuelCost: 25, output: () => toastedNuts),
       toastedNuts = Item.mergeable("toasted-nuts", mass: 80).asEatable([
         Attr.food + 0.12,
       ]),
@@ -101,7 +99,6 @@ class Foods {
         Attr.water + 0.05,
       ]).asCookable(
         CookType.cook,
-        unit: 500,
         fuelCost: 200,
         output: () => cookedRabbit,
       ),
@@ -113,7 +110,6 @@ class Foods {
         Attr.water + 0.08,
       ]).asCookable(
         CookType.cook,
-        unit: 500,
         fuelCost: 145,
         output: () => cookedFish,
       ),

@@ -70,6 +70,16 @@ extension ItemX on Item {
       return ItemEntry(this);
     }
   }
+
+  List<ItemEntry> repeat(int number) {
+    assert(number > 0, "`number` should be over than 0.");
+    assert(!mergeable, "only unmergeable can be generated repeatedly.");
+    if (mergeable) {
+      return [];
+    } else {
+      return List.generate(number.abs(), (i) => ItemEntry(this));
+    }
+  }
 }
 
 class ItemMergeableCompConflictError implements Exception {
@@ -200,11 +210,17 @@ class ToolType {
 
   factory ToolType.named(String name) => ToolType(name);
 
-  static const ToolType cutting = ToolType("cutting"),
-      oxe = ToolType("oxe"),
-      trap = ToolType("trap"),
-      gun = ToolType("gun"),
-      fishing = ToolType("fishing");
+  static const ToolType cutting = ToolType("cutting");
+  /// Use to cut down tree
+  static const ToolType oxe = ToolType("oxe");
+
+  /// Use to hunt
+  static const ToolType trap = ToolType("trap");
+
+  /// Use to hunt
+  static const ToolType gun = ToolType("gun");
+  /// Use to fish
+  static const ToolType fishing = ToolType("fishing");
 
   @override
   bool operator ==(Object other) {
@@ -413,15 +429,20 @@ class CookableComp extends ItemComp {
   final double fuelCost;
   @JsonKey(fromJson: _namedItemGetter)
   final ItemGetter<Item> cookedOutput;
-  @JsonKey()
-  final double? fuelCostUnit;
 
   CookableComp(
     this.cookType,
     this.fuelCost,
-    this.cookedOutput, {
-    this.fuelCostUnit,
-  });
+    this.cookedOutput,
+  );
+
+  double getActualFuelCost(ItemEntry item) {
+    if (item.meta.mergeable) {
+      return item.massMultiplier * fuelCost;
+    } else {
+      return fuelCost;
+    }
+  }
 
   @override
   void validateItemConfig(Item item) {
@@ -446,13 +467,11 @@ extension CookableCompX on Item {
     CookType cookType, {
     required double fuelCost,
     required ItemGetter<Item> output,
-    double? unit,
   }) {
     final comp = CookableComp(
       cookType,
       fuelCost,
       output,
-      fuelCostUnit: unit,
     );
     comp.validateItemConfig(this);
     addComp(comp);

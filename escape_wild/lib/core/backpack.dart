@@ -20,7 +20,7 @@ class Backpack {
 }
 
 extension ItemEntryListX on List<ItemEntry> {
-  void addItemsOrMergeAll(List<ItemEntry> additions) {
+  void addItemOrMergeAll(List<ItemEntry> additions) {
     for (final addition in additions) {
       addItemOrMerge(addition);
     }
@@ -103,6 +103,16 @@ extension BackpackItemFinderX on Backpack {
     for (final item in items) {
       final asTool = item.meta.tryGetFirstComp<ToolComp>();
       if (asTool != null && toolTypes.contains(asTool.toolType)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool hasAnyToolOfType(ToolType toolType) {
+    for (final item in items) {
+      final asTool = item.meta.tryGetFirstComp<ToolComp>();
+      if (asTool != null && asTool.toolType == toolType) {
         return true;
       }
     }

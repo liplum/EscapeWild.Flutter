@@ -46,6 +46,10 @@ class PlaceAction {
       ToolType.gun,
     ]),
   );
+  static final fishWithTool = PlaceAction(
+    ActionType.fish,
+    () => player.backpack.hasAnyToolOfType(ToolType.fishing),
+  );
   static final rest = PlaceAction(ActionType.rest, () => true);
 }
 

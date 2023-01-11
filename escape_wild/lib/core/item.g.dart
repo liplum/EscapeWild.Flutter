@@ -59,7 +59,6 @@ CookableComp _$CookableCompFromJson(Map<String, dynamic> json) => CookableComp(
       $enumDecode(_$CookTypeEnumMap, json['cookType']),
       (json['fuelCost'] as num).toDouble(),
       _namedItemGetter(json['cookedOutput'] as String),
-      fuelCostUnit: (json['fuelCostUnit'] as num?)?.toDouble(),
     );
 
 const _$CookTypeEnumMap = {
