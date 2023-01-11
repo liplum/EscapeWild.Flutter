@@ -3,6 +3,7 @@ export 'package:escape_wild/core/attribute.dart';
 export 'package:escape_wild/core/backpack.dart';
 export 'package:escape_wild/core/content.dart';
 export 'package:escape_wild/core/ecs.dart';
+export 'package:escape_wild/core/i18n.dart';
 export 'package:escape_wild/core/hardness.dart';
 export 'package:escape_wild/core/item.dart';
 export 'package:escape_wild/core/explore.dart';

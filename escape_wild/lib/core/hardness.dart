@@ -1,5 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/i18n.dart';
 import 'package:escape_wild/utils/random.dart';
 import 'package:flutter/foundation.dart';
 
