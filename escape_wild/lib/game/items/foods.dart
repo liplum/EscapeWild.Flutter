@@ -9,7 +9,7 @@ class Foods {
 
   // energy food
   static late final Item energyBar, energyDrink;
-  static late final Item longicornLarva, wetLichen;
+  static late final Item bugMeat, wetLichen;
 
   // rabbit
   static late final Item rawRabbit, cookedRabbit;
@@ -27,8 +27,12 @@ class Foods {
   static late final Item bottledWater, dirtyWater, clearWater, cleanWater, boiledWater, filteredWater;
 
   // tea
-  static late final Item dandelionTea;
+  static late final Item flowerTea;
   static late final Item rockSalt;
+  static late final Item bearMeat, cookedBearMeat, bearExcrement;
+  static late final Item reindeerMeat, cookedReindeerMeat;
+
+
 
   static void registerAll() {
     // food
@@ -37,14 +41,17 @@ class Foods {
         Attr.food + 0.32,
         Attr.energy + 0.1,
       ]),
-      longicornLarva = Item.mergeable("longicorn-larva", mass: 10).asEatable([
+      bugMeat = Item.mergeable("longicorn-larva", mass: 10).asEatable([
         Attr.food + 0.1,
         Attr.water + 0.1,
       ]),
       wetLichen = Item.mergeable("wet-lichen", mass: 10).asEatable([
         Attr.food + 0.05,
         Attr.water + 0.2,
-      ])
+      ]),
+      bearExcrement = Item.mergeable("bear-excrement", mass: 666).asEatable([
+        Attr.food + 0.06,
+      ]),
     ]);
     // water
     Contents.items.addAll([
@@ -113,7 +120,7 @@ class Foods {
       cookedFish = Item.mergeable("cooked-fish", mass: 500).asEatable([
         Attr.food + 0.52,
       ]),
-      dandelionTea = Item.mergeable("dandelion-tea", mass: 100).asDrinkable([
+      flowerTea = Item.mergeable("dandelion-tea", mass: 100).asDrinkable([
         Attr.water + 0.20,
         //After drinking this, the pain caused by constipation will be slightly reduced
       ]),
@@ -121,6 +128,14 @@ class Foods {
         Attr.water - 0.3,
         Attr.energy + 0.03,
         //
+      ]),
+      bearMeat = Item.mergeable("bear-meat", mass: 666).asEatable([Attr.food + 0.1]).asCookable(
+        CookType.cook,
+        fuelCost: 180,
+        output: () => cookedBearMeat,
+      ),
+      cookedBearMeat = Item.mergeable("cookedBearMeat", mass: 666).asEatable([
+        Attr.food + 0.4,
       ]),
     ]);
   }

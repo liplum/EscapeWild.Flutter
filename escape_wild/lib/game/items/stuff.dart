@@ -6,7 +6,7 @@ class Stuff {
 
   // fire related
   static late final Item plasticBottle, sticks, cutGrass, log, dryLichen, ember, tinder;
-  static late final Item dandelion;
+  static late final Item flower;
   static late final Item strawRope;
 
   // stone
@@ -20,7 +20,7 @@ class Stuff {
       cutGrass = Item.mergeable("cut-grass", mass: 200).asFuel(heatValue: 4.5),
       log = Item.mergeable("log", mass: 500).asFuel(heatValue: 20.0),
       dryLichen = Item.mergeable("dry-lichen", mass: 10).asFuel(heatValue: 10.0),
-      dandelion = Item.mergeable("dandelion", mass: 10),
+      flower = Item.mergeable("dandelion", mass: 10),
       //It is said that dandelion boiled with water can relieve some constipation
       ember = Item.mergeable("ember", mass: 5),
       tinder = Item.mergeable("tinder", mass: 5),
