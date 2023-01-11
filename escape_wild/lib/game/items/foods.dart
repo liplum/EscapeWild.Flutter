@@ -22,11 +22,16 @@ class Foods {
   static late final Item nuts, toastedNuts;
 
   // water
-  static late final Item bottledWater, dirtyWater, cleanWater, boiledWater, filteredWater;
+  static late final Item bottledWater,
+      dirtyWater,
+      cleanWater,
+      boiledWater,
+      filteredWater;
 
   // tea
   static late final Item dandelionTea;
   static late final Item rockSalt;
+  static late final Item bearMeat, cookedBearMeat;
 
   static void registerAll() {
     // food
@@ -42,7 +47,7 @@ class Foods {
       wetLichen = Item("wet-lichen").asEatable([
         Attr.food + 0.05,
         Attr.water + 0.2,
-      ], unit: 10)
+      ], unit: 10),
     ]);
     // water
     Contents.items.addAll([
@@ -52,7 +57,8 @@ class Foods {
       dirtyWater = Item("dirty-water").asDrinkable([
         Attr.health - 0.085,
         Attr.water + 0.15,
-      ], unit: 200).asCookable(CookType.boil, unit: 200, fuelCost: 30, output: () => boiledWater),
+      ], unit: 200).asCookable(CookType.boil,
+          unit: 200, fuelCost: 30, output: () => boiledWater),
       cleanWater = Item("clean-water").asDrinkable([
         Attr.health - 0.005,
         Attr.water + 0.235,
@@ -74,13 +80,15 @@ class Foods {
       berry = Item("berry").asEatable([
         Attr.food + 0.12,
         Attr.water + 0.06,
-      ], unit: 80).asCookable(CookType.roast, unit: 80,fuelCost: 30, output: () => roastedBerry),
+      ], unit: 80).asCookable(CookType.roast,
+          unit: 80, fuelCost: 30, output: () => roastedBerry),
       roastedBerry = Item("roasted-berry").asEatable([
         Attr.food + 0.185,
       ], unit: 80),
       nuts = Item("nuts").asEatable([
         Attr.food + 0.08,
-      ], unit: 80).asCookable(CookType.roast, unit: 80, fuelCost: 25, output: () => toastedNuts),
+      ], unit: 80).asCookable(CookType.roast,
+          unit: 80, fuelCost: 25, output: () => toastedNuts),
       toastedNuts = Item("toasted-nuts").asEatable([
         Attr.food + 0.12,
       ], unit: 80),
@@ -117,6 +125,11 @@ class Foods {
         Attr.energy + 0.03,
         //
       ], unit: 10),
+      bearMeat = Item("bear-meat").asEatable([Attr.food + 0.1]).asCookable(
+        CookType.cook,
+        fuelCost: 180,
+        output: () => cookedBearMeat,
+      ),
     ]);
   }
 }

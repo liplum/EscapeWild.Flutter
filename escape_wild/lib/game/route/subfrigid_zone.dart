@@ -56,3 +56,5 @@ class ConiferousForest extends SubFrigidZonePlace {}
 class BrownBearNest extends SubFrigidZonePlace {}
 
 class Tundra extends SubFrigidZonePlace {}
+
+class Swamp extends SubFrigidZonePlace {}
