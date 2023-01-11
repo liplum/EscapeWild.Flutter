@@ -108,8 +108,21 @@ extension BackpackItemFinderX on Backpack {
     }
   }
 
+  Iterable<ItemCompPair<ToolComp>> findToolsOfTypes(List<ToolType> toolTypes) sync* {
+    for (final item in items) {
+      final asTool = item.meta.tryGetFirstComp<ToolComp>();
+      if (asTool != null && toolTypes.contains(asTool.toolType)) {
+        yield ItemCompPair(item, asTool);
+      }
+    }
+  }
+
   ItemCompPair<ToolComp>? findBesToolOfType(ToolType toolType) {
     return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
+  }
+
+  ItemCompPair<ToolComp>? findBesToolOfTypes(List<ToolType> toolTypes) {
+    return findToolsOfTypes(toolTypes).maxOfOrNull((p) => p.comp.attr);
   }
 
   bool hasAnyToolOfTypes(List<ToolType> toolTypes) {

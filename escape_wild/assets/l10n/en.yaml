@@ -28,4 +28,5 @@ alright: Alright
 action:
   got-items: You got {}.
   got-nothing: You got nothing.
-  tool-broken: {} is completely broken, it can't work any more.
+  tool-broken: >
+    {} is completely broken, it can't work any more.

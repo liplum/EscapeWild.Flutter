@@ -18,6 +18,9 @@ item:
   clean-water:
     name: Clean Water
     desc: Mmmm, a bit sweet.
+  clear-water:
+    name: Clear Water
+    desc: It looks clear.
   boiled-water:
     name: Boiled Water
     desc: ...
@@ -27,6 +30,12 @@ item:
   energy-drink:
     name: Energy Drink
     desc: Watch out the beast.
+  nuts:
+    name: Nuts
+    desc: Where is my nutcracker?
+  toasted-nuts:
+    name: Toasted Nuts
+    desc: The surface is a little burnt.
   berry:
     name: Berry
     desc: It reminds me of jam.

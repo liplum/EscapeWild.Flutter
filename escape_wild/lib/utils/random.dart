@@ -2,6 +2,8 @@ import 'dart:core' as core;
 import 'dart:math';
 
 class Rand {
+  Rand._();
+
   static Random _rand = Random();
 
   static void setSeed(core.int seed) {
@@ -24,7 +26,7 @@ class Rand {
     return _rand.nextDouble();
   }
 
-  static core.double fluctuate(core.double fluctuate,[core.double basedOn = 1]) {
+  static core.double fluctuate(core.double fluctuate, [core.double basedOn = 1]) {
     fluctuate = fluctuate.abs();
     return float(basedOn - fluctuate, basedOn + fluctuate);
   }

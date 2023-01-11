@@ -13,12 +13,51 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     final route = SubtropicsRoute("subtropics");
     // now just try to fill the route with plain.
     final dst = ctx.hardness.journeyDistance().toInt();
-    for (var i = 0; i < dst; i++) {
-      final place = PlainPlace("plain");
-      place.route = route;
-      route.places.add(place);
-    }
+    route.addAll(genPlain(route, (dst * 0.35).toInt()));
+    route.addAll(genForest(route, (dst * 0.2).toInt()));
+    route.addAll(genRiverside(route, (dst * 0.2).toInt()));
+    route.addAll(genCave(route, (dst * 0.1).toInt()));
+    route.addAll(genPlain(route, (dst * 0.15).toInt()));
+    // random add a hut.
+    route.insert(Rand.int(0, route.placeCount - 1), HutPlace("hut"));
     return route;
+  }
+
+  List<SubtropicsPlace> genPlain(SubtropicsRoute route, int number) {
+    final res = <SubtropicsPlace>[];
+    for (var i = 0; i < number; i++) {
+      final place = PlainPlace("plain");
+      res.add(place);
+    }
+    return res;
+  }
+
+  List<SubtropicsPlace> genForest(SubtropicsRoute route, int number) {
+    final res = <SubtropicsPlace>[];
+    for (var i = 0; i < number; i++) {
+      final place = ForestPlace("forest");
+      res.add(place);
+    }
+    return res;
+  }
+
+  List<SubtropicsPlace> genRiverside(SubtropicsRoute route, int number) {
+    final res = <SubtropicsPlace>[];
+    for (var i = 0; i < number; i++) {
+      final place = RiversidePlace("riverside");
+      res.add(place);
+    }
+    return res;
+  }
+
+  List<SubtropicsPlace> genCave(SubtropicsRoute route, int number) {
+    final res = <SubtropicsPlace>[];
+    for (var i = 0; i < number; i++) {
+      final place = CavePlace("cave");
+      place.route = route;
+      res.add(place);
+    }
+    return res;
   }
 }
 
@@ -29,6 +68,9 @@ class SubtropicsRoute extends RouteProtocol {
   SubtropicsRoute(this.name);
 
   List<SubtropicsPlace> places = [];
+
+  int get placeCount => places.length;
+
   double routeProgress = 0.0;
 
   double getRouteProgress() => routeProgress;
@@ -39,6 +81,22 @@ class SubtropicsRoute extends RouteProtocol {
 
   @override
   PlaceProtocol get initialPlace => places[0];
+
+  void add(SubtropicsPlace place) {
+    places.add(place);
+    place.route = this;
+  }
+
+  void addAll(Iterable<SubtropicsPlace> places) {
+    for (final place in places) {
+      add(place);
+    }
+  }
+
+  void insert(int index, SubtropicsPlace place) {
+    places.insert(index, place);
+    place.route = this;
+  }
 
   Future<void> setRouteProgress(double value) async {
     var old = current;
@@ -58,6 +116,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   String name;
   @JsonKey()
   int exploreCount = 0;
+  static const hunt = 0.8;
 
   SubtropicsPlace(this.name);
 
@@ -73,6 +132,25 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
       PlaceAction.rest,
       PlaceAction.huntWithTool,
     ];
+  }
+
+  @override
+  Future<void> performHunt() async {
+    final tool = player.backpack.findBesToolOfTypes([ToolType.trap, ToolType.gun]);
+    if (tool == null) return;
+    final comp = tool.comp;
+    final eff = comp.attr.efficiency;
+    final m = 2.0 - eff;
+    player.modifyX(Attr.food, -0.10 * m);
+    player.modifyX(Attr.water, -0.12 * m);
+    player.modifyX(Attr.energy, -0.20 * m);
+    final gain = <ItemEntry>[];
+    final any = randGain(hunt, gain, () => Foods.rawRabbit.create(massF: Rand.fluctuate(0.2)));
+    player.backpack.addItemsOrMergeAll(gain);
+    if (any && player.damageTool(tool.item, comp, 15.0)) {
+      await showToolBroken(ActionType.hunt, tool.item);
+    }
+    await showGain(ActionType.hunt, gain);
   }
 
   @override
@@ -192,7 +270,7 @@ class RiversidePlace extends SubtropicsPlace {
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;
-    final m = 1.5 - eff;
+    final m = 2.0 - eff;
     player.modifyX(Attr.food, -0.08 * m);
     player.modifyX(Attr.water, -0.05 * m);
     player.modifyX(Attr.energy, -0.10 * m);
@@ -200,9 +278,9 @@ class RiversidePlace extends SubtropicsPlace {
     final any = randGain(fishing, gain, () => Foods.rawFish.create(massF: Rand.fluctuate(0.2)));
     player.backpack.addItemsOrMergeAll(gain);
     if (any && player.damageTool(tool.item, comp, 15.0)) {
-      await showToolBroken(ActionType.explore, tool.item);
+      await showToolBroken(ActionType.fish, tool.item);
     }
-    await showGain(ActionType.explore, gain);
+    await showGain(ActionType.fish, gain);
   }
 
   @override
