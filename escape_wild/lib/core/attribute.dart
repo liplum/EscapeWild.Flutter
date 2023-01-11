@@ -1,6 +1,6 @@
 import 'dart:math';
+import 'package:escape_wild/core.dart';
 
-import 'package:escape_wild/i18n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -198,6 +198,25 @@ class AttrModifier {
   const AttrModifier(this.attr, this.delta);
 
   factory AttrModifier.fromJson(Map<String, dynamic> json) => _$AttrModifierFromJson(json);
+
+  AttrModifier copyWith({
+    Attr? attr,
+    double? delta,
+  }) =>
+      AttrModifier(
+        attr ?? this.attr,
+        delta ?? this.delta,
+      );
+}
+
+extension AttrModifierX on AttrModifier {
+  AttrModifier operator +(double delta) => AttrModifier(attr, this.delta + delta);
+
+  AttrModifier operator -(double delta) => AttrModifier(attr, this.delta + delta);
+
+  AttrModifier operator *(double factor) => AttrModifier(attr, delta * factor);
+
+  AttrModifier operator /(double factor) => AttrModifier(attr, delta / factor);
 }
 
 extension AttrTypeX on Attr {

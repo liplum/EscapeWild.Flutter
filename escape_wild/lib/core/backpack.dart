@@ -19,7 +19,35 @@ class Backpack {
   Map<String, dynamic> toJson() => _$BackpackToJson(this);
 }
 
+extension ItemEntryListX on List<ItemEntry> {
+  void addItemsOrMergeAll(List<ItemEntry> additions) {
+    for (final addition in additions) {
+      addItemOrMerge(addition);
+    }
+  }
+
+  void addItemOrMerge(ItemEntry addition) {
+    var merged = false;
+    for (final result in this) {
+      if (addition.canMergeTo(result)) {
+        addition.mergeTo(result);
+        merged = true;
+        break;
+      }
+    }
+    if (!merged) {
+      add(addition);
+    }
+  }
+}
+
 extension BackpackX on Backpack {
+  void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
+    for (final item in addition) {
+      addItemOrMerge(item);
+    }
+  }
+
   void addItemOrMerge(ItemEntry item) {
     if (item.meta.mergeable) {
       final existed = getItemByIdenticalMeta(item);
@@ -31,13 +59,13 @@ extension BackpackX on Backpack {
     } else {
       items.add(item);
     }
-    mass += item.getActualMassOr();
+    mass += item.actualMass;
   }
 
   double sumMass() {
     var sum = 0.0;
     for (final item in items) {
-      sum += item.getActualMassOr();
+      sum += item.actualMass;
     }
     return sum;
   }

@@ -8,7 +8,7 @@ part of 'item.dart';
 
 ItemEntry _$ItemEntryFromJson(Map<String, dynamic> json) => ItemEntry(
       Contents.getItemMetaByName(json['meta'] as String),
-      mass: (json['mass'] as num?)?.toDouble(),
+      mass: json['mass'] as int?,
     )..extra = json['extra'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
@@ -46,7 +46,6 @@ ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>
       (json['modifiers'] as List<dynamic>)
           .map((e) => AttrModifier.fromJson(e as Map<String, dynamic>))
           .toList(),
-      modifierUnit: (json['modifierUnit'] as num?)?.toDouble(),
       afterUsedItem: _namedItemGetter(json['afterUsedItem'] as String),
     );
 
@@ -71,5 +70,4 @@ const _$CookTypeEnumMap = {
 
 FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
       (json['heatValue'] as num).toDouble(),
-      fuelUnit: (json['fuelUnit'] as num?)?.toDouble(),
     );

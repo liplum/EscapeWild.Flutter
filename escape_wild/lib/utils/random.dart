@@ -11,6 +11,7 @@ class Rand {
   static core.int int(core.int min, core.int max) {
     return _rand.nextInt(max - min) + min;
   }
+
   static core.bool bool() {
     return _rand.nextInt(2) == 1;
   }
@@ -21,5 +22,10 @@ class Rand {
 
   static core.double one() {
     return _rand.nextDouble();
+  }
+
+  static core.double fluctuate(core.double fluctuate,[core.double basedOn = 1]) {
+    fluctuate = fluctuate.abs();
+    return float(basedOn - fluctuate, basedOn + fluctuate);
   }
 }

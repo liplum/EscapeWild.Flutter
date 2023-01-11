@@ -1,5 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/dialog.dart';
+import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/game/items/foods.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import 'shared.dart';
 
 part 'subtropics.g.dart';
 
@@ -11,7 +18,7 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     // now just try to fill the route with plain.
     final dst = ctx.hardness.journeyDistance().toInt();
     for (var i = 0; i < dst; i++) {
-      final place = SubtropicsPlace("plain");
+      final place = PlainPlace("plain");
       place.route = route;
       route.places.add(place);
     }
@@ -106,13 +113,23 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
 }
 
 class PlainPlace extends SubtropicsPlace {
+  static const maxExploreTimes = 3;
+  static const berry = 0.6;
+
   PlainPlace(super.name);
 
   @override
   Future<void> performExplore() async {
-    player.modifyX(Attr.water, -0.04);
+    player.modifyX(Attr.food, -0.02);
+    player.modifyX(Attr.water, -0.02);
     player.modifyX(Attr.energy, -0.08);
+    final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
+    final gain = <ItemEntry>[];
+    randGain(berry * p, gain, () => Foods.berry.create(massFactor: Rand.fluctuate(0.2)), 2);
+    randGain(berry * p, gain, () => Foods.dirtyWater.create(massFactor: Rand.fluctuate(0.2)), 1);
+    player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
+    await showGain(ActionType.explore, gain);
   }
 
   static const type = "PlainPlace";

@@ -22,54 +22,48 @@ class Foods {
   static late final Item nuts, toastedNuts;
 
   // water
-  static late final Item bottledWater,
-      dirtyWater,
-      cleanWater,
-      boiledWater,
-      filteredWater;
+  static late final Item bottledWater, dirtyWater, cleanWater, boiledWater, filteredWater;
 
   // tea
   static late final Item dandelionTea;
   static late final Item rockSalt;
-  static late final Item bearMeat, cookedBearMeat;
 
   static void registerAll() {
     // food
     Contents.items.addAll([
-      energyBar = Item("energy-bar").asEatable([
+      energyBar = Item.mergeable("energy-bar", mass: 150).asEatable([
         Attr.food + 0.32,
         Attr.energy + 0.1,
-      ], unit: 150),
-      longicornLarva = Item("longicorn-larva").asEatable([
+      ]),
+      longicornLarva = Item.mergeable("longicorn-larva", mass: 10).asEatable([
         Attr.food + 0.1,
         Attr.water + 0.1,
-      ], unit: 10),
-      wetLichen = Item("wet-lichen").asEatable([
+      ]),
+      wetLichen = Item.mergeable("wet-lichen", mass: 10).asEatable([
         Attr.food + 0.05,
         Attr.water + 0.2,
-      ], unit: 10),
+      ])
     ]);
     // water
     Contents.items.addAll([
       bottledWater = Item.unmergeable("bottled-water", mass: 220).asDrinkable([
         Attr.food + 0.28,
       ], afterUsed: () => Stuff.plasticBottle),
-      dirtyWater = Item("dirty-water").asDrinkable([
+      dirtyWater = Item.mergeable("dirty-water", mass: 200).asDrinkable([
         Attr.health - 0.085,
         Attr.water + 0.15,
-      ], unit: 200).asCookable(CookType.boil,
-          unit: 200, fuelCost: 30, output: () => boiledWater),
-      cleanWater = Item("clean-water").asDrinkable([
+      ]).asCookable(CookType.boil, unit: 200, fuelCost: 30, output: () => boiledWater),
+      cleanWater = Item.mergeable("clean-water", mass: 200).asDrinkable([
         Attr.health - 0.005,
         Attr.water + 0.235,
-      ], unit: 200),
-      boiledWater = Item("boiled-water").asDrinkable([
+      ]),
+      boiledWater = Item.mergeable("boiled-water", mass: 200).asDrinkable([
         Attr.water + 0.28,
-      ], unit: 200),
-      filteredWater = Item("filtered-water").asDrinkable([
+      ]),
+      filteredWater = Item.mergeable("filtered-water", mass: 200).asDrinkable([
         Attr.health - 0.005,
         Attr.water + 0.2,
-      ], unit: 200),
+      ]),
       energyDrink = Item.unmergeable("energy-drink", mass: 240).asDrinkable([
         Attr.water + 0.28,
         Attr.energy + 0.12,
@@ -77,59 +71,52 @@ class Foods {
     ]);
     // cookable
     Contents.items.addAll([
-      berry = Item("berry").asEatable([
+      berry = Item.mergeable("berry", mass: 80).asEatable([
         Attr.food + 0.12,
         Attr.water + 0.06,
-      ], unit: 80).asCookable(CookType.roast,
-          unit: 80, fuelCost: 30, output: () => roastedBerry),
-      roastedBerry = Item("roasted-berry").asEatable([
+      ]).asCookable(CookType.roast, unit: 80, fuelCost: 30, output: () => roastedBerry),
+      roastedBerry = Item.mergeable("roasted-berry", mass: 80).asEatable([
         Attr.food + 0.185,
-      ], unit: 80),
-      nuts = Item("nuts").asEatable([
+      ]),
+      nuts = Item.mergeable("nuts", mass: 80).asEatable([
         Attr.food + 0.08,
-      ], unit: 80).asCookable(CookType.roast,
-          unit: 80, fuelCost: 25, output: () => toastedNuts),
-      toastedNuts = Item("toasted-nuts").asEatable([
+      ]).asCookable(CookType.roast, unit: 80, fuelCost: 25, output: () => toastedNuts),
+      toastedNuts = Item.mergeable("toasted-nuts", mass: 80).asEatable([
         Attr.food + 0.12,
-      ], unit: 80),
-      rawRabbit = Item("raw-rabbit").asEatable([
+      ]),
+      rawRabbit = Item.mergeable("raw-rabbit", mass: 500).asEatable([
         Attr.food + 0.45,
         Attr.water + 0.05,
-      ], unit: 500).asCookable(
+      ]).asCookable(
         CookType.cook,
         unit: 500,
         fuelCost: 200,
         output: () => cookedRabbit,
       ),
-      cookedRabbit = Item("cooked-rabbit").asEatable([
+      cookedRabbit = Item.mergeable("cooked-rabbit", mass: 500).asEatable([
         Attr.food + 0.68,
-      ], unit: 500),
-      rawFish = Item("raw-fish").asEatable([
+      ]),
+      rawFish = Item.mergeable("raw-fish", mass: 500).asEatable([
         Attr.food + 0.35,
         Attr.water + 0.08,
-      ], unit: 500).asCookable(
+      ]).asCookable(
         CookType.cook,
         unit: 500,
         fuelCost: 145,
         output: () => cookedFish,
       ),
-      cookedFish = Item("cooked-fish").asEatable([
+      cookedFish = Item.mergeable("cooked-fish", mass: 500).asEatable([
         Attr.food + 0.52,
-      ], unit: 500),
-      dandelionTea = Item("dandelion-tea").asDrinkable([
+      ]),
+      dandelionTea = Item.mergeable("dandelion-tea", mass: 100).asDrinkable([
         Attr.water + 0.20,
         //After drinking this, the pain caused by constipation will be slightly reduced
-      ], unit: 100),
-      rockSalt = Item("rock-salt").asEatable([
+      ]),
+      rockSalt = Item.mergeable("rock-salt", mass: 10).asEatable([
         Attr.water - 0.3,
         Attr.energy + 0.03,
         //
-      ], unit: 10),
-      bearMeat = Item("bear-meat").asEatable([Attr.food + 0.1]).asCookable(
-        CookType.cook,
-        fuelCost: 180,
-        output: () => cookedBearMeat,
-      ),
+      ]),
     ]);
   }
 }
