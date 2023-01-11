@@ -3,10 +3,17 @@
 # Escape Wild
 
 [![Button Discord]][Discord]
-[![Button Online Demo]][Online Demo]
 [![Buttons Download]][Download]
 
-#### *A text-based game powered by Flutter*
+#### *A multi-platform text-based game powered by Flutter*
+
+### [Play This Online][Online Demo]
+
+## Contributing
+
+Welcome to contribute codes, ideas and localization.
+
+Please get started with [the Contributing Guide](CONTRIBUTING.md).
 
 ### See Also
 
