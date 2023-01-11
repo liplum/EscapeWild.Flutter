@@ -54,19 +54,19 @@ class Item with Moddable, CompMixin<ItemComp> {
 }
 
 extension ItemX on Item {
-  ItemEntry create({int? mass, double? massFactor}) {
+  ItemEntry create({int? mass, double? massF}) {
     if (mergeable) {
-      assert(mass != null || massFactor != null, "`mass` and `massFactor` can't be both null for mergeable");
+      assert(mass != null || massF != null, "`mass` and `massFactor` can't be both null for mergeable");
       if (mass != null) {
         return ItemEntry(this, mass: mass);
       }
-      if (massFactor != null) {
-        return ItemEntry(this, mass: (this.mass * massFactor).toInt());
+      if (massF != null) {
+        return ItemEntry(this, mass: (this.mass * massF).toInt());
       }
       // should not be reached.
       return ItemEntry(this, mass: this.mass);
     } else {
-      assert(mass == null && massFactor == null, "`mass` and `massFactor` should be both null for unmergeable");
+      assert(mass == null && massF == null, "`mass` and `massFactor` should be both null for unmergeable");
       return ItemEntry(this);
     }
   }

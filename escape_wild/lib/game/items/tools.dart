@@ -2,6 +2,8 @@ import 'package:escape_wild/core/content.dart';
 import 'package:escape_wild/core/item.dart';
 
 class Tools {
+  Tools._();
+
   static late final Item survivalKnife;
   static late final Item oldOxe;
   static late final Item oldFishRod;

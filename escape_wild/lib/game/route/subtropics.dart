@@ -1,9 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/game/items/foods.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'shared.dart';
@@ -95,7 +91,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     if (player.food > 0.0 && player.water > 0.0) {
-      player.modifyX(Attr.health, 0.1);
+      player.modifyX(Attr.health, 0.02);
       player.modifyX(Attr.energy, 0.25);
     } else {
       player.modifyX(Attr.energy, 0.05);
@@ -115,6 +111,9 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
 class PlainPlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.6;
+  static const dirtyWater = 0.3;
+  static const sticks = 0.2;
+  static const cutGrass = 0.1;
 
   PlainPlace(super.name);
 
@@ -125,14 +124,47 @@ class PlainPlace extends SubtropicsPlace {
     player.modifyX(Attr.energy, -0.08);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
     final gain = <ItemEntry>[];
-    randGain(berry * p, gain, () => Foods.berry.create(massFactor: Rand.fluctuate(0.2)), 2);
-    randGain(berry * p, gain, () => Foods.dirtyWater.create(massFactor: Rand.fluctuate(0.2)), 1);
+    randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(sticks * p, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(cutGrass * p, gain, () => Stuff.cutGrass.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await showGain(ActionType.explore, gain);
   }
 
-  static const type = "PlainPlace";
+  static const type = "Subtropics.PlainPlace";
+
+  @override
+  String get typeName => type;
+}
+
+class ForestPlace extends SubtropicsPlace {
+  static const maxExploreTimes = 3;
+  static const berry = 0.6;
+  static const nuts = 0.4;
+  static const log = 0.1;
+  static const dirtyWater = 0.1;
+
+  ForestPlace(super.name);
+
+  @override
+  Future<void> performExplore() async {
+    player.modifyX(Attr.food, -0.03);
+    player.modifyX(Attr.water, -0.03);
+    player.modifyX(Attr.energy, -0.10);
+    final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
+    final gain = <ItemEntry>[];
+    randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 2);
+    randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(nuts * p, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
+    randGain(log * p, gain, () => Stuff.log.create(massF: Rand.fluctuate(0.2)), 1);
+    player.backpack.addItemsOrMergeAll(gain);
+    exploreCount++;
+    await showGain(ActionType.explore, gain);
+  }
+
+  static const type = "Subtropics.ForestPlace";
 
   @override
   String get typeName => type;

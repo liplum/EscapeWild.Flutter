@@ -5,6 +5,8 @@ import 'package:escape_wild/core/item.dart';
 import 'stuff.dart';
 
 class Foods {
+  Foods._();
+
   // energy food
   static late final Item energyBar, energyDrink;
   static late final Item bugMeat, wetLichen;

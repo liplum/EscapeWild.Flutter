@@ -4,6 +4,7 @@ import 'package:escape_wild/core/item.dart';
 
 class Medicines {
   static late Item bandage, firstAidKit, herbs;
+  Medicines._();
 
   static void registerAll() {
     Contents.items.addAll([

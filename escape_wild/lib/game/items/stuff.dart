@@ -2,6 +2,8 @@ import 'package:escape_wild/core/content.dart';
 import 'package:escape_wild/core/item.dart';
 
 class Stuff {
+  Stuff._();
+
   // fire related
   static late final Item plasticBottle, sticks, cutGrass, log, dryLichen, ember, tinder;
   static late final Item flower;
