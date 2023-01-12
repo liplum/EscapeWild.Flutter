@@ -10,7 +10,9 @@ class CraftRecipeCat {
 
   const CraftRecipeCat.named(this.name);
 
-  static const CraftRecipeCat tool = CraftRecipeCat("tool");
+  static const CraftRecipeCat tool = CraftRecipeCat("tool"),
+      food = CraftRecipeCat("food"),
+      medical = CraftRecipeCat("medical");
 
   @override
   bool operator ==(Object other) {
@@ -34,12 +36,29 @@ abstract class CraftRecipeProtocol {
 
 @JsonSerializable(createToJson: false)
 class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
-  static const type = "Tagged";
+  /// Item tags.
+  final List<String> tagSlots;
+
+  const TaggedCraftRecipe(super.cat, this.tagSlots);
+
+  factory TaggedCraftRecipe.fromJson(Map<String, dynamic> json) => _$TaggedCraftRecipeFromJson(json);
+  static const type = "TaggedCraftRecipe";
+
+  @override
+  String get typeName => type;
+}
+
+@JsonSerializable(createToJson: false)
+class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
+  /// Item names.
+  final List<String> items;
+
+  const NamedCraftRecipe(super.cat, this.items);
+
+  static const type = "NamedCraftRecipe";
 
   @override
   String get typeName => type;
 
-  const TaggedCraftRecipe(super.cat);
-
-  factory TaggedCraftRecipe.fromJson(Map<String, dynamic> json) => _$TaggedCraftRecipeFromJson(json);
+  factory NamedCraftRecipe.fromJson(Map<String, dynamic> json) => _$NamedCraftRecipeFromJson(json);
 }
