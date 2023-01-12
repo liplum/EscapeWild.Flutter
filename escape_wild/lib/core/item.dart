@@ -219,6 +219,7 @@ extension ItemEntryX on ItemEntry {
   bool canMergeTo(ItemEntry to) {
     return hasIdenticalMeta(to) && meta.mergeable;
   }
+  bool get isNotEmpty => !isEmpty;
 }
 
 class EmptyComp extends Comp {
