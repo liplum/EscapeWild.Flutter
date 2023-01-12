@@ -56,7 +56,9 @@ class Backpack with ChangeNotifier {
     if (newMass <= 0) {
       removeItem(item);
     } else {
+      final delta = item.actualMass - newMass;
       item.mass = newMass;
+      mass -= delta;
       notifyListeners();
     }
   }

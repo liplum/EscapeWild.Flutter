@@ -100,3 +100,19 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
     ].column(mas: MainAxisSize.min);
   }
 }
+
+class ItemEntryUsePreview extends StatefulWidget {
+  const ItemEntryUsePreview({
+    super.key,
+  });
+
+  @override
+  State<ItemEntryUsePreview> createState() => _ItemEntryUsePreviewState();
+}
+
+class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}

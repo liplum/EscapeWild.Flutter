@@ -177,15 +177,12 @@ class _BackpackPageState extends State<BackpackPage> {
     );
     buttons.add(discardBtn);
     final usableComps = item.meta.getCompsOf<UsableComp>();
+    final useType = _matchBestUseType(usableComps);
     if (usableComps.isNotEmpty) {
       buttons.add(btn(
-        _matchBestUseType(usableComps).localizeName(),
+        useType.localizeName(),
         onTap: () async {
-          // TODO: Handle with mergeable
-          for (final usableComp in usableComps) {
-            await usableComp.onUse(item);
-          }
-          removeItem(item);
+          await onUse(item, useType, usableComps);
         },
       ));
     } else {
@@ -226,6 +223,26 @@ class _BackpackPageState extends State<BackpackPage> {
     }
   }
 
+  Future<void> onUse(ItemEntry item, UseType useType, List<UsableComp> usableComps) async {
+    // TODO: Handle with mergeable
+    if (false && item.meta.mergeable) {
+    } else {
+      final confirmed = await context.showRequest(
+        title: useType.localizeName(),
+        desc: _I.discardConfirm(item.displayName()),
+        yes: useType.localizeName(),
+        no: I.cancel,
+        highlight: true,
+      );
+      if (confirmed == true) {
+        for (final usableComp in usableComps) {
+          await usableComp.onUse(item);
+        }
+        removeItem(item);
+      }
+    }
+  }
+
   Widget buildItem(ItemEntry item) {
     final isSelected = _selected == item;
     Widget label = ListTile(
@@ -236,7 +253,7 @@ class _BackpackPageState extends State<BackpackPage> {
       ),
       subtitle: I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
     ).center();
     return CardButton(
       elevation: isSelected ? 20 : 1,

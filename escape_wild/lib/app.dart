@@ -21,8 +21,16 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () async {
-      await loadL10n();
+    Future.delayed(Duration.zero, () async {
+      while (true) {
+        final state = AppKey.currentState;
+        if (state != null) {
+          await loadL10n();
+          break;
+        } else {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+      }
     });
   }
 
@@ -43,7 +51,7 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
       locale: context.locale,
       theme: bakeTheme(context, ThemeData.light()),
       darkTheme: bakeTheme(context, ThemeData.dark()),
-      home: const MainPage(),
+      home: const AppWrapper(),
     );
   }
 
@@ -56,5 +64,36 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
       ),
       useMaterial3: true,
     );
+  }
+}
+
+class AppWrapper extends StatefulWidget {
+  const AppWrapper({super.key});
+
+  @override
+  State<AppWrapper> createState() => _AppWrapperState();
+}
+
+class _AppWrapperState extends State<AppWrapper> {
+  Locale? lastLocale;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await loadL10n();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final newLocale = context.locale;
+    if (newLocale != lastLocale) {
+      lastLocale = newLocale;
+      if (isL10nLoaded) {
+        onLocaleChange();
+      }
+    }
+    return const MainPage();
   }
 }
