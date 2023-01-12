@@ -18,37 +18,40 @@ enum Attr {
 
 @JsonSerializable()
 class AttrModel {
+  static const maxValue = 1.0;
   @JsonKey()
-  final double health;
+  final Progress health;
   @JsonKey()
-  final double food;
+  final Progress food;
   @JsonKey()
-  final double water;
+  final Progress water;
   @JsonKey()
-  final double energy;
+  final Progress energy;
 
   factory AttrModel.fromJson(Map<String, dynamic> json) => _$AttrModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$AttrModelToJson(this);
+  static const empty = AttrModel.all(0.0);
+  static const full = AttrModel.all(maxValue);
 
   const AttrModel({
-    this.health = 1.0,
-    this.food = 1.0,
-    this.water = 1.0,
-    this.energy = 1.0,
+    this.health = maxValue,
+    this.food = maxValue,
+    this.water = maxValue,
+    this.energy = maxValue,
   });
 
-  const AttrModel.all(double v)
+  const AttrModel.all(Progress v)
       : health = v,
         food = v,
         water = v,
         energy = v;
 
   AttrModel copyWith({
-    double? health,
-    double? food,
-    double? water,
-    double? energy,
+    Progress? health,
+    Progress? food,
+    Progress? water,
+    Progress? energy,
   }) =>
       AttrModel(
         health: health ?? this.health,
@@ -88,7 +91,7 @@ extension AttributeManagerProtocolX on AttributeManagerProtocol {
   set energy(double value) => this[Attr.energy] = value;
 }
 
-class AttributeManager with AttributeManagerMixin, ChangeNotifier implements AttributeManagerProtocol {
+class AttributeManagerListenable with AttributeManagerMixin, ChangeNotifier implements AttributeManagerProtocol {
   AttrModel _model;
 
   @override
@@ -100,7 +103,19 @@ class AttributeManager with AttributeManagerMixin, ChangeNotifier implements Att
     notifyListeners();
   }
 
-  AttributeManager(this._model);
+  AttributeManagerListenable({required AttrModel initial}) : _model = initial;
+}
+
+class AttributeManager with AttributeManagerMixin implements AttributeManagerProtocol {
+  AttrModel _model;
+
+  @override
+  AttrModel get attrs => _model;
+
+  @override
+  set attrs(AttrModel value) => _model = value;
+
+  AttributeManager({required AttrModel initial}) : _model = initial;
 }
 
 mixin AttributeManagerMixin implements AttributeManagerProtocol {
@@ -243,4 +258,8 @@ class AttrModifierBuilder {
       attrs.modify(modifier.attr, modifier.delta);
     }
   }
+}
+
+extension AttrModifierBuilderX on AttrModifierBuilder {
+  operator <<(AttrModifier modifier) => add(modifier);
 }

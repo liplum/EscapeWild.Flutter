@@ -163,7 +163,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
       return "$name ${m.toStringAsFixed(1)}g";
     }
   }
-
+  /// Please call [Backpack.addItemOrMerge] to track changes, such as [Backpack.mass].
   void mergeTo(ItemEntry to) {
     assert(meta.mergeable, "${meta.name} is not mergeable.");
     if (!meta.mergeable) return;
@@ -178,6 +178,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     to.mass = selfMass + toMass;
   }
 
+  /// Please call [Backpack.splitItemInBackpack] to track changes, such as [Backpack.mass].
   ItemEntry split(int mass) {
     assert(mass > 0, "`mass` to split must be more than 0");
     if (mass <= 0) return empty;

@@ -1,6 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/ui/hud.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rettulf/rettulf.dart';
@@ -61,11 +62,13 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
 class ItemEntryMassSelector extends StatefulWidget {
   final ItemEntry template;
   final ValueNotifier<int> $selectedMass;
+  final ValueChanged<int>? onSelectedMassChange;
 
   const ItemEntryMassSelector({
     super.key,
     required this.template,
     required this.$selectedMass,
+    this.onSelectedMassChange,
   });
 
   @override
@@ -92,9 +95,11 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
         shouldAlwaysShowTooltip: true,
         numberFormat: NumberFormat(I.item.massWithUnit("#")),
         onChanged: (v) {
+          final newMass = (v as double).round().clamp(0, item.actualMass);
           setState(() {
-            $selectedMass.value = (v as double).round().clamp(0, item.actualMass);
+            $selectedMass.value = newMass;
           });
+          widget.onSelectedMassChange?.call(newMass);
         },
       ),
     ].column(mas: MainAxisSize.min);
@@ -104,13 +109,13 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
 class ItemEntryUsePreview extends StatefulWidget {
   final ItemEntry template;
   final ValueNotifier<int> $selectedMass;
-  final List<ModifyAttrComp> modifiers;
+  final List<ModifyAttrComp> comps;
 
   const ItemEntryUsePreview({
     super.key,
     required this.template,
     required this.$selectedMass,
-    required this.modifiers,
+    required this.comps,
   });
 
   @override
@@ -118,14 +123,52 @@ class ItemEntryUsePreview extends StatefulWidget {
 }
 
 class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
-  ItemEntry get item => widget.template;
-
+  ItemEntry get template => widget.template;
+  late var item = widget.template.clone();
+  late var mock = AttributeManager(initial: player.attrs);
   ValueNotifier<int> get $selectedMass => widget.$selectedMass;
+  @override
+  void initState() {
+    super.initState();
+    onSelectedMassChange($selectedMass.value);
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (item != widget.template) {
+      setState(() {
+        item = widget.template.clone();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return [
-      ItemEntryMassSelector(template: item, $selectedMass: $selectedMass),
+      ListTile(
+        title: "After Use".text(style: context.textTheme.titleLarge),
+        subtitle: Hud(attr: mock.attrs),
+      ).padAll(5).inCard(),
+      const SizedBox(height: 40),
+      ItemEntryMassSelector(
+        template: template,
+        $selectedMass: $selectedMass,
+        onSelectedMassChange: (newMass) {
+          onSelectedMassChange(newMass);
+        },
+      ),
     ].column(mas: MainAxisSize.min);
+  }
+
+  void onSelectedMassChange(int newMass){
+    // TODO: How about to split it?
+    item.mass = newMass;
+    final builder = AttrModifierBuilder();
+    mock.attrs = player.attrs;
+    for (final comp in widget.comps) {
+      comp.buildAttrModification(item, builder);
+    }
+    builder.performModification(mock);
+    setState(() {});
   }
 }

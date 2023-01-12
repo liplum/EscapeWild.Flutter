@@ -207,7 +207,8 @@ class _BackpackPageState extends State<BackpackPage> {
         highlight: true,
       );
       if (confirmed == true) {
-        player.backpack.changeMass(item, item.actualMass - $selectedMass.value);
+        // discard the part.
+        final _ = player.backpack.splitItemInBackpack(item, $selectedMass.value);
       }
     } else {
       final confirmed = await context.showRequest(
@@ -227,17 +228,24 @@ class _BackpackPageState extends State<BackpackPage> {
     // TODO: Handle with mergeable
     if (item.meta.mergeable) {
       final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
+      $selectedMass.value = item.actualMass;
       final confirmed = await context.showAnyRequest(
         title: useType.localizeName(),
+        isPrimaryDefault: true,
         make: (_) => ItemEntryUsePreview(
           template: item,
           $selectedMass: $selectedMass,
-          modifiers: modifiers,
+          comps: modifiers,
         ),
         yes: useType.localizeName(),
         no: I.cancel,
-        highlight: true,
       );
+      if (confirmed == true) {
+        final part = player.backpack.splitItemInBackpack(item, $selectedMass.value);
+        for (final usableComp in usableComps) {
+          await usableComp.onUse(part);
+        }
+      }
     } else {
       final confirmed = await context.showRequest(
         title: useType.localizeName(),

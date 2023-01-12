@@ -54,12 +54,14 @@ extension DialogEx on BuildContext {
     required String yes,
     required String no,
     bool highlight = false,
+    bool isPrimaryDefault = false,
     bool serious = false,
     bool dismissible = true,
   }) async {
     return await showAnyRequest(
       dismissible: dismissible,
       title: title,
+      isPrimaryDefault: isPrimaryDefault,
       make: (_) => desc.text(style: const TextStyle()),
       yes: yes,
       no: no,
@@ -74,6 +76,7 @@ extension DialogEx on BuildContext {
     required String yes,
     required String no,
     bool highlight = false,
+    bool isPrimaryDefault = false,
     bool serious = false,
     bool dismissible = true,
   }) async {
@@ -86,6 +89,7 @@ extension DialogEx on BuildContext {
         make: make,
         primary: $DialogAction(
           warning: highlight,
+          isDefault: isPrimaryDefault,
           text: yes,
           onPressed: () {
             ctx.navigator.pop(true);
@@ -152,7 +156,7 @@ class $Dialog extends StatelessWidget {
             child: second.text.text(
               style: TextStyle(
                 color: second.warning ? Colors.redAccent : null,
-                fontWeight: second.isDefault ? FontWeight.w600 : null,
+                fontWeight: second.isDefault ? FontWeight.bold : null,
                 fontSize: context.textTheme.titleMedium?.fontSize,
               ),
             ),
@@ -165,7 +169,7 @@ class $Dialog extends StatelessWidget {
               child: first.text.text(
                 style: TextStyle(
                     color: first.warning ? Colors.redAccent : null,
-                    fontWeight: first.isDefault ? FontWeight.w600 : null,
+                    fontWeight: first.isDefault ? FontWeight.bold : null,
                     fontSize: context.textTheme.titleMedium?.fontSize),
               ))
       ],

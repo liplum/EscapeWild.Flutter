@@ -1,5 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/shared.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +92,10 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   Widget buildHud(AttrModel attr) {
-    return Hud(attr: attr).padAll(12).inCard(elevation: 2).sized(h: 240);
+    return Hud(
+      attr: attr,
+      textStyle: context.textTheme.headlineMedium,
+    ).padAll(12).inCard(elevation: 2).sized(h: 240);
   }
 
   Widget buildJourneyProgress(double v) {

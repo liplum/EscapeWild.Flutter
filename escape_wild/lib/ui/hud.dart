@@ -9,10 +9,12 @@ part 'hud.i18n.dart';
 
 class Hud extends StatefulWidget {
   final AttrModel attr;
+  final TextStyle? textStyle;
 
   const Hud({
     super.key,
     required this.attr,
+    this.textStyle,
   });
 
   @override
@@ -41,7 +43,7 @@ class _HudState extends State<Hud> {
   }
 
   Widget label(Attr attr) {
-    return _I.attr(attr).text(style: context.textTheme.headlineMedium).center();
+    return _I.attr(attr).text(style: widget.textStyle).center();
   }
 
   Widget buildBar(double value, Color color) {

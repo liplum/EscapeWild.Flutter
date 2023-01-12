@@ -19,6 +19,30 @@ class Backpack with ChangeNotifier {
 
   Map<String, dynamic> toJson() => _$BackpackToJson(this);
 
+  /// Return the part of [item].
+  /// - If the [item] is unmergeable, [ItemEntry.empty] will be returned.
+  /// - If the [massOfPart] is more than or equal to [item.mass],
+  ///   the [item] will be removed in backpack, and [item] itself will be returned.
+  /// - If the [massOfPart] is less than 0, the [ItemEntry.empty] will be returned.
+  ItemEntry splitItemInBackpack(ItemEntry item, int massOfPart) {
+    assert(item.meta.mergeable, "${item.meta.name} can't split, because it's unmergeable");
+    if (!item.meta.mergeable) return ItemEntry.empty;
+    final actualMass = item.actualMass;
+    if (massOfPart <= 0) {
+      return ItemEntry.empty;
+    }
+    if (massOfPart >= actualMass) {
+      removeItem(item);
+      return item;
+    } else {
+      final delta = actualMass - massOfPart;
+      final part = item.split(massOfPart);
+      mass -= delta;
+      notifyListeners();
+      return part;
+    }
+  }
+
   void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
     var addedOrMerged = false;
     for (final item in addition) {
@@ -35,6 +59,7 @@ class Backpack with ChangeNotifier {
     }
   }
 
+  /// It will remove the [item] in backpack, and won't change [item]'s state.
   bool removeItem(ItemEntry item) {
     if (item.isEmpty) return true;
     final hasRemoved = items.remove(item);
@@ -50,6 +75,8 @@ class Backpack with ChangeNotifier {
     return items.indexOf(item);
   }
 
+  /// It will directly change the mass of item and track [Backpack.mass] without calling [ItemComp.onSplit],
+  /// It won't update the components.
   void changeMass(ItemEntry item, int newMass) {
     assert(item.meta.mergeable, "mass of unmergeable can't be changed");
     if (!item.meta.mergeable) return;
