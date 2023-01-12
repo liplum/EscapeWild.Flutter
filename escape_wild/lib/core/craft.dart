@@ -1,3 +1,4 @@
+import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -12,6 +13,8 @@ class CraftRecipeCat {
 
   static const CraftRecipeCat tool = CraftRecipeCat("tool"),
       food = CraftRecipeCat("food"),
+      fire = CraftRecipeCat("fire"),
+      refine = CraftRecipeCat("refine"),
       medical = CraftRecipeCat("medical");
 
   @override
@@ -27,19 +30,47 @@ class CraftRecipeCat {
 
 String _cat2Name(CraftRecipeCat cat) => cat.name;
 
-abstract class CraftRecipeProtocol {
+abstract class CraftRecipeProtocol with Moddable {
   @JsonKey(fromJson: CraftRecipeCat.named, toJson: _cat2Name)
   final CraftRecipeCat cat;
+  final String name;
 
-  const CraftRecipeProtocol(this.cat);
+  CraftRecipeProtocol(this.name, this.cat);
+
+  Item get outputItem;
+}
+
+@JsonSerializable()
+class TagMassEntry {
+  @JsonKey()
+  final String tag;
+  @JsonKey()
+  final int? mass;
+
+  const TagMassEntry(this.tag, this.mass);
+
+  factory TagMassEntry.fromJson(Map<String, dynamic> json) => _$TagMassEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TagMassEntryToJson(this);
 }
 
 @JsonSerializable(createToJson: false)
 class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
   /// Item tags.
-  final List<String> tagSlots;
+  @JsonKey()
+  final List<TagMassEntry> tags;
+  @JsonKey(fromJson: NamedItemGetter.create)
+  final ItemGetter<Item> output;
 
-  const TaggedCraftRecipe(super.cat, this.tagSlots);
+  TaggedCraftRecipe(
+    super.name,
+    super.cat, {
+    required this.tags,
+    required this.output,
+  });
+
+  @override
+  Item get outputItem => output();
 
   factory TaggedCraftRecipe.fromJson(Map<String, dynamic> json) => _$TaggedCraftRecipeFromJson(json);
   static const type = "TaggedCraftRecipe";
@@ -52,8 +83,18 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
 class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
   /// Item names.
   final List<String> items;
+  @JsonKey(fromJson: NamedItemGetter.create)
+  final ItemGetter<Item> output;
 
-  const NamedCraftRecipe(super.cat, this.items);
+  NamedCraftRecipe(
+    super.name,
+    super.cat, {
+    required this.items,
+    required this.output,
+  });
+
+  @override
+  Item get outputItem => output();
 
   static const type = "NamedCraftRecipe";
 

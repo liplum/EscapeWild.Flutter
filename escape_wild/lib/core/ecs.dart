@@ -98,6 +98,8 @@ extension TagsMixinX<T extends TagsMixin> on T {
   }
 
   bool hasTag(String tag) => tags.contains(tag);
+
+  bool hasTags(Iterable<String> tag) => tags.containsAll(tag);
 }
 
 abstract class Comp implements JConvertibleProtocol {
@@ -132,7 +134,7 @@ extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
     }
   }
 
-  T? tryGetFirstComp<T extends TComp>() {
+  T? getFirstComp<T extends TComp>() {
     return _components[T]?.firstOrNull as T?;
   }
 

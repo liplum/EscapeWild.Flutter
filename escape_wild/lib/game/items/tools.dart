@@ -11,6 +11,9 @@ class Tools {
   static late final Item oldShotgun;
   static late final Item catchingNet;
 
+  // fire starter
+  static late final Item handDrillKit;
+
   static void registerAll() {
     // cutting
     Contents.items.addAll([
@@ -51,6 +54,10 @@ class Tools {
         eff: ToolAttr.high,
         health: 30.0,
       )
+    ]);
+    // fire starter
+    Contents.items.addAll([
+      handDrillKit = Item.unmergeable("hand-drill-kit", mass: 500),
     ]);
   }
 }

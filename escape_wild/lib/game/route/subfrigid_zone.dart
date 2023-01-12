@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:escape_wild/core.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:escape_wild/utils/collection.dart';
@@ -126,7 +124,7 @@ class SubFrigidZonePlace extends PlaceProtocol with PlaceActionDelegateMixin {
   SubFrigidZonePlace(this.name);
 
   @override
-  @JsonKey()
+  @JsonKey(ignore: true)
   late SubFrigidZoneRoute route;
 
   @JsonKey()

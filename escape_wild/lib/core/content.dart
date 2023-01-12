@@ -1,10 +1,12 @@
+import 'package:escape_wild/core/craft.dart';
 import 'package:escape_wild/core/mod.dart';
 
 import 'item.dart';
 
 class Contents {
-  static final ItemContents items = ItemContents();
-  static final ModContents mods = ModContents();
+  static final items = ItemContents();
+  static final mods = ModContents();
+  static final craftRecipes = CraftRecipeContents();
 
   static Item getItemMetaByName(String name) {
     return items[name] ?? Item.empty;
@@ -13,6 +15,10 @@ class Contents {
   static ModProtocol? getModById(String modId) {
     if (modId == Vanilla.instance.modId) return Vanilla.instance;
     return mods[modId];
+  }
+
+  static List<CraftRecipeProtocol> getCraftRecipesByCat(CraftRecipeCat cat) {
+    return craftRecipes[cat] ?? const [];
   }
 }
 
@@ -25,7 +31,7 @@ extension ItemContentsX on ItemContents {
 
   void operator <<(Item item) => name2Item[item.name] = item;
 
-  void addAll(List<Item> items) {
+  void addAll(Iterable<Item> items) {
     for (final item in items) {
       name2Item[item.name] = item;
     }
@@ -38,4 +44,29 @@ class ModContents {
 
 extension ModContentsX on ModContents {
   ModProtocol? operator [](String name) => modId2Mod[name];
+}
+
+class CraftRecipeContents {
+  Map<CraftRecipeCat, List<CraftRecipeProtocol>> cat2Recipe = {};
+  Map<String, CraftRecipeProtocol> name2Recipe = {};
+}
+
+extension CraftRecipeContentsX on CraftRecipeContents {
+  List<CraftRecipeProtocol>? operator [](CraftRecipeCat cat) => cat2Recipe[cat];
+
+  void operator <<(CraftRecipeProtocol recipe) {
+    name2Recipe[recipe.name] = recipe;
+    var list = cat2Recipe[recipe.cat];
+    if (list == null) {
+      list = <CraftRecipeProtocol>[];
+      cat2Recipe[recipe.cat] = list;
+    }
+    list.add(recipe);
+  }
+
+  void addAll(Iterable<CraftRecipeProtocol> recipes) {
+    for (final recipe in recipes) {
+      this << recipe;
+    }
+  }
 }

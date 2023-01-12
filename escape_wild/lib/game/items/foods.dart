@@ -47,7 +47,7 @@ class Foods {
       lichen = Item.mergeable("lichen", mass: 10).asEatable([
         Attr.food + 0.05,
         Attr.water + 0.2,
-      ]).tagged(["tinder"]),
+      ]).tagged(["flammable-floc"]),
       bearExcrement = Item.mergeable("bear-excrement", mass: 666).asEatable([
         Attr.food + 0.06,
       ]),
@@ -70,20 +70,20 @@ class Foods {
             Attr.water + 0.18,
           ])
           .asCookable(CookType.boil, fuelCost: 30, output: () => boiledWater)
-          .tagged(["water", "drink"]),
+          .tagged(["water", "drink", "dirty-water"]),
       cleanWater = Item.mergeable("clean-water", mass: 200).asDrinkable([
         Attr.water + 0.235,
-      ]).tagged(["water", "drink", "dirty-water"]),
+      ]).tagged(["water", "drink", "clean-water"]),
       boiledWater = Item.mergeable("boiled-water", mass: 200).asDrinkable([
         Attr.water + 0.28,
-      ]).tagged(["water", "drink"]),
+      ]).tagged(["water", "drink", "clean-water"]),
       filteredWater = Item.mergeable("filtered-water", mass: 200).asDrinkable([
         Attr.health - 0.01,
         Attr.water + 0.2,
       ]).tagged(["water", "drink"]),
       purifiedWater = Item.mergeable("purified-water", mass: 200).asDrinkable([
         Attr.water + 0.25,
-      ]).tagged(["water", "drink"]),
+      ]).tagged(["water", "drink", "clean-water"]),
       energyDrink = Item.unmergeable("energy-drink", mass: 240).asDrinkable([
         Attr.energy + 0.12,
         Attr.water + 0.28,

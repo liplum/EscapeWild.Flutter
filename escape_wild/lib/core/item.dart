@@ -224,6 +224,62 @@ extension ItemEntryX on ItemEntry {
   bool get isNotEmpty => !isEmpty;
 }
 
+extension ItemEntryListX on List<ItemEntry> {
+  ItemEntry? findFirstByTag(String tag) {
+    for (final item in this) {
+      if (item.meta.hasTag(tag)) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  ItemEntry? findFirstByTags(Iterable<String> tags) {
+    for (final item in this) {
+      if (item.meta.hasTags(tags)) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  Iterable<ItemEntry> findAllByTag(String tag) sync* {
+    for (final item in this) {
+      if (item.meta.hasTag(tag)) {
+        yield item;
+      }
+    }
+  }
+
+  Iterable<ItemEntry> findAllByTags(Iterable<String> tags) sync* {
+    for (final item in this) {
+      if (item.meta.hasTags(tags)) {
+        yield item;
+      }
+    }
+  }
+
+  void addItemOrMergeAll(List<ItemEntry> additions) {
+    for (final addition in additions) {
+      addItemOrMerge(addition);
+    }
+  }
+
+  void addItemOrMerge(ItemEntry addition) {
+    var merged = false;
+    for (final result in this) {
+      if (addition.canMergeTo(result)) {
+        addition.mergeTo(result);
+        merged = true;
+        break;
+      }
+    }
+    if (!merged) {
+      add(addition);
+    }
+  }
+}
+
 class EmptyComp extends Comp {
   static const type = "Empty";
 
@@ -589,7 +645,7 @@ class FuelComp extends ItemComp {
 
   /// If the [item] has [WetComp], reduce the [heatValue] based on its wet.
   double getActualHeatValue(ItemEntry item) {
-    final wetComp = item.meta.tryGetFirstComp<WetComp>();
+    final wetComp = item.meta.getFirstComp<WetComp>();
     final wet = wetComp?.getWet(item) ?? 0.0;
     return heatValue * (1.0 - wet);
   }
@@ -617,8 +673,9 @@ extension FuelCompX on Item {
 
 class WetComp extends ItemComp {
   static const _wetK = "Wet.wet";
+  static const defaultWet = 0.0;
 
-  Ratio getWet(ItemEntry item) => item[_wetK] ?? 0.0;
+  Ratio getWet(ItemEntry item) => item[_wetK] ?? defaultWet;
 
   void setWet(ItemEntry item, Ratio value) => item[_wetK] = value;
 
@@ -643,6 +700,11 @@ class WetComp extends ItemComp {
     }
   }
 
+  static WetComp? of(ItemEntry item) => item.meta.getFirstComp<WetComp>();
+
+  static double tryGetWet(ItemEntry item) => item.meta.getFirstComp<WetComp>()?.getWet(item) ?? defaultWet;
+
+  static void trySetWet(ItemEntry item, double wet) => item.meta.getFirstComp<WetComp>()?.setWet(item, wet);
   static const type = "Wet";
 
   @override

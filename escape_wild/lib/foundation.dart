@@ -5,7 +5,10 @@ import 'package:escape_wild/game/items/foods.dart';
 import 'package:escape_wild/game/items/medicine.dart';
 import 'package:escape_wild/game/items/stuff.dart';
 import 'package:escape_wild/game/items/tools.dart';
+import 'package:escape_wild/game/recipes/craft.dart';
+
 export 'package:escape_wild/game/items/foods.dart';
+export 'package:escape_wild/game/recipes/craft.dart';
 export 'package:escape_wild/game/items/medicine.dart';
 export 'package:escape_wild/game/items/stuff.dart';
 export 'package:escape_wild/game/items/tools.dart';
@@ -55,4 +58,5 @@ void loadVanilla() {
   Medicines.registerAll();
   Stuff.registerAll();
   Tools.registerAll();
+  CraftRecipes.registerAll();
 }

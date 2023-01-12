@@ -18,13 +18,13 @@ class Stuff {
     Contents.items.addAll([
       plasticBottle = Item.unmergeable("plastic-bottle", mass: 20).asFuel(heatValue: 5.0).tagged(["plastic", "bottle"]),
       sticks = Item.mergeable("sticks", mass: 100).asFuel(heatValue: 2.0).tagged(["wooden", "sticks"]),
-      cutGrass = Item.mergeable("cut-grass", mass: 200).asFuel(heatValue: 4.5).tagged(["straw","tinder"]),
+      cutGrass = Item.mergeable("cut-grass", mass: 200).asFuel(heatValue: 4.5).tagged(["straw", "flammable-floc"]),
       log = Item.mergeable("log", mass: 500).asFuel(heatValue: 20.0).tagged(["wooden", "log"]),
       flower = Item.mergeable("dandelion", mass: 10),
-      pineNeedle = Item.mergeable("pine-needle", mass: 50).asFuel(heatValue: 5.0).tagged(["tinder"]),
+      pineNeedle = Item.mergeable("pine-needle", mass: 50).asFuel(heatValue: 5.0).tagged(["flammable-floc"]),
       //It is said that dandelion boiled with water can relieve some constipation
       ember = Item.mergeable("ember", mass: 5),
-      tinder = Item.mergeable("tinder", mass: 5),
+      tinder = Item.mergeable("tinder", mass: 5).tagged(["tinder"]),
       //Put the semi-wet moss or grass into the wooden tube rolled by the bark,
       // and Mars can carry it
       stone = Item.mergeable("stone", mass: 100).tagged(["stone"]),

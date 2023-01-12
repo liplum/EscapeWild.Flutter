@@ -92,28 +92,6 @@ class Backpack with ChangeNotifier {
   }
 }
 
-extension ItemEntryListX on List<ItemEntry> {
-  void addItemOrMergeAll(List<ItemEntry> additions) {
-    for (final addition in additions) {
-      addItemOrMerge(addition);
-    }
-  }
-
-  void addItemOrMerge(ItemEntry addition) {
-    var merged = false;
-    for (final result in this) {
-      if (addition.canMergeTo(result)) {
-        addition.mergeTo(result);
-        merged = true;
-        break;
-      }
-    }
-    if (!merged) {
-      add(addition);
-    }
-  }
-}
-
 extension BackpackX on Backpack {
   /// return whether [item] is added or merged.
   bool _addItemOrMerge(ItemEntry item) {
@@ -164,7 +142,7 @@ extension BackpackX on Backpack {
 extension BackpackItemFinderX on Backpack {
   Iterable<ItemCompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
     for (final item in items) {
-      final asTool = item.meta.tryGetFirstComp<ToolComp>();
+      final asTool = item.meta.getFirstComp<ToolComp>();
       if (asTool != null && asTool.toolType == toolType) {
         yield ItemCompPair(item, asTool);
       }
@@ -173,7 +151,7 @@ extension BackpackItemFinderX on Backpack {
 
   Iterable<ItemCompPair<ToolComp>> findToolsOfTypes(List<ToolType> toolTypes) sync* {
     for (final item in items) {
-      final asTool = item.meta.tryGetFirstComp<ToolComp>();
+      final asTool = item.meta.getFirstComp<ToolComp>();
       if (asTool != null && toolTypes.contains(asTool.toolType)) {
         yield ItemCompPair(item, asTool);
       }
@@ -190,7 +168,7 @@ extension BackpackItemFinderX on Backpack {
 
   bool hasAnyToolOfTypes(List<ToolType> toolTypes) {
     for (final item in items) {
-      final asTool = item.meta.tryGetFirstComp<ToolComp>();
+      final asTool = item.meta.getFirstComp<ToolComp>();
       if (asTool != null && toolTypes.contains(asTool.toolType)) {
         return true;
       }
@@ -200,7 +178,7 @@ extension BackpackItemFinderX on Backpack {
 
   bool hasAnyToolOfType(ToolType toolType) {
     for (final item in items) {
-      final asTool = item.meta.tryGetFirstComp<ToolComp>();
+      final asTool = item.meta.getFirstComp<ToolComp>();
       if (asTool != null && asTool.toolType == toolType) {
         return true;
       }
