@@ -1,0 +1,90 @@
+action:
+  move: Se déplacer
+  explore: Explorer
+  rest: Se reposer
+  hunt: Chasser
+  cut-down-tree: Abattre
+  fish: Pêcher
+use-type:
+  use: Utiliser
+  eat: Manger
+  drink: Boire
+  equip: Équipper
+item:
+  energy-bar:
+    name: Barre d'Énergie
+    desc: Vous n'êtes pas vous-même lorsque vous avez faim.
+  energy-drink:
+    name: Boisson Énergétique
+    desc: Watch out the beast.
+  dirty-water:
+    name: Eau Sale
+    desc: Beurk ! C'est mieux de la faire bouillir quand même.
+  clean-water:
+    name: Eau Propre
+    desc: Mmmm, un peu sucré.
+  clear-water:
+    name: Eau Claire
+    desc: Elle a l'air claire.
+  boiled-water:
+    name: Eau Bouillie
+    desc: >
+      Titre: 10 avantages pour la santé de boire de l'eau chaude.
+  bottled-water:
+    name: Eau en Bouteille
+    desc: Une bouteille d'eau. La date de production est inconnue.
+  plastic-bottle:
+    name: Bouteille en Plastique
+    desc: Le meilleur matériau, cadeau de l'industrie.
+  filtered-water:
+    name: Eau Filtrée
+    desc: Elle semble propre maintenant. Quelle magie !
+  cut-grass:
+    name: Herbe Coupée
+    desc: Ce n'est pas vert mais c'est quand même renouvelable
+  sticks:
+    name: Bâtons
+    desc: Vous pouvez en trouver partout.
+  log:
+    name: Bûches
+    desc: C'est un morceau de bois.
+  nuts:
+    name: Noix
+    desc: Où est mon casse-noix ?
+  toasted-nuts:
+    name: Noix Grillées
+    desc: La surface est un peu brûlée.
+  berry:
+    name: Baies
+    desc: Ça me rappelle la confiture
+  roasted-berry:
+    name: Baies Rôties
+    desc: Gluant.
+  survival-knife:
+    name: Couteau de Survie
+    desc: >
+      Pub: Il propose un acier inoxydable 440 anodisé noir.
+  old-axe:
+    name: Vielle Hache
+    desc: Vieux mais toujours aussi vif.
+  old-fish-rod:
+    name: Vieille Canne à Pêche
+    desc: Attendez et voyez.
+  old-shotgun:
+    name: Vieux Fusil de chasse
+    desc: Espèrons que rien ne se passera quand ce sera critique.
+  bear-trap:
+    name: Piège à Ours
+    desc: Attendez et voyez.
+route:
+  subtropics:
+    plain:
+      name: Plaine
+    forest:
+      name: Forêt
+    riverside:
+      name: Bord de Rivières
+    cave:
+      name: Grotte
+    hut:
+      name: Hutte
