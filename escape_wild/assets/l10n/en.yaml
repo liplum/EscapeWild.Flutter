@@ -23,6 +23,7 @@ ui:
     discard-request: Discard?
     discard-confirm: "Confirm to discard {}?"
     empty-tip: Your backpack is empty.
+    cannot-use: "Can't Use"
 item:
   mass-with-unit: '{}g'
 ok: OK

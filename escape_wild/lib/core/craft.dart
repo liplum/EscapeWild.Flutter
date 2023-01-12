@@ -35,6 +35,10 @@ abstract class CraftRecipeProtocol with Moddable {
   final CraftRecipeCat cat;
   final String name;
 
+  List<ItemMatcher> get inputSlots;
+
+  List<ItemMatcher> get toolSlots;
+
   CraftRecipeProtocol(this.name, this.cat);
 
   Item get outputItem;
@@ -61,13 +65,24 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
   final List<TagMassEntry> tags;
   @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item> output;
+  @override
+  List<ItemMatcher> toolSlots = [];
+  @override
+  List<ItemMatcher> inputSlots = [];
 
   TaggedCraftRecipe(
     super.name,
     super.cat, {
     required this.tags,
     required this.output,
-  });
+  }) {
+    for (final tag in tags) {
+      inputSlots.add(ItemMatcher(
+        type: (item) => item.hasTag(tag.tag),
+        exact: (item) => item.actualMass >= (tag.mass ?? 0.0),
+      ));
+    }
+  }
 
   @override
   Item get outputItem => output();
@@ -85,13 +100,24 @@ class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtoc
   final List<String> items;
   @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item> output;
+  @override
+  List<ItemMatcher> toolSlots = [];
+  @override
+  List<ItemMatcher> inputSlots = [];
 
   NamedCraftRecipe(
     super.name,
     super.cat, {
     required this.items,
     required this.output,
-  });
+  }) {
+    for (final name in items) {
+      inputSlots.add(ItemMatcher(
+        type: (item) => item.name == name,
+        exact: (item) => true,
+      ));
+    }
+  }
 
   @override
   Item get outputItem => output();

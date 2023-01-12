@@ -2,6 +2,8 @@ import 'package:escape_wild/core.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
+import 'shared.dart';
+
 class CraftPage extends StatefulWidget {
   const CraftPage({super.key});
 
@@ -55,15 +57,73 @@ class _CraftPageState extends State<CraftPage> {
 
   Widget buildRecipes(List<CraftRecipeProtocol> recipes) {
     return ListView.builder(
+      physics: const RangeMaintainingScrollPhysics(),
       itemCount: recipes.length,
       itemBuilder: (ctx, i) {
         final recipe = recipes[i];
-        return buildRecipe(recipe);
+        return CraftRecipeEntry(recipe);
       },
     );
   }
+}
 
-  Widget buildRecipe(CraftRecipeProtocol recipe) {
-    return recipe.name.text();
+class CraftRecipeEntry extends StatefulWidget {
+  final CraftRecipeProtocol recipe;
+
+  const CraftRecipeEntry(
+    this.recipe, {
+    super.key,
+  });
+
+  @override
+  State<CraftRecipeEntry> createState() => _CraftRecipeEntryState();
+}
+
+class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
+  CraftRecipeProtocol get recipe => widget.recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    return [
+      buildInputGrid().expanded(),
+    ].row().inCard();
+  }
+
+  Widget buildInputGrid() {
+    final inputSlots = recipe.inputSlots;
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: inputSlots.length,
+      gridDelegate: itemCellGridDelegate,
+      shrinkWrap: true,
+      itemBuilder: (ctx, i) {
+        return DynamicMatchingCell(matcher: inputSlots[i]);
+      },
+    );
+  }
+}
+
+class DynamicMatchingCell extends StatefulWidget {
+  final ItemMatcher matcher;
+
+  const DynamicMatchingCell({
+    super.key,
+    required this.matcher,
+  });
+
+  @override
+  State<DynamicMatchingCell> createState() => _DynamicMatchingCellState();
+}
+
+class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
+  var curIndex = 0;
+  @override
+  void initState() {
+    super.initState();
+
+  }
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

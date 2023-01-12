@@ -7,6 +7,11 @@ import 'package:intl/intl.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
+  maxCrossAxisExtent: 180,
+  childAspectRatio: 1.5,
+);
+
 class CardButton extends ImplicitlyAnimatedWidget {
   final double elevation;
   final Widget child;

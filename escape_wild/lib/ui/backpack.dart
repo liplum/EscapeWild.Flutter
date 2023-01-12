@@ -107,10 +107,7 @@ class _BackpackPageState extends State<BackpackPage> {
     return GridView.builder(
       itemCount: backpack.itemCount,
       physics: const RangeMaintainingScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 180,
-        childAspectRatio: 1.5,
-      ),
+      gridDelegate: itemCellGridDelegate,
       itemBuilder: (ctx, i) {
         return buildItem(backpack[i]);
       },
@@ -186,7 +183,7 @@ class _BackpackPageState extends State<BackpackPage> {
         },
       ));
     } else {
-      buttons.add(btn("Can't Use", onTap: null));
+      buttons.add(btn(_I.cannotUse, onTap: null));
     }
     return buttons.row();
   }

@@ -149,6 +149,8 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 
   bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
 
+  bool conformTo(Item meta) => this.meta == meta;
+
   bool get canSplit => meta.mergeable;
 
   bool get isEmpty => identical(this, empty) || meta == Item.empty || actualMass <= 0;
@@ -278,6 +280,16 @@ extension ItemEntryListX on List<ItemEntry> {
       add(addition);
     }
   }
+}
+
+class ItemMatcher {
+  final bool Function(Item item) type;
+  final bool Function(ItemEntry item) exact;
+
+  const ItemMatcher({
+    required this.type,
+    required this.exact,
+  });
 }
 
 class EmptyComp extends Comp {

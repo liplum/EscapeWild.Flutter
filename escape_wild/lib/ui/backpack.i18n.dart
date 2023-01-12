@@ -11,6 +11,7 @@ class _I {
       });
 
   static String get discardRequest => "$_n.discard-request".tr();
+  static String get cannotUse => "$_n.cannot-use".tr();
 
   static String discardConfirm(String discarded) => "$_n.discard-confirm".tr(args: [discarded]);
 

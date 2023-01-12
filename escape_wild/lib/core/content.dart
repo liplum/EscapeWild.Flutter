@@ -4,6 +4,8 @@ import 'package:escape_wild/core/mod.dart';
 import 'item.dart';
 
 class Contents {
+  Contents._();
+
   static final items = ItemContents();
   static final mods = ModContents();
   static final craftRecipes = CraftRecipeContents();
@@ -19,6 +21,21 @@ class Contents {
 
   static List<CraftRecipeProtocol> getCraftRecipesByCat(CraftRecipeCat cat) {
     return craftRecipes[cat] ?? const [];
+  }
+
+  static final Map<ItemMatcher, List<Item>> _matcher2Items = {};
+
+  static List<Item> getMatchedItems(ItemMatcher matcher) {
+    var items = _matcher2Items[matcher];
+    if (items != null) return items;
+    items = <Item>[];
+    _matcher2Items[matcher] = items;
+    for (final item in Contents.items.name2Item.values) {
+      if (matcher.type(item)) {
+        items.add(item);
+      }
+    }
+    return items;
   }
 }
 

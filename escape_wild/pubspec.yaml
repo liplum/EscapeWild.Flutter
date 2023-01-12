@@ -55,6 +55,7 @@ dependencies:
   event_bus: ^2.0.0
   syncfusion_flutter_sliders: ^20.4.43
   intl: ^0.17.0
+  modal_bottom_sheet: ^2.1.2
 
 dev_dependencies:
   flutter_test:

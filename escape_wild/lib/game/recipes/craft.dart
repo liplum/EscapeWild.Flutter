@@ -30,10 +30,23 @@ class _TinderRecipe extends CraftRecipeProtocol {
   final List<TagMassEntry> inputTags;
   final int outputMass;
 
+  @override
+  List<ItemMatcher> inputSlots = [];
+
+  @override
+  List<ItemMatcher> toolSlots = [];
+
   _TinderRecipe({
     required this.inputTags,
     required this.outputMass,
-  }) : super("tinder", CraftRecipeCat.fire);
+  }) : super("tinder", CraftRecipeCat.fire) {
+    for (final input in inputTags) {
+      inputSlots.add(ItemMatcher(
+        type: (item) => item.hasTag(input.tag),
+        exact: (item) => item.actualMass >= outputMass,
+      ));
+    }
+  }
 
   @override
   Item get outputItem => Stuff.tinder;
