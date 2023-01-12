@@ -135,6 +135,17 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   @override
   void initState() {
     super.initState();
+    updateAllMatched();
+    marqueeTimer = Timer.periodic(const Duration(milliseconds: 1200), (timer) {
+      if (allMatched.isNotEmpty) {
+        setState(() {
+          curIndex = (curIndex + 1) % allMatched.length;
+        });
+      }
+    });
+  }
+
+  void updateAllMatched() {
     allMatched = player.backpack.matchExactItems(matcher);
     if (allMatched.isNotEmpty) {
       curIndex = curIndex % allMatched.length;
@@ -148,14 +159,15 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       }
       active = false;
     }
-    marqueeTimer = Timer.periodic(const Duration(milliseconds: 1200), (timer) {
-      if (allMatched.isNotEmpty) {
-        setState(() {
-          curIndex = (curIndex + 1) % allMatched.length;
-        });
-      }
-    });
     setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicMatchingCell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      updateAllMatched();
+    }
   }
 
   @override
@@ -183,5 +195,19 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   void dispose() {
     super.dispose();
     marqueeTimer.cancel();
+  }
+}
+
+class CraftingSheet extends StatefulWidget {
+  const CraftingSheet({super.key});
+
+  @override
+  State<CraftingSheet> createState() => _CraftingSheetState();
+}
+
+class _CraftingSheetState extends State<CraftingSheet> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

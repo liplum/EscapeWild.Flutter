@@ -6,16 +6,14 @@ class CraftRecipes {
 
   static void registerAll() {
     Contents.craftRecipes.addAll([
-      WetMergeCraftRecipe(
+      MergeWetCraftRecipe(
         "tinder",
         CraftRecipeCat.fire,
-        inputTags: [
-          50.g("flammable-floc"),
-        ],
+        inputTags: [50.g("flammable-floc")],
         outputMass: 30,
         output: () => Stuff.tinder,
       ),
-      WetMergeCraftRecipe(
+      MergeWetCraftRecipe(
         "hand-drill-kit",
         CraftRecipeCat.fire,
         inputTags: [
@@ -25,55 +23,24 @@ class CraftRecipes {
         ],
         output: () => Tools.handDrillKit,
       ),
+      TaggedCraftRecipe(
+        "straw-rope",
+        CraftRecipeCat.refine,
+        tags: [200.g("straw")],
+        output: () => Stuff.strawRope,
+        outputMass: 100,
+      ),
+      TaggedCraftRecipe(
+        "stone-axe",
+        CraftRecipeCat.tool,
+        tags: [
+          1000.g("stone"),
+          500.g("log"),
+          50.g("rope"),
+        ],
+        output: () => Tools.stoneAxe,
+      ),
     ]);
-  }
-}
-
-class WetMergeCraftRecipe extends CraftRecipeProtocol {
-  final List<TagMassEntry> inputTags;
-  final int? outputMass;
-  final ItemGetter<Item> output;
-
-  @override
-  List<ItemMatcher> inputSlots = [];
-
-  @override
-  List<ItemMatcher> toolSlots = [];
-
-  WetMergeCraftRecipe(
-    super.name,
-    super.cat, {
-    required this.inputTags,
-    this.outputMass,
-    required this.output,
-  }) {
-    for (final input in inputTags) {
-      inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.hasTag(input.tag),
-        exact: (item) {
-          return item.meta.hasTag(input.tag) && item.actualMass >= (outputMass ?? item.meta.mass);
-        },
-      ));
-    }
-  }
-
-  @override
-  Item get outputItem => output();
-
-  ItemEntry onCraft(List<ItemEntry> inputs) {
-    var sumMass = 0;
-    var sumWet = 0.0;
-    for (final tag in inputTags) {
-      final input = inputs.findFirstByTag(tag.tag);
-      assert(input != null, "$tag not found in $inputs");
-      if (input == null) return ItemEntry.empty;
-      final inputMass = input.actualMass;
-      sumMass += inputMass;
-      sumWet += WetComp.tryGetWet(input) * inputMass;
-    }
-    final res = Stuff.tinder.create(mass: outputMass);
-    WetComp.trySetWet(res, sumWet / sumMass);
-    return res;
   }
 }
 

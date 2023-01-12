@@ -71,11 +71,13 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
   List<ItemMatcher> toolSlots = [];
   @override
   List<ItemMatcher> inputSlots = [];
+  final int? outputMass;
 
   TaggedCraftRecipe(
     super.name,
     super.cat, {
     required this.tags,
+    this.outputMass,
     required this.output,
   }) {
     for (final tag in tags) {
@@ -130,4 +132,52 @@ class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtoc
   String get typeName => type;
 
   factory NamedCraftRecipe.fromJson(Map<String, dynamic> json) => _$NamedCraftRecipeFromJson(json);
+}
+
+class MergeWetCraftRecipe extends CraftRecipeProtocol {
+  final List<TagMassEntry> inputTags;
+  final int? outputMass;
+  final ItemGetter<Item> output;
+
+  @override
+  List<ItemMatcher> inputSlots = [];
+
+  @override
+  List<ItemMatcher> toolSlots = [];
+
+  MergeWetCraftRecipe(
+    super.name,
+    super.cat, {
+    required this.inputTags,
+    this.outputMass,
+    required this.output,
+  }) {
+    for (final input in inputTags) {
+      inputSlots.add(ItemMatcher(
+        typeOnly: (item) => item.hasTag(input.tag),
+        exact: (item) {
+          return item.meta.hasTag(input.tag) && item.actualMass >= (outputMass ?? item.meta.mass);
+        },
+      ));
+    }
+  }
+
+  @override
+  Item get outputItem => output();
+
+  ItemEntry onCraft(List<ItemEntry> inputs) {
+    var sumMass = 0;
+    var sumWet = 0.0;
+    for (final tag in inputTags) {
+      final input = inputs.findFirstByTag(tag.tag);
+      assert(input != null, "$tag not found in $inputs");
+      if (input == null) return ItemEntry.empty;
+      final inputMass = input.actualMass;
+      sumMass += inputMass;
+      sumWet += WetComp.tryGetWet(input) * inputMass;
+    }
+    final res = output().create(mass: outputMass);
+    WetComp.trySetWet(res, sumWet / sumMass);
+    return res;
+  }
 }

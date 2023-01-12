@@ -5,7 +5,7 @@ class Tools {
   Tools._();
 
   static late final Item survivalKnife;
-  static late final Item oldAxe;
+  static late final Item oldAxe, stoneAxe;
   static late final Item oldFishRod;
   static late final Item bearTrap;
   static late final Item oldShotgun;
@@ -18,7 +18,7 @@ class Tools {
     // cutting
     Contents.items.addAll([
       survivalKnife = Item.unmergeable("survival-knife", mass: 100).asTool(
-        eff: ToolAttr.high,
+        attr: ToolAttr.high,
         type: ToolType.cutting,
         health: 40.0,
       ),
@@ -27,15 +27,20 @@ class Tools {
     Contents.items.addAll([
       oldAxe = Item.unmergeable("old-axe", mass: 3000).asTool(
         type: ToolType.axe,
-        eff: ToolAttr.low,
-        health: 30.0,
+        attr: ToolAttr.normal,
+        health: 150.0,
+      ),
+      stoneAxe = Item.unmergeable("stone-axe", mass: 1500).asTool(
+        type: ToolType.axe,
+        attr: ToolAttr.low,
+        health: 80.0,
       )
     ]);
     // fishing
     Contents.items.addAll([
       oldFishRod = Item.unmergeable("old-fish-rod", mass: 500).asTool(
         type: ToolType.fishing,
-        eff: ToolAttr.normal,
+        attr: ToolAttr.normal,
         health: 50.0,
       )
     ]);
@@ -43,7 +48,7 @@ class Tools {
     Contents.items.addAll([
       oldShotgun = Item.unmergeable("old-shotgun", mass: 3000).asTool(
         type: ToolType.gun,
-        eff: ToolAttr.low,
+        attr: ToolAttr.low,
         health: 50.0,
       )
     ]);
@@ -51,7 +56,7 @@ class Tools {
     Contents.items.addAll([
       bearTrap = Item.unmergeable("bear-trap", mass: 2000).asTool(
         type: ToolType.trap,
-        eff: ToolAttr.high,
+        attr: ToolAttr.high,
         health: 30.0,
       )
     ]);

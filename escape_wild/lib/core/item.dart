@@ -455,11 +455,11 @@ class ToolComp extends ItemComp {
 extension ToolCompX on Item {
   Item asTool({
     required ToolType type,
-    ToolAttr eff = ToolAttr.normal,
+    ToolAttr attr = ToolAttr.normal,
     required double health,
   }) {
     final comp = ToolComp(
-      attr: eff,
+      attr: attr,
       toolType: type,
       maxHealth: health,
     );

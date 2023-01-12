@@ -257,6 +257,7 @@ class ForestPlace extends SubtropicsPlace {
     var dmg = 0;
     if (randGain(cutDownLog, gain, genLog, 2)) dmg++;
     if (randGain(cutDownSticks, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.15)), 5)) dmg++;
+    randGain(nuts, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
     isToolBroken = player.damageTool(tool.item, comp, dmg * 10.0);

@@ -82,6 +82,9 @@ item:
   old-axe:
     name: Old Axe
     desc: Old but still sharp.
+  stone-axe:
+    name: Stone Axe
+    desc: I think time travel is possible.
   old-fish-rod:
     name: Old Fish Rod
     desc: Wait and see.
@@ -112,6 +115,15 @@ item:
   cooked-fish:
     name: Cooked Fish
     desc: Beware of fishbone.
+  stone:
+    name: Stone
+    desc: ...
+  sharp-stone:
+    name: Sharp Stone
+    desc: ...
+  straw-rope:
+    name: Straw Rope
+    desc: ...
 route:
   subtropics:
     plain:
