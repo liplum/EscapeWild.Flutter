@@ -234,6 +234,7 @@ class _BackpackPageState extends State<BackpackPage> {
         isPrimaryDefault: true,
         make: (_) => ItemEntryUsePreview(
           template: item,
+          useType: useType,
           $selectedMass: $selectedMass,
           comps: modifiers,
         ),

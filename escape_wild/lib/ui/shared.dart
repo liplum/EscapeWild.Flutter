@@ -108,12 +108,14 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
 
 class ItemEntryUsePreview extends StatefulWidget {
   final ItemEntry template;
+  final UseType useType;
   final ValueNotifier<int> $selectedMass;
   final List<ModifyAttrComp> comps;
 
   const ItemEntryUsePreview({
     super.key,
     required this.template,
+    this.useType = UseType.use,
     required this.$selectedMass,
     required this.comps,
   });
@@ -126,12 +128,17 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
   ItemEntry get template => widget.template;
   late var item = widget.template.clone();
   late var mock = AttributeManager(initial: player.attrs);
+
+  UseType get useType => widget.useType;
+
   ValueNotifier<int> get $selectedMass => widget.$selectedMass;
+
   @override
   void initState() {
     super.initState();
     onSelectedMassChange($selectedMass.value);
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -144,9 +151,13 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
 
   @override
   Widget build(BuildContext context) {
+    return context.isPortrait ? buildPortrait() : buildLandscape();
+  }
+
+  Widget buildPortrait() {
     return [
       ListTile(
-        title: "After Use".text(style: context.textTheme.titleLarge),
+        title: useType.localizeAfter().text(style: context.textTheme.titleLarge),
         subtitle: Hud(attr: mock.attrs),
       ).padAll(5).inCard(),
       const SizedBox(height: 40),
@@ -160,7 +171,23 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
     ].column(mas: MainAxisSize.min);
   }
 
-  void onSelectedMassChange(int newMass){
+  Widget buildLandscape() {
+    return [
+      ListTile(
+        title: useType.localizeAfter().text(style: context.textTheme.titleLarge),
+        subtitle: Hud(attr: mock.attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
+      ).padAll(5).inCard().expanded(),
+      ItemEntryMassSelector(
+        template: template,
+        $selectedMass: $selectedMass,
+        onSelectedMassChange: (newMass) {
+          onSelectedMassChange(newMass);
+        },
+      ).expanded(),
+    ].row(mas: MainAxisSize.max).constrained(minW: 500);
+  }
+
+  void onSelectedMassChange(int newMass) {
     // TODO: How about to split it?
     item.mass = newMass;
     final builder = AttrModifierBuilder();

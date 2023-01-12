@@ -6,10 +6,18 @@ action:
   cut-down-tree: Cut Down
   fish: Fish
 use-type:
-  use: Use
-  eat: Eat
-  drink: Drink
-  equip: Equip
+  use:
+    name: Use
+    after: After Use
+  eat:
+    name: Eat
+    after: After Eat
+  drink:
+    name: Drink
+    after: After Drink
+  equip:
+    name: Equip
+    after: After Equip
 item:
   energy-bar:
     name: Energy Bar

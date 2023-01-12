@@ -380,7 +380,8 @@ enum UseType {
   eat,
   equip;
 
-  String localizeName() => I18n["use-type.$name"];
+  String localizeName() => I18n["use-type.$name.name"];
+  String localizeAfter() => I18n["use-type.$name.after"];
 }
 
 abstract class UsableComp extends ItemComp {
