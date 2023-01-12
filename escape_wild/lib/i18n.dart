@@ -19,12 +19,14 @@ class I {
   static String get cancel => "cancel".tr();
 
   static String get alright => "alright".tr();
+
+  static String get discard => "discard".tr();
 }
 
 class _Item {
   static const _n = "item";
 
-  String massWithUnit(int mass) => "$_n.mass-with-unit".tr(args: [mass.toString()]);
+  String massWithUnit(String mass) => "$_n.mass-with-unit".tr(args: [mass]);
 }
 
 class _Action {

@@ -1,6 +1,10 @@
+import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class CardButton extends ImplicitlyAnimatedWidget {
   final double elevation;
@@ -51,5 +55,48 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
       assert(false);
       throw StateError('Constructor will never be called because null is never provided as current tween.');
     }) as Tween<double>;
+  }
+}
+
+class ItemEntryMassSelector extends StatefulWidget {
+  final ItemEntry template;
+  final ValueNotifier<int> $selectedMass;
+
+  const ItemEntryMassSelector({
+    super.key,
+    required this.template,
+    required this.$selectedMass,
+  });
+
+  @override
+  State<ItemEntryMassSelector> createState() => _ItemEntryMassSelectorState();
+}
+
+class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
+  ItemEntry get item => widget.template;
+
+  ValueNotifier<int> get $selectedMass => widget.$selectedMass;
+
+  @override
+  Widget build(BuildContext context) {
+    var maxMass = item.actualMass;
+    return [
+      SfSlider(
+        value: $selectedMass.value.clamp(0, maxMass),
+        max: maxMass,
+        enableTooltip: true,
+        showTicks: true,
+        showLabels: true,
+        interval: maxMass / 2,
+        minorTicksPerInterval: 2,
+        shouldAlwaysShowTooltip: true,
+        numberFormat: NumberFormat(I.item.massWithUnit("#")),
+        onChanged: (v) {
+          setState(() {
+            $selectedMass.value = (v as double).round().clamp(0, item.actualMass);
+          });
+        },
+      ),
+    ].column(mas: MainAxisSize.min);
   }
 }

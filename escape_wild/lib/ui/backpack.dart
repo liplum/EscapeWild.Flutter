@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -131,9 +132,14 @@ class _BackpackPageState extends State<BackpackPage> {
 
   void removeItem(ItemEntry item) {
     var index = player.backpack.indexOfItem(item);
+    if (index == player.backpack.itemCount - 1) {
+      // If current item is the last one, go to previous one.
+      index--;
+    }
     player.backpack.removeItem(item);
     final itemCount = player.backpack.itemCount;
     if (itemCount > 0) {
+      // If the index is not changed, it should be the next one.
       index = (index % itemCount).clamp(0, itemCount - 1);
       _selected = player.backpack[index];
     } else {
@@ -163,10 +169,9 @@ class _BackpackPageState extends State<BackpackPage> {
 
     final buttons = <Widget>[];
     final discardBtn = btn(
-      _I.discard,
-      onTap: () {
-        // TODO: Handle with mergeable
-        removeItem(item);
+      I.discard,
+      onTap: () async {
+        await onDiscard(item);
       },
       color: Colors.redAccent,
     );
@@ -189,6 +194,38 @@ class _BackpackPageState extends State<BackpackPage> {
     return buttons.row();
   }
 
+  final $selectedMass = ValueNotifier(0);
+
+  Future<void> onDiscard(ItemEntry item) async {
+    if (item.meta.mergeable) {
+      $selectedMass.value = item.actualMass;
+      final confirmed = await context.showAnyRequest(
+        title: _I.discardRequest,
+        make: (_) => ItemEntryMassSelector(
+          template: item,
+          $selectedMass: $selectedMass,
+        ),
+        yes: I.discard,
+        no: I.cancel,
+        highlight: true,
+      );
+      if (confirmed == true) {
+        player.backpack.changeMass(item, item.actualMass - $selectedMass.value);
+      }
+    } else {
+      final confirmed = await context.showRequest(
+        title: _I.discardRequest,
+        desc: _I.discardConfirm(item.displayName()),
+        yes: I.discard,
+        no: I.cancel,
+        highlight: true,
+      );
+      if (confirmed == true) {
+        removeItem(item);
+      }
+    }
+  }
+
   Widget buildItem(ItemEntry item) {
     final isSelected = _selected == item;
     Widget label = ListTile(
@@ -197,7 +234,7 @@ class _BackpackPageState extends State<BackpackPage> {
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: I.item.massWithUnit(item.actualMass).text(textAlign: TextAlign.right),
+      subtitle: I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
     ).center();

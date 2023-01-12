@@ -19,13 +19,12 @@ ui:
     craft: Craft
     campfire: Campfire
   backpack:
-    mass-load: >
-      {cur}g / {max}g
-    discard: Discard
+    mass-load: '{cur}g / {max}g'
+    discard-request: Discard?
+    discard-confirm: 'Confirm to discard {}?'
     empty-tip: Your backpack is empty.
 item:
-  mass-with-unit: >
-    {}g
+  mass-with-unit: '{}g'
 ok: OK
 yes: Yes
 no: No
@@ -33,8 +32,8 @@ got-it: Got it
 not-now: Not Now
 cancel: Cancel
 alright: Alright
+discard: Discard
 action:
   got-items: You got {}.
   got-nothing: You got nothing.
-  tool-broken: >
-    {} is completely broken, it can't work any more.
+  tool-broken: "{} is completely broken, it can't work any more."

@@ -28,8 +28,7 @@ item:
     desc: It looks clear.
   boiled-water:
     name: Boiled Water
-    desc: >
-      Title: 10 Health Benefits of Drinking Hot Water
+    desc: 'Title: 10 Health Benefits of Drinking Hot Water'
   bottled-water:
     name: Bottled Water
     desc: A bottle of water. The production date is unknown.
@@ -62,10 +61,9 @@ item:
     desc: Slimy.
   survival-knife:
     name: Survival Knife
-    desc: >
-      Ad: It offers a Black Anodize 440 stainless steel...
-  old-oxe:
-    name: Old Oxe
+    desc: 'Ad: It offers a Black Anodize 440 stainless steel...'
+  old-axe:
+    name: Old Axe
     desc: Old but still sharp.
   old-fish-rod:
     name: Old Fish Rod

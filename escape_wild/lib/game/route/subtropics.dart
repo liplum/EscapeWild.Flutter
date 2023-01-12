@@ -350,7 +350,7 @@ class HutPlace extends SubtropicsPlace {
       gain.addItemOrMerge(Foods.bottledWater.create());
       gain.addItemOrMerge(Foods.energyBar.create());
       if (Rand.one() < oxe) {
-        gain.addItemOrMerge(Tools.oldOxe.create());
+        gain.addItemOrMerge(Tools.oldAxe.create());
       }
     } else if (exploreCount == 1) {
       gain.addItemOrMerge(Foods.bottledWater.create());

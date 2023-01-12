@@ -153,6 +153,7 @@ class $Dialog extends StatelessWidget {
               style: TextStyle(
                 color: second.warning ? Colors.redAccent : null,
                 fontWeight: second.isDefault ? FontWeight.w600 : null,
+                fontSize: context.textTheme.titleMedium?.fontSize,
               ),
             ),
           ),
@@ -163,9 +164,9 @@ class $Dialog extends StatelessWidget {
               },
               child: first.text.text(
                 style: TextStyle(
-                  color: first.warning ? Colors.redAccent : null,
-                  fontWeight: first.isDefault ? FontWeight.w600 : null,
-                ),
+                    color: first.warning ? Colors.redAccent : null,
+                    fontWeight: first.isDefault ? FontWeight.w600 : null,
+                    fontSize: context.textTheme.titleMedium?.fontSize),
               ))
       ],
     );

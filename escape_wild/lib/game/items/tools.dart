@@ -5,7 +5,7 @@ class Tools {
   Tools._();
 
   static late final Item survivalKnife;
-  static late final Item oldOxe;
+  static late final Item oldAxe;
   static late final Item oldFishRod;
   static late final Item bearTrap;
   static late final Item oldShotgun;
@@ -20,9 +20,9 @@ class Tools {
         health: 40.0,
       ),
     ]);
-    // oxe
+    // axe
     Contents.items.addAll([
-      oldOxe = Item.unmergeable("old-oxe", mass: 3000).asTool(
+      oldAxe = Item.unmergeable("old-axe", mass: 3000).asTool(
         type: ToolType.oxe,
         eff: ToolAttr.low,
         health: 30.0,

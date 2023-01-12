@@ -49,6 +49,17 @@ class Backpack with ChangeNotifier {
     if (item.isEmpty) return -1;
     return items.indexOf(item);
   }
+
+  void changeMass(ItemEntry item, int newMass) {
+    assert(item.meta.mergeable, "mass of unmergeable can't be changed");
+    if (!item.meta.mergeable) return;
+    if (newMass <= 0) {
+      removeItem(item);
+    } else {
+      item.mass = newMass;
+      notifyListeners();
+    }
+  }
 }
 
 extension ItemEntryListX on List<ItemEntry> {

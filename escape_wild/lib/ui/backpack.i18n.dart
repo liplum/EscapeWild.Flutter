@@ -10,6 +10,9 @@ class _I {
         "max": max.toString(),
       });
 
-  static String get discard => "$_n.discard".tr();
+  static String get discardRequest => "$_n.discard-request".tr();
+
+  static String discardConfirm(String discarded) => "$_n.discard-confirm".tr(args: [discarded]);
+
   static String get emptyTip => "$_n.empty-tip".tr();
 }

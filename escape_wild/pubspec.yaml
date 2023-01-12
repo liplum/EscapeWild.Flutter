@@ -53,6 +53,8 @@ dependencies:
   auto_size_text: ^3.0.0
   flutter_svg: ^1.1.6
   event_bus: ^2.0.0
+  syncfusion_flutter_sliders: ^20.4.43
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
