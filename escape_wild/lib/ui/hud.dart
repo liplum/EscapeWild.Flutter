@@ -89,7 +89,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
   @override
   void initState() {
     $progress = Tween<double>(
-      begin: 0,
+      begin: widget.value,
       end: widget.value,
     );
     super.initState();

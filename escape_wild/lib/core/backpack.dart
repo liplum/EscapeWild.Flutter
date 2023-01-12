@@ -101,6 +101,22 @@ extension BackpackX on Backpack {
     return matcher.filterExactMatchedEntries(items).toList();
   }
 
+  MapEntry<List<ItemEntry>, List<ItemEntry>> splitMatchedAndUnmatched(
+    ItemMatcher matcher, {
+    bool exact = true,
+  }) {
+    final matched = <ItemEntry>[];
+    final unmatched = <ItemEntry>[];
+    for (final item in items) {
+      if (exact ? matcher.exact(item) : matcher.typeOnly(item.meta)) {
+        matched.add(item);
+      } else {
+        unmatched.add(item);
+      }
+    }
+    return MapEntry(matched, unmatched);
+  }
+
   /// return whether [item] is added or merged.
   bool _addItemOrMerge(ItemEntry item) {
     if (item.isEmpty) return false;

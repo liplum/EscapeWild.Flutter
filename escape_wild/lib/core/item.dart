@@ -293,26 +293,44 @@ class ItemMatcher {
 }
 
 extension ItemMatcherX on ItemMatcher {
-  Iterable<Item> filterTypeMatchedItems(Iterable<Item> items) sync* {
+  Iterable<Item> filterTypeMatchedItems(Iterable<Item> items, {bool requireMatched = true}) sync* {
     for (final item in items) {
-      if (typeOnly(item)) {
-        yield item;
+      if (requireMatched) {
+        if (typeOnly(item)) {
+          yield item;
+        }
+      } else {
+        if (!typeOnly(item)) {
+          yield item;
+        }
       }
     }
   }
 
-  Iterable<ItemEntry> filterExactMatchedEntries(Iterable<ItemEntry> items) sync* {
+  Iterable<ItemEntry> filterExactMatchedEntries(Iterable<ItemEntry> items, {bool requireMatched = true}) sync* {
     for (final item in items) {
-      if (exact(item)) {
-        yield item;
+      if (requireMatched) {
+        if (exact(item)) {
+          yield item;
+        }
+      } else {
+        if (!exact(item)) {
+          yield item;
+        }
       }
     }
   }
 
-  Iterable<ItemEntry> filterTypedMatchedEntries(Iterable<ItemEntry> items) sync* {
+  Iterable<ItemEntry> filterTypedMatchedEntries(Iterable<ItemEntry> items, {bool requireMatched = true}) sync* {
     for (final item in items) {
-      if (typeOnly(item.meta)) {
-        yield item;
+      if (requireMatched) {
+        if (typeOnly(item.meta)) {
+          yield item;
+        }
+      } else {
+        if (!typeOnly(item.meta)) {
+          yield item;
+        }
       }
     }
   }

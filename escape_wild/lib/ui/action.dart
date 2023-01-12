@@ -71,7 +71,7 @@ class _ActionPageState extends State<ActionPage> {
         ].column(maa: MainAxisAlignment.center),
       ).expanded(),
       const ActionButtonArea().expanded(),
-    ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(10);
+    ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
   }
 
   Widget buildPortrait() {
@@ -87,7 +87,7 @@ class _ActionPageState extends State<ActionPage> {
         player.$attrs << (ctx, attr, __) => buildHud(attr),
         player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
         const ActionButtonArea().expanded(),
-      ].column().padAll(10),
+      ].column().padAll(5),
     );
   }
 

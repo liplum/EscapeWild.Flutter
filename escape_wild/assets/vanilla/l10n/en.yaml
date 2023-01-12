@@ -25,6 +25,9 @@ craft-recipe-cat:
   refine: Refine
   medical: Medical
 item:
+  empty:
+    name: Empty
+    desc: This is a blank descritpion.
   energy-bar:
     name: Energy Bar
     desc: You're not you when you're hungry.

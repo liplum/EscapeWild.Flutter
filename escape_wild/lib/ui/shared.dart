@@ -20,11 +20,13 @@ const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
 class ItemEntryCell extends StatelessWidget {
   final ItemEntry item;
   final EdgeInsetsGeometry? pad;
+  final bool showMass;
 
   const ItemEntryCell(
     this.item, {
     super.key,
     this.pad = const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+    this.showMass = true,
   });
 
   @override
@@ -35,7 +37,7 @@ class ItemEntryCell extends StatelessWidget {
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
+      subtitle: !showMass ? null : I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: pad,
     ).center();
@@ -83,12 +85,14 @@ class CardButton extends ImplicitlyAnimatedWidget {
   final double elevation;
   final Widget child;
   final VoidCallback? onTap;
+  final ShapeBorder? shape;
 
   const CardButton({
     super.key,
     super.duration = const Duration(milliseconds: 80),
     super.curve = Curves.easeInOut,
     this.elevation = 1.0,
+    this.shape,
     this.onTap,
     required this.child,
   });
@@ -99,12 +103,17 @@ class CardButton extends ImplicitlyAnimatedWidget {
 
 class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
   late Tween<double> $elevation;
+  late ShapeBorderTween? $shape;
 
   @override
   void initState() {
     $elevation = Tween<double>(
-      begin: 1.0,
+      begin: widget.elevation,
       end: widget.elevation,
+    );
+    $shape = ShapeBorderTween(
+      begin: widget.shape,
+      end: widget.shape,
     );
     super.initState();
     if ($elevation.begin != $elevation.end) {
@@ -119,7 +128,10 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
           onTap: widget.onTap,
           borderRadius: context.cardBorderRadius,
         )
-        .inCard(elevation: $elevation.evaluate(animation));
+        .inCard(
+          elevation: $elevation.evaluate(animation),
+          shape: $shape?.evaluate(animation),
+        );
   }
 
   @override
@@ -128,6 +140,12 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
       assert(false);
       throw StateError('Constructor will never be called because null is never provided as current tween.');
     }) as Tween<double>;
+    $shape = visitor($shape, widget.shape, (dynamic value) {
+      return ShapeBorderTween(
+        begin: widget.shape,
+        end: widget.shape,
+      );
+    }) as ShapeBorderTween?;
   }
 }
 
