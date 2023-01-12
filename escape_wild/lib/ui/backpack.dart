@@ -207,8 +207,11 @@ class _BackpackPageState extends State<BackpackPage> {
         highlight: true,
       );
       if (confirmed == true) {
-        // discard the part.
-        final _ = player.backpack.splitItemInBackpack(item, $selectedMass.value);
+        final selectedMassOrPart = $selectedMass.value;
+        if (selectedMassOrPart > 0) {
+          // discard the part.
+          final _ = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
+        }
       }
     } else {
       final confirmed = await context.showRequest(
@@ -242,9 +245,12 @@ class _BackpackPageState extends State<BackpackPage> {
         no: I.cancel,
       );
       if (confirmed == true) {
-        final part = player.backpack.splitItemInBackpack(item, $selectedMass.value);
-        for (final usableComp in usableComps) {
-          await usableComp.onUse(part);
+        final selectedMassOrPart = $selectedMass.value;
+        if (selectedMassOrPart > 0) {
+          final part = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
+          for (final usableComp in usableComps) {
+            await usableComp.onUse(part);
+          }
         }
       }
     } else {

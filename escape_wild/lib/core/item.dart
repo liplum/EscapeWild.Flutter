@@ -179,24 +179,24 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 
   /// Please call [Backpack.splitItemInBackpack] to track changes, such as [Backpack.mass].
-  ItemEntry split(int mass) {
-    assert(mass > 0, "`mass` to split must be more than 0");
-    if (mass <= 0) return empty;
-    assert(actualMass >= mass, "Self `mass` must be more than `mass` to split.");
-    if (actualMass < mass) return empty;
+  ItemEntry split(int massOfPart) {
+    assert(massOfPart > 0, "`mass` to split must be more than 0");
+    if (massOfPart <= 0) return empty;
+    assert(actualMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
+    if (actualMass < massOfPart) return empty;
     assert(canSplit, "${meta.name} can't be split.");
     if (!canSplit) return empty;
     final selfMass = actualMass;
     // if self mass is less than or equal to mass to split, return a clone.
-    if (selfMass <= mass) return clone();
-    final part = ItemEntry(meta, mass: mass);
+    if (selfMass <= massOfPart) return clone();
+    final part = ItemEntry(meta, mass: massOfPart);
     // clone extra
     part.extra = cloneExtra();
     // handle components
     for (final comp in meta.iterateComps()) {
       comp.onSplit(this, part);
     }
-    this.mass = selfMass - mass;
+    mass = selfMass - massOfPart;
     return part;
   }
 

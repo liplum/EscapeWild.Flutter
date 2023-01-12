@@ -126,7 +126,6 @@ class ItemEntryUsePreview extends StatefulWidget {
 
 class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
   ItemEntry get template => widget.template;
-  late var item = widget.template.clone();
   late var mock = AttributeManager(initial: player.attrs);
 
   UseType get useType => widget.useType;
@@ -137,16 +136,6 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
   void initState() {
     super.initState();
     onSelectedMassChange($selectedMass.value);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (item != widget.template) {
-      setState(() {
-        item = widget.template.clone();
-      });
-    }
   }
 
   @override
@@ -187,13 +176,14 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
     ].row(mas: MainAxisSize.max).constrained(minW: 500);
   }
 
-  void onSelectedMassChange(int newMass) {
-    // TODO: How about to split it?
-    item.mass = newMass;
-    final builder = AttrModifierBuilder();
+  void onSelectedMassChange(int newMassOfPart) {
     mock.attrs = player.attrs;
+    if (newMassOfPart <= 0) return;
+    var item = widget.template.clone();
+    final part = item.split(newMassOfPart);
+    final builder = AttrModifierBuilder();
     for (final comp in widget.comps) {
-      comp.buildAttrModification(item, builder);
+      comp.buildAttrModification(part, builder);
     }
     builder.performModification(mock);
     setState(() {});
