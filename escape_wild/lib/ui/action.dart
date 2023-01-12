@@ -145,7 +145,7 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
               setState(() {});
             },
       child: type
-          .localizedName()
+          .l10nName()
           .toUpperCase()
           .text(
             style: context.textTheme.headlineSmall?.copyWith(

@@ -239,7 +239,7 @@ class _BackpackPageState extends State<BackpackPage> {
     if (item.meta.mergeable) {
       $selectedMass.value = item.actualMass;
       final confirmed = await context.showAnyRequest(
-        title: useType.l10nAfter(),
+        title: item.displayName(),
         isPrimaryDefault: true,
         make: (_) => MergeableItemEntryUsePreview(
           template: item,
@@ -262,7 +262,7 @@ class _BackpackPageState extends State<BackpackPage> {
     } else {
       $isShowAttrPreview.value = true;
       final confirmed = await context.showAnyRequest(
-        title: useType.l10nAfter(),
+        title: item.displayName(),
         titleTrailing: buildShowAttrPreviewToggle(),
         make: (_) => UnmergeableItemEntryUsePreview(
           item: item,

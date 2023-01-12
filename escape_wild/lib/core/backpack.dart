@@ -44,6 +44,14 @@ class Backpack with ChangeNotifier {
     }
   }
 
+  void consumeItemInBackpack(ItemEntry item,int? mass){
+    if (mass != null) {
+      splitItemInBackpack(item, mass);
+    } else {
+      removeItem(item);
+    }
+  }
+
   void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
     var addedOrMerged = false;
     for (final item in addition) {

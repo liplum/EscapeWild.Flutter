@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -284,6 +285,10 @@ class _CraftingSheetState extends State<CraftingSheet> {
     setState(() {});
   }
 
+  bool get isSatisfyAllConditions {
+    return !craftSlots.any((slot) => slot.isEmpty);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -293,13 +298,17 @@ class _CraftingSheetState extends State<CraftingSheet> {
           onPressed: () {
             context.navigator.pop();
           },
-          child: "Cancel".text(),
+          child: I.cancel.text(),
         ),
         middle: recipe.outputItem.localizedName().text(style: context.textTheme.titleLarge),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
-          onPressed: () {},
-          child: "Craft".text(),
+          onPressed: !isSatisfyAllConditions
+              ? null
+              : () {
+                  onCraft();
+                },
+          child: recipe.craftType.l10nName().text(),
         ),
         backgroundColor: Colors.transparent,
       ),
@@ -309,6 +318,16 @@ class _CraftingSheetState extends State<CraftingSheet> {
         buildBackpackView().expanded(),
       ].column().padAll(5),
     );
+  }
+
+  void onCraft() {
+    final material = craftSlots.map((slot) => slot.item).toList(growable: false);
+    final result = recipe.onCraft(material);
+    if (result.isNotEmpty) {
+      recipe.onConsume(material, player.backpack.consumeItemInBackpack);
+      player.backpack.addItemOrMerge(result);
+    }
+    context.navigator.pop();
   }
 
   Widget buildTableView() {

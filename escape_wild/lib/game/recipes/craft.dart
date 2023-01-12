@@ -45,7 +45,7 @@ class CraftRecipes {
 }
 
 extension _DSL on int {
-  TagMassEntry g(String tag) {
-    return TagMassEntry(tag, this);
+  StringMassEntry g(String tag) {
+    return StringMassEntry(tag, this);
   }
 }

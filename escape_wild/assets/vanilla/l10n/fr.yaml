@@ -6,14 +6,10 @@ action:
   cut-down-tree: Abattre
   fish: Pêcher
 use-type:
-  use:
-    name: Utiliser
-  eat:
-    name: Manger
-  drink:
-    name: Boire
-  equip:
-    name: Équipper
+  use: Utiliser
+  eat: Manger
+  drink: Boire
+  equip: Équipper
 item:
   energy-bar:
     name: Barre d'Énergie

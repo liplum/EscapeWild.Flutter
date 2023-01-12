@@ -6,24 +6,20 @@ action:
   cut-down-tree: Cut Down
   fish: Fish
 use-type:
-  use:
-    name: Use
-    after: After Use
-  eat:
-    name: Eat
-    after: After Eat
-  drink:
-    name: Drink
-    after: After Drink
-  equip:
-    name: Equip
-    after: After Equip
+  use: Use
+  eat: Eat
+  drink: Drink
+  equip: Equip
 craft-recipe-cat:
   tool: Tool
   food: Food
   fire: Fire
   refine: Refine
   medical: Medical
+craft-type:
+  craft: Craft
+  fix: Fix
+  process: Process
 item:
   empty:
     name: Empty

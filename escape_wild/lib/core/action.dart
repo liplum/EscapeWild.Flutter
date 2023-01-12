@@ -7,7 +7,7 @@ class ActionType {
 
   factory ActionType.named(String name) => ActionType(name);
 
-  String localizedName() => I18n["action.$name"];
+  String l10nName() => I18n["action.$name"];
 
   @override
   String toString() => name;

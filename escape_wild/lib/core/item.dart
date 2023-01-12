@@ -227,6 +227,15 @@ extension ItemEntryX on ItemEntry {
 }
 
 extension ItemEntryListX on List<ItemEntry> {
+  ItemEntry? findFirstByName(String name) {
+    for (final item in this) {
+      if (item.meta.name == name) {
+        return item;
+      }
+    }
+    return null;
+  }
+
   ItemEntry? findFirstByTag(String tag) {
     for (final item in this) {
       if (item.meta.hasTag(tag)) {
@@ -494,11 +503,7 @@ enum UseType {
   eat,
   equip;
 
-  String l10nName() => I18n["use-type.$name.name"];
-
-  String l10nAfter() => I18n["use-type.$name.after"];
-
-  String l10nPerformRequest(String item) => I18n["use-type.$name.perform-request"].format1(item);
+  String l10nName() => I18n["use-type.$name"];
 }
 
 abstract class UsableComp extends ItemComp {

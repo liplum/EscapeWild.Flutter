@@ -6,7 +6,7 @@ import 'package:escape_wild/foundation.dart';
 
 Future<void> showToolBroken(ActionType action, ItemEntry tool) async {
   await AppCtx.showTip(
-    title: action.localizedName(),
+    title: action.l10nName(),
     desc: "action.tool-broken".tr(args: [tool.displayName()]),
     ok: "alright".tr(),
   );
@@ -15,14 +15,14 @@ Future<void> showToolBroken(ActionType action, ItemEntry tool) async {
 Future<void> showGain(ActionType action, List<ItemEntry> gain) async {
   if (gain.isEmpty) {
     await AppCtx.showTip(
-      title: action.localizedName(),
+      title: action.l10nName(),
       desc: "action.got-nothing".tr(),
       ok: "alright".tr(),
     );
   } else {
     final result = gain.map((e) => e.meta.localizedName()).join(", ");
     await AppCtx.showTip(
-      title: action.localizedName(),
+      title: action.l10nName(),
       desc: "action.got-items".tr(args: [result]),
       ok: "ok".tr(),
     );
