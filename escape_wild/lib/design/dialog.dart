@@ -24,6 +24,7 @@ extension DialogEx on BuildContext {
 
   Future<bool> showAnyTip({
     required String title,
+    Widget? titleTrailing,
     required WidgetBuilder make,
     required String ok,
     bool highlight = false,
@@ -35,6 +36,7 @@ extension DialogEx on BuildContext {
       barrierDismissible: dismissible,
       builder: (ctx) => $Dialog(
           title: title,
+          titleTrailing: titleTrailing,
           serious: serious,
           make: make,
           primary: $DialogAction(
@@ -72,6 +74,7 @@ extension DialogEx on BuildContext {
 
   Future<bool?> showAnyRequest({
     required String title,
+    Widget? titleTrailing,
     required WidgetBuilder make,
     required String yes,
     required String no,
@@ -85,6 +88,7 @@ extension DialogEx on BuildContext {
       barrierDismissible: dismissible,
       builder: (ctx) => $Dialog(
         title: title,
+        titleTrailing: titleTrailing,
         serious: serious,
         make: make,
         primary: $DialogAction(
@@ -122,6 +126,7 @@ class $DialogAction {
 
 class $Dialog extends StatelessWidget {
   final String? title;
+  final Widget? titleTrailing;
   final $DialogAction? primary;
   final $DialogAction? secondary;
 
@@ -132,6 +137,7 @@ class $Dialog extends StatelessWidget {
   const $Dialog({
     super.key,
     this.title,
+    this.titleTrailing,
     required this.make,
     this.primary,
     this.secondary,
@@ -145,7 +151,12 @@ class $Dialog extends StatelessWidget {
     final first = primary;
     dialog = AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(28.0))),
-      title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: serious ? Colors.redAccent : null)),
+      title: title == null
+          ? null
+          : [
+              title!.text(style: TextStyle(fontWeight: FontWeight.w600, color: serious ? Colors.redAccent : null)),
+              if (titleTrailing != null) titleTrailing!,
+            ].row(maa: MainAxisAlignment.spaceBetween),
       content: make(context),
       actions: [
         if (second != null)

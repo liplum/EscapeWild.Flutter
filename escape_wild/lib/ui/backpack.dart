@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
@@ -224,14 +223,25 @@ class _BackpackPageState extends State<BackpackPage> {
     }
   }
 
+  final $isShowAttrPreview = ValueNotifier(true);
+
+  Widget buildShowAttrPreviewToggle() {
+    return $isShowAttrPreview <<
+        (_, b, __) => Switch(
+            value: b,
+            onChanged: (newV) {
+              $isShowAttrPreview.value = newV;
+            });
+  }
+
   Future<void> onUse(ItemEntry item, UseType useType, List<UsableComp> usableComps) async {
+    final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
     if (item.meta.mergeable) {
-      final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
       $selectedMass.value = item.actualMass;
       final confirmed = await context.showAnyRequest(
-        title: useType.l10nName(),
+        title: useType.l10nAfter(),
         isPrimaryDefault: true,
-        make: (_) => ItemEntryUsePreview(
+        make: (_) => MergeableItemEntryUsePreview(
           template: item,
           useType: useType,
           $selectedMass: $selectedMass,
@@ -250,9 +260,15 @@ class _BackpackPageState extends State<BackpackPage> {
         }
       }
     } else {
-      final confirmed = await context.showRequest(
-        title: useType.l10nName(),
-        desc: useType.l10nPerformRequest(item.displayName()),
+      $isShowAttrPreview.value = true;
+      final confirmed = await context.showAnyRequest(
+        title: useType.l10nAfter(),
+        titleTrailing: buildShowAttrPreviewToggle(),
+        make: (_) => UnmergeableItemEntryUsePreview(
+          item: item,
+          comps: modifiers,
+          $isShowAttrPreview: $isShowAttrPreview,
+        ),
         yes: useType.l10nName(),
         no: I.cancel,
         highlight: true,

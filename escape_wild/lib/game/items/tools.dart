@@ -26,7 +26,7 @@ class Tools {
     // axe
     Contents.items.addAll([
       oldAxe = Item.unmergeable("old-axe", mass: 3000).asTool(
-        type: ToolType.oxe,
+        type: ToolType.axe,
         eff: ToolAttr.low,
         health: 30.0,
       )

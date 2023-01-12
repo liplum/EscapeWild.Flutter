@@ -50,6 +50,10 @@ class PlaceAction {
     ActionType.fish,
     () => player.backpack.hasAnyToolOfType(ToolType.fishing),
   );
+  static final cutDownTreeWithTool = PlaceAction(
+    ActionType.cutDownTree,
+    () => player.backpack.hasAnyToolOfType(ToolType.axe),
+  );
   static final rest = PlaceAction(ActionType.rest, () => true);
 }
 
@@ -98,7 +102,7 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
     } else if (action == ActionType.rest) {
       await performRest();
     } else if (action == ActionType.hunt) {
-      await performRest();
+      await performHunt();
     }
   }
 

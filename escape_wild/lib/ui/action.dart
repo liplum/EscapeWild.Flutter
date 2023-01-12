@@ -93,7 +93,7 @@ class _ActionPageState extends State<ActionPage> {
 
   Widget buildHud(AttrModel attr) {
     return Hud(
-      attr: attr,
+      attrs: attr,
       textStyle: context.textTheme.headlineMedium,
     ).padAll(12).inCard(elevation: 2).sized(h: 240);
   }

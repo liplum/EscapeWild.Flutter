@@ -8,12 +8,12 @@ import 'package:rettulf/rettulf.dart';
 part 'hud.i18n.dart';
 
 class Hud extends StatefulWidget {
-  final AttrModel attr;
+  final AttrModel attrs;
   final TextStyle? textStyle;
 
   const Hud({
     super.key,
-    required this.attr,
+    required this.attrs,
     this.textStyle,
   });
 
@@ -22,7 +22,7 @@ class Hud extends StatefulWidget {
 }
 
 class _HudState extends State<Hud> {
-  AttrModel get attr => widget.attr;
+  AttrModel get attr => widget.attrs;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +51,19 @@ class _HudState extends State<Hud> {
       value: value,
       color: color,
     ).center().padOnly(l: 12);
+  }
+}
+
+class MiniHud extends StatelessWidget {
+  final AttrModel attrs;
+
+  const MiniHud({super.key, required this.attrs});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      subtitle: Hud(attrs: attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
+    ).padAll(5).inCard();
   }
 }
 

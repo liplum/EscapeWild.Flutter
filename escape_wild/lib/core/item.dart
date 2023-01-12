@@ -385,7 +385,7 @@ class ToolType {
   static const ToolType cutting = ToolType("cutting");
 
   /// Use to cut down tree
-  static const ToolType oxe = ToolType("oxe");
+  static const ToolType axe = ToolType("axe");
 
   /// Use to hunt
   static const ToolType trap = ToolType("trap");

@@ -9,19 +9,15 @@ use-type:
   use:
     name: Use
     after: After Use
-    perform-request: 'Confirm to use {}?'
   eat:
     name: Eat
     after: After Eat
-    perform-request: 'Confirm to eat {}?'
   drink:
     name: Drink
     after: After Drink
-    perform-request: 'Confirm to drink {}?'
   equip:
     name: Equip
     after: After Equip
-    perform-request: 'Confirm to equip {}?'
 item:
   energy-bar:
     name: Energy Bar
@@ -86,12 +82,18 @@ item:
   bear-trap:
     name: Bear Trap
     desc: Wait and see.
-  moss :
+  moss:
     name: Moss
     desc: ...
-  tinder :
+  tinder:
     name: Tinder
     desc: ...
+  raw-rabbit:
+    name: Raw Rabbit
+    desc: No fat, rich in protein.
+  cooked-rabbit:
+    name: Cooked Rabbit
+    desc: It tastes a bit like chicken.
 route:
   subtropics:
     plain:

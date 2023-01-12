@@ -147,10 +147,14 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     final gain = <ItemEntry>[];
     final any = randGain(hunt, gain, () => Foods.rawRabbit.create(massF: Rand.fluctuate(0.2)));
     player.backpack.addItemsOrMergeAll(gain);
-    if (any && player.damageTool(tool.item, comp, 15.0)) {
-      await showToolBroken(ActionType.hunt, tool.item);
+    var isToolBroken = false;
+    if (any) {
+      isToolBroken = player.damageTool(tool.item, comp, 15.0);
     }
     await showGain(ActionType.hunt, gain);
+    if (isToolBroken) {
+      await showToolBroken(ActionType.hunt, tool.item);
+    }
   }
 
   @override
@@ -225,6 +229,17 @@ class ForestPlace extends SubtropicsPlace {
   static const dirtyWater = 0.1;
 
   ForestPlace(super.name);
+
+  @override
+  List<PlaceAction> getAvailableActions() {
+    final res = super.getAvailableActions();
+    res.add(PlaceAction.cutDownTreeWithTool);
+    return res;
+  }
+  @override
+  Future<void> performCutDownTree() async{
+
+  }
 
   @override
   Future<void> performExplore() async {

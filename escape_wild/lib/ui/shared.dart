@@ -17,8 +17,7 @@ const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
 class ItemEntryCell extends StatelessWidget {
   final ItemEntry item;
 
-  const ItemEntryCell(
-    this.item, {
+  const ItemEntryCell(this.item, {
     super.key,
   });
 
@@ -40,8 +39,7 @@ class ItemEntryCell extends StatelessWidget {
 class ItemCell extends StatelessWidget {
   final Item item;
 
-  const ItemCell(
-    this.item, {
+  const ItemCell(this.item, {
     super.key,
   });
 
@@ -111,9 +109,9 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
   Widget build(BuildContext context) {
     return widget.child
         .inkWell(
-          onTap: widget.onTap,
-          borderRadius: context.cardBorderRadius,
-        )
+      onTap: widget.onTap,
+      borderRadius: context.cardBorderRadius,
+    )
         .inCard(elevation: $elevation.evaluate(animation));
   }
 
@@ -173,13 +171,13 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
   }
 }
 
-class ItemEntryUsePreview extends StatefulWidget {
+class MergeableItemEntryUsePreview extends StatefulWidget {
   final ItemEntry template;
   final UseType useType;
   final ValueNotifier<int> $selectedMass;
   final List<ModifyAttrComp> comps;
 
-  const ItemEntryUsePreview({
+  const MergeableItemEntryUsePreview({
     super.key,
     required this.template,
     this.useType = UseType.use,
@@ -188,10 +186,10 @@ class ItemEntryUsePreview extends StatefulWidget {
   });
 
   @override
-  State<ItemEntryUsePreview> createState() => _ItemEntryUsePreviewState();
+  State<MergeableItemEntryUsePreview> createState() => _MergeableItemEntryUsePreviewState();
 }
 
-class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
+class _MergeableItemEntryUsePreviewState extends State<MergeableItemEntryUsePreview> {
   ItemEntry get template => widget.template;
   late var mock = AttributeManager(initial: player.attrs);
 
@@ -212,10 +210,7 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
 
   Widget buildPortrait() {
     return [
-      ListTile(
-        title: useType.l10nAfter().text(style: context.textTheme.titleLarge),
-        subtitle: Hud(attr: mock.attrs),
-      ).padAll(5).inCard(),
+      MiniHud(attrs: mock.attrs),
       const SizedBox(height: 40),
       ItemEntryMassSelector(
         template: template,
@@ -229,10 +224,7 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
 
   Widget buildLandscape() {
     return [
-      ListTile(
-        title: useType.l10nAfter().text(style: context.textTheme.titleLarge),
-        subtitle: Hud(attr: mock.attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
-      ).padAll(5).inCard().expanded(),
+      MiniHud(attrs: mock.attrs).expanded(),
       ItemEntryMassSelector(
         template: template,
         $selectedMass: $selectedMass,
@@ -254,5 +246,40 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
     }
     builder.performModification(mock);
     setState(() {});
+  }
+}
+
+class UnmergeableItemEntryUsePreview extends StatefulWidget {
+  final ItemEntry item;
+  final List<ModifyAttrComp> comps;
+  final ValueNotifier<bool> $isShowAttrPreview;
+
+  const UnmergeableItemEntryUsePreview({
+    super.key,
+    required this.item,
+    required this.comps,
+    required this.$isShowAttrPreview,
+  });
+
+  @override
+  State<UnmergeableItemEntryUsePreview> createState() => _UnmergeableItemEntryUsePreviewState();
+}
+
+class _UnmergeableItemEntryUsePreviewState extends State<UnmergeableItemEntryUsePreview> {
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.$isShowAttrPreview <<
+            (_, isShow, __) {
+          final mock = AttributeManager(initial: player.attrs);
+          if (isShow) {
+            final builder = AttrModifierBuilder();
+            for (final comp in widget.comps) {
+              comp.buildAttrModification(widget.item, builder);
+            }
+            builder.performModification(mock);
+          }
+          return MiniHud(attrs: mock.attrs);
+        };
   }
 }
