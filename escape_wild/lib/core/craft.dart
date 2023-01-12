@@ -4,18 +4,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'craft.g.dart';
 
-class CraftRecipeCat {
+class CraftRecipeCat with Moddable {
   final String name;
 
-  const CraftRecipeCat(this.name);
+  CraftRecipeCat(this.name);
 
-  const CraftRecipeCat.named(this.name);
+  CraftRecipeCat.named(this.name);
 
-  static const CraftRecipeCat tool = CraftRecipeCat("tool"),
+  static final CraftRecipeCat tool = CraftRecipeCat("tool"),
       food = CraftRecipeCat("food"),
       fire = CraftRecipeCat("fire"),
       refine = CraftRecipeCat("refine"),
       medical = CraftRecipeCat("medical");
+
+  String l10nName() => i18n("craft-recipe-cat.$name");
 
   @override
   bool operator ==(Object other) {
@@ -79,7 +81,7 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(tag.tag),
-        exact: (item) => item.meta.hasTag(tag.tag)&& item.actualMass >= (tag.mass ?? 0.0),
+        exact: (item) => item.meta.hasTag(tag.tag) && item.actualMass >= (tag.mass ?? 0.0),
       ));
     }
   }

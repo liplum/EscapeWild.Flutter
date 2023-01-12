@@ -18,6 +18,12 @@ use-type:
   equip:
     name: Equip
     after: After Equip
+craft-recipe-cat:
+  tool: Tool
+  food: Food
+  fire: Fire
+  refine: Refine
+  medical: Medical
 item:
   energy-bar:
     name: Energy Bar
@@ -67,6 +73,9 @@ item:
   roasted-berry:
     name: Roasted Berry
     desc: Slimy.
+  hand-drill-kit:
+    name: Hand Drill Kit
+    desc: "It's not as easy as a TV show to start a fire."
   survival-knife:
     name: Survival Knife
     desc: 'Ad: It offers a Black Anodize 440 stainless steel...'

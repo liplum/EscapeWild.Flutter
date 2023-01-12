@@ -6,29 +6,33 @@ class CraftRecipes {
 
   static void registerAll() {
     Contents.craftRecipes.addAll([
-      _TinderRecipe(
+      WetMergeCraftRecipe(
+        "tinder",
+        CraftRecipeCat.fire,
         inputTags: [
           50.g("flammable-floc"),
         ],
         outputMass: 30,
+        output: () => Stuff.tinder,
       ),
-      /*TaggedCraftRecipe(
+      WetMergeCraftRecipe(
         "hand-drill-kit",
         CraftRecipeCat.fire,
-        tags: [
-          "tinder" ^ 50,
-          "sticks" ^ 50,
-          "log" ^ 200,
+        inputTags: [
+          50.g("tinder"),
+          50.g("sticks"),
+          200.g("log"),
         ],
         output: () => Tools.handDrillKit,
-      ),*/
+      ),
     ]);
   }
 }
 
-class _TinderRecipe extends CraftRecipeProtocol {
+class WetMergeCraftRecipe extends CraftRecipeProtocol {
   final List<TagMassEntry> inputTags;
-  final int outputMass;
+  final int? outputMass;
+  final ItemGetter<Item> output;
 
   @override
   List<ItemMatcher> inputSlots = [];
@@ -36,20 +40,25 @@ class _TinderRecipe extends CraftRecipeProtocol {
   @override
   List<ItemMatcher> toolSlots = [];
 
-  _TinderRecipe({
+  WetMergeCraftRecipe(
+    super.name,
+    super.cat, {
     required this.inputTags,
-    required this.outputMass,
-  }) : super("tinder", CraftRecipeCat.fire) {
+    this.outputMass,
+    required this.output,
+  }) {
     for (final input in inputTags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(input.tag),
-        exact: (item) => item.meta.hasTag(input.tag) && item.actualMass >= outputMass,
+        exact: (item) {
+          return item.meta.hasTag(input.tag) && item.actualMass >= (outputMass ?? item.meta.mass);
+        },
       ));
     }
   }
 
   @override
-  Item get outputItem => Stuff.tinder;
+  Item get outputItem => output();
 
   ItemEntry onCraft(List<ItemEntry> inputs) {
     var sumMass = 0;

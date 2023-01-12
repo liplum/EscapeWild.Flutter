@@ -8,17 +8,23 @@ import 'package:intl/intl.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-const itemCellGridDelegateAspectRatio = 1.5;
 const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 180,
-  childAspectRatio: itemCellGridDelegateAspectRatio,
+  childAspectRatio: 1.5,
+);
+const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
+  maxCrossAxisExtent: 160,
+  childAspectRatio: 2.2,
 );
 
 class ItemEntryCell extends StatelessWidget {
   final ItemEntry item;
+  final EdgeInsetsGeometry? pad;
 
-  const ItemEntryCell(this.item, {
+  const ItemEntryCell(
+    this.item, {
     super.key,
+    this.pad = const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
   });
 
   @override
@@ -31,7 +37,7 @@ class ItemEntryCell extends StatelessWidget {
       ),
       subtitle: I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      contentPadding: pad,
     ).center();
   }
 }
@@ -39,7 +45,8 @@ class ItemEntryCell extends StatelessWidget {
 class ItemCell extends StatelessWidget {
   final Item item;
 
-  const ItemCell(this.item, {
+  const ItemCell(
+    this.item, {
     super.key,
   });
 
@@ -109,9 +116,9 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
   Widget build(BuildContext context) {
     return widget.child
         .inkWell(
-      onTap: widget.onTap,
-      borderRadius: context.cardBorderRadius,
-    )
+          onTap: widget.onTap,
+          borderRadius: context.cardBorderRadius,
+        )
         .inCard(elevation: $elevation.evaluate(animation));
   }
 
@@ -266,11 +273,10 @@ class UnmergeableItemEntryUsePreview extends StatefulWidget {
 }
 
 class _UnmergeableItemEntryUsePreviewState extends State<UnmergeableItemEntryUsePreview> {
-
   @override
   Widget build(BuildContext context) {
     return widget.$isShowAttrPreview <<
-            (_, isShow, __) {
+        (_, isShow, __) {
           final mock = AttributeManager(initial: player.attrs);
           if (isShow) {
             final builder = AttrModifierBuilder();

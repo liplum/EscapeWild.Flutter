@@ -44,11 +44,13 @@ class _CraftPageState extends State<CraftPage> {
       physics: const RangeMaintainingScrollPhysics(),
       itemCount: cat2Recipes.length,
       itemBuilder: (ctx, i) {
+        final isSelected = selectedCat == i;
         final cat = cat2Recipes[i].key;
+        final style = ctx.isPortrait ? ctx.textTheme.titleMedium : ctx.textTheme.titleLarge;
         return ListTile(
-          title: cat.name.text(),
-          selected: i == selectedCat,
-        ).inCard().onTap(() {
+          title: cat.l10nName().text(style: style, textAlign: TextAlign.center),
+          selected: isSelected,
+        ).inCard(elevation: isSelected ? 10 : 0).onTap(() {
           setState(() {
             selectedCat = i;
           });
@@ -87,9 +89,9 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
   @override
   Widget build(BuildContext context) {
     return [
-      buildInputGrid().flexible(flex: 5),
-      buildOutputItem().flexible(flex: 3),
-    ].row().inCard();
+      buildOutputItem(),
+      buildInputGrid(),
+    ].column().inCard();
   }
 
   Widget buildOutputItem() {
@@ -102,10 +104,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       itemCount: inputSlots.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: inputSlots.length,
-        childAspectRatio: itemCellGridDelegateAspectRatio,
-      ),
+      gridDelegate: itemCellSmallGridDelegate,
       shrinkWrap: true,
       itemBuilder: (ctx, i) {
         return DynamicMatchingCell(matcher: inputSlots[i]);
@@ -166,11 +165,16 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       if (first is Item) {
         return ItemCell(first).inCard(elevation: 0);
       } else if (first is ItemEntry) {
-        return ItemEntryCell(first).inCard(elevation: 5);
+        return ItemEntryCell(
+          first,
+          pad: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        ).inCard(elevation: 5);
       } else {
+        assert(false, "${first.runtimeType} is neither $Item nor $ItemEntry.");
         return const NullItemCell();
       }
     } else {
+      assert(false, "No item matched.");
       return const NullItemCell();
     }
   }
