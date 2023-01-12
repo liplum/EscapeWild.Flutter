@@ -28,8 +28,7 @@ item:
     desc: Elle a l'air claire.
   boiled-water:
     name: Eau Bouillie
-    desc: >
-      Titre: 10 avantages pour la santé de boire de l'eau chaude.
+    desc: "Titre: 10 avantages pour la santé de boire de l'eau chaude."
   bottled-water:
     name: Eau en Bouteille
     desc: Une bouteille d'eau. La date de production est inconnue.
@@ -62,8 +61,7 @@ item:
     desc: Gluant.
   survival-knife:
     name: Couteau de Survie
-    desc: >
-      Pub: Il propose un acier inoxydable 440 anodisé noir.
+    desc: "Pub: Il propose un acier inoxydable 440 anodisé noir."
   old-axe:
     name: Vielle Hache
     desc: Vieux mais toujours aussi vif.

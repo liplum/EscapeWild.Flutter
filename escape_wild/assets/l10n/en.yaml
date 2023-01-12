@@ -19,9 +19,9 @@ ui:
     craft: Craft
     campfire: Campfire
   backpack:
-    mass-load: '{cur}g / {max}g'
+    mass-load: "{cur}g / {max}g"
     discard-request: Discard?
-    discard-confirm: 'Confirm to discard {}?'
+    discard-confirm: "Confirm to discard {}?"
     empty-tip: Your backpack is empty.
 item:
   mass-with-unit: '{}g'

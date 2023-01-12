@@ -19,13 +19,11 @@ ui:
     craft: Fabriquer
     campfire: Feu de camp
   backpack:
-    mass-load: >
-      {cur}g / {max}g
+    mass-load: "{cur}g / {max}g"
     discard: Jeter
     empty-tip: Votre sac à dos est vide.
 item:
-  mass-with-unit: >
-    {}g
+  mass-with-unit: "{}g"
 ok: OK
 yes: Oui
 no: Non
@@ -36,5 +34,4 @@ alright: D'accord
 action:
   got-items: Vous avez obtenu {}.
   got-nothing: Vous n'avez rien eu.
-  tool-broken: >
-    {} est complètement cassé, il ne peut plus fonctionner.
+  tool-broken: "{} est complètement cassé, il ne peut plus fonctionner"
