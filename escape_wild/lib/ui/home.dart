@@ -5,6 +5,7 @@ import 'package:escape_wild/ui/campfire.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'action.dart';
+import 'craft.dart';
 
 part 'home.i18n.dart';
 
@@ -20,7 +21,8 @@ class _P {
 
   static const action = 0;
   static const backpack = 1;
-  static const campfire = 2;
+  static const craft = 2;
+  static const campfire = 3;
 }
 
 class _HomePageState extends State<Homepage> {
@@ -73,11 +75,13 @@ class _HomePageState extends State<Homepage> {
 
   Widget buildBody() {
     if (curIndex == _P.action) {
-      return ActionPage();
+      return const ActionPage();
     } else if (curIndex == _P.backpack) {
-      return BackpackPage();
+      return const BackpackPage();
+    } else if (curIndex == _P.craft) {
+      return const CraftPage();
     } else {
-      return CampfirePage();
+      return const CampfirePage();
     }
   }
 }

@@ -47,19 +47,19 @@ extension ModContentsX on ModContents {
 }
 
 class CraftRecipeContents {
-  Map<CraftRecipeCat, List<CraftRecipeProtocol>> cat2Recipe = {};
+  Map<CraftRecipeCat, List<CraftRecipeProtocol>> cat2Recipes = {};
   Map<String, CraftRecipeProtocol> name2Recipe = {};
 }
 
 extension CraftRecipeContentsX on CraftRecipeContents {
-  List<CraftRecipeProtocol>? operator [](CraftRecipeCat cat) => cat2Recipe[cat];
+  List<CraftRecipeProtocol>? operator [](CraftRecipeCat cat) => cat2Recipes[cat];
 
   void operator <<(CraftRecipeProtocol recipe) {
     name2Recipe[recipe.name] = recipe;
-    var list = cat2Recipe[recipe.cat];
+    var list = cat2Recipes[recipe.cat];
     if (list == null) {
       list = <CraftRecipeProtocol>[];
-      cat2Recipe[recipe.cat] = list;
+      cat2Recipes[recipe.cat] = list;
     }
     list.add(recipe);
   }

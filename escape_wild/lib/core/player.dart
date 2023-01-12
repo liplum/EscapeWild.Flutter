@@ -12,10 +12,15 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $fireState = ValueNotifier(const FireState.off());
   final $location = ValueNotifier<PlaceProtocol?>(null);
   final $maxMassLoad = ValueNotifier(2000);
+  final $actionTimes = ValueNotifier(0);
   RouteProtocol? route;
 
   Future<void> performAction(ActionType action) async {
-    await location?.performAction(action);
+    final curLoc = location;
+    if (curLoc != null) {
+      await curLoc.performAction(action);
+      actionTimes++;
+    }
   }
 
   Iterable<PlaceAction> getAvailableActions() {
@@ -47,6 +52,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   Future<void> init() async {}
 
   Future<void> restart() async {
+    $actionTimes.value = 0;
     final generator = SubtropicsRouteGenerator();
     final ctx = RouteGenerateContext(hardness: hardness);
     final generatedRoute = generator.generateRoute(ctx);
@@ -79,6 +85,10 @@ extension PlayerX on Player {
   bool get isDead => health <= 0;
 
   bool get isAlive => !isDead;
+
+  int get actionTimes => $actionTimes.value;
+
+  set actionTimes(int v) => $actionTimes.value = v;
 
   int get maxMassLoad => $maxMassLoad.value;
 
