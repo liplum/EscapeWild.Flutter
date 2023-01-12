@@ -78,8 +78,8 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
   }) {
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
-        type: (item) => item.hasTag(tag.tag),
-        exact: (item) => item.actualMass >= (tag.mass ?? 0.0),
+        typeOnly: (item) => item.hasTag(tag.tag),
+        exact: (item) => item.meta.hasTag(tag.tag)&& item.actualMass >= (tag.mass ?? 0.0),
       ));
     }
   }
@@ -113,8 +113,8 @@ class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtoc
   }) {
     for (final name in items) {
       inputSlots.add(ItemMatcher(
-        type: (item) => item.name == name,
-        exact: (item) => true,
+        typeOnly: (item) => item.name == name,
+        exact: (item) => item.meta.name == name,
       ));
     }
   }

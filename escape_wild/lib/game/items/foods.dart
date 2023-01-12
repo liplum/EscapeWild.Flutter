@@ -10,7 +10,7 @@ class Foods {
 
   // energy food
   static late final Item energyBar, energyDrink;
-  static late final Item bugMeat, lichen;
+  static late final Item bugMeat, moss;
 
   // rabbit
   static late final Item rawRabbit, cookedRabbit;
@@ -44,9 +44,9 @@ class Foods {
         Attr.food + 0.1,
         Attr.water + 0.1,
       ]).tagged(["bug", "food"]),
-      lichen = Item.mergeable("lichen", mass: 10).asEatable([
-        Attr.food + 0.05,
-        Attr.water + 0.2,
+      moss = Item.mergeable("moss", mass: 10).asEatable([
+        Attr.food + 0.005,
+        Attr.water + 0.05,
       ]).tagged(["flammable-floc"]),
       bearExcrement = Item.mergeable("bear-excrement", mass: 666).asEatable([
         Attr.food + 0.06,

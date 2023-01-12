@@ -283,13 +283,39 @@ extension ItemEntryListX on List<ItemEntry> {
 }
 
 class ItemMatcher {
-  final bool Function(Item item) type;
+  final bool Function(Item item) typeOnly;
   final bool Function(ItemEntry item) exact;
 
   const ItemMatcher({
-    required this.type,
+    required this.typeOnly,
     required this.exact,
   });
+}
+
+extension ItemMatcherX on ItemMatcher {
+  Iterable<Item> filterTypeMatchedItems(Iterable<Item> items) sync* {
+    for (final item in items) {
+      if (typeOnly(item)) {
+        yield item;
+      }
+    }
+  }
+
+  Iterable<ItemEntry> filterExactMatchedEntries(Iterable<ItemEntry> items) sync* {
+    for (final item in items) {
+      if (exact(item)) {
+        yield item;
+      }
+    }
+  }
+
+  Iterable<ItemEntry> filterTypedMatchedEntries(Iterable<ItemEntry> items) sync* {
+    for (final item in items) {
+      if (typeOnly(item.meta)) {
+        yield item;
+      }
+    }
+  }
 }
 
 class EmptyComp extends Comp {

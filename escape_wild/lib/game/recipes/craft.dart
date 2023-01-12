@@ -42,8 +42,8 @@ class _TinderRecipe extends CraftRecipeProtocol {
   }) : super("tinder", CraftRecipeCat.fire) {
     for (final input in inputTags) {
       inputSlots.add(ItemMatcher(
-        type: (item) => item.hasTag(input.tag),
-        exact: (item) => item.actualMass >= outputMass,
+        typeOnly: (item) => item.hasTag(input.tag),
+        exact: (item) => item.meta.hasTag(input.tag) && item.actualMass >= outputMass,
       ));
     }
   }

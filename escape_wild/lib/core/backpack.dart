@@ -93,6 +93,14 @@ class Backpack with ChangeNotifier {
 }
 
 extension BackpackX on Backpack {
+  List<ItemEntry> matchItemsWithType(ItemMatcher matcher) {
+    return matcher.filterTypedMatchedEntries(items).toList();
+  }
+
+  List<ItemEntry> matchExactItems(ItemMatcher matcher) {
+    return matcher.filterExactMatchedEntries(items).toList();
+  }
+
   /// return whether [item] is added or merged.
   bool _addItemOrMerge(ItemEntry item) {
     if (item.isEmpty) return false;

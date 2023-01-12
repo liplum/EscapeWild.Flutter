@@ -85,8 +85,14 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
   @override
   Widget build(BuildContext context) {
     return [
-      buildInputGrid().expanded(),
+      buildInputGrid().flexible(flex: 5),
+      buildOutputItem().flexible(flex: 3),
     ].row().inCard();
+  }
+
+  Widget buildOutputItem() {
+    final output = recipe.outputItem;
+    return ItemCell(output).inCard(elevation: 12);
   }
 
   Widget buildInputGrid() {
@@ -94,7 +100,10 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       itemCount: inputSlots.length,
-      gridDelegate: itemCellGridDelegate,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: inputSlots.length,
+        childAspectRatio: itemCellGridDelegateAspectRatio,
+      ),
       shrinkWrap: true,
       itemBuilder: (ctx, i) {
         return DynamicMatchingCell(matcher: inputSlots[i]);
@@ -116,14 +125,43 @@ class DynamicMatchingCell extends StatefulWidget {
 }
 
 class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
+  ItemMatcher get matcher => widget.matcher;
   var curIndex = 0;
+  List<dynamic> allMatched = const [];
+  var active = false;
+
   @override
   void initState() {
     super.initState();
-
+    allMatched = player.backpack.matchExactItems(matcher);
+    if (allMatched.isNotEmpty) {
+      curIndex = curIndex % allMatched.length;
+      active = true;
+    } else {
+      // player don't have any of it, try to browser all items.
+      allMatched = Contents.getMatchedItems(matcher);
+      assert(allMatched.isNotEmpty, "ItemMatcher should match at least one among all items.");
+      if (allMatched.isNotEmpty) {
+        curIndex = curIndex % allMatched.length;
+      }
+      active = false;
+    }
+    setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    if (allMatched.isNotEmpty) {
+      final first = allMatched.first;
+      if (first is Item) {
+        return ItemCell(first).inCard(elevation: 0);
+      } else if (first is ItemEntry) {
+        return ItemEntryCell(first).inCard(elevation: 5);
+      } else {
+        return const NullItemCell();
+      }
+    } else {
+      return const NullItemCell();
+    }
   }
 }

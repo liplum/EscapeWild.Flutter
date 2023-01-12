@@ -28,14 +28,8 @@ class Contents {
   static List<Item> getMatchedItems(ItemMatcher matcher) {
     var items = _matcher2Items[matcher];
     if (items != null) return items;
-    items = <Item>[];
-    _matcher2Items[matcher] = items;
-    for (final item in Contents.items.name2Item.values) {
-      if (matcher.type(item)) {
-        items.add(item);
-      }
-    }
-    return items;
+    items = matcher.filterTypeMatchedItems(Contents.items.name2Item.values).toList();
+    return _matcher2Items[matcher] = items;
   }
 }
 

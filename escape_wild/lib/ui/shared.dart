@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
@@ -7,10 +8,71 @@ import 'package:intl/intl.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+const itemCellGridDelegateAspectRatio = 1.5;
 const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 180,
-  childAspectRatio: 1.5,
+  childAspectRatio: itemCellGridDelegateAspectRatio,
 );
+
+class ItemEntryCell extends StatelessWidget {
+  final ItemEntry item;
+
+  const ItemEntryCell(
+    this.item, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: AutoSizeText(
+        item.meta.localizedName(),
+        style: context.textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ),
+      subtitle: I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
+      dense: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+    ).center();
+  }
+}
+
+class ItemCell extends StatelessWidget {
+  final Item item;
+
+  const ItemCell(
+    this.item, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: AutoSizeText(
+        item.localizedName(),
+        style: context.textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ),
+      dense: true,
+    ).center();
+  }
+}
+
+class NullItemCell extends StatelessWidget {
+  const NullItemCell({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: AutoSizeText(
+        "?",
+        style: context.textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ),
+      dense: true,
+    );
+  }
+}
 
 class CardButton extends ImplicitlyAnimatedWidget {
   final double elevation;

@@ -268,16 +268,6 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Widget buildItem(ItemEntry item) {
     final isSelected = _selected == item;
-    Widget label = ListTile(
-      title: AutoSizeText(
-        item.meta.localizedName(),
-        style: context.textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ),
-      subtitle: I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
-      dense: true,
-      contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-    ).center();
     return CardButton(
       elevation: isSelected ? 20 : 1,
       onTap: () {
@@ -287,7 +277,7 @@ class _BackpackPageState extends State<BackpackPage> {
           });
         }
       },
-      child: label,
+      child: ItemEntryCell(item),
     );
   }
 }
