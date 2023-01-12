@@ -16,10 +16,10 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     route.addAll(genPlain(route, (dst * 0.35).toInt()));
     route.addAll(genForest(route, (dst * 0.2).toInt()));
     route.addAll(genRiverside(route, (dst * 0.2).toInt()));
+    // randomly add a hut before cave.
+    route.insert(Rand.int(0, route.placeCount - 1), HutPlace("hut"));
     route.addAll(genCave(route, (dst * 0.1).toInt()));
     route.addAll(genPlain(route, (dst * 0.15).toInt()));
-    // randomly add a hut.
-    route.insert(Rand.int(0, route.placeCount - 1), HutPlace("hut"));
     return route;
   }
 
@@ -226,7 +226,10 @@ class ForestPlace extends SubtropicsPlace {
   static const berry = 0.6;
   static const nuts = 0.4;
   static const log = 0.1;
+  static const sticks = 0.4;
   static const dirtyWater = 0.1;
+  static const cutDownLog = 0.9;
+  static const cutDownSticks = 0.9;
 
   ForestPlace(super.name);
 
@@ -236,9 +239,32 @@ class ForestPlace extends SubtropicsPlace {
     res.add(PlaceAction.cutDownTreeWithTool);
     return res;
   }
-  @override
-  Future<void> performCutDownTree() async{
 
+  @override
+  Future<void> performCutDownTree() async {
+    final tool = player.backpack.findBesToolOfType(ToolType.axe);
+    if (tool == null) return;
+    final comp = tool.comp;
+    final eff = comp.attr.efficiency;
+    final m = 2.0 - eff;
+    player.modifyX(Attr.food, -0.12 * m);
+    player.modifyX(Attr.water, -0.1 * m);
+    player.modifyX(Attr.energy, -0.20 * m);
+    final gain = <ItemEntry>[];
+    ItemEntry genLog() => Stuff.log.create(massF: Rand.fluctuate(0.35));
+    // at least one
+    gain.add(genLog());
+    var dmg = 0;
+    if (randGain(cutDownLog, gain, genLog, 2)) dmg++;
+    if (randGain(cutDownSticks, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.15)), 5)) dmg++;
+    player.backpack.addItemsOrMergeAll(gain);
+    var isToolBroken = false;
+    isToolBroken = player.damageTool(tool.item, comp, dmg * 10.0);
+    await showGain(ActionType.fish, gain);
+    if (isToolBroken) {
+      await showToolBroken(ActionType.cutDownTree, tool.item);
+    }
+    await showGain(ActionType.cutDownTree, gain);
   }
 
   @override
@@ -252,6 +278,7 @@ class ForestPlace extends SubtropicsPlace {
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(nuts * p, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
     randGain(log * p, gain, () => Stuff.log.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(sticks * p, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await showGain(ActionType.explore, gain);
@@ -292,10 +319,14 @@ class RiversidePlace extends SubtropicsPlace {
     final gain = <ItemEntry>[];
     final any = randGain(fishing, gain, () => Foods.rawFish.create(massF: Rand.fluctuate(0.2)));
     player.backpack.addItemsOrMergeAll(gain);
-    if (any && player.damageTool(tool.item, comp, 15.0)) {
-      await showToolBroken(ActionType.fish, tool.item);
+    var isToolBroken = false;
+    if (any) {
+      isToolBroken = player.damageTool(tool.item, comp, 15.0);
     }
     await showGain(ActionType.fish, gain);
+    if (isToolBroken) {
+      await showToolBroken(ActionType.fish, tool.item);
+    }
   }
 
   @override
