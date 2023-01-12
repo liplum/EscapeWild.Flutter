@@ -85,6 +85,9 @@ item:
   moss:
     name: Moss
     desc: ...
+  pine-needle:
+    name: Pine Needle
+    desc: ...
   tinder:
     name: Tinder
     desc: ...
@@ -94,6 +97,12 @@ item:
   cooked-rabbit:
     name: Cooked Rabbit
     desc: It tastes a bit like chicken.
+  raw-fish:
+    name: Raw Fish
+    desc: Phishing.
+  cooked-fish:
+    name: Cooked Fish
+    desc: Beware of fishbone.
 route:
   subtropics:
     plain:

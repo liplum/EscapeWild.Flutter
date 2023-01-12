@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:escape_wild/core.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -129,6 +131,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   var curIndex = 0;
   List<dynamic> allMatched = const [];
   var active = false;
+  late Timer marqueeTimer;
 
   @override
   void initState() {
@@ -146,13 +149,20 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       }
       active = false;
     }
+    marqueeTimer = Timer.periodic(const Duration(milliseconds: 1200), (timer) {
+      if (allMatched.isNotEmpty) {
+        setState(() {
+          curIndex = (curIndex + 1) % allMatched.length;
+        });
+      }
+    });
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     if (allMatched.isNotEmpty) {
-      final first = allMatched.first;
+      final first = allMatched[curIndex];
       if (first is Item) {
         return ItemCell(first).inCard(elevation: 0);
       } else if (first is ItemEntry) {
@@ -163,5 +173,11 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
     } else {
       return const NullItemCell();
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    marqueeTimer.cancel();
   }
 }
