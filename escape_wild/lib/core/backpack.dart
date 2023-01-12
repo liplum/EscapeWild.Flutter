@@ -35,10 +35,11 @@ class Backpack with ChangeNotifier {
       removeItem(item);
       return item;
     } else {
-      final delta = actualMass - massOfPart;
       final part = item.split(massOfPart);
-      mass -= delta;
-      notifyListeners();
+      if (part.isNotEmpty) {
+        mass -= massOfPart;
+        notifyListeners();
+      }
       return part;
     }
   }
@@ -65,8 +66,8 @@ class Backpack with ChangeNotifier {
     final hasRemoved = items.remove(item);
     if (hasRemoved) {
       mass -= item.actualMass;
+      notifyListeners();
     }
-    notifyListeners();
     return hasRemoved;
   }
 

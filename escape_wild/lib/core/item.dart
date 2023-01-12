@@ -6,18 +6,18 @@ part 'item.g.dart';
 
 typedef ItemGetter<T extends Item> = T Function();
 
-class _NamedItemGetterImpl<T extends Item> {
+class NamedItemGetter<T extends Item> {
   final String name;
 
-  const _NamedItemGetterImpl(this.name);
+  const NamedItemGetter(this.name);
+
+  static ItemGetter<T> create<T extends Item>(String name) => NamedItemGetter(name).get as ItemGetter<T>;
 
   T get() => Contents.getItemMetaByName(name) as T;
 }
 
-_namedItemGetter(String name) => _NamedItemGetterImpl(name).get;
-
 extension NamedItemGetterX on String {
-  ItemGetter<T> getAsItem<T extends Item>() => _namedItemGetter(this);
+  ItemGetter<T> getAsItem<T extends Item>() => NamedItemGetter.create<T>(this);
 }
 
 class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
@@ -163,6 +163,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
       return "$name ${m.toStringAsFixed(1)}g";
     }
   }
+
   /// Please call [Backpack.addItemOrMerge] to track changes, such as [Backpack.mass].
   void mergeTo(ItemEntry to) {
     assert(meta.mergeable, "${meta.name} is not mergeable.");
@@ -179,24 +180,24 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 
   /// Please call [Backpack.splitItemInBackpack] to track changes, such as [Backpack.mass].
-  ItemEntry split(int mass) {
-    assert(mass > 0, "`mass` to split must be more than 0");
-    if (mass <= 0) return empty;
-    assert(actualMass >= mass, "Self `mass` must be more than `mass` to split.");
-    if (actualMass < mass) return empty;
+  ItemEntry split(int massOfPart) {
+    assert(massOfPart > 0, "`mass` to split must be more than 0");
+    if (massOfPart <= 0) return empty;
+    assert(actualMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
+    if (actualMass < massOfPart) return empty;
     assert(canSplit, "${meta.name} can't be split.");
     if (!canSplit) return empty;
     final selfMass = actualMass;
     // if self mass is less than or equal to mass to split, return a clone.
-    if (selfMass <= mass) return clone();
-    final part = ItemEntry(meta, mass: mass);
+    if (selfMass <= massOfPart) return clone();
+    final part = ItemEntry(meta, mass: massOfPart);
     // clone extra
     part.extra = cloneExtra();
     // handle components
     for (final comp in meta.iterateComps()) {
       comp.onSplit(this, part);
     }
-    this.mass = selfMass - mass;
+    mass = selfMass - massOfPart;
     return part;
   }
 
@@ -219,6 +220,8 @@ extension ItemEntryX on ItemEntry {
   bool canMergeTo(ItemEntry to) {
     return hasIdenticalMeta(to) && meta.mergeable;
   }
+
+  bool get isNotEmpty => !isEmpty;
 }
 
 class EmptyComp extends Comp {
@@ -379,7 +382,11 @@ enum UseType {
   eat,
   equip;
 
-  String localizeName() => I18n["use-type.$name"];
+  String l10nName() => I18n["use-type.$name.name"];
+
+  String l10nAfter() => I18n["use-type.$name.after"];
+
+  String l10nPerformRequest(String item) => I18n["use-type.$name.perform-request"].format1(item);
 }
 
 abstract class UsableComp extends ItemComp {
@@ -405,7 +412,7 @@ class ModifyAttrComp extends UsableComp {
   Type get compType => UsableComp;
   @JsonKey()
   final List<AttrModifier> modifiers;
-  @JsonKey(fromJson: _namedItemGetter)
+  @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item>? afterUsedItem;
 
   ModifyAttrComp(
@@ -521,7 +528,7 @@ class CookableComp extends ItemComp {
   final CookType cookType;
   @JsonKey()
   final double fuelCost;
-  @JsonKey(fromJson: _namedItemGetter)
+  @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item> cookedOutput;
 
   CookableComp(

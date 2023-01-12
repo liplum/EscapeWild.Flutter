@@ -45,7 +45,7 @@ ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>
       (json['modifiers'] as List<dynamic>)
           .map((e) => AttrModifier.fromJson(e as Map<String, dynamic>))
           .toList(),
-      afterUsedItem: _namedItemGetter(json['afterUsedItem'] as String),
+      afterUsedItem: NamedItemGetter.create(json['afterUsedItem'] as String),
     );
 
 const _$UseTypeEnumMap = {
@@ -58,7 +58,7 @@ const _$UseTypeEnumMap = {
 CookableComp _$CookableCompFromJson(Map<String, dynamic> json) => CookableComp(
       $enumDecode(_$CookTypeEnumMap, json['cookType']),
       (json['fuelCost'] as num).toDouble(),
-      _namedItemGetter(json['cookedOutput'] as String),
+      NamedItemGetter.create(json['cookedOutput'] as String),
     );
 
 const _$CookTypeEnumMap = {
