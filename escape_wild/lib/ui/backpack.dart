@@ -225,7 +225,19 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Future<void> onUse(ItemEntry item, UseType useType, List<UsableComp> usableComps) async {
     // TODO: Handle with mergeable
-    if (false && item.meta.mergeable) {
+    if (item.meta.mergeable) {
+      final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
+      final confirmed = await context.showAnyRequest(
+        title: useType.localizeName(),
+        make: (_) => ItemEntryUsePreview(
+          template: item,
+          $selectedMass: $selectedMass,
+          modifiers: modifiers,
+        ),
+        yes: useType.localizeName(),
+        no: I.cancel,
+        highlight: true,
+      );
     } else {
       final confirmed = await context.showRequest(
         title: useType.localizeName(),

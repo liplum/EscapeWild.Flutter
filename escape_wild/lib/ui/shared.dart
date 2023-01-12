@@ -102,8 +102,15 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
 }
 
 class ItemEntryUsePreview extends StatefulWidget {
+  final ItemEntry template;
+  final ValueNotifier<int> $selectedMass;
+  final List<ModifyAttrComp> modifiers;
+
   const ItemEntryUsePreview({
     super.key,
+    required this.template,
+    required this.$selectedMass,
+    required this.modifiers,
   });
 
   @override
@@ -111,8 +118,14 @@ class ItemEntryUsePreview extends StatefulWidget {
 }
 
 class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
+  ItemEntry get item => widget.template;
+
+  ValueNotifier<int> get $selectedMass => widget.$selectedMass;
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return [
+      ItemEntryMassSelector(template: item, $selectedMass: $selectedMass),
+    ].column(mas: MainAxisSize.min);
   }
 }
