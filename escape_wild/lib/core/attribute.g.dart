@@ -7,10 +7,10 @@ part of 'attribute.dart';
 // **************************************************************************
 
 AttrModel _$AttrModelFromJson(Map<String, dynamic> json) => AttrModel(
-      health: (json['health'] as num?)?.toDouble() ?? 1.0,
-      food: (json['food'] as num?)?.toDouble() ?? 1.0,
-      water: (json['water'] as num?)?.toDouble() ?? 1.0,
-      energy: (json['energy'] as num?)?.toDouble() ?? 1.0,
+      health: (json['health'] as num?)?.toDouble() ?? AttrModel.maxValue,
+      food: (json['food'] as num?)?.toDouble() ?? AttrModel.maxValue,
+      water: (json['water'] as num?)?.toDouble() ?? AttrModel.maxValue,
+      energy: (json['energy'] as num?)?.toDouble() ?? AttrModel.maxValue,
     );
 
 Map<String, dynamic> _$AttrModelToJson(AttrModel instance) => <String, dynamic>{

@@ -71,7 +71,7 @@ List<dynamic> _deepCloneListElements(List<dynamic> list) {
 
 mixin TagsMixin {
   @JsonKey(includeIfNull: false)
-  final List<String> tags = [];
+  final Set<String> tags = {};
 }
 
 extension TagsMixinX<T extends TagsMixin> on T {

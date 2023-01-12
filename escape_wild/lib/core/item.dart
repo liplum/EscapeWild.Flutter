@@ -6,18 +6,18 @@ part 'item.g.dart';
 
 typedef ItemGetter<T extends Item> = T Function();
 
-class _NamedItemGetterImpl<T extends Item> {
+class NamedItemGetter<T extends Item> {
   final String name;
 
-  const _NamedItemGetterImpl(this.name);
+  const NamedItemGetter(this.name);
+
+  static ItemGetter<T> create<T extends Item>(String name) => NamedItemGetter(name).get as ItemGetter<T>;
 
   T get() => Contents.getItemMetaByName(name) as T;
 }
 
-_namedItemGetter(String name) => _NamedItemGetterImpl(name).get;
-
 extension NamedItemGetterX on String {
-  ItemGetter<T> getAsItem<T extends Item>() => _namedItemGetter(this);
+  ItemGetter<T> getAsItem<T extends Item>() => NamedItemGetter.create<T>(this);
 }
 
 class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
@@ -163,6 +163,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
       return "$name ${m.toStringAsFixed(1)}g";
     }
   }
+
   /// Please call [Backpack.addItemOrMerge] to track changes, such as [Backpack.mass].
   void mergeTo(ItemEntry to) {
     assert(meta.mergeable, "${meta.name} is not mergeable.");
@@ -219,6 +220,7 @@ extension ItemEntryX on ItemEntry {
   bool canMergeTo(ItemEntry to) {
     return hasIdenticalMeta(to) && meta.mergeable;
   }
+
   bool get isNotEmpty => !isEmpty;
 }
 
@@ -380,8 +382,11 @@ enum UseType {
   eat,
   equip;
 
-  String localizeName() => I18n["use-type.$name.name"];
-  String localizeAfter() => I18n["use-type.$name.after"];
+  String l10nName() => I18n["use-type.$name.name"];
+
+  String l10nAfter() => I18n["use-type.$name.after"];
+
+  String l10nPerformRequest(String item) => I18n["use-type.$name.perform-request"].format1(item);
 }
 
 abstract class UsableComp extends ItemComp {
@@ -407,7 +412,7 @@ class ModifyAttrComp extends UsableComp {
   Type get compType => UsableComp;
   @JsonKey()
   final List<AttrModifier> modifiers;
-  @JsonKey(fromJson: _namedItemGetter)
+  @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item>? afterUsedItem;
 
   ModifyAttrComp(
@@ -523,7 +528,7 @@ class CookableComp extends ItemComp {
   final CookType cookType;
   @JsonKey()
   final double fuelCost;
-  @JsonKey(fromJson: _namedItemGetter)
+  @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item> cookedOutput;
 
   CookableComp(

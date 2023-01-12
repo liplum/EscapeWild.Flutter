@@ -180,7 +180,7 @@ class _BackpackPageState extends State<BackpackPage> {
     final useType = _matchBestUseType(usableComps);
     if (usableComps.isNotEmpty) {
       buttons.add(btn(
-        useType.localizeName(),
+        useType.l10nName(),
         onTap: () async {
           await onUse(item, useType, usableComps);
         },
@@ -228,12 +228,11 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Future<void> onUse(ItemEntry item, UseType useType, List<UsableComp> usableComps) async {
-    // TODO: Handle with mergeable
     if (item.meta.mergeable) {
       final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
       $selectedMass.value = item.actualMass;
       final confirmed = await context.showAnyRequest(
-        title: useType.localizeName(),
+        title: useType.l10nName(),
         isPrimaryDefault: true,
         make: (_) => ItemEntryUsePreview(
           template: item,
@@ -241,7 +240,7 @@ class _BackpackPageState extends State<BackpackPage> {
           $selectedMass: $selectedMass,
           comps: modifiers,
         ),
-        yes: useType.localizeName(),
+        yes: useType.l10nName(),
         no: I.cancel,
       );
       if (confirmed == true) {
@@ -255,9 +254,9 @@ class _BackpackPageState extends State<BackpackPage> {
       }
     } else {
       final confirmed = await context.showRequest(
-        title: useType.localizeName(),
-        desc: _I.discardConfirm(item.displayName()),
-        yes: useType.localizeName(),
+        title: useType.l10nName(),
+        desc: useType.l10nPerformRequest(item.displayName()),
+        yes: useType.l10nName(),
         no: I.cancel,
         highlight: true,
       );

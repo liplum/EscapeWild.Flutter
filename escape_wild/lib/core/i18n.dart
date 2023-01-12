@@ -23,8 +23,40 @@ class I18nImpl {
     return l10n.tryGetL10n(key) ?? key;
   }
 
-  operator [](String key) {
+  String operator [](String key) {
     return get(defaultNamespace, key);
+  }
+}
+
+final RegExp _replaceArgRegex = RegExp('{}');
+
+extension StringFormattX on String {
+  String format(List<String> args) {
+    if (args.isEmpty) return this;
+    var res = this;
+    for (var arg in args) {
+      res = res.replaceFirst(_replaceArgRegex, arg);
+    }
+    return res;
+  }
+
+  String format1(String arg0) {
+    return replaceFirst(_replaceArgRegex, arg0);
+  }
+
+  String format2(String arg0, String arg1) {
+    var res = this;
+    res = replaceFirst(_replaceArgRegex, arg0);
+    res = replaceFirst(_replaceArgRegex, arg1);
+    return res;
+  }
+
+  String format3(String arg0, String arg1, String arg2) {
+    var res = this;
+    res = replaceFirst(_replaceArgRegex, arg0);
+    res = replaceFirst(_replaceArgRegex, arg1);
+    res = replaceFirst(_replaceArgRegex, arg2);
+    return res;
   }
 }
 

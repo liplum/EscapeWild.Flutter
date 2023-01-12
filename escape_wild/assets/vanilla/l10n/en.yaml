@@ -9,15 +9,19 @@ use-type:
   use:
     name: Use
     after: After Use
+    perform-request: 'Confirm to use {}?'
   eat:
     name: Eat
     after: After Eat
+    perform-request: 'Confirm to eat {}?'
   drink:
     name: Drink
     after: After Drink
+    perform-request: 'Confirm to drink {}?'
   equip:
     name: Equip
     after: After Equip
+    perform-request: 'Confirm to equip {}?'
 item:
   energy-bar:
     name: Energy Bar

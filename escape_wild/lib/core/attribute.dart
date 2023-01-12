@@ -35,10 +35,10 @@ class AttrModel {
   static const full = AttrModel.all(maxValue);
 
   const AttrModel({
-    this.health = maxValue,
-    this.food = maxValue,
-    this.water = maxValue,
-    this.energy = maxValue,
+    this.health = AttrModel.maxValue,
+    this.food = AttrModel.maxValue,
+    this.water = AttrModel.maxValue,
+    this.energy = AttrModel.maxValue,
   });
 
   const AttrModel.all(Progress v)

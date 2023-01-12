@@ -146,7 +146,7 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
   Widget buildPortrait() {
     return [
       ListTile(
-        title: useType.localizeAfter().text(style: context.textTheme.titleLarge),
+        title: useType.l10nAfter().text(style: context.textTheme.titleLarge),
         subtitle: Hud(attr: mock.attrs),
       ).padAll(5).inCard(),
       const SizedBox(height: 40),
@@ -163,7 +163,7 @@ class _ItemEntryUsePreviewState extends State<ItemEntryUsePreview> {
   Widget buildLandscape() {
     return [
       ListTile(
-        title: useType.localizeAfter().text(style: context.textTheme.titleLarge),
+        title: useType.l10nAfter().text(style: context.textTheme.titleLarge),
         subtitle: Hud(attr: mock.attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
       ).padAll(5).inCard().expanded(),
       ItemEntryMassSelector(
