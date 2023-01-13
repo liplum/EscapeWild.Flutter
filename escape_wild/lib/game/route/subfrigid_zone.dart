@@ -117,20 +117,20 @@ class SubFrigidZoneRoute extends RouteProtocol {
   PlaceProtocol get initialPlace => places[0];
 
   @override
-  dynamic getPlaceRestoreId(PlaceProtocol place) {
-    return places.indexOfAny(place);
-  }
-
-  @override
-  PlaceProtocol restorePlaceById(dynamic restoreId) {
-    return places[(restoreId as int).clamp(0, places.length - 1)];
-  }
-
-  @override
   void onRestored() {
     for (final place in places) {
       place.route = this;
     }
+  }
+
+  @override
+  getRestoreIdOf(covariant PlaceProtocol place) {
+    return places.indexOfAny(place);
+  }
+
+  @override
+  PlaceProtocol restoreById(restoreId) {
+    return places[(restoreId as int).clamp(0, places.length - 1)];
   }
 
   static const String type = "SubFrigidZoneRoute";

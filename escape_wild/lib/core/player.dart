@@ -95,7 +95,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       final routeGeneratorSeed = (json["routeGeneratorSeed"] as num).toInt();
       final route = Cvt.fromJsonObj<RouteProtocol>(json["route"]);
       final locationRestoreId = json["locationRestoreId"];
-      final lastLocation = route!.restorePlaceById(locationRestoreId);
+      final lastLocation = route!.restoreById(locationRestoreId);
       route.onRestored();
       // set fields
       this.attrs = attrs;
@@ -131,7 +131,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     final loc = location;
     final r = route;
     if (r != null && loc != null) {
-      json["locationRestoreId"] = r.getPlaceRestoreId(loc);
+      json["locationRestoreId"] = r.getRestoreIdOf(loc);
     }
     return json;
   }

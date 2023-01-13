@@ -63,7 +63,9 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     return res;
   }
 }
+
 List<SubtropicsPlace> _placesFromJson(dynamic json) => deserializeList<SubtropicsPlace>(json);
+
 @JsonSerializable()
 class SubtropicsRoute extends RouteProtocol {
   @override
@@ -121,22 +123,22 @@ class SubtropicsRoute extends RouteProtocol {
 
   factory SubtropicsRoute.fromJson(Map<String, dynamic> json) => _$SubtropicsRouteFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SubtropicsRouteToJson(this);
+  @override
+  String get typeName => type;
 
   @override
-  dynamic getPlaceRestoreId(PlaceProtocol place) {
+  getRestoreIdOf(covariant PlaceProtocol place) {
     return places.indexOfAny(place);
   }
 
   @override
-  PlaceProtocol restorePlaceById(dynamic restoreId) {
+  PlaceProtocol restoreById(restoreId) {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
 
-  static const type = "SubtropicsRoute";
+  Map<String, dynamic> toJson() => _$SubtropicsRouteToJson(this);
 
-  @override
-  String get typeName => type;
+  static const type = "SubtropicsRoute";
 }
 
 @JsonSerializable()

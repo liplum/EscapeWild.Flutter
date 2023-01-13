@@ -1,18 +1,12 @@
 import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 
-abstract class RouteProtocol with Moddable implements JConvertibleProtocol {
+abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
   String get name;
 
   RouteProtocol();
 
   PlaceProtocol get initialPlace;
-
-  /// Return an restore id to save current place.
-  dynamic getPlaceRestoreId(PlaceProtocol place);
-
-  /// Resolve [restoreId] to one of this places.
-  PlaceProtocol restorePlaceById(dynamic restoreId);
 
   void onRestored() {}
 

@@ -127,19 +127,58 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   void removeItem(ItemEntry item) {
-    var index = player.backpack.indexOfItem(item);
-    if (index == player.backpack.itemCount - 1) {
-      // If current item is the last one, go to previous one.
-      index--;
-    }
-    player.backpack.removeItem(item);
-    final itemCount = player.backpack.itemCount;
-    if (itemCount > 0) {
-      // If the index is not changed, it should be the next one.
-      index = (index % itemCount).clamp(0, itemCount - 1);
-      _selected = player.backpack[index];
+    runAndTrackCurrentSelected(item, () {
+      player.backpack.removeItem(item);
+    });
+  }
+
+  void runAndTrackCurrentSelected(ItemEntry item, Function() between) {
+    if (item == _selected) {
+      var index = player.backpack.indexOfItem(item);
+      var isLast = false;
+      if (index == player.backpack.itemCount - 1) {
+        isLast = true;
+      }
+      between();
+      if (isLast && item.isEmpty) {
+        // If current item is the last one and empty after running [between()], go to previous one.
+        index--;
+      }
+      final itemCount = player.backpack.itemCount;
+      if (itemCount > 0) {
+        // If the index is not changed, it should be the next one.
+        index = (index % itemCount).clamp(0, itemCount - 1);
+        _selected = player.backpack[index];
+      } else {
+        _selected = null;
+      }
     } else {
-      _selected = null;
+      between();
+    }
+  }
+
+  Future<void> runAndTrackCurrentSelectedAsync(ItemEntry item, Future Function() between) async {
+    if (item == _selected) {
+      var index = player.backpack.indexOfItem(item);
+      var isLast = false;
+      if (index == player.backpack.itemCount - 1) {
+        isLast = true;
+      }
+      await between();
+      if (isLast && item.isEmpty) {
+        // If current item is the last one and empty after running [between()], go to previous one.
+        index--;
+      }
+      final itemCount = player.backpack.itemCount;
+      if (itemCount > 0) {
+        // If the index is not changed, it should be the next one.
+        index = (index % itemCount).clamp(0, itemCount - 1);
+        _selected = player.backpack[index];
+      } else {
+        _selected = null;
+      }
+    } else {
+      between();
     }
   }
 
@@ -205,8 +244,10 @@ class _BackpackPageState extends State<BackpackPage> {
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
         if (selectedMassOrPart > 0) {
-          // discard the part.
-          final _ = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
+          runAndTrackCurrentSelected(item, () {
+            // discard the part.
+            final _ = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
+          });
         }
       }
     } else {
@@ -253,10 +294,12 @@ class _BackpackPageState extends State<BackpackPage> {
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
         if (selectedMassOrPart > 0) {
-          final part = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
-          for (final usableComp in usableComps) {
-            await usableComp.onUse(part);
-          }
+          await runAndTrackCurrentSelectedAsync(item, () async {
+            final part = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
+            for (final usableComp in usableComps) {
+              await usableComp.onUse(part);
+            }
+          });
         }
       }
     } else {

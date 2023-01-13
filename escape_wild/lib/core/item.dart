@@ -178,6 +178,10 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 
   /// Please call [Backpack.splitItemInBackpack] to track changes, such as [Backpack.mass].
+  /// ```dart
+  /// if(canSplit)
+  ///   mass = actualMass - massOfPart;
+  /// ```
   ItemEntry split(int massOfPart) {
     assert(massOfPart > 0, "`mass` to split must be more than 0");
     if (massOfPart <= 0) return empty;
