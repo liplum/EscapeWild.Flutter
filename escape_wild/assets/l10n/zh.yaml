@@ -23,7 +23,7 @@ ui:
     discard-request: 是否丢弃？
     discard-confirm: "确定要丢弃 {} 吗？"
     empty-tip: 背包空荡荡的
-    cannot-use: "无法使用"
+    cannot-use: 无法使用
 item:
   mass-with-unit: '{}g'
 ok: OK
