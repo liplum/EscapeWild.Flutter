@@ -16,6 +16,7 @@ export 'package:escape_wild/utils/random.dart';
 export 'package:escape_wild/i18n.dart';
 export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/utils/collection.dart';
+export 'package:escape_wild/db.dart';
 import 'package:escape_wild/game/register.dart' as game_register;
 import 'package:escape_wild/core/register.dart' as core_register;
 
@@ -53,6 +54,11 @@ Future<void> initPlayer() async {
 
 Future<void> onNewGame() async {
   await player.restart();
+}
+
+Future<void> loadGameSave(String gameSave) async {
+  await player.init();
+  player.loadFromJson(gameSave);
 }
 
 void loadVanilla() {

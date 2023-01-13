@@ -41,6 +41,10 @@ dependencies:
     git:
       url: https://github.com/liplum/DartPackage.git
       path: jconverter
+  platform_safe_func:
+    git:
+      url: https://github.com/liplum/DartPackage.git
+      path: platform_safe_func
   json_annotation: ^4.7.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
@@ -56,6 +60,7 @@ dependencies:
   syncfusion_flutter_sliders: ^20.4.43
   intl: ^0.17.0
   modal_bottom_sheet: ^2.1.2
+  path_provider: ^2.0.11
 
 dev_dependencies:
   flutter_test:

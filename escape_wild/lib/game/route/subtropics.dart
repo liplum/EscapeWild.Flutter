@@ -89,6 +89,13 @@ class SubtropicsRoute extends RouteProtocol {
   @override
   PlaceProtocol get initialPlace => places[0];
 
+  @override
+  void onRestored() {
+    for (final place in places) {
+      place.route = this;
+    }
+  }
+
   void add(SubtropicsPlace place) {
     places.add(place);
     place.route = this;

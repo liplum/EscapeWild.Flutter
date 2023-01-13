@@ -14,6 +14,8 @@ abstract class RouteProtocol with Moddable implements JConvertibleProtocol {
   /// Resolve [restoreId] to one of this places.
   PlaceProtocol restorePlaceById(dynamic restoreId);
 
+  void onRestored() {}
+
   String localizedName() => i18n("route.$name.name");
 
   String localizedDescription() => i18n("route.$name.desc");

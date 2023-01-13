@@ -1,12 +1,9 @@
-import 'dart:convert';
-
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:flutter/services.dart';
 
 import 'hud.dart';
 
@@ -18,10 +15,6 @@ class ActionPage extends StatefulWidget {
 }
 
 class _ActionPageState extends State<ActionPage> {
-  AttrModel get attr => player.attrs;
-
-  set attr(AttrModel v) => player.attrs = v;
-
   @override
   Widget build(BuildContext context) {
     return context.isPortrait ? buildPortrait() : buildLandscape();
@@ -59,13 +52,10 @@ class _ActionPageState extends State<ActionPage> {
           IconButton(
             onPressed: () async {
               final json = player.toJson();
-              final confirmed = await context.showAnyTip(title: "Save", make: (_) => json.text().scrolled(), ok: "OK");
-              if (confirmed == true) {
-                await Clipboard.setData(ClipboardData(text: json));
-                player.loadFromJson(json);
-              }
+              DB.setGameSave(json);
+              await context.showTip(title: I.done, desc: "Your game is saved.", ok: I.ok);
             },
-            icon: Icon(Icons.save_rounded),
+            icon: const Icon(Icons.save_rounded),
           ),
         ],
       ),

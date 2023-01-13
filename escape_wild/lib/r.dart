@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:platform_safe_func/platform_safe_func.dart';
+
 class R {
   R._();
 
@@ -11,6 +13,14 @@ class R {
     zhLocale,
     frLocale,
   ];
+  static const packageName = "net.liplum.escape_wild.flutter";
+  static late final String appDir;
+  static late final String tmpDir;
+
+  static String get localStorageDir => isDesktop ? joinPath(appDir, packageName) : appDir;
+
+  static String get hiveDir => joinPath(localStorageDir, "hive");
+
   static const healthColor = Color(0xfffc3545);
   static const foodColor = Color(0xfffeaa1a);
   static const waterColor = Color(0xff1ca3ec);

@@ -16,6 +16,12 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
 
   Backpack();
 
+  void loadFrom(Backpack source) {
+    items = source.items;
+    mass = source.mass;
+    notifyListeners();
+  }
+
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
 
   Map<String, dynamic> toJson() => _$BackpackToJson(this);

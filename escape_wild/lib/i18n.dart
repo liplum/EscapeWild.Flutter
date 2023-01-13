@@ -6,6 +6,8 @@ class I {
   static final item = _Item();
   static final action = _Action();
 
+  static String get done => "done".tr();
+
   static String get ok => "ok".tr();
 
   static String get yes => "yes".tr();

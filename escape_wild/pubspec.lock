@@ -507,7 +507,7 @@ packages:
     source: hosted
     version: "1.0.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -569,6 +569,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
+  platform_safe_func:
+    dependency: "direct main"
+    description:
+      path: platform_safe_func
+      ref: HEAD
+      resolved-ref: "2dd759008d04c2c26c03ded5f27262bc86e2efc0"
+      url: "https://github.com/liplum/DartPackage.git"
+    source: git
+    version: "1.0.0"
   plugin_platform_interface:
     dependency: transitive
     description:

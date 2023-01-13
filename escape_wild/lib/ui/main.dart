@@ -1,6 +1,7 @@
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/home.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -42,18 +43,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget buildContinueGameBtn() {
-    // TODO: Game save
-    return ElevatedButton(
-      onPressed: null,
-      child: _I.$continue
-          .text(
-            style: TextStyle(fontSize: 28),
-          )
-          .padAll(5),
-    ).padAll(5);
-  }
-
   Widget buildNewGameBtn() {
     return ElevatedButton(
       onPressed: () async {
@@ -68,5 +57,27 @@ class _MainPageState extends State<MainPage> {
           )
           .padAll(5),
     ).padAll(5);
+  }
+
+  Widget buildContinueGameBtn() {
+    return DB.$gameSave.listenable() <<
+        (ctx, v, _) {
+          final lastSave = DB.getGameSave();
+          return ElevatedButton(
+            onPressed: lastSave == null
+                ? null
+                : () async {
+                    await loadGameSave(lastSave);
+                    context.navigator.pushReplacement(MaterialPageRoute(
+                      builder: (_) => const Homepage(),
+                    ));
+                  },
+            child: _I.$continue
+                .text(
+                  style: TextStyle(fontSize: 28),
+                )
+                .padAll(5),
+          ).padAll(5);
+        };
   }
 }

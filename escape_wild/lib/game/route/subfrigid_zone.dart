@@ -126,6 +126,13 @@ class SubFrigidZoneRoute extends RouteProtocol {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
 
+  @override
+  void onRestored() {
+    for (final place in places) {
+      place.route = this;
+    }
+  }
+
   static const String type = "SubFrigidZoneRoute";
 
   @override
