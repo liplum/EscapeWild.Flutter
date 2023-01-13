@@ -63,7 +63,7 @@ class MiniHud extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       subtitle: Hud(attrs: attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
-    ).padAll(5).inCard();
+    ).padAll(5);
   }
 }
 

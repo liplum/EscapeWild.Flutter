@@ -71,6 +71,7 @@ class NullItemCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // never reached.
     return ListTile(
       title: AutoSizeText(
         "?",
@@ -236,7 +237,7 @@ class _MergeableItemEntryUsePreviewState extends State<MergeableItemEntryUsePrev
 
   Widget buildPortrait() {
     return [
-      MiniHud(attrs: mock.attrs),
+      MiniHud(attrs: mock.attrs).inCard(),
       const SizedBox(height: 40),
       ItemEntryMassSelector(
         template: template,
@@ -304,7 +305,7 @@ class _UnmergeableItemEntryUsePreviewState extends State<UnmergeableItemEntryUse
             }
             builder.performModification(mock);
           }
-          return MiniHud(attrs: mock.attrs);
+          return MiniHud(attrs: mock.attrs).inCard();
         };
   }
 }

@@ -10,7 +10,11 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
   final $fireState = ValueNotifier(const FireState.off());
+
+  /// It's evaluated at runtime, no need to serialization.
   final $location = ValueNotifier<PlaceProtocol?>(null);
+
+  /// It's evaluated at runtime, no need to serialization.
   final $maxMassLoad = ValueNotifier(2000);
   final $actionTimes = ValueNotifier(0);
   RouteProtocol? route;
@@ -55,28 +59,25 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     $actionTimes.value = 0;
     final generator = SubtropicsRouteGenerator();
     final ctx = RouteGenerateContext(hardness: hardness);
-    final generatedRoute = generator.generateRoute(ctx);
+    final generatedRoute = generator.generateRoute(ctx, DateTime.now().millisecond);
     route = generatedRoute;
     location = generatedRoute.initialPlace;
   }
 
   void loadFromJson(Map<String, dynamic> json) {
-    attrs = AttrModel(
-      health: json["health"],
-      water: json["water"],
-      food: json["food"],
-      energy: json["energy"],
-    );
+    attrs = AttrModel.fromJson(json["attrs"]);
 
     notifyListeners();
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "health": health,
-      "water": water,
-      "food": food,
-      "energy": energy,
+      "attrs": attrs.toJson(),
+      "backpack": backpack.toJson(),
+      "journeyProgress": journeyProgress,
+      "fireState": fireState,
+      "actionTimes": actionTimes,
+      "route": route,
     };
   }
 }

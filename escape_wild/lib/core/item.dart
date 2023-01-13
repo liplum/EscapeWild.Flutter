@@ -214,6 +214,12 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 }
 
+class ContainerItemEntry extends ItemEntry {
+  ItemEntry inside = ItemEntry.empty;
+
+  ContainerItemEntry(super.meta);
+}
+
 extension ItemEntryX on ItemEntry {
   int get actualMass => mass ?? meta.mass;
 

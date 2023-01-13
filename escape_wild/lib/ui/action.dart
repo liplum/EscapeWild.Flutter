@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:flutter/services.dart';
 
 import 'hud.dart';
 
@@ -14,40 +18,9 @@ class ActionPage extends StatefulWidget {
 }
 
 class _ActionPageState extends State<ActionPage> {
-  void increment() {
-    setState(() {
-      attr = AttrModel(
-        health: up(attr.health),
-        food: up(attr.food),
-        water: up(attr.water),
-        energy: up(attr.energy),
-      );
-    });
-  }
-
-  void decrement() {
-    setState(() {
-      attr = AttrModel(
-        health: down(attr.health),
-        food: down(attr.food),
-        water: down(attr.water),
-        energy: down(attr.energy),
-      );
-    });
-  }
-
-  double up(double raw) {
-    return (raw + Rand.float(0, 0.08)).clamp(0, 1);
-  }
-
-  double down(double raw) {
-    return (raw + Rand.float(-0.08, 0)).clamp(0, 1);
-  }
-
   AttrModel get attr => player.attrs;
 
   set attr(AttrModel v) => player.attrs = v;
-  var isAdd = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +55,18 @@ class _ActionPageState extends State<ActionPage> {
                   style: ctx.textTheme.headlineMedium,
                 ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final json = jsonEncode(player.toJson());
+              final confirmed = await context.showAnyTip(title: "Save", make: (_) => json.text().scrolled(), ok: "OK");
+              if (confirmed == true) {
+                await Clipboard.setData(ClipboardData(text: json));
+              }
+            },
+            icon: Icon(Icons.save_rounded),
+          ),
+        ],
       ),
       body: [
         player.$attrs << (ctx, attr, __) => buildHud(attr),

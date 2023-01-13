@@ -34,6 +34,17 @@ extension IterableX<T> on Iterable<T> {
       }
     }
   }
+
+  int indexOfAny(Object obj) {
+    var i = 0;
+    for (final e in this) {
+      if (e == obj) {
+        return i;
+      }
+      i++;
+    }
+    return -1;
+  }
 }
 
 List<List<T>> list2dOf<T>(int maxX, int maxY, T Function(int x, int y) pos, [bool growable = true]) {

@@ -6,13 +6,30 @@ part of 'subtropics.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) =>
+    SubtropicsRoute(
+      json['name'] as String,
+    )
+      ..places = (json['places'] as List<dynamic>)
+          .map((e) => SubtropicsPlace.fromJson(e as Map<String, dynamic>))
+          .toList()
+      ..routeProgress = (json['routeProgress'] as num).toDouble()
+      ..mod = Moddable.modId2ModFunc(json['mod'] as String);
+
+Map<String, dynamic> _$SubtropicsRouteToJson(SubtropicsRoute instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'places': instance.places,
+      'routeProgress': instance.routeProgress,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+    };
+
 SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
     SubtropicsPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['exploreCount'] as int
-      ..mod = Moddable.modId2ModFunc(json['mod'] as String);
+      ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   final val = <String, dynamic>{};
@@ -25,7 +42,6 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
+  val['ec'] = instance.exploreCount;
   return val;
 }

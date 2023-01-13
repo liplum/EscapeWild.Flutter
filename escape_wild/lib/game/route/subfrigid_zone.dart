@@ -7,7 +7,7 @@ import 'dart:math';
 
 class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   @override
-  RouteProtocol generateRoute(RouteGenerateContext ctx) {
+  RouteProtocol generateRoute(RouteGenerateContext ctx,int seed) {
     var map2d = list2dOf<SubFrigidZonePlace>(50, 1, (x, y) {
       return SubFrigidZonePlace("??????");
     });
@@ -113,6 +113,16 @@ class SubFrigidZoneRoute extends RouteProtocol {
   @override
   // TODO: implement initialPlace
   PlaceProtocol get initialPlace => places[0];
+
+  @override
+  dynamic getPlaceRestoreId(PlaceProtocol place) {
+    return places.indexOfAny(place);
+  }
+
+  @override
+  PlaceProtocol restorePlaceById(dynamic restoreId) {
+    return places[(restoreId as int).clamp(0, places.length - 1)];
+  }
 }
 
 @JsonSerializable()

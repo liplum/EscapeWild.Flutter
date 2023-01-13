@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -9,10 +11,11 @@ part 'subtropics.g.dart';
 /// As the first route generator, the generating is hardcoded and not mod-friendly.
 class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
   @override
-  RouteProtocol generateRoute(RouteGenerateContext ctx) {
+  RouteProtocol generateRoute(RouteGenerateContext ctx, int seed) {
     final route = SubtropicsRoute("subtropics");
     // now just try to fill the route with plain.
-    final dst = ctx.hardness.journeyDistance().toInt();
+    final rand = Random(seed);
+    final dst = ctx.hardness.journeyDistance(rand).toInt();
     route.addAll(genPlain(route, (dst * 0.35).toInt()));
     route.addAll(genForest(route, (dst * 0.2).toInt()));
     route.addAll(genRiverside(route, (dst * 0.2).toInt()));
@@ -61,16 +64,20 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
   }
 }
 
+@JsonSerializable()
 class SubtropicsRoute extends RouteProtocol {
   @override
+  @JsonKey()
   final String name;
 
   SubtropicsRoute(this.name);
 
+  @JsonKey()
   List<SubtropicsPlace> places = [];
 
   int get placeCount => places.length;
 
+  @JsonKey()
   double routeProgress = 0.0;
 
   double getRouteProgress() => routeProgress;
@@ -104,17 +111,38 @@ class SubtropicsRoute extends RouteProtocol {
     routeProgress = value;
     await current.onEnter();
   }
+
+  factory SubtropicsRoute.fromJson(Map<String, dynamic> json) => _$SubtropicsRouteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SubtropicsRouteToJson(this);
+
+  @override
+  dynamic getPlaceRestoreId(PlaceProtocol place) {
+    return places.indexOfAny(place);
+  }
+
+  @override
+  PlaceProtocol restorePlaceById(dynamic restoreId) {
+    return places[(restoreId as int).clamp(0, places.length - 1)];
+  }
 }
 
 @JsonSerializable()
 class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   @override
   @JsonKey(ignore: true)
+
+  /// To reduce the json size, the mod will be set later during restoration.
+  ModProtocol get mod => super.mod;
+  @override
+  @JsonKey(ignore: true)
   late SubtropicsRoute route;
   @override
   @JsonKey()
   String name;
-  @JsonKey()
+
+  /// Short name to reduce json size.
+  @JsonKey(name: "ec")
   int exploreCount = 0;
   static const hunt = 0.8;
 

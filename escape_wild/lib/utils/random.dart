@@ -31,3 +31,9 @@ class Rand {
     return float(basedOn - fluctuate, basedOn + fluctuate);
   }
 }
+
+extension RandomX on Random {
+  core.double float(core.double min, core.double max) {
+    return nextDouble() * (max - min) + min;
+  }
+}

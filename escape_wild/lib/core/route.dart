@@ -8,6 +8,12 @@ abstract class RouteProtocol with Moddable {
 
   PlaceProtocol get initialPlace;
 
+  /// Return an restore id to save current place.
+  dynamic getPlaceRestoreId(PlaceProtocol place);
+
+  /// Resolve [restoreId] to one of this places.
+  PlaceProtocol restorePlaceById(dynamic restoreId);
+
   String localizedName() => i18n("route.$name.name");
 
   String localizedDescription() => i18n("route.$name.desc");
@@ -73,7 +79,7 @@ class RouteGenerateContext {
 }
 
 abstract class RouteGeneratorProtocol {
-  RouteProtocol generateRoute(RouteGenerateContext ctx);
+  RouteProtocol generateRoute(RouteGenerateContext ctx, int seed);
 }
 
 /// It defines many properties that would affect the game.
