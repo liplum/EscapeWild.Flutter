@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -20,38 +22,40 @@ extension NamedItemGetterX on String {
   ItemGetter<T> getAsItem<T extends Item>() => NamedItemGetter.create<T>(this);
 }
 
+/// ## When [mergeable] is false
+/// It means the item is unmergeable, and [mass] is for one ItemEntry.
+/// ### Example
+/// [mass] of `Tinned Tomatoes` is 500. So each ItemEntry takes 500g room in backpack.
+/// When player eat or cook it, if possible, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply full changes.
+///
+/// ## When [mergeable] is true
+/// It means the item is mergeable, and [mass] is the unit for each ItemEntry.
+/// ### Example
+/// [mass] of `Berry` is 10. However, ItemEntry doesn't care that, it could have an independent [ItemEntry.mass] instead.
+/// When player eat or cook it, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply changes based [ItemEntry.mass].
+/// If [ItemEntry.mass] is 25, and player has eaten 15g, then [ModifyAttrComp.modifiers] will apply `(15.0 / 10.0) * modifier`.
+///
+/// ## When [isContainer] is true
+/// It means the item is a container, and [mass] stands for the weight of container itself.
+///
 class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
-  static final empty = Item("empty", mergeable: true, mass: 0, isContainer: false);
+  static final empty = Item("empty", mergeable: true, mass: 0);
   final String name;
 
-  /// ## When [mergeable] is false
-  /// It means the item is unmergeable, and [mass] is for one ItemEntry.
-  /// ### Example
-  /// [mass] of `Tinned Tomatoes` is 500. So each ItemEntry takes 500g room in backpack.
-  /// When player eat or cook it, if possible, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply full changes.
-  ///
-  /// ## When [mergeable] is true
-  /// It means the item is mergeable, and [mass] is the unit for each ItemEntry.
-  /// ### Example
-  /// [mass] of `Berry` is 10. However, ItemEntry doesn't care that, it could have an independent [ItemEntry.mass] instead.
-  /// When player eat or cook it, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply changes based [ItemEntry.mass].
-  /// If [ItemEntry.mass] is 25, and player has eaten 15g, then [ModifyAttrComp.modifiers] will apply `(15.0 / 10.0) * modifier`.
-  ///
-  /// ## When [isContainer] is true
-  /// It means the item is a container, and [mass] stands for the weight of container itself.
-  ///
   /// Unit: [g] gram
   final int mass;
   final bool mergeable;
 
   /// If this item [isContainer], it must not be [mergeable].
-  final bool isContainer;
+  bool get isContainer => containerComp != null;
+
+  /// How much can this container hold.
+  ContainerCompProtocol? containerComp;
 
   Item(
     this.name, {
     required this.mergeable,
     required this.mass,
-    required this.isContainer,
   }) {
     assert(mergeable != isContainer, "`mergeable` and `isContainer` are conflict.");
   }
@@ -59,18 +63,28 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   Item.unmergeable(
     this.name, {
     required this.mass,
-    this.isContainer = false,
   }) : mergeable = false;
+
+  Item.mergeable(
+    this.name, {
+    required this.mass,
+  }) : mergeable = true;
 
   Item.container(
     this.name, {
     required this.mass,
-  })  : mergeable = false,
-        isContainer = true;
-
-  Item.mergeable(this.name, {required this.mass})
-      : mergeable = true,
-        isContainer = false;
+    Iterable<String>? acceptTags,
+    int? capacity,
+    bool? mergeablity,
+  }) : mergeable = false {
+    final comp = ContainerComp(
+      acceptTags: acceptTags,
+      capacity: capacity,
+      mergeablity: mergeablity,
+    );
+    comp.validateItemConfig(this);
+    containerComp = comp;
+  }
 
   Item self() => this;
 
@@ -109,6 +123,159 @@ extension ItemX on Item {
   }
 }
 
+/// [ContainerCompProtocol] is a special component.
+///
+/// [Item] can have ot most one [ContainerCompProtocol].
+/// If so, the item becomes a container, and its associated [ItemEntry] is [ContainerItemEntry].
+///
+/// Nested container is forbidden.
+abstract class ContainerCompProtocol {
+  const ContainerCompProtocol();
+
+  void validateItemConfig(Item item) {}
+
+  /// Return whether [container] maybe accept [outer].
+  ///
+  /// The implementation should take those into account:
+  /// - Whether [container] is too full to hold more.
+  /// - Whether [container] has a different type of inner other than [outer]'s
+  /// - Whether [outer] is another container.
+  /// - And more...
+  bool checkPossibleAccept(ContainerItemEntry container, ItemEntry outer);
+
+  /// Return the part of [outer] that [container] is accepted.
+  /// - [ItemEntry] should be checked before in [checkPossibleAccept] and prepare to be split.
+  /// - [ItemEntry.empty] will be returned if [container] doesn't accept [outer] at all.
+  /// - If [container] accepts [outer], [outer.entryMass] will be decreased.
+  ItemEntry splitAcceptedPart(ContainerItemEntry container, ItemEntry outer);
+
+  /// When [container] accepts [outer].
+  ///
+  /// The implementation should handle something like blow:
+  /// - Increment [container.innerMass].
+  /// - Merge all components
+  /// - And more...
+  void onAccept(ContainerItemEntry container, ItemEntry outer);
+}
+
+class ContainerComp extends ContainerCompProtocol {
+  /// - If [acceptTags] is not null, container will only allow item which matches all tags.
+  final Iterable<String>? acceptTags;
+
+  /// - If [capacity] is null, how much item container can hold is unlimited.
+  /// - Otherwise, the [ContainerItemEntry.innerMass] can't exceed it.
+  final int? capacity;
+
+  /// If [mergeablity] is not null, the [Item.mergeable] must match it.
+  /// - When [mergeablity] is false, topping up is disallowed.
+  ///   In other words, the whole container will be exclusive until [ContainerItemEntry.inner] is empty.
+  /// - When [mergeablity] is true, topping up is allowed, but the overflowing part will be ignored.
+  final bool? mergeablity;
+
+  const ContainerComp({
+    this.acceptTags,
+    this.capacity,
+    this.mergeablity,
+  });
+
+  const ContainerComp.limitCapacity(
+    this.capacity,
+    this.mergeablity,
+  ) : acceptTags = null;
+
+  const ContainerComp.limitTags(
+    this.acceptTags,
+    this.mergeablity,
+  ) : capacity = null;
+
+  const ContainerComp.unlimited() : this();
+
+  @override
+  bool checkPossibleAccept(ContainerItemEntry container, ItemEntry outer) {
+    final inner = container.inner;
+    if (inner == null) {
+      // container is empty
+      // check if outer meets each condition
+      if (mergeablity != null && mergeablity != outer.meta.mergeable) return false;
+      final acceptTags = this.acceptTags;
+      if (acceptTags != null && !outer.meta.hasTags(acceptTags)) return false;
+      final capacity = this.capacity;
+      if (capacity != null && capacity < outer.entryMass) return false;
+    } else {
+      // container has item
+      // only allow mergeable
+      if (!outer.meta.mergeable) return false;
+      // only accept the same item
+      if (!inner.hasIdenticalMeta(outer)) return false;
+      // check if outer meets each condition
+      if (mergeablity != null && mergeablity != outer.meta.mergeable) return false;
+      final acceptTags = this.acceptTags;
+      if (acceptTags != null && !outer.meta.hasTags(acceptTags)) return false;
+      // check overflowing
+      final capacity = this.capacity;
+      if (capacity != null) {
+        // container is full
+        if (container.innerMass >= capacity) return false;
+        // otherwise, container has some room for [outer]
+      }
+    }
+    // Pass all tests!
+    return true;
+  }
+
+  @override
+  ItemEntry splitAcceptedPart(ContainerItemEntry container, ItemEntry outer) {
+    final capacity = this.capacity;
+    var acceptedMass = outer.entryMass;
+    if (capacity != null) {
+      final containerRemainingRoom = min(0, capacity - container.innerMass);
+      acceptedMass = min(outer.entryMass, containerRemainingRoom);
+    }
+    final part = outer.split(acceptedMass);
+    return part;
+  }
+
+  @override
+  void onAccept(ContainerItemEntry container, ItemEntry outer) {
+    final inner = container.inner;
+    if (inner == null) {
+      container.inner = outer;
+    } else {
+      outer.mergeTo(inner);
+    }
+  }
+
+  @override
+  void validateItemConfig(Item item) {
+    final mergeablity = this.mergeablity;
+    if (mergeablity != null && mergeablity != item.mergeable) {
+      throw ItemMergeableCompConflictError(
+        "ContainerComp's mergeablity is not null but different from [item.mergeable].",
+        item,
+        mergeableShouldBe: mergeablity,
+      );
+    }
+    // The [item.tags] might be not yet initialized, so ignore it.
+  }
+}
+
+extension ContainerCompX on Item {
+  Item asContainer({
+    Iterable<String>? acceptTags,
+    int? capacity,
+    bool? mergeablity,
+  }) {
+    final comp = ContainerComp(
+      acceptTags: acceptTags,
+      capacity: capacity,
+      mergeablity: mergeablity,
+    );
+    comp.validateItemConfig(this);
+    containerComp = comp;
+    return this;
+  }
+}
+
 class ItemMergeableCompConflictError implements Exception {
   final String message;
   final Item item;
@@ -121,7 +288,7 @@ class ItemMergeableCompConflictError implements Exception {
   });
 
   @override
-  String toString() => "[${item.name}]$message";
+  String toString() => "[${item.name}]$message. [Item.mergeable] should be $mergeableShouldBe.";
 }
 
 class ItemCompConflictError implements Exception {
@@ -132,6 +299,8 @@ class ItemCompConflictError implements Exception {
 }
 
 abstract class ItemComp extends Comp {
+  const ItemComp();
+
   void validateItemConfig(Item item) {}
 
   /// ## preconditions:
@@ -194,21 +363,29 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     }
   }
 
+  /// Merge this to [target].
+  /// - [target.entryMass] will be increased.
+  /// - This [entryMass] will be clear.
+  ///
   /// Please call [Backpack.addItemOrMerge] to track changes, such as [Backpack.mass].
-  void mergeTo(ItemEntry to) {
+  void mergeTo(ItemEntry target) {
     assert(meta.mergeable, "${meta.name} is not mergeable.");
     if (!meta.mergeable) return;
-    assert(hasIdenticalMeta(to), "Can't merge ${meta.name} with ${to.meta.name}.");
-    if (!hasIdenticalMeta(to)) return;
+    assert(hasIdenticalMeta(target), "Can't merge ${meta.name} with ${target.meta.name}.");
+    if (!hasIdenticalMeta(target)) return;
     final selfMass = entryMass;
-    final toMass = to.entryMass;
+    final toMass = target.entryMass;
     // handle components
     for (final comp in meta.iterateComps()) {
-      comp.onMerge(this, to);
+      comp.onMerge(this, target);
     }
-    to.mass = selfMass + toMass;
+    target.mass = selfMass + toMass;
+    mass = 0;
   }
 
+  /// Split a part of this, and return the part.
+  /// - This [entryMass] will be decreased.
+  ///
   /// Please call [Backpack.splitItemInBackpack] to track changes, such as [Backpack.mass].
   /// ```dart
   /// if(canSplit)
@@ -263,9 +440,9 @@ class ContainerItemEntry extends ItemEntry {
 
   /// [entryMass] is the sum of container and [inner].
   @override
-  int get entryMass => insideMass + meta.mass;
+  int get entryMass => innerMass + meta.mass;
 
-  int get insideMass => inner?.entryMass ?? 0;
+  int get innerMass => inner?.entryMass ?? 0;
 
   ContainerItemEntry(super.meta) {
     assert(meta.isContainer, "ContainerItemEntry requires item is a Container.");
@@ -539,7 +716,7 @@ class ToolComp extends ItemComp {
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
-  ToolComp({
+  const ToolComp({
     this.attr = ToolAttr.normal,
     required this.toolType,
     required this.maxHealth,
@@ -606,7 +783,7 @@ abstract class UsableComp extends ItemComp {
   @JsonKey()
   final UseType useType;
 
-  UsableComp(this.useType);
+  const UsableComp(this.useType);
 
   bool canUse() => true;
 
@@ -628,7 +805,7 @@ class ModifyAttrComp extends UsableComp {
   @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item>? afterUsedItem;
 
-  ModifyAttrComp(
+  const ModifyAttrComp(
     super.useType,
     this.modifiers, {
     this.afterUsedItem,
@@ -744,7 +921,7 @@ class CookableComp extends ItemComp {
   @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter<Item> cookedOutput;
 
-  CookableComp(
+  const CookableComp(
     this.cookType,
     this.fuelCost,
     this.cookedOutput,
@@ -798,7 +975,7 @@ class FuelComp extends ItemComp {
   @JsonKey()
   final double heatValue;
 
-  FuelComp(this.heatValue);
+  const FuelComp(this.heatValue);
 
   /// If the [item] has [WetComp], reduce the [heatValue] based on its wet.
   double getActualHeatValue(ItemEntry item) {
@@ -831,6 +1008,8 @@ extension FuelCompX on Item {
 class WetComp extends ItemComp {
   static const _wetK = "Wet.wet";
   static const defaultWet = 0.0;
+
+  const WetComp();
 
   Ratio getWet(ItemEntry item) => item[_wetK] ?? defaultWet;
 
@@ -870,7 +1049,7 @@ class WetComp extends ItemComp {
 
 extension WetCompX on Item {
   Item hasWet() {
-    final comp = WetComp();
+    const comp = WetComp();
     comp.validateItemConfig(this);
     addComp(comp);
     return this;
@@ -879,6 +1058,8 @@ extension WetCompX on Item {
 
 class FreshnessComp extends ItemComp {
   static const _freshnessK = "Freshness.freshness";
+
+  const FreshnessComp();
 
   Ratio geFreshness(ItemEntry item) => item[_freshnessK] ?? 1.0;
 
@@ -913,7 +1094,7 @@ class FreshnessComp extends ItemComp {
 
 extension FreshnessCompX on Item {
   Item hasFreshness() {
-    final comp = FreshnessComp();
+    const comp = FreshnessComp();
     comp.validateItemConfig(this);
     addComp(comp);
     return this;

@@ -222,7 +222,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     }
   }
 
-  static const type = "SubtropicsPlace";
+  static const type = "SubtropicsRoute.SubtropicsPlace";
 
   @override
   String get typeName => type;
