@@ -46,6 +46,7 @@ class _GamePageState extends State<GamePage> {
   Widget buildNewGameBtn() {
     return ElevatedButton(
       onPressed: () async {
+        DB.deleteGameSave();
         await onNewGame();
         while (context.navigator.canPop()) {
           context.navigator.pop();
