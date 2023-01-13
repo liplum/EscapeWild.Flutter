@@ -50,6 +50,7 @@ class _BackpackPageState extends State<BackpackPage> {
       appBar: AppBar(
         title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: buildPortraitBody().safeArea().padAll(5),
     );

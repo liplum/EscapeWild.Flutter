@@ -17,7 +17,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   var backpack = Backpack();
   var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
-  final $fireState = ValueNotifier(const FireState.off());
+  final $fireState = ValueNotifier(FireState.off);
   var routeGeneratorSeed = 0;
   @noSave
   var initialized = false;
@@ -45,7 +45,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   bool putOutCampfire() {
     if (!isFireActive) return false;
-    fireState = const FireState.off();
+    fireState = FireState.off;
     return true;
   }
 
@@ -71,7 +71,12 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   Future<void> restart() async {
     await init();
-    $actionTimes.value = 0;
+    actionTimes = 0;
+    attrs = AttrModel.full;
+    backpack.clear();
+    fireState = FireState.off;
+    journeyProgress = 0;
+    // Route
     final generator = SubtropicsRouteGenerator();
     final ctx = RouteGenerateContext(hardness: hardness);
     routeGeneratorSeed = DateTime.now().millisecondsSinceEpoch;
@@ -93,6 +98,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       final actionTimes = (json["actionTimes"] as num).toInt();
       final hardness = Contents.getHardnessByName(json["hardness"]);
       final routeGeneratorSeed = (json["routeGeneratorSeed"] as num).toInt();
+      final journeyProgress = (json["journeyProgress"] as num).toDouble();
       final route = Cvt.fromJsonObj<RouteProtocol>(json["route"]);
       final locationRestoreId = json["locationRestoreId"];
       final lastLocation = route!.restoreById(locationRestoreId);
@@ -105,6 +111,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       this.hardness = hardness;
       this.routeGeneratorSeed = routeGeneratorSeed;
       this.route = route;
+      this.journeyProgress = journeyProgress;
       location = lastLocation;
     } catch (e, stacktrace) {
       if (kDebugMode) {

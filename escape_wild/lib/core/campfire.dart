@@ -18,7 +18,7 @@ class FireState {
 
   Map<String, dynamic> toJson() => _$FireStateToJson(this);
 
-  const FireState.off() : this();
+  static const FireState off = FireState();
 
   FireState copyWith({
     bool? active,

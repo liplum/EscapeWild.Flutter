@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/build_context/show.dart';
 
-import '../main/main.dart';
+import '../main/game.dart';
 
 extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {
@@ -76,7 +76,7 @@ class _IngameMenuState extends State<_IngameMenu> {
         context.navigator.pop();
       }
       context.navigator.pushReplacement(MaterialPageRoute(
-        builder: (_) => const MainPage(),
+        builder: (_) => const GamePage(),
       ));
     }
   }

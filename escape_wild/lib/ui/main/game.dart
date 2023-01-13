@@ -5,16 +5,16 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-part 'main.i18n.dart';
+part 'game.i18n.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+class GamePage extends StatefulWidget {
+  const GamePage({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<GamePage> createState() => _GamePageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +50,7 @@ class _MainPageState extends State<MainPage> {
         while (context.navigator.canPop()) {
           context.navigator.pop();
         }
-        context.navigator.pushReplacement(MaterialPageRoute(
+        context.navigator.push(MaterialPageRoute(
           builder: (_) => const Homepage(),
         ));
       },
@@ -76,7 +76,7 @@ class _MainPageState extends State<MainPage> {
     while (context.navigator.canPop()) {
       context.navigator.pop();
     }
-    context.navigator.pushReplacement(MaterialPageRoute(
+    context.navigator.push(MaterialPageRoute(
       builder: (_) => const Homepage(),
     ));
   }
