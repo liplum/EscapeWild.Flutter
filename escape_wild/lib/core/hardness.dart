@@ -8,7 +8,7 @@ typedef ValueFixer = double Function(double raw);
 typedef RandomGetter<T> = T Function(Random rand);
 
 /// TODO: Add to [Contents].
-class Hardness with TagsMixin {
+class Hardness with Moddable, TagsMixin {
   final String name;
   final ValueFixer attrCostFix;
   final ValueGetter<Times> maxFireMakingPrompt;

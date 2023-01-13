@@ -8,6 +8,7 @@ import 'r.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  registerConverter();
   runApp(
     const EscapeWildApp().withEasyLocalization(),
   );

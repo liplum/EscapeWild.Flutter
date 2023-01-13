@@ -1,7 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 
-abstract class RouteProtocol with Moddable {
+abstract class RouteProtocol with Moddable implements JConvertibleProtocol {
   String get name;
 
   RouteProtocol();

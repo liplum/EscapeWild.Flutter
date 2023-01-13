@@ -10,6 +10,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
   final $fireState = ValueNotifier(const FireState.off());
+  var routeGeneratorSeed = 0;
 
   /// It's evaluated at runtime, no need to serialization.
   final $location = ValueNotifier<PlaceProtocol?>(null);
@@ -59,7 +60,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     $actionTimes.value = 0;
     final generator = SubtropicsRouteGenerator();
     final ctx = RouteGenerateContext(hardness: hardness);
-    final generatedRoute = generator.generateRoute(ctx, DateTime.now().millisecond);
+    routeGeneratorSeed = DateTime.now().millisecond;
+    final generatedRoute = generator.generateRoute(ctx, routeGeneratorSeed);
     route = generatedRoute;
     location = generatedRoute.initialPlace;
   }
@@ -71,14 +73,22 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final json = {
       "attrs": attrs.toJson(),
       "backpack": backpack.toJson(),
       "journeyProgress": journeyProgress,
       "fireState": fireState,
       "actionTimes": actionTimes,
+      "hardness": hardness.name,
+      "routeGeneratorSeed": routeGeneratorSeed,
       "route": route,
     };
+    final loc = location;
+    final r = route;
+    if (r != null && loc != null) {
+      json["locationRestoreId"] = r.getPlaceRestoreId(loc);
+    }
+    return json;
   }
 }
 

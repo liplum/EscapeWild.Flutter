@@ -1,7 +1,4 @@
-import 'package:escape_wild/core/craft.dart';
-import 'package:escape_wild/core/mod.dart';
-
-import 'item.dart';
+import 'package:escape_wild/core.dart';
 
 class Contents {
   Contents._();
@@ -9,6 +6,7 @@ class Contents {
   static final items = ItemContents();
   static final mods = ModContents();
   static final craftRecipes = CraftRecipeContents();
+  static final hardness = HardnessContents();
 
   static Item getItemMetaByName(String name) {
     return items[name] ?? Item.empty;
@@ -21,6 +19,10 @@ class Contents {
 
   static List<CraftRecipeProtocol> getCraftRecipesByCat(CraftRecipeCat cat) {
     return craftRecipes[cat] ?? const [];
+  }
+
+  static Hardness getHardnessByName(String name) {
+    return hardness[name] ?? Hardness.normal;
   }
 
   static final Map<ItemMatcher, List<Item>> _matcher2Items = {};
@@ -78,6 +80,22 @@ extension CraftRecipeContentsX on CraftRecipeContents {
   void addAll(Iterable<CraftRecipeProtocol> recipes) {
     for (final recipe in recipes) {
       this << recipe;
+    }
+  }
+}
+
+class HardnessContents {
+  Map<String, Hardness> name2Hardness = {};
+}
+
+extension HardnessContentsX on HardnessContents {
+  Hardness? operator [](String name) => name2Hardness[name];
+
+  void operator <<(Hardness hardness) => name2Hardness[hardness.name] = hardness;
+
+  void addAll(Iterable<Hardness> hardnessList) {
+    for (final hardness in hardnessList) {
+      name2Hardness[hardness.name] = hardness;
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'package:jconverter/jconverter.dart';
+
 export 'package:escape_wild/core/action.dart';
 export 'package:escape_wild/core/attribute.dart';
 export 'package:escape_wild/core/backpack.dart';
@@ -14,3 +16,6 @@ export 'package:escape_wild/core/route.dart';
 export 'package:escape_wild/core/i18n.dart';
 export 'package:escape_wild/core/campfire.dart';
 export 'package:escape_wild/ambiguous.dart';
+
+// ignore: non_constant_identifier_names
+final Cvt = JConverter();

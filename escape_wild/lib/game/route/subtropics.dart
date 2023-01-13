@@ -125,6 +125,11 @@ class SubtropicsRoute extends RouteProtocol {
   PlaceProtocol restorePlaceById(dynamic restoreId) {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
+
+  static const type = "SubtropicsRoute";
+
+  @override
+  String get typeName => type;
 }
 
 @JsonSerializable()
@@ -218,6 +223,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   Map<String, dynamic> toJson() => _$SubtropicsPlaceToJson(this);
 }
 
+@JsonSerializable()
 class PlainPlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.6;
@@ -245,12 +251,17 @@ class PlainPlace extends SubtropicsPlace {
     await showGain(ActionType.explore, gain);
   }
 
+  factory PlainPlace.fromJson(Map<String, dynamic> json) => _$PlainPlaceFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$PlainPlaceToJson(this);
   static const type = "Subtropics.PlainPlace";
 
   @override
   String get typeName => type;
 }
 
+@JsonSerializable()
 class ForestPlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.6;
@@ -319,12 +330,17 @@ class ForestPlace extends SubtropicsPlace {
     await showGain(ActionType.explore, gain);
   }
 
+  factory ForestPlace.fromJson(Map<String, dynamic> json) => _$ForestPlaceFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ForestPlaceToJson(this);
   static const type = "Subtropics.ForestPlace";
 
   @override
   String get typeName => type;
 }
 
+@JsonSerializable()
 class RiversidePlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.1;
@@ -381,12 +397,17 @@ class RiversidePlace extends SubtropicsPlace {
     await showGain(ActionType.explore, gain);
   }
 
+  factory RiversidePlace.fromJson(Map<String, dynamic> json) => _$RiversidePlaceFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$RiversidePlaceToJson(this);
   static const type = "Subtropics.RiversidePlace";
 
   @override
   String get typeName => type;
 }
 
+@JsonSerializable()
 class CavePlace extends SubtropicsPlace {
   static const maxExploreTimes = 2;
   static const berry = 0.1;
@@ -411,12 +432,17 @@ class CavePlace extends SubtropicsPlace {
     await showGain(ActionType.explore, gain);
   }
 
+  factory CavePlace.fromJson(Map<String, dynamic> json) => _$CavePlaceFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$CavePlaceToJson(this);
   static const type = "Subtropics.CavePlace";
 
   @override
   String get typeName => type;
 }
 
+@JsonSerializable()
 class HutPlace extends SubtropicsPlace {
   static const oxe = 0.5;
   static const fishRod = 0.3;
@@ -457,6 +483,10 @@ class HutPlace extends SubtropicsPlace {
     await showGain(ActionType.explore, gain);
   }
 
+  factory HutPlace.fromJson(Map<String, dynamic> json) => _$HutPlaceFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$HutPlaceToJson(this);
   static const type = "Subtropics.HutPlace";
 
   @override

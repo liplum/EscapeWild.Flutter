@@ -7,7 +7,7 @@ import 'dart:math';
 
 class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   @override
-  RouteProtocol generateRoute(RouteGenerateContext ctx,int seed) {
+  RouteProtocol generateRoute(RouteGenerateContext ctx, int seed) {
     var map2d = list2dOf<SubFrigidZonePlace>(50, 1, (x, y) {
       return SubFrigidZonePlace("??????");
     });
@@ -22,9 +22,6 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
         double num = rdn / 50;
         saveRDN.add(num);
       }
-
-
-
     }
 
     throw UnimplementedError();
@@ -38,6 +35,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     }
     return res;
   }
+
   List<SubFrigidZonePlace> genSnowfield(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
@@ -46,6 +44,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     }
     return res;
   }
+
   List<SubFrigidZonePlace> genRivers(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
@@ -54,6 +53,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     }
     return res;
   }
+
   List<SubFrigidZonePlace> genSwamp(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
@@ -62,6 +62,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     }
     return res;
   }
+
   List<SubFrigidZonePlace> genConiferousForest(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
@@ -70,6 +71,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     }
     return res;
   }
+
   List<SubFrigidZonePlace> Tundra(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
@@ -123,6 +125,11 @@ class SubFrigidZoneRoute extends RouteProtocol {
   PlaceProtocol restorePlaceById(dynamic restoreId) {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
+
+  static const String type = "SubFrigidZoneRoute";
+
+  @override
+  String get typeName => type;
 }
 
 @JsonSerializable()
@@ -141,6 +148,7 @@ class SubFrigidZonePlace extends PlaceProtocol with PlaceActionDelegateMixin {
   int exploreCount = 0;
 
   static const type = "SubFrigidZone";
+
   @override
   String get typeName => type;
 

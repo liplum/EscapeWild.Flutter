@@ -45,3 +45,109 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   val['ec'] = instance.exploreCount;
   return val;
 }
+
+PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
+      json['name'] as String,
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..exploreCount = json['ec'] as int;
+
+Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['name'] = instance.name;
+  val['ec'] = instance.exploreCount;
+  return val;
+}
+
+ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
+      json['name'] as String,
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..exploreCount = json['ec'] as int;
+
+Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['name'] = instance.name;
+  val['ec'] = instance.exploreCount;
+  return val;
+}
+
+RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
+    RiversidePlace(
+      json['name'] as String,
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..exploreCount = json['ec'] as int;
+
+Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['name'] = instance.name;
+  val['ec'] = instance.exploreCount;
+  return val;
+}
+
+CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
+      json['name'] as String,
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..exploreCount = json['ec'] as int;
+
+Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['name'] = instance.name;
+  val['ec'] = instance.exploreCount;
+  return val;
+}
+
+HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
+      json['name'] as String,
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..exploreCount = json['ec'] as int;
+
+Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['name'] = instance.name;
+  val['ec'] = instance.exploreCount;
+  return val;
+}

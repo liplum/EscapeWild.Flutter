@@ -16,6 +16,7 @@ export 'package:escape_wild/utils/random.dart';
 export 'package:escape_wild/i18n.dart';
 export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/utils/collection.dart';
+import 'package:escape_wild/game/register.dart' as game_register;
 
 final yamlAssetsLoader = YamlAssetLoader();
 final isGameLoaded = ValueNotifier(false);
@@ -59,4 +60,8 @@ void loadVanilla() {
   Stuff.registerAll();
   Tools.registerAll();
   CraftRecipes.registerAll();
+}
+
+void registerConverter() {
+  game_register.registerTypes();
 }
