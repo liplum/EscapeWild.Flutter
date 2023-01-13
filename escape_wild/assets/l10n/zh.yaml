@@ -5,11 +5,37 @@ attr:
   energy: 体力
 ui:
   main:
-    title: 逃出荒野
-    new-game: 新的游戏
+    title: 逃离荒野
+    new-game: 新建游戏
     continue: 继续游戏
   attr:
     health: 生命
     food: 饱腹
     water: 水分
     energy: 体力
+  home:
+    action: 行动
+    backpack: 背包
+    craft: 合成
+    campfire: 营火
+  backpack:
+    mass-load: "{cur}g / {max}g"
+    discard-request: 是否丢弃？
+    discard-confirm: "确定要丢弃 {} 吗？"
+    empty-tip: 背包空荡荡的
+    cannot-use: "无法使用"
+item:
+  mass-with-unit: '{}g'
+ok: OK
+yes: 是
+no: 否
+got-it: 知道了
+not-now: 目前不可用
+cancel: 取消
+alright: 好吧
+discard: 丢弃
+action:
+  got-items: 你得到了 {}。
+  got-nothing: 你什么也没得到。
+  tool-broken: "{} 已经彻底坏了，没法再使用了。"
+  
