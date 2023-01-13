@@ -427,6 +427,14 @@ class CavePlace extends SubtropicsPlace {
   CavePlace(super.name);
 
   @override
+  List<PlaceAction> getAvailableActions() {
+    final res = super.getAvailableActions();
+    // You can't hunt in cave.
+    res.remove(PlaceAction.huntWithTool);
+    return res;
+  }
+
+  @override
   Future<void> performExplore() async {
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
@@ -464,7 +472,7 @@ class HutPlace extends SubtropicsPlace {
   Future<void> performExplore() async {
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
-    player.modifyX(Attr.energy, -0.10);
+    player.modifyX(Attr.energy, -0.08);
     final gain = <ItemStack>[];
     if (exploreCount == 0) {
       gain.addItemOrMerge(Foods.bottledWater.create());

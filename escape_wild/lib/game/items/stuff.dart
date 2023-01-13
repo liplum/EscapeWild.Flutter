@@ -33,7 +33,7 @@ class Stuff {
     ]);
     // craft
     Contents.items.addAll([
-      strawRope = Item.unmergeable("straw-rope", mass: 200).tagged(["rope"]),
+      strawRope = Item.mergeable("straw-rope", mass: 200).tagged(["rope"]),
     ]);
     // container
     Contents.items.addAll([

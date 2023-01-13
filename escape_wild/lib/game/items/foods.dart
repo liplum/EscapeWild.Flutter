@@ -44,9 +44,9 @@ class Foods {
         Attr.food + 0.1,
         Attr.water + 0.1,
       ]).tagged(["bug", "food"]),
-      moss = Item.mergeable("moss", mass: 10).asEatable([
-        Attr.food + 0.005,
-        Attr.water + 0.05,
+      moss = Item.mergeable("moss", mass: 20).asEatable([
+        Attr.food + 0.01,
+        Attr.water + 0.1,
       ]).tagged(["flammable-floc"]),
       bearExcrement = Item.mergeable("bear-excrement", mass: 666).asEatable([
         Attr.food + 0.06,
