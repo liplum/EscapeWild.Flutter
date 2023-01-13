@@ -15,7 +15,7 @@ class CraftType with Moddable {
 
   @override
   String toString() => name;
-  static final CraftType craft = CraftType("craft"), fix = CraftType("fix"), process = CraftType("process");
+  static final CraftType craft = CraftType("craft"), repair = CraftType("repair"), process = CraftType("process");
 
   @override
   bool operator ==(Object other) {

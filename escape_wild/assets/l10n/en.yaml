@@ -14,6 +14,7 @@ ui:
     water: WATER
     energy: ENERGY
   home:
+    # Where to display HUD, action buttons and progress.
     action: Action
     backpack: Backpack
     craft: Craft
@@ -26,16 +27,25 @@ ui:
     cannot-use: "Can't Use"
 item:
   mass-with-unit: '{}g'
+# To express knowing.
 ok: OK
+# To approve.
 yes: Yes
+# To refuse.
 no: No
+# When finished a job.
 done: Done
-got-it: Got it
+# To cancel or delay.
 not-now: Not Now
 cancel: Cancel
+# To express acceptable but not good.
 alright: Alright
+# Discard something.
 discard: Discard
 action:
+  # When player gets items
   got-items: You got {}.
+  # When player gets nothing
   got-nothing: You got nothing.
+  # When a tool is broken
   tool-broken: "{} is completely broken, it can't work any more."

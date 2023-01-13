@@ -1,9 +1,13 @@
 action:
+  # Move forward
   move: Move
+  # Explore the surroundings
   explore: Explore
+  # Have a rest
   rest: Rest
   hunt: Hunt
   cut-down-tree: Cut Down
+  # Go fishing
   fish: Fish
 use-type:
   use: Use
@@ -11,14 +15,17 @@ use-type:
   drink: Drink
   equip: Equip
 craft-recipe-cat:
+  # Such as axe and trap.
   tool: Tool
   food: Food
+  # Fire, burning and combustion
   fire: Fire
+  # Processing materials
   refine: Refine
   medical: Medical
 craft-type:
   craft: Craft
-  fix: Fix
+  repair: Repair
   process: Process
 item:
   empty:
@@ -33,9 +40,11 @@ item:
   dirty-water:
     name: Dirty Water
     desc: Ugh! It's best to boil it anyway.
+  # The water is clean like the drinking water.
   clean-water:
     name: Clean Water
     desc: Mmmm, a bit sweet.
+  # Although the water looks clear, there is still bacteria.
   clear-water:
     name: Clear Water
     desc: It looks clear.
@@ -72,9 +81,10 @@ item:
   roasted-berry:
     name: Roasted Berry
     desc: Slimy.
+  # https://wikipedia.org/wiki/Hand_drill
   hand-drill-kit:
     name: Hand Drill Kit
-    desc: "It's not as easy as a TV show to start a fire."
+    desc: It's not as easy as a TV show to start a fire.
   survival-knife:
     name: Survival Knife
     desc: 'Ad: It offers a Black Anodize 440 stainless steel...'
@@ -99,6 +109,8 @@ item:
   pine-needle:
     name: Pine Needle
     desc: ...
+  # Tinder is used to start a fire. It's an easily combustible material.
+  # https://wikipedia.org/wiki/Tinder
   tinder:
     name: Tinder
     desc: ...
