@@ -8,7 +8,7 @@ part of 'backpack.dart';
 
 Backpack _$BackpackFromJson(Map<String, dynamic> json) => Backpack()
   ..items = (json['items'] as List<dynamic>)
-      .map((e) => ItemEntry.fromJson(e as Map<String, dynamic>))
+      .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
       .toList()
   ..mass = json['mass'] as int;
 

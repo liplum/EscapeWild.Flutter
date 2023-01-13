@@ -17,12 +17,12 @@ const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   childAspectRatio: 2.2,
 );
 
-class ItemEntryCell extends StatelessWidget {
-  final ItemEntry item;
+class ItemStackCell extends StatelessWidget {
+  final ItemStack item;
   final EdgeInsetsGeometry? pad;
   final bool showMass;
 
-  const ItemEntryCell(
+  const ItemStackCell(
     this.item, {
     super.key,
     this.pad = const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -38,7 +38,7 @@ class ItemEntryCell extends StatelessWidget {
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: !showMass ? null : I.item.massWithUnit(item.entryMass.toString()).text(textAlign: TextAlign.right),
+      subtitle: !showMass ? null : I.item.massWithUnit(item.stackMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: !showMass ? null : pad,
     ).center();
@@ -151,12 +151,12 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
   }
 }
 
-class ItemEntryMassSelector extends StatefulWidget {
-  final ItemEntry template;
+class ItemStackMassSelector extends StatefulWidget {
+  final ItemStack template;
   final ValueNotifier<int> $selectedMass;
   final ValueChanged<int>? onSelectedMassChange;
 
-  const ItemEntryMassSelector({
+  const ItemStackMassSelector({
     super.key,
     required this.template,
     required this.$selectedMass,
@@ -164,17 +164,17 @@ class ItemEntryMassSelector extends StatefulWidget {
   });
 
   @override
-  State<ItemEntryMassSelector> createState() => _ItemEntryMassSelectorState();
+  State<ItemStackMassSelector> createState() => _ItemStackMassSelectorState();
 }
 
-class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
-  ItemEntry get item => widget.template;
+class _ItemStackMassSelectorState extends State<ItemStackMassSelector> {
+  ItemStack get item => widget.template;
 
   ValueNotifier<int> get $selectedMass => widget.$selectedMass;
 
   @override
   Widget build(BuildContext context) {
-    var maxMass = item.entryMass;
+    var maxMass = item.stackMass;
     return [
       SfSlider(
         value: $selectedMass.value.clamp(0, maxMass),
@@ -187,7 +187,7 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
         shouldAlwaysShowTooltip: true,
         numberFormat: NumberFormat(I.item.massWithUnit("#")),
         onChanged: (v) {
-          final newMass = (v as double).round().clamp(0, item.entryMass);
+          final newMass = (v as double).round().clamp(0, item.stackMass);
           setState(() {
             $selectedMass.value = newMass;
           });
@@ -198,13 +198,13 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
   }
 }
 
-class MergeableItemEntryUsePreview extends StatefulWidget {
-  final ItemEntry template;
+class MergeableItemStackUsePreview extends StatefulWidget {
+  final ItemStack template;
   final UseType useType;
   final ValueNotifier<int> $selectedMass;
   final List<ModifyAttrComp> comps;
 
-  const MergeableItemEntryUsePreview({
+  const MergeableItemStackUsePreview({
     super.key,
     required this.template,
     this.useType = UseType.use,
@@ -213,11 +213,11 @@ class MergeableItemEntryUsePreview extends StatefulWidget {
   });
 
   @override
-  State<MergeableItemEntryUsePreview> createState() => _MergeableItemEntryUsePreviewState();
+  State<MergeableItemStackUsePreview> createState() => _MergeableItemStackUsePreviewState();
 }
 
-class _MergeableItemEntryUsePreviewState extends State<MergeableItemEntryUsePreview> {
-  ItemEntry get template => widget.template;
+class _MergeableItemStackUsePreviewState extends State<MergeableItemStackUsePreview> {
+  ItemStack get template => widget.template;
   late var mock = AttributeManager(initial: player.attrs);
 
   UseType get useType => widget.useType;
@@ -239,7 +239,7 @@ class _MergeableItemEntryUsePreviewState extends State<MergeableItemEntryUsePrev
     return [
       MiniHud(attrs: mock.attrs).inCard(),
       const SizedBox(height: 40),
-      ItemEntryMassSelector(
+      ItemStackMassSelector(
         template: template,
         $selectedMass: $selectedMass,
         onSelectedMassChange: (newMass) {
@@ -252,7 +252,7 @@ class _MergeableItemEntryUsePreviewState extends State<MergeableItemEntryUsePrev
   Widget buildLandscape() {
     return [
       MiniHud(attrs: mock.attrs).expanded(),
-      ItemEntryMassSelector(
+      ItemStackMassSelector(
         template: template,
         $selectedMass: $selectedMass,
         onSelectedMassChange: (newMass) {
@@ -276,12 +276,12 @@ class _MergeableItemEntryUsePreviewState extends State<MergeableItemEntryUsePrev
   }
 }
 
-class UnmergeableItemEntryUsePreview extends StatefulWidget {
-  final ItemEntry item;
+class UnmergeableItemStackUsePreview extends StatefulWidget {
+  final ItemStack item;
   final List<ModifyAttrComp> comps;
   final ValueNotifier<bool> $isShowAttrPreview;
 
-  const UnmergeableItemEntryUsePreview({
+  const UnmergeableItemStackUsePreview({
     super.key,
     required this.item,
     required this.comps,
@@ -289,10 +289,10 @@ class UnmergeableItemEntryUsePreview extends StatefulWidget {
   });
 
   @override
-  State<UnmergeableItemEntryUsePreview> createState() => _UnmergeableItemEntryUsePreviewState();
+  State<UnmergeableItemStackUsePreview> createState() => _UnmergeableItemStackUsePreviewState();
 }
 
-class _UnmergeableItemEntryUsePreviewState extends State<UnmergeableItemEntryUsePreview> {
+class _UnmergeableItemStackUsePreviewState extends State<UnmergeableItemStackUsePreview> {
   @override
   Widget build(BuildContext context) {
     return widget.$isShowAttrPreview <<

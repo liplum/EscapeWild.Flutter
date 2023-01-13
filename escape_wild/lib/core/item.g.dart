@@ -6,12 +6,12 @@ part of 'item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ItemEntry _$ItemEntryFromJson(Map<String, dynamic> json) => ItemEntry(
+ItemStack _$ItemStackFromJson(Map<String, dynamic> json) => ItemStack(
       Contents.getItemMetaByName(json['meta'] as String),
       mass: json['mass'] as int?,
     )..extra = json['extra'] as Map<String, dynamic>?;
 
-Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
+Map<String, dynamic> _$ItemStackToJson(ItemStack instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -26,17 +26,17 @@ Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
   return val;
 }
 
-ContainerItemEntry _$ContainerItemEntryFromJson(Map<String, dynamic> json) =>
-    ContainerItemEntry(
+ContainerItemStack _$ContainerItemStackFromJson(Map<String, dynamic> json) =>
+    ContainerItemStack(
       Contents.getItemMetaByName(json['meta'] as String),
     )
       ..extra = json['extra'] as Map<String, dynamic>?
       ..inner = json['inner'] == null
           ? null
-          : ItemEntry.fromJson(json['inner'] as Map<String, dynamic>)
+          : ItemStack.fromJson(json['inner'] as Map<String, dynamic>)
       ..mass = json['mass'] as int?;
 
-Map<String, dynamic> _$ContainerItemEntryToJson(ContainerItemEntry instance) {
+Map<String, dynamic> _$ContainerItemStackToJson(ContainerItemStack instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

@@ -17,7 +17,7 @@ class BackpackPage extends StatefulWidget {
 }
 
 class _BackpackPageState extends State<BackpackPage> {
-  ItemEntry? _selected;
+  ItemStack? _selected;
 
   @override
   void initState() {
@@ -113,7 +113,7 @@ class _BackpackPageState extends State<BackpackPage> {
     );
   }
 
-  Widget buildDetailArea(ItemEntry? item) {
+  Widget buildDetailArea(ItemStack? item) {
     if (item == null) {
       // never reached.
       return "?".text();
@@ -126,13 +126,13 @@ class _BackpackPageState extends State<BackpackPage> {
     ].column().inCard(elevation: 4);
   }
 
-  void removeItem(ItemEntry item) {
+  void removeItem(ItemStack item) {
     runAndTrackCurrentSelected(item, () {
       player.backpack.removeItem(item);
     });
   }
 
-  void runAndTrackCurrentSelected(ItemEntry item, Function() between) {
+  void runAndTrackCurrentSelected(ItemStack item, Function() between) {
     if (item == _selected) {
       var index = player.backpack.indexOfItem(item);
       var isLast = false;
@@ -157,7 +157,7 @@ class _BackpackPageState extends State<BackpackPage> {
     }
   }
 
-  Future<void> runAndTrackCurrentSelectedAsync(ItemEntry item, Future Function() between) async {
+  Future<void> runAndTrackCurrentSelectedAsync(ItemStack item, Future Function() between) async {
     if (item == _selected) {
       var index = player.backpack.indexOfItem(item);
       var isLast = false;
@@ -182,7 +182,7 @@ class _BackpackPageState extends State<BackpackPage> {
     }
   }
 
-  Widget buildButtonArea(ItemEntry? item) {
+  Widget buildButtonArea(ItemStack? item) {
     if (item == null) {
       // never reached.
       return "?".text();
@@ -228,12 +228,12 @@ class _BackpackPageState extends State<BackpackPage> {
 
   final $selectedMass = ValueNotifier(0);
 
-  Future<void> onDiscard(ItemEntry item) async {
+  Future<void> onDiscard(ItemStack item) async {
     if (item.meta.mergeable) {
-      $selectedMass.value = item.entryMass;
+      $selectedMass.value = item.stackMass;
       final confirmed = await context.showAnyRequest(
         title: _I.discardRequest,
-        make: (_) => ItemEntryMassSelector(
+        make: (_) => ItemStackMassSelector(
           template: item,
           $selectedMass: $selectedMass,
         ),
@@ -275,14 +275,14 @@ class _BackpackPageState extends State<BackpackPage> {
             });
   }
 
-  Future<void> onUse(ItemEntry item, UseType useType, List<UsableComp> usableComps) async {
+  Future<void> onUse(ItemStack item, UseType useType, List<UsableComp> usableComps) async {
     final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
     if (item.meta.mergeable) {
-      $selectedMass.value = item.entryMass;
+      $selectedMass.value = item.stackMass;
       final confirmed = await context.showAnyRequest(
         title: item.displayName(),
         isPrimaryDefault: true,
-        make: (_) => MergeableItemEntryUsePreview(
+        make: (_) => MergeableItemStackUsePreview(
           template: item,
           useType: useType,
           $selectedMass: $selectedMass,
@@ -307,7 +307,7 @@ class _BackpackPageState extends State<BackpackPage> {
       final confirmed = await context.showAnyRequest(
         title: item.displayName(),
         titleTrailing: buildShowAttrPreviewToggle(),
-        make: (_) => UnmergeableItemEntryUsePreview(
+        make: (_) => UnmergeableItemStackUsePreview(
           item: item,
           comps: modifiers,
           $isShowAttrPreview: $isShowAttrPreview,
@@ -325,7 +325,7 @@ class _BackpackPageState extends State<BackpackPage> {
     }
   }
 
-  Widget buildItem(ItemEntry item) {
+  Widget buildItem(ItemStack item) {
     final isSelected = _selected == item;
     return CardButton(
       elevation: isSelected ? 20 : 1,
@@ -336,7 +336,7 @@ class _BackpackPageState extends State<BackpackPage> {
           });
         }
       },
-      child: ItemEntryCell(item),
+      child: ItemStackCell(item),
     );
   }
 }

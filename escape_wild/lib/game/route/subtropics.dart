@@ -186,7 +186,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     player.modifyX(Attr.food, -0.10 * m);
     player.modifyX(Attr.water, -0.12 * m);
     player.modifyX(Attr.energy, -0.20 * m);
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     final any = randGain(hunt, gain, () => Foods.rawRabbit.create(massF: Rand.fluctuate(0.2)));
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
@@ -249,7 +249,7 @@ class PlainPlace extends SubtropicsPlace {
     player.modifyX(Attr.water, -0.02);
     player.modifyX(Attr.energy, -0.08);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(sticks * p, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.2)), 1);
@@ -302,8 +302,8 @@ class ForestPlace extends SubtropicsPlace {
     player.modifyX(Attr.food, -0.12 * m);
     player.modifyX(Attr.water, -0.1 * m);
     player.modifyX(Attr.energy, -0.20 * m);
-    final gain = <ItemEntry>[];
-    ItemEntry genLog() => Stuff.log.create(massF: Rand.fluctuate(0.35));
+    final gain = <ItemStack>[];
+    ItemStack genLog() => Stuff.log.create(massF: Rand.fluctuate(0.35));
     // at least one
     gain.add(genLog());
     var dmg = 0;
@@ -326,7 +326,7 @@ class ForestPlace extends SubtropicsPlace {
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 2);
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(nuts * p, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
@@ -377,7 +377,7 @@ class RiversidePlace extends SubtropicsPlace {
     player.modifyX(Attr.food, -0.08 * m);
     player.modifyX(Attr.water, -0.05 * m);
     player.modifyX(Attr.energy, -0.10 * m);
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     final any = randGain(fishing, gain, () => Foods.rawFish.create(massF: Rand.fluctuate(0.2)));
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
@@ -396,7 +396,7 @@ class RiversidePlace extends SubtropicsPlace {
     player.modifyX(Attr.water, -0.025);
     player.modifyX(Attr.energy, -0.10);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(clearWater * p, gain, () => Foods.clearWater.create(massF: Rand.fluctuate(0.2)), 2);
     randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.float(1.2, 2.2)), 2);
@@ -432,7 +432,7 @@ class CavePlace extends SubtropicsPlace {
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.float(1.2, 2.2)), 2);
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
@@ -465,7 +465,7 @@ class HutPlace extends SubtropicsPlace {
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
-    final gain = <ItemEntry>[];
+    final gain = <ItemStack>[];
     if (exploreCount == 0) {
       gain.addItemOrMerge(Foods.bottledWater.create());
       gain.addItemOrMerge(Foods.energyBar.create());

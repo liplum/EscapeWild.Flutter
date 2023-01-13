@@ -4,7 +4,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 
-Future<void> showToolBroken(ActionType action, ItemEntry tool) async {
+Future<void> showToolBroken(ActionType action, ItemStack tool) async {
   await AppCtx.showTip(
     title: action.l10nName(),
     desc: "action.tool-broken".tr(args: [tool.displayName()]),
@@ -12,7 +12,7 @@ Future<void> showToolBroken(ActionType action, ItemEntry tool) async {
   );
 }
 
-Future<void> showGain(ActionType action, List<ItemEntry> gain) async {
+Future<void> showGain(ActionType action, List<ItemStack> gain) async {
   if (gain.isEmpty) {
     await AppCtx.showTip(
       title: action.l10nName(),
@@ -29,7 +29,7 @@ Future<void> showGain(ActionType action, List<ItemEntry> gain) async {
   }
 }
 
-bool randGain(double probability, List<ItemEntry> gain, ItemEntry Function() ctor, [int times = 1]) {
+bool randGain(double probability, List<ItemStack> gain, ItemStack Function() ctor, [int times = 1]) {
   var any = false;
   for (var i = 0; i < times; i++) {
     if (Rand.one() < probability) {

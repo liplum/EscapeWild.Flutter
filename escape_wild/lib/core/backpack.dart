@@ -10,7 +10,7 @@ part 'backpack.g.dart';
 @JsonSerializable()
 class Backpack with ChangeNotifier implements JConvertibleProtocol {
   @JsonKey()
-  List<ItemEntry> items = [];
+  List<ItemStack> items = [];
   @JsonKey()
   int mass = 0;
 
@@ -27,16 +27,16 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
   Map<String, dynamic> toJson() => _$BackpackToJson(this);
 
   /// Return the part of [item].
-  /// - If the [item] is unmergeable, [ItemEntry.empty] will be returned.
+  /// - If the [item] is unmergeable, [ItemStack.empty] will be returned.
   /// - If the [massOfPart] is more than or equal to [item.mass],
   ///   the [item] will be removed in backpack, and [item] itself will be returned.
-  /// - If the [massOfPart] is less than 0, the [ItemEntry.empty] will be returned.
-  ItemEntry splitItemInBackpack(ItemEntry item, int massOfPart) {
+  /// - If the [massOfPart] is less than 0, the [ItemStack.empty] will be returned.
+  ItemStack splitItemInBackpack(ItemStack item, int massOfPart) {
     assert(item.meta.mergeable, "${item.meta.name} can't split, because it's unmergeable");
-    if (!item.meta.mergeable) return ItemEntry.empty;
-    final actualMass = item.entryMass;
+    if (!item.meta.mergeable) return ItemStack.empty;
+    final actualMass = item.stackMass;
     if (massOfPart <= 0) {
-      return ItemEntry.empty;
+      return ItemStack.empty;
     }
     if (massOfPart >= actualMass) {
       removeItem(item);
@@ -51,7 +51,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     }
   }
 
-  void consumeItemInBackpack(ItemEntry item, int? mass) {
+  void consumeItemInBackpack(ItemStack item, int? mass) {
     if (mass != null) {
       splitItemInBackpack(item, mass);
     } else {
@@ -59,7 +59,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     }
   }
 
-  void addItemsOrMergeAll(Iterable<ItemEntry> addition) {
+  void addItemsOrMergeAll(Iterable<ItemStack> addition) {
     var addedOrMerged = false;
     for (final item in addition) {
       addedOrMerged |= _addItemOrMerge(item);
@@ -69,37 +69,37 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     }
   }
 
-  void addItemOrMerge(ItemEntry item) {
+  void addItemOrMerge(ItemStack item) {
     if (_addItemOrMerge(item)) {
       notifyListeners();
     }
   }
 
   /// It will remove the [item] in backpack, and won't change [item]'s state.
-  bool removeItem(ItemEntry item) {
+  bool removeItem(ItemStack item) {
     if (item.isEmpty) return true;
     final hasRemoved = items.remove(item);
     if (hasRemoved) {
-      mass -= item.entryMass;
+      mass -= item.stackMass;
       notifyListeners();
     }
     return hasRemoved;
   }
 
-  int indexOfItem(ItemEntry item) {
+  int indexOfItem(ItemStack item) {
     if (item.isEmpty) return -1;
     return items.indexOf(item);
   }
 
   /// It will directly change the mass of item and track [Backpack.mass] without calling [ItemComp.onSplit],
   /// It won't update the components.
-  void changeMass(ItemEntry item, int newMass) {
+  void changeMass(ItemStack item, int newMass) {
     assert(item.meta.mergeable, "mass of unmergeable can't be changed");
     if (!item.meta.mergeable) return;
     if (newMass <= 0) {
       removeItem(item);
     } else {
-      final delta = item.entryMass - newMass;
+      final delta = item.stackMass - newMass;
       item.mass = newMass;
       mass -= delta;
       notifyListeners();
@@ -113,20 +113,20 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
 }
 
 extension BackpackX on Backpack {
-  List<ItemEntry> matchItemsWithType(ItemMatcher matcher) {
+  List<ItemStack> matchItemsWithType(ItemMatcher matcher) {
     return matcher.filterTypedMatchedEntries(items).toList();
   }
 
-  List<ItemEntry> matchExactItems(ItemMatcher matcher) {
+  List<ItemStack> matchExactItems(ItemMatcher matcher) {
     return matcher.filterExactMatchedEntries(items).toList();
   }
 
-  MapEntry<List<ItemEntry>, List<ItemEntry>> splitMatchedAndUnmatched(
+  MapEntry<List<ItemStack>, List<ItemStack>> splitMatchedAndUnmatched(
     ItemMatcher matcher, {
     bool exact = true,
   }) {
-    final matched = <ItemEntry>[];
-    final unmatched = <ItemEntry>[];
+    final matched = <ItemStack>[];
+    final unmatched = <ItemStack>[];
     for (final item in items) {
       if (exact ? matcher.exact(item) : matcher.typeOnly(item.meta)) {
         matched.add(item);
@@ -138,7 +138,7 @@ extension BackpackX on Backpack {
   }
 
   /// return whether [item] is added or merged.
-  bool _addItemOrMerge(ItemEntry item) {
+  bool _addItemOrMerge(ItemStack item) {
     if (item.isEmpty) return false;
     if (item.meta.mergeable) {
       final existed = getItemByIdenticalMeta(item);
@@ -150,19 +150,19 @@ extension BackpackX on Backpack {
     } else {
       items.add(item);
     }
-    mass += item.entryMass;
+    mass += item.stackMass;
     return true;
   }
 
   double sumMass() {
     var sum = 0.0;
     for (final item in items) {
-      sum += item.entryMass;
+      sum += item.stackMass;
     }
     return sum;
   }
 
-  ItemEntry? get firstOrNull => items.first;
+  ItemStack? get firstOrNull => items.first;
 
   int get itemCount => items.length;
 
@@ -170,17 +170,17 @@ extension BackpackX on Backpack {
 
   bool get isNotEmpty => items.isNotEmpty;
 
-  ItemEntry operator [](int index) => items[index];
+  ItemStack operator [](int index) => items[index];
 
-  ItemEntry? getItemByName(String name) => items.firstWhereOrNull((e) => e.meta.name == name);
+  ItemStack? getItemByName(String name) => items.firstWhereOrNull((e) => e.meta.name == name);
 
-  ItemEntry? getItemByIdenticalMeta(ItemEntry item) => items.firstWhereOrNull((e) => e.meta == item.meta);
+  ItemStack? getItemByIdenticalMeta(ItemStack item) => items.firstWhereOrNull((e) => e.meta == item.meta);
 
   bool hasItemOfName(String name) => items.any((e) => e.meta.name == name);
 
   int countItemOfName(String name) => items.count((e) => e.meta.name == name);
 
-  int countItemWhere(bool Function(ItemEntry) predicate) => items.count(predicate);
+  int countItemWhere(bool Function(ItemStack) predicate) => items.count(predicate);
 }
 
 extension BackpackItemFinderX on Backpack {

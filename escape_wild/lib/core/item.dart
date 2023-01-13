@@ -23,17 +23,17 @@ extension NamedItemGetterX on String {
 }
 
 /// ## When [mergeable] is false
-/// It means the item is unmergeable, and [mass] is for one ItemEntry.
+/// It means the item is unmergeable, and [mass] is for one ItemStack.
 /// ### Example
-/// [mass] of `Tinned Tomatoes` is 500. So each ItemEntry takes 500g room in backpack.
+/// [mass] of `Tinned Tomatoes` is 500. So each ItemStack takes 500g room in backpack.
 /// When player eat or cook it, if possible, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply full changes.
 ///
 /// ## When [mergeable] is true
-/// It means the item is mergeable, and [mass] is the unit for each ItemEntry.
+/// It means the item is mergeable, and [mass] is the unit for each ItemStack.
 /// ### Example
-/// [mass] of `Berry` is 10. However, ItemEntry doesn't care that, it could have an independent [ItemEntry.mass] instead.
-/// When player eat or cook it, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply changes based [ItemEntry.mass].
-/// If [ItemEntry.mass] is 25, and player has eaten 15g, then [ModifyAttrComp.modifiers] will apply `(15.0 / 10.0) * modifier`.
+/// [mass] of `Berry` is 10. However, ItemStack doesn't care that, it could have an independent [ItemStack.mass] instead.
+/// When player eat or cook it, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply changes based [ItemStack.mass].
+/// If [ItemStack.mass] is 25, and player has eaten 15g, then [ModifyAttrComp.modifiers] will apply `(15.0 / 10.0) * modifier`.
 ///
 /// ## When [isContainer] is true
 /// It means the item is a container, and [mass] stands for the weight of container itself.
@@ -94,31 +94,31 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
 }
 
 extension ItemX on Item {
-  ItemEntry create({int? mass, double? massF}) {
+  ItemStack create({int? mass, double? massF}) {
     if (mergeable) {
       assert(mass != null || massF != null, "`mass` and `massFactor` can't be both null for mergeable");
       if (mass != null) {
-        return ItemEntry(this, mass: mass);
+        return ItemStack(this, mass: mass);
       }
       if (massF != null) {
-        return ItemEntry(this, mass: (this.mass * massF).toInt());
+        return ItemStack(this, mass: (this.mass * massF).toInt());
       }
-      // If the `ItemEntry.mass` is not specified, use `Item.mass`.
-      return ItemEntry(this, mass: this.mass);
+      // If the `ItemStack.mass` is not specified, use `Item.mass`.
+      return ItemStack(this, mass: this.mass);
     } else {
       assert(mass == null && massF == null, "`mass` and `massFactor` should be both null for unmergeable");
-      return ItemEntry(this);
+      return ItemStack(this);
     }
   }
 
-  List<ItemEntry> repeat(int number) {
+  List<ItemStack> repeat(int number) {
     assert(number > 0, "`number` should be over than 0.");
     assert(!mergeable, "only unmergeable can be generated repeatedly, but $name is given.");
     if (mergeable) {
       // For mergeable, it will multiply the mass.
-      return [ItemEntry(this, mass: mass * number)];
+      return [ItemStack(this, mass: mass * number)];
     } else {
-      return List.generate(number.abs(), (i) => ItemEntry(this));
+      return List.generate(number.abs(), (i) => ItemStack(this));
     }
   }
 }
@@ -126,7 +126,7 @@ extension ItemX on Item {
 /// [ContainerCompProtocol] is a special component.
 ///
 /// [Item] can have ot most one [ContainerCompProtocol].
-/// If so, the item becomes a container, and its associated [ItemEntry] is [ContainerItemEntry].
+/// If so, the item becomes a container, and its associated [ItemStack] is [ContainerItemStack].
 ///
 /// Nested container is forbidden.
 abstract class ContainerCompProtocol {
@@ -141,13 +141,13 @@ abstract class ContainerCompProtocol {
   /// - Whether [container] has a different type of inner other than [outer]'s
   /// - Whether [outer] is another container.
   /// - And more...
-  bool checkPossibleAccept(ContainerItemEntry container, ItemEntry outer);
+  bool checkPossibleAccept(ContainerItemStack container, ItemStack outer);
 
   /// Return the part of [outer] that [container] is accepted.
-  /// - [ItemEntry] should be checked before in [checkPossibleAccept] and prepare to be split.
-  /// - [ItemEntry.empty] will be returned if [container] doesn't accept [outer] at all.
-  /// - If [container] accepts [outer], [outer.entryMass] will be decreased.
-  ItemEntry splitAcceptedPart(ContainerItemEntry container, ItemEntry outer);
+  /// - [ItemStack] should be checked before in [checkPossibleAccept] and prepare to be split.
+  /// - [ItemStack.empty] will be returned if [container] doesn't accept [outer] at all.
+  /// - If [container] accepts [outer], [outer.stackMass] will be decreased.
+  ItemStack splitAcceptedPart(ContainerItemStack container, ItemStack outer);
 
   /// When [container] accepts [outer].
   ///
@@ -155,7 +155,7 @@ abstract class ContainerCompProtocol {
   /// - Increment [container.innerMass].
   /// - Merge all components
   /// - And more...
-  void onAccept(ContainerItemEntry container, ItemEntry outer);
+  void onAccept(ContainerItemStack container, ItemStack outer);
 }
 
 class ContainerComp extends ContainerCompProtocol {
@@ -163,12 +163,12 @@ class ContainerComp extends ContainerCompProtocol {
   final Iterable<String>? acceptTags;
 
   /// - If [capacity] is null, how much item container can hold is unlimited.
-  /// - Otherwise, the [ContainerItemEntry.innerMass] can't exceed it.
+  /// - Otherwise, the [ContainerItemStack.innerMass] can't exceed it.
   final int? capacity;
 
   /// If [mergeablity] is not null, the [Item.mergeable] must match it.
   /// - When [mergeablity] is false, topping up is disallowed.
-  ///   In other words, the whole container will be exclusive until [ContainerItemEntry.inner] is empty.
+  ///   In other words, the whole container will be exclusive until [ContainerItemStack.inner] is empty.
   /// - When [mergeablity] is true, topping up is allowed, but the overflowing part will be ignored.
   final bool? mergeablity;
 
@@ -191,7 +191,7 @@ class ContainerComp extends ContainerCompProtocol {
   const ContainerComp.unlimited() : this();
 
   @override
-  bool checkPossibleAccept(ContainerItemEntry container, ItemEntry outer) {
+  bool checkPossibleAccept(ContainerItemStack container, ItemStack outer) {
     final inner = container.inner;
     if (inner == null) {
       // container is empty
@@ -200,7 +200,7 @@ class ContainerComp extends ContainerCompProtocol {
       final acceptTags = this.acceptTags;
       if (acceptTags != null && !outer.meta.hasTags(acceptTags)) return false;
       final capacity = this.capacity;
-      if (capacity != null && capacity < outer.entryMass) return false;
+      if (capacity != null && capacity < outer.stackMass) return false;
     } else {
       // container has item
       // only allow mergeable
@@ -224,19 +224,19 @@ class ContainerComp extends ContainerCompProtocol {
   }
 
   @override
-  ItemEntry splitAcceptedPart(ContainerItemEntry container, ItemEntry outer) {
+  ItemStack splitAcceptedPart(ContainerItemStack container, ItemStack outer) {
     final capacity = this.capacity;
-    var acceptedMass = outer.entryMass;
+    var acceptedMass = outer.stackMass;
     if (capacity != null) {
       final containerRemainingRoom = min(0, capacity - container.innerMass);
-      acceptedMass = min(outer.entryMass, containerRemainingRoom);
+      acceptedMass = min(outer.stackMass, containerRemainingRoom);
     }
     final part = outer.split(acceptedMass);
     return part;
   }
 
   @override
-  void onAccept(ContainerItemEntry container, ItemEntry outer) {
+  void onAccept(ContainerItemStack container, ItemStack outer) {
     final inner = container.inner;
     if (inner == null) {
       container.inner = outer;
@@ -304,45 +304,45 @@ abstract class ItemComp extends Comp {
   void validateItemConfig(Item item) {}
 
   /// ## preconditions:
-  /// - The [ItemEntry.mass] of [from] and [to] are not changed.
+  /// - The [ItemStack.mass] of [from] and [to] are not changed.
   /// ## contrarians:
-  /// - Implementation mustn't change [ItemEntry.mass].
-  void onMerge(ItemEntry from, ItemEntry to) {}
+  /// - Implementation mustn't change [ItemStack.mass].
+  void onMerge(ItemStack from, ItemStack to) {}
 
   /// ## preconditions:
-  /// - The [ItemEntry.mass] of [from] and [to] are not changed.
+  /// - The [ItemStack.mass] of [from] and [to] are not changed.
   /// - [to] has an [Item.extra] clone from [from].
   /// ## contrarians:
-  /// - Implementation mustn't change [ItemEntry.mass].
-  void onSplit(ItemEntry from, ItemEntry to) {}
+  /// - Implementation mustn't change [ItemStack.mass].
+  void onSplit(ItemStack from, ItemStack to) {}
 }
 
 class ItemCompPair<T extends Comp> {
-  final ItemEntry item;
+  final ItemStack item;
   final T comp;
 
   const ItemCompPair(this.item, this.comp);
 }
 
 @JsonSerializable()
-class ItemEntry with ExtraMixin implements JConvertibleProtocol {
-  static final empty = ItemEntry(Item.empty);
+class ItemStack with ExtraMixin implements JConvertibleProtocol {
+  static final empty = ItemStack(Item.empty);
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final Item meta;
 
   @JsonKey(includeIfNull: false)
   int? mass;
 
-  int get entryMass => mass ?? meta.mass;
+  int get stackMass => mass ?? meta.mass;
 
-  ItemEntry(
+  ItemStack(
     this.meta, {
     this.mass,
   });
 
   String displayName() => meta.l10nName();
 
-  bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
+  bool hasIdenticalMeta(ItemStack other) => meta == other.meta;
 
   bool conformTo(Item meta) => this.meta == meta;
 
@@ -350,7 +350,7 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 
   bool get canMerge => meta.mergeable;
 
-  bool get isEmpty => identical(this, empty) || meta == Item.empty || entryMass <= 0;
+  bool get isEmpty => identical(this, empty) || meta == Item.empty || stackMass <= 0;
 
   @override
   String toString() {
@@ -364,17 +364,17 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 
   /// Merge this to [target].
-  /// - [target.entryMass] will be increased.
-  /// - This [entryMass] will be clear.
+  /// - [target.stackMass] will be increased.
+  /// - This [stackMass] will be clear.
   ///
   /// Please call [Backpack.addItemOrMerge] to track changes, such as [Backpack.mass].
-  void mergeTo(ItemEntry target) {
+  void mergeTo(ItemStack target) {
     assert(meta.mergeable, "${meta.name} is not mergeable.");
     if (!meta.mergeable) return;
     assert(hasIdenticalMeta(target), "Can't merge ${meta.name} with ${target.meta.name}.");
     if (!hasIdenticalMeta(target)) return;
-    final selfMass = entryMass;
-    final toMass = target.entryMass;
+    final selfMass = stackMass;
+    final toMass = target.stackMass;
     // handle components
     for (final comp in meta.iterateComps()) {
       comp.onMerge(this, target);
@@ -384,24 +384,24 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   }
 
   /// Split a part of this, and return the part.
-  /// - This [entryMass] will be decreased.
+  /// - This [stackMass] will be decreased.
   ///
   /// Please call [Backpack.splitItemInBackpack] to track changes, such as [Backpack.mass].
   /// ```dart
   /// if(canSplit)
   ///   mass = actualMass - massOfPart;
   /// ```
-  ItemEntry split(int massOfPart) {
+  ItemStack split(int massOfPart) {
     assert(massOfPart > 0, "`mass` to split must be more than 0");
     if (massOfPart <= 0) return empty;
-    assert(entryMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
-    if (entryMass < massOfPart) return empty;
+    assert(stackMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
+    if (stackMass < massOfPart) return empty;
     assert(canSplit, "${meta.name} can't be split.");
     if (!canSplit) return empty;
-    final selfMass = entryMass;
+    final selfMass = stackMass;
     // if self mass is less than or equal to mass to split, return a clone.
     if (selfMass <= massOfPart) return clone();
-    final part = ItemEntry(meta, mass: massOfPart);
+    final part = ItemStack(meta, mass: massOfPart);
     // clone extra
     part.extra = cloneExtra();
     // handle components
@@ -412,40 +412,40 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     return part;
   }
 
-  factory ItemEntry.fromJson(Map<String, dynamic> json) => _$ItemEntryFromJson(json);
+  factory ItemStack.fromJson(Map<String, dynamic> json) => _$ItemStackFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ItemEntryToJson(this);
+  Map<String, dynamic> toJson() => _$ItemStackToJson(this);
 
-  ItemEntry clone() {
-    final cloned = ItemEntry(meta, mass: mass);
+  ItemStack clone() {
+    final cloned = ItemStack(meta, mass: mass);
     cloned.extra = cloneExtra();
     return cloned;
   }
 
-  static const type = "ItemEntry";
+  static const type = "ItemStack";
 
   @override
   String get typeName => type;
 }
 
 @JsonSerializable()
-class ContainerItemEntry extends ItemEntry {
+class ContainerItemStack extends ItemStack {
   @JsonKey(includeIfNull: false)
-  ItemEntry? inner;
+  ItemStack? inner;
 
   @override
   set mass(int? newMass) {
-    assert(false, "ContainerItemEntry's mass can't be changed.");
+    assert(false, "ContainerItemStack's mass can't be changed.");
   }
 
-  /// [entryMass] is the sum of container and [inner].
+  /// [stackMass] is the sum of container and [inner].
   @override
-  int get entryMass => innerMass + meta.mass;
+  int get stackMass => innerMass + meta.mass;
 
-  int get innerMass => inner?.entryMass ?? 0;
+  int get innerMass => inner?.stackMass ?? 0;
 
-  ContainerItemEntry(super.meta) {
-    assert(meta.isContainer, "ContainerItemEntry requires item is a Container.");
+  ContainerItemStack(super.meta) {
+    assert(meta.isContainer, "ContainerItemStack requires item is a Container.");
   }
 
   bool get containsItem => inner?.isNotEmpty != true;
@@ -460,7 +460,6 @@ class ContainerItemEntry extends ItemEntry {
     }
   }
 
-  factory ContainerItemEntry.fromJson(Map<String, dynamic> json) => _$ContainerItemEntryFromJson(json);
 
   /// The container itself can't be merged.
   @override
@@ -472,35 +471,36 @@ class ContainerItemEntry extends ItemEntry {
 
   /// The container itself can't be merge.
   @override
-  void mergeTo(ItemEntry to) {}
+  void mergeTo(ItemStack to) {}
 
   /// The container itself can't be split.
   @override
-  ItemEntry split(int massOfPart) {
+  ItemStack split(int massOfPart) {
     return this;
   }
+  factory ContainerItemStack.fromJson(Map<String, dynamic> json) => _$ContainerItemStackFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => _$ContainerItemEntryToJson(this);
+  Map<String, dynamic> toJson() => _$ContainerItemStackToJson(this);
 
-  static const type = "ContainerItemEntry";
+  static const type = "ContainerItemStack";
 
   @override
   String get typeName => type;
 }
 
-extension ItemEntryX on ItemEntry {
-  double get massMultiplier => entryMass / meta.mass;
+extension ItemStackX on ItemStack {
+  double get massMultiplier => stackMass / meta.mass;
 
-  bool canMergeTo(ItemEntry to) {
+  bool canMergeTo(ItemStack to) {
     return hasIdenticalMeta(to) && meta.mergeable;
   }
 
   bool get isNotEmpty => !isEmpty;
 }
 
-extension ItemEntryListX on List<ItemEntry> {
-  ItemEntry? findFirstByName(String name) {
+extension ItemStackListX on List<ItemStack> {
+  ItemStack? findFirstByName(String name) {
     for (final item in this) {
       if (item.meta.name == name) {
         return item;
@@ -509,7 +509,7 @@ extension ItemEntryListX on List<ItemEntry> {
     return null;
   }
 
-  ItemEntry? findFirstByTag(String tag) {
+  ItemStack? findFirstByTag(String tag) {
     for (final item in this) {
       if (item.meta.hasTag(tag)) {
         return item;
@@ -518,7 +518,7 @@ extension ItemEntryListX on List<ItemEntry> {
     return null;
   }
 
-  ItemEntry? findFirstByTags(Iterable<String> tags) {
+  ItemStack? findFirstByTags(Iterable<String> tags) {
     for (final item in this) {
       if (item.meta.hasTags(tags)) {
         return item;
@@ -527,7 +527,7 @@ extension ItemEntryListX on List<ItemEntry> {
     return null;
   }
 
-  Iterable<ItemEntry> findAllByTag(String tag) sync* {
+  Iterable<ItemStack> findAllByTag(String tag) sync* {
     for (final item in this) {
       if (item.meta.hasTag(tag)) {
         yield item;
@@ -535,7 +535,7 @@ extension ItemEntryListX on List<ItemEntry> {
     }
   }
 
-  Iterable<ItemEntry> findAllByTags(Iterable<String> tags) sync* {
+  Iterable<ItemStack> findAllByTags(Iterable<String> tags) sync* {
     for (final item in this) {
       if (item.meta.hasTags(tags)) {
         yield item;
@@ -543,13 +543,13 @@ extension ItemEntryListX on List<ItemEntry> {
     }
   }
 
-  void addItemOrMergeAll(List<ItemEntry> additions) {
+  void addItemOrMergeAll(List<ItemStack> additions) {
     for (final addition in additions) {
       addItemOrMerge(addition);
     }
   }
 
-  void addItemOrMerge(ItemEntry addition) {
+  void addItemOrMerge(ItemStack addition) {
     var merged = false;
     for (final result in this) {
       if (addition.canMergeTo(result)) {
@@ -566,7 +566,7 @@ extension ItemEntryListX on List<ItemEntry> {
 
 class ItemMatcher {
   final bool Function(Item item) typeOnly;
-  final bool Function(ItemEntry item) exact;
+  final bool Function(ItemStack item) exact;
 
   const ItemMatcher({
     required this.typeOnly,
@@ -589,7 +589,7 @@ extension ItemMatcherX on ItemMatcher {
     }
   }
 
-  Iterable<ItemEntry> filterExactMatchedEntries(Iterable<ItemEntry> items, {bool requireMatched = true}) sync* {
+  Iterable<ItemStack> filterExactMatchedEntries(Iterable<ItemStack> items, {bool requireMatched = true}) sync* {
     for (final item in items) {
       if (requireMatched) {
         if (exact(item)) {
@@ -603,7 +603,7 @@ extension ItemMatcherX on ItemMatcher {
     }
   }
 
-  Iterable<ItemEntry> filterTypedMatchedEntries(Iterable<ItemEntry> items, {bool requireMatched = true}) sync* {
+  Iterable<ItemStack> filterTypedMatchedEntries(Iterable<ItemStack> items, {bool requireMatched = true}) sync* {
     for (final item in items) {
       if (requireMatched) {
         if (typeOnly(item.meta)) {
@@ -722,17 +722,17 @@ class ToolComp extends ItemComp {
     required this.maxHealth,
   });
 
-  void damageTool(ItemEntry item, double damage) {
+  void damageTool(ItemStack item, double damage) {
     damage = attr.fixDamage(damage);
     final former = getHealth(item);
     setHealth(item, former - damage);
   }
 
-  double getHealth(ItemEntry item) => item["Tool.health"] ?? 0.0;
+  double getHealth(ItemStack item) => item["Tool.health"] ?? 0.0;
 
-  bool isBroken(ItemEntry item) => getHealth(item) <= 0;
+  bool isBroken(ItemStack item) => getHealth(item) <= 0;
 
-  void setHealth(ItemEntry item, double value) => item["Tool.health"] = value;
+  void setHealth(ItemStack item, double value) => item["Tool.health"] = value;
 
   @override
   void validateItemConfig(Item item) {
@@ -787,7 +787,7 @@ abstract class UsableComp extends ItemComp {
 
   bool canUse() => true;
 
-  Future<void> onUse(ItemEntry item) async {}
+  Future<void> onUse(ItemStack item) async {}
 
   bool get displayPreview => true;
   static const type = "Usable";
@@ -813,7 +813,7 @@ class ModifyAttrComp extends UsableComp {
 
   factory ModifyAttrComp.fromJson(Map<String, dynamic> json) => _$ModifyAttrCompFromJson(json);
 
-  void buildAttrModification(ItemEntry item, AttrModifierBuilder builder) {
+  void buildAttrModification(ItemStack item, AttrModifierBuilder builder) {
     if (item.meta.mergeable) {
       for (final modifier in modifiers) {
         builder.add(modifier * item.massMultiplier);
@@ -826,7 +826,7 @@ class ModifyAttrComp extends UsableComp {
   }
 
   @override
-  Future<void> onUse(ItemEntry item) async {
+  Future<void> onUse(ItemStack item) async {
     var builder = AttrModifierBuilder();
     buildAttrModification(item, builder);
     builder.performModification(player);
@@ -927,7 +927,7 @@ class CookableComp extends ItemComp {
     this.cookedOutput,
   );
 
-  double getActualFuelCost(ItemEntry item) {
+  double getActualFuelCost(ItemStack item) {
     if (item.meta.mergeable) {
       return item.massMultiplier * fuelCost;
     } else {
@@ -978,7 +978,7 @@ class FuelComp extends ItemComp {
   const FuelComp(this.heatValue);
 
   /// If the [item] has [WetComp], reduce the [heatValue] based on its wet.
-  double getActualHeatValue(ItemEntry item) {
+  double getActualHeatValue(ItemStack item) {
     final wetComp = item.meta.getFirstComp<WetComp>();
     final wet = wetComp?.getWet(item) ?? 0.0;
     return heatValue * (1.0 - wet);
@@ -1011,15 +1011,15 @@ class WetComp extends ItemComp {
 
   const WetComp();
 
-  Ratio getWet(ItemEntry item) => item[_wetK] ?? defaultWet;
+  Ratio getWet(ItemStack item) => item[_wetK] ?? defaultWet;
 
-  void setWet(ItemEntry item, Ratio value) => item[_wetK] = value;
+  void setWet(ItemStack item, Ratio value) => item[_wetK] = value;
 
   @override
-  void onMerge(ItemEntry from, ItemEntry to) {
+  void onMerge(ItemStack from, ItemStack to) {
     if (!from.hasIdenticalMeta(to)) return;
-    final fromMass = from.entryMass;
-    final toMass = to.entryMass;
+    final fromMass = from.stackMass;
+    final toMass = to.stackMass;
     final fromWet = getWet(from) * fromMass;
     final toWet = getWet(to) * toMass;
     final merged = (fromWet + toWet) / (fromMass + toMass);
@@ -1036,11 +1036,11 @@ class WetComp extends ItemComp {
     }
   }
 
-  static WetComp? of(ItemEntry item) => item.meta.getFirstComp<WetComp>();
+  static WetComp? of(ItemStack item) => item.meta.getFirstComp<WetComp>();
 
-  static double tryGetWet(ItemEntry item) => item.meta.getFirstComp<WetComp>()?.getWet(item) ?? defaultWet;
+  static double tryGetWet(ItemStack item) => item.meta.getFirstComp<WetComp>()?.getWet(item) ?? defaultWet;
 
-  static void trySetWet(ItemEntry item, double wet) => item.meta.getFirstComp<WetComp>()?.setWet(item, wet);
+  static void trySetWet(ItemStack item, double wet) => item.meta.getFirstComp<WetComp>()?.setWet(item, wet);
   static const type = "Wet";
 
   @override
@@ -1061,15 +1061,15 @@ class FreshnessComp extends ItemComp {
 
   const FreshnessComp();
 
-  Ratio geFreshness(ItemEntry item) => item[_freshnessK] ?? 1.0;
+  Ratio geFreshness(ItemStack item) => item[_freshnessK] ?? 1.0;
 
-  void setFreshness(ItemEntry item, Ratio value) => item[_freshnessK] = value;
+  void setFreshness(ItemStack item, Ratio value) => item[_freshnessK] = value;
 
   @override
-  void onMerge(ItemEntry from, ItemEntry to) {
+  void onMerge(ItemStack from, ItemStack to) {
     if (!from.hasIdenticalMeta(to)) return;
-    final fromMass = from.entryMass;
-    final toMass = to.entryMass;
+    final fromMass = from.stackMass;
+    final toMass = to.stackMass;
     final fromFreshness = geFreshness(from) * fromMass;
     final toFreshness = geFreshness(to) * toMass;
     final merged = (toFreshness + fromFreshness) / (fromMass + toMass);

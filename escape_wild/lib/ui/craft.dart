@@ -148,7 +148,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
         return DynamicMatchingCell(
           matcher: inputSlots[i],
           onNotInBackpack: (item) => ItemCell(item).inCard(elevation: 0),
-          onInBackpack: (item) => ItemEntryCell(
+          onInBackpack: (item) => ItemStackCell(
             item,
             pad: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           ).inCard(elevation: 5),
@@ -161,7 +161,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
 class DynamicMatchingCell extends StatefulWidget {
   final ItemMatcher matcher;
   final Widget Function(Item item) onNotInBackpack;
-  final Widget Function(ItemEntry item) onInBackpack;
+  final Widget Function(ItemStack item) onInBackpack;
 
   const DynamicMatchingCell({
     super.key,
@@ -226,10 +226,10 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       final cur = allMatched[curIndex];
       if (cur is Item) {
         return widget.onNotInBackpack(cur);
-      } else if (cur is ItemEntry) {
+      } else if (cur is ItemStack) {
         return widget.onInBackpack(cur);
       } else {
-        assert(false, "${cur.runtimeType} is neither $Item nor $ItemEntry.");
+        assert(false, "${cur.runtimeType} is neither $Item nor $ItemStack.");
         return const NullItemCell();
       }
     } else {
@@ -247,11 +247,11 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
 }
 
 class CraftSlot {
-  ItemEntry item = ItemEntry.empty;
+  ItemStack item = ItemStack.empty;
 
-  void reset() => item = ItemEntry.empty;
+  void reset() => item = ItemStack.empty;
 
-  bool get isEmpty => item == ItemEntry.empty;
+  bool get isEmpty => item == ItemStack.empty;
 
   bool get isNotEmpty => !isEmpty;
   final ItemMatcher matcher;
@@ -274,8 +274,8 @@ class CraftingSheet extends StatefulWidget {
 class _CraftingSheetState extends State<CraftingSheet> {
   CraftRecipeProtocol get recipe => widget.recipe;
   final List<CraftSlot> craftSlots = [];
-  List<ItemEntry> accepted = [];
-  List<ItemEntry> unaccepted = [];
+  List<ItemStack> accepted = [];
+  List<ItemStack> unaccepted = [];
 
   @override
   void initState() {
@@ -395,11 +395,11 @@ class _CraftingSheetState extends State<CraftingSheet> {
             },
       shape: shape,
       child: satisfyCondition
-          ? ItemEntryCell(slot.item)
+          ? ItemStackCell(slot.item)
           : DynamicMatchingCell(
               matcher: slot.matcher,
               onNotInBackpack: (item) => ItemCell(item),
-              onInBackpack: (item) => ItemEntryCell(item, showMass: false),
+              onInBackpack: (item) => ItemStackCell(item, showMass: false),
             ),
     );
   }
@@ -428,7 +428,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
     );
   }
 
-  Widget buildItem(ItemEntry item, {required bool accepted}) {
+  Widget buildItem(ItemStack item, {required bool accepted}) {
     return CardButton(
       elevation: accepted ? 4 : 0,
       onTap: !accepted
@@ -436,11 +436,11 @@ class _CraftingSheetState extends State<CraftingSheet> {
           : () {
               gotoFirstMatchedSlot(item);
             },
-      child: ItemEntryCell(item),
+      child: ItemStackCell(item),
     );
   }
 
-  void gotoFirstMatchedSlot(ItemEntry item) {
+  void gotoFirstMatchedSlot(ItemStack item) {
     for (final slot in craftSlots) {
       if (slot.matcher.exact(item)) {
         slot.item = item;

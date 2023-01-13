@@ -58,7 +58,7 @@ String _cat2Name(CraftRecipeCat cat) => cat.name;
 
 String _craftType2Name(CraftType craftType) => craftType.name;
 
-typedef ItemEntryConsumeReceiver = void Function(ItemEntry item, int? mass);
+typedef ItemStackConsumeReceiver = void Function(ItemStack item, int? mass);
 
 abstract class CraftRecipeProtocol with Moddable {
   @JsonKey(fromJson: CraftRecipeCat.named, toJson: _cat2Name)
@@ -82,9 +82,9 @@ abstract class CraftRecipeProtocol with Moddable {
 
   Item get outputItem;
 
-  ItemEntry onCraft(List<ItemEntry> inputs);
+  ItemStack onCraft(List<ItemStack> inputs);
 
-  void onConsume(List<ItemEntry> inputs, ItemEntryConsumeReceiver consume);
+  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume);
 }
 
 @JsonSerializable()
@@ -127,7 +127,7 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(tag.str),
-        exact: (item) => item.meta.hasTag(tag.str) && item.entryMass >= (tag.mass ?? 0.0),
+        exact: (item) => item.meta.hasTag(tag.str) && item.stackMass >= (tag.mass ?? 0.0),
       ));
     }
   }
@@ -142,12 +142,12 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
   String get typeName => type;
 
   @override
-  ItemEntry onCraft(List<ItemEntry> inputs) {
+  ItemStack onCraft(List<ItemStack> inputs) {
     return output().create();
   }
 
   @override
-  void onConsume(List<ItemEntry> inputs, ItemEntryConsumeReceiver consume) {
+  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
     for (final tag in tags) {
       final input = inputs.findFirstByTag(tag.str);
       assert(input != null, "$tag not found in $inputs");
@@ -196,12 +196,12 @@ class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtoc
   factory NamedCraftRecipe.fromJson(Map<String, dynamic> json) => _$NamedCraftRecipeFromJson(json);
 
   @override
-  ItemEntry onCraft(List<ItemEntry> inputs) {
+  ItemStack onCraft(List<ItemStack> inputs) {
     return output().create();
   }
 
   @override
-  void onConsume(List<ItemEntry> inputs, ItemEntryConsumeReceiver consume) {
+  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
     for (final item in items) {
       final input = inputs.findFirstByName(item.str);
       assert(input != null, "$item not found in $inputs");
@@ -240,7 +240,7 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(input.str),
         exact: (item) {
-          return item.meta.hasTag(input.str) && item.entryMass >= (outputMass ?? item.meta.mass);
+          return item.meta.hasTag(input.str) && item.stackMass >= (outputMass ?? item.meta.mass);
         },
       ));
     }
@@ -250,14 +250,14 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
   Item get outputItem => output();
 
   @override
-  ItemEntry onCraft(List<ItemEntry> inputs) {
+  ItemStack onCraft(List<ItemStack> inputs) {
     var sumMass = 0;
     var sumWet = 0.0;
     for (final tag in inputTags) {
       final input = inputs.findFirstByTag(tag.str);
       assert(input != null, "$tag not found in $inputs");
-      if (input == null) return ItemEntry.empty;
-      final inputMass = input.entryMass;
+      if (input == null) return ItemStack.empty;
+      final inputMass = input.stackMass;
       sumMass += inputMass;
       sumWet += WetComp.tryGetWet(input) * inputMass;
     }
@@ -267,7 +267,7 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
   }
 
   @override
-  void onConsume(List<ItemEntry> inputs, ItemEntryConsumeReceiver consume) {
+  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
     for (final tag in inputTags) {
       final input = inputs.findFirstByTag(tag.str);
       assert(input != null, "$tag not found in $inputs");

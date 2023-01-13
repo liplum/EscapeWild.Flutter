@@ -50,7 +50,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   /// return whether the tool is broken and removed.
-  bool damageTool(ItemEntry item, ToolComp comp, double damage) {
+  bool damageTool(ItemStack item, ToolComp comp, double damage) {
     comp.damageTool(item, damage);
     if (comp.isBroken(item)) {
       backpack.removeItem(item);
