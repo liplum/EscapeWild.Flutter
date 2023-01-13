@@ -10,7 +10,20 @@ use-type:
   eat: Manger
   drink: Boire
   equip: Équipper
+  craft-recipe-cat:
+  tool: Outil
+  food: Alimentation
+  fire: Feu
+  refine: Affiner
+  medical: Medical
+craft-type:
+  craft: Fabriquer
+  fix: Réparer
+  process: Process
 item:
+  empty:
+    name: Vide
+    desc: Il s'agot d'une descritpion vide.
   energy-bar:
     name: Barre d'Énergie
     desc: Vous n'êtes pas vous-même lorsque vous avez faim.
@@ -59,12 +72,18 @@ item:
   roasted-berry:
     name: Baies Rôties
     desc: Gluant.
+  hand-drill-kit:
+    name: Hand Drill Kit
+    desc: "Ce n'est pas aussi facile qu'une émission TV d'allumer un feu."
   survival-knife:
     name: Couteau de Survie
     desc: "Pub: Il propose un acier inoxydable 440 anodisé noir."
   old-axe:
     name: Vielle Hache
     desc: Vieux mais toujours aussi vif.
+  stone-axe:
+    name: Hache en Pierre
+    desc: Je pense que le voyage dans le temps est possible.
   old-fish-rod:
     name: Vieille Canne à Pêche
     desc: Attendez et voyez.
@@ -74,6 +93,36 @@ item:
   bear-trap:
     name: Piège à Ours
     desc: Attendez et voyez.
+  moss:
+    name: Mousse
+    desc: ...
+  pine-needle:
+    name: Aiguille de Pin
+    desc: ...
+  tinder:
+    name: Amadou
+    desc: ...
+  raw-rabbit:
+    name: Lapin Cru
+    desc: Sans graisse, riche en protéines.
+  cooked-rabbit:
+    name: Lapin Cuit
+    desc: Ça a un peu le goût du poulet.
+  raw-fish:
+    name: Poisson Cru
+    desc: Phishing.
+  cooked-fish:
+    name: Poisson cuit
+    desc: Attention aux arêtes de poisson.
+  stone:
+    name: Pierre
+    desc: ...
+  sharp-stone:
+    name: Pierre Tranchante
+    desc: ...
+  straw-rope:
+    name: Corde de paille
+    desc: ...
 route:
   subtropics:
     plain:

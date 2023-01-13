@@ -20,17 +20,21 @@ ui:
     campfire: Feu de camp
   backpack:
     mass-load: "{cur}g / {max}g"
-    discard: Jeter
+    discard-request: Jeter ?
+    discard-confirm: "Confirmer pour jeter {} ?"
     empty-tip: Votre sac à dos est vide.
+    cannot-use: "Impossible d'utiliser"
 item:
   mass-with-unit: "{}g"
 ok: OK
 yes: Oui
 no: Non
+done: Done
 got-it: Compris
 not-now: Pas maintenant
 cancel: Annuler
 alright: D'accord
+discard: Jeter
 action:
   got-items: Vous avez obtenu {}.
   got-nothing: Vous n'avez rien eu.
