@@ -129,6 +129,7 @@ class $Dialog extends StatelessWidget {
   final Widget? titleTrailing;
   final $DialogAction? primary;
   final $DialogAction? secondary;
+  final Widget? icon;
 
   /// Highlight the title
   final bool serious;
@@ -137,6 +138,7 @@ class $Dialog extends StatelessWidget {
   const $Dialog({
     super.key,
     this.title,
+    this.icon,
     this.titleTrailing,
     required this.make,
     this.primary,
@@ -151,6 +153,7 @@ class $Dialog extends StatelessWidget {
     final first = primary;
     dialog = AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(28.0))),
+      icon: icon,
       title: title == null
           ? null
           : [

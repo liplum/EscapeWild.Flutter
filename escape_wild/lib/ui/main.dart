@@ -1,4 +1,3 @@
-import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/home.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +47,9 @@ class _MainPageState extends State<MainPage> {
     return ElevatedButton(
       onPressed: () async {
         await onNewGame();
+        while (context.navigator.canPop()) {
+          context.navigator.pop();
+        }
         context.navigator.pushReplacement(MaterialPageRoute(
           builder: (_) => const Homepage(),
         ));
@@ -70,6 +72,9 @@ class _MainPageState extends State<MainPage> {
         ok: I.alright,
       );
       return;
+    }
+    while (context.navigator.canPop()) {
+      context.navigator.pop();
     }
     context.navigator.pushReplacement(MaterialPageRoute(
       builder: (_) => const Homepage(),

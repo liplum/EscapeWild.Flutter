@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/backpack.dart';
 import 'package:escape_wild/ui/campfire.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +31,22 @@ class _HomePageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: buildBody(),
-      bottomNavigationBar: buildBottom(),
+    return WillPopScope(
+      child: Scaffold(
+        body: buildBody(),
+        bottomNavigationBar: buildBottom(),
+      ),
+      onWillPop: () async {
+        final confirm = await context.showRequest(
+          title: "Leave?",
+          desc: "Your game state won't be saved",
+          yes: I.ok,
+          no: I.notNow,
+          highlight: true,
+          serious: true,
+        );
+        return confirm == true;
+      },
     );
   }
 

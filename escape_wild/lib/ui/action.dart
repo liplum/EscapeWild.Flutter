@@ -1,6 +1,5 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/design/dialog.dart';
-import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/ui/ingame_menu.dart';
 import 'package:escape_wild/ui/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -51,11 +50,9 @@ class _ActionPageState extends State<ActionPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              final json = player.toJson();
-              DB.setGameSave(json);
-              await context.showTip(title: I.done, desc: "Your game is saved.", ok: I.ok);
+              await context.showIngameMenuDialog();
             },
-            icon: const Icon(Icons.save_rounded),
+            icon: const Icon(Icons.settings),
           ),
         ],
       ),

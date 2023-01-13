@@ -461,7 +461,7 @@ class CavePlace extends SubtropicsPlace {
 
 @JsonSerializable()
 class HutPlace extends SubtropicsPlace {
-  static const oxe = 0.5;
+  static const axe = 0.5;
   static const fishRod = 0.3;
   static const trap = 0.2;
   static const gun = 0.05;
@@ -477,7 +477,7 @@ class HutPlace extends SubtropicsPlace {
     if (exploreCount == 0) {
       gain.addItemOrMerge(Foods.bottledWater.create());
       gain.addItemOrMerge(Foods.energyBar.create());
-      if (Rand.one() < oxe) {
+      if (Rand.one() < axe) {
         gain.addItemOrMerge(Tools.oldAxe.create());
       }
     } else if (exploreCount == 1) {
