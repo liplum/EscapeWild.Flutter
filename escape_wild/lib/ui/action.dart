@@ -58,10 +58,11 @@ class _ActionPageState extends State<ActionPage> {
         actions: [
           IconButton(
             onPressed: () async {
-              final json = jsonEncode(player.toJson());
+              final json = player.toJson();
               final confirmed = await context.showAnyTip(title: "Save", make: (_) => json.text().scrolled(), ok: "OK");
               if (confirmed == true) {
                 await Clipboard.setData(ClipboardData(text: json));
+                player.loadFromJson(json);
               }
             },
             icon: Icon(Icons.save_rounded),

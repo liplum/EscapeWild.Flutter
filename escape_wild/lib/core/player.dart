@@ -1,11 +1,16 @@
+import 'dart:convert';
+
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/game/route/subtropics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:jconverter/jconverter.dart';
 
 final player = Player();
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
+
+  /// Polymorphism serialization is required.
   var backpack = Backpack();
   var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
@@ -18,6 +23,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   /// It's evaluated at runtime, no need to serialization.
   final $maxMassLoad = ValueNotifier(2000);
   final $actionTimes = ValueNotifier(0);
+
+  /// Polymorphism serialization is required.
   RouteProtocol? route;
 
   Future<void> performAction(ActionType action) async {
@@ -60,28 +67,38 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     $actionTimes.value = 0;
     final generator = SubtropicsRouteGenerator();
     final ctx = RouteGenerateContext(hardness: hardness);
-    routeGeneratorSeed = DateTime.now().millisecond;
+    routeGeneratorSeed = DateTime.now().millisecondsSinceEpoch;
     final generatedRoute = generator.generateRoute(ctx, routeGeneratorSeed);
     route = generatedRoute;
     location = generatedRoute.initialPlace;
   }
 
-  void loadFromJson(Map<String, dynamic> json) {
-    attrs = AttrModel.fromJson(json["attrs"]);
-
+  void loadFromJson(String json) {
+    loadFromJsonObj(jsonDecode(json));
+  }
+  void loadFromJsonObj(Map<String, dynamic> json) {
+    final attrs$ = AttrModel.fromJson(json["attrs"]);
+    final backpack$ = Cvt.fromJsonObj<Backpack>(json["backpack"]);
+    final fireState$ = FireState.fromJson(json["fireState"]);
+    final actionTimes$ = (json["actionTimes"] as num).toInt();
+    final hardness$ = Contents.getHardnessByName(json["hardness"]);
+    final routeGeneratorSeed$ = (json["routeGeneratorSeed"] as num).toInt();
+    final route$ = Cvt.fromJsonObj<RouteProtocol>(json["route"]);
+    //final
     notifyListeners();
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJsonObj() {
+    Cvt.logger = JConverterLogger(onError: (m, e, s) => print("$m,$e,$s"));
     final json = {
       "attrs": attrs.toJson(),
-      "backpack": backpack.toJson(),
+      "backpack": Cvt.toJsonObj(backpack),
       "journeyProgress": journeyProgress,
-      "fireState": fireState,
+      "fireState": fireState.toJson(),
       "actionTimes": actionTimes,
       "hardness": hardness.name,
       "routeGeneratorSeed": routeGeneratorSeed,
-      "route": route,
+      "route": Cvt.toJsonObj(route),
     };
     final loc = location;
     final r = route;
@@ -89,6 +106,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       json["locationRestoreId"] = r.getPlaceRestoreId(loc);
     }
     return json;
+  }
+
+  String toJson() {
+    return jsonEncode(toJsonObj());
   }
 }
 

@@ -2,12 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'backpack.g.dart';
 
 @JsonSerializable()
-class Backpack with ChangeNotifier {
+class Backpack with ChangeNotifier implements JConvertibleProtocol {
   @JsonKey()
   List<ItemEntry> items = [];
   @JsonKey()
@@ -44,7 +45,7 @@ class Backpack with ChangeNotifier {
     }
   }
 
-  void consumeItemInBackpack(ItemEntry item,int? mass){
+  void consumeItemInBackpack(ItemEntry item, int? mass) {
     if (mass != null) {
       splitItemInBackpack(item, mass);
     } else {
@@ -98,6 +99,11 @@ class Backpack with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  static const type = "Backpack";
+
+  @override
+  String get typeName => type;
 }
 
 extension BackpackX on Backpack {

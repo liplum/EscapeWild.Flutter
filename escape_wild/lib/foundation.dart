@@ -17,6 +17,7 @@ export 'package:escape_wild/i18n.dart';
 export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/utils/collection.dart';
 import 'package:escape_wild/game/register.dart' as game_register;
+import 'package:escape_wild/core/register.dart' as core_register;
 
 final yamlAssetsLoader = YamlAssetLoader();
 final isGameLoaded = ValueNotifier(false);
@@ -63,5 +64,6 @@ void loadVanilla() {
 }
 
 void registerConverter() {
-  game_register.registerTypes();
+  core_register.registerTypes(Cvt);
+  game_register.registerTypes(Cvt);
 }
