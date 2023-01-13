@@ -1,3 +1,4 @@
+import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/home.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +60,22 @@ class _MainPageState extends State<MainPage> {
     ).padAll(5);
   }
 
+  Future<void> onLoadGameSave(String gameSave) async {
+    try {
+      await loadGameSave(gameSave);
+    } catch (e, _) {
+      await context.showTip(
+        title: "Corrupted",
+        desc: "Sorry for that. This game save is corrupted or outdated.",
+        ok: I.alright,
+      );
+      return;
+    }
+    context.navigator.pushReplacement(MaterialPageRoute(
+      builder: (_) => const Homepage(),
+    ));
+  }
+
   Widget buildContinueGameBtn() {
     return DB.$gameSave.listenable() <<
         (ctx, v, _) {
@@ -67,10 +84,7 @@ class _MainPageState extends State<MainPage> {
             onPressed: lastSave == null
                 ? null
                 : () async {
-                    await loadGameSave(lastSave);
-                    context.navigator.pushReplacement(MaterialPageRoute(
-                      builder: (_) => const Homepage(),
-                    ));
+                    await onLoadGameSave(lastSave);
                   },
             child: _I.$continue
                 .text(

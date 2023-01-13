@@ -63,7 +63,7 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     return res;
   }
 }
-
+List<SubtropicsPlace> _placesFromJson(dynamic json) => deserializeList<SubtropicsPlace>(json);
 @JsonSerializable()
 class SubtropicsRoute extends RouteProtocol {
   @override
@@ -72,7 +72,7 @@ class SubtropicsRoute extends RouteProtocol {
 
   SubtropicsRoute(this.name);
 
-  @JsonKey()
+  @JsonKey(fromJson: _placesFromJson)
   List<SubtropicsPlace> places = [];
 
   int get placeCount => places.length;

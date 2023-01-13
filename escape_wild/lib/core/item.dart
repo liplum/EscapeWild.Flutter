@@ -133,7 +133,6 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   static final empty = ItemEntry(Item.empty);
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final Item meta;
-  static const type = "Item";
   @JsonKey(includeIfNull: false)
   int? mass;
 
@@ -143,9 +142,6 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   });
 
   String displayName() => meta.localizedName();
-
-  @override
-  String get typeName => type;
 
   bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
 
@@ -212,6 +208,11 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     cloned.extra = cloneExtra();
     return cloned;
   }
+
+  static const type = "ItemEntry";
+
+  @override
+  String get typeName => type;
 }
 
 class ContainerItemEntry extends ItemEntry {

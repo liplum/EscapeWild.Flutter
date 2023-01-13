@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/game/route/subtropics.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 
 final player = Player();
@@ -107,6 +107,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       this.route = route;
       location = lastLocation;
     } catch (e, stacktrace) {
+      if (kDebugMode) {
+        print(e);
+        print(stacktrace);
+      }
       throw GameSaveCorruptedError(e, stacktrace);
     }
     notifyListeners();
@@ -133,7 +137,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   String toJson() {
-    return jsonEncode(toJsonObj());
+    final jobj = toJsonObj();
+    return Cvt.toJson(jobj) ?? "{}";
   }
 }
 

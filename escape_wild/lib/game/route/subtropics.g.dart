@@ -10,9 +10,7 @@ SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) =>
     SubtropicsRoute(
       json['name'] as String,
     )
-      ..places = (json['places'] as List<dynamic>)
-          .map((e) => SubtropicsPlace.fromJson(e as Map<String, dynamic>))
-          .toList()
+      ..places = _placesFromJson(json['places'])
       ..routeProgress = (json['routeProgress'] as num).toDouble()
       ..mod = Moddable.modId2ModFunc(json['mod'] as String);
 
