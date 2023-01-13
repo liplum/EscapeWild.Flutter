@@ -302,7 +302,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
           },
           child: I.cancel.text(),
         ),
-        middle: recipe.outputItem.localizedName().text(style: context.textTheme.titleLarge),
+        middle: recipe.outputItem.l10nName().text(style: context.textTheme.titleLarge),
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           onPressed: !isSatisfyAllConditions

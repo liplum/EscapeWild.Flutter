@@ -21,7 +21,7 @@ extension NamedItemGetterX on String {
 }
 
 class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
-  static final empty = Item("empty", mergeable: true, mass: 0);
+  static final empty = Item("empty", mergeable: true, mass: 0, isContainer: false);
   final String name;
 
   /// ## When [mergeable] is false
@@ -29,27 +29,54 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   /// ### Example
   /// [mass] of `Tinned Tomatoes` is 500. So each ItemEntry takes 500g room in backpack.
   /// When player eat or cook it, if possible, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply full changes.
+  ///
   /// ## When [mergeable] is true
   /// It means the item is mergeable, and [mass] is the unit for each ItemEntry.
   /// ### Example
   /// [mass] of `Berry` is 10. However, ItemEntry doesn't care that, it could have an independent [ItemEntry.mass] instead.
   /// When player eat or cook it, [ModifyAttrComp.modifiers] and [CookableComp.fuelCost] will apply changes based [ItemEntry.mass].
   /// If [ItemEntry.mass] is 25, and player has eaten 15g, then [ModifyAttrComp.modifiers] will apply `(15.0 / 10.0) * modifier`.
+  ///
+  /// ## When [isContainer] is true
+  /// It means the item is a container, and [mass] stands for the weight of container itself.
+  ///
   /// Unit: [g] gram
   final int mass;
   final bool mergeable;
 
-  Item(this.name, {required this.mergeable, required this.mass});
+  /// If this item [isContainer], it must not be [mergeable].
+  final bool isContainer;
 
-  Item.unmergeable(this.name, {required this.mass}) : mergeable = false;
+  Item(
+    this.name, {
+    required this.mergeable,
+    required this.mass,
+    required this.isContainer,
+  }) {
+    assert(mergeable != isContainer, "`mergeable` and `isContainer` are conflict.");
+  }
 
-  Item.mergeable(this.name, {required this.mass}) : mergeable = true;
+  Item.unmergeable(
+    this.name, {
+    required this.mass,
+    this.isContainer = false,
+  }) : mergeable = false;
+
+  Item.container(
+    this.name, {
+    required this.mass,
+  })  : mergeable = false,
+        isContainer = true;
+
+  Item.mergeable(this.name, {required this.mass})
+      : mergeable = true,
+        isContainer = false;
 
   Item self() => this;
 
-  String localizedName() => i18n("item.$name.name");
+  String l10nName() => i18n("item.$name.name");
 
-  String localizedDescription() => i18n("item.$name.desc");
+  String l10nDescription() => i18n("item.$name.desc");
 }
 
 extension ItemX on Item {
@@ -133,15 +160,18 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   static final empty = ItemEntry(Item.empty);
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: _getItemMetaName)
   final Item meta;
+
   @JsonKey(includeIfNull: false)
   int? mass;
+
+  int get entryMass => mass ?? meta.mass;
 
   ItemEntry(
     this.meta, {
     this.mass,
   });
 
-  String displayName() => meta.localizedName();
+  String displayName() => meta.l10nName();
 
   bool hasIdenticalMeta(ItemEntry other) => meta == other.meta;
 
@@ -149,12 +179,14 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
 
   bool get canSplit => meta.mergeable;
 
-  bool get isEmpty => identical(this, empty) || meta == Item.empty || actualMass <= 0;
+  bool get canMerge => meta.mergeable;
+
+  bool get isEmpty => identical(this, empty) || meta == Item.empty || entryMass <= 0;
 
   @override
   String toString() {
     final m = mass;
-    final name = meta.localizedName();
+    final name = meta.l10nName();
     if (m == null) {
       return name;
     } else {
@@ -168,8 +200,8 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
     if (!meta.mergeable) return;
     assert(hasIdenticalMeta(to), "Can't merge ${meta.name} with ${to.meta.name}.");
     if (!hasIdenticalMeta(to)) return;
-    final selfMass = actualMass;
-    final toMass = to.actualMass;
+    final selfMass = entryMass;
+    final toMass = to.entryMass;
     // handle components
     for (final comp in meta.iterateComps()) {
       comp.onMerge(this, to);
@@ -185,11 +217,11 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   ItemEntry split(int massOfPart) {
     assert(massOfPart > 0, "`mass` to split must be more than 0");
     if (massOfPart <= 0) return empty;
-    assert(actualMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
-    if (actualMass < massOfPart) return empty;
+    assert(entryMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
+    if (entryMass < massOfPart) return empty;
     assert(canSplit, "${meta.name} can't be split.");
     if (!canSplit) return empty;
-    final selfMass = actualMass;
+    final selfMass = entryMass;
     // if self mass is less than or equal to mass to split, return a clone.
     if (selfMass <= massOfPart) return clone();
     final part = ItemEntry(meta, mass: massOfPart);
@@ -219,16 +251,69 @@ class ItemEntry with ExtraMixin implements JConvertibleProtocol {
   String get typeName => type;
 }
 
+@JsonSerializable()
 class ContainerItemEntry extends ItemEntry {
-  ItemEntry inside = ItemEntry.empty;
+  @JsonKey(includeIfNull: false)
+  ItemEntry? inner;
 
-  ContainerItemEntry(super.meta);
+  @override
+  set mass(int? newMass) {
+    assert(false, "ContainerItemEntry's mass can't be changed.");
+  }
+
+  /// [entryMass] is the sum of container and [inner].
+  @override
+  int get entryMass => insideMass + meta.mass;
+
+  int get insideMass => inner?.entryMass ?? 0;
+
+  ContainerItemEntry(super.meta) {
+    assert(meta.isContainer, "ContainerItemEntry requires item is a Container.");
+  }
+
+  bool get containsItem => inner?.isNotEmpty != true;
+
+  @override
+  String displayName() {
+    final inner = this.inner;
+    if (inner == null) {
+      return meta.l10nName();
+    } else {
+      return "${meta.l10nName()}[${inner.displayName()}]";
+    }
+  }
+
+  factory ContainerItemEntry.fromJson(Map<String, dynamic> json) => _$ContainerItemEntryFromJson(json);
+
+  /// The container itself can't be merged.
+  @override
+  bool get canMerge => false;
+
+  /// The container itself can't be split.
+  @override
+  bool get canSplit => false;
+
+  /// The container itself can't be merge.
+  @override
+  void mergeTo(ItemEntry to) {}
+
+  /// The container itself can't be split.
+  @override
+  ItemEntry split(int massOfPart) {
+    return this;
+  }
+
+  @override
+  Map<String, dynamic> toJson() => _$ContainerItemEntryToJson(this);
+
+  static const type = "ContainerItemEntry";
+
+  @override
+  String get typeName => type;
 }
 
 extension ItemEntryX on ItemEntry {
-  int get actualMass => mass ?? meta.mass;
-
-  double get massMultiplier => actualMass / meta.mass;
+  double get massMultiplier => entryMass / meta.mass;
 
   bool canMergeTo(ItemEntry to) {
     return hasIdenticalMeta(to) && meta.mergeable;
@@ -754,8 +839,8 @@ class WetComp extends ItemComp {
   @override
   void onMerge(ItemEntry from, ItemEntry to) {
     if (!from.hasIdenticalMeta(to)) return;
-    final fromMass = from.actualMass;
-    final toMass = to.actualMass;
+    final fromMass = from.entryMass;
+    final toMass = to.entryMass;
     final fromWet = getWet(from) * fromMass;
     final toWet = getWet(to) * toMass;
     final merged = (fromWet + toWet) / (fromMass + toMass);
@@ -802,8 +887,8 @@ class FreshnessComp extends ItemComp {
   @override
   void onMerge(ItemEntry from, ItemEntry to) {
     if (!from.hasIdenticalMeta(to)) return;
-    final fromMass = from.actualMass;
-    final toMass = to.actualMass;
+    final fromMass = from.entryMass;
+    final toMass = to.entryMass;
     final fromFreshness = geFreshness(from) * fromMass;
     final toFreshness = geFreshness(to) * toMass;
     final merged = (toFreshness + fromFreshness) / (fromMass + toMass);

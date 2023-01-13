@@ -20,7 +20,7 @@ Future<void> showGain(ActionType action, List<ItemEntry> gain) async {
       ok: "alright".tr(),
     );
   } else {
-    final result = gain.map((e) => e.meta.localizedName()).join(", ");
+    final result = gain.map((e) => e.meta.l10nName()).join(", ");
     await AppCtx.showTip(
       title: action.l10nName(),
       desc: "action.got-items".tr(args: [result]),

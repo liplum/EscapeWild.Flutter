@@ -26,6 +26,32 @@ Map<String, dynamic> _$ItemEntryToJson(ItemEntry instance) {
   return val;
 }
 
+ContainerItemEntry _$ContainerItemEntryFromJson(Map<String, dynamic> json) =>
+    ContainerItemEntry(
+      Contents.getItemMetaByName(json['meta'] as String),
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..inner = json['inner'] == null
+          ? null
+          : ItemEntry.fromJson(json['inner'] as Map<String, dynamic>)
+      ..mass = json['mass'] as int?;
+
+Map<String, dynamic> _$ContainerItemEntryToJson(ContainerItemEntry instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['meta'] = _getItemMetaName(instance.meta);
+  writeNotNull('inner', instance.inner);
+  writeNotNull('mass', instance.mass);
+  return val;
+}
+
 ToolAttr _$ToolAttrFromJson(Map<String, dynamic> json) => ToolAttr(
       efficiency: (json['efficiency'] as num).toDouble(),
       durability: (json['durability'] as num).toDouble(),

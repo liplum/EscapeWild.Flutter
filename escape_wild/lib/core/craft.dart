@@ -127,7 +127,7 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(tag.str),
-        exact: (item) => item.meta.hasTag(tag.str) && item.actualMass >= (tag.mass ?? 0.0),
+        exact: (item) => item.meta.hasTag(tag.str) && item.entryMass >= (tag.mass ?? 0.0),
       ));
     }
   }
@@ -240,7 +240,7 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(input.str),
         exact: (item) {
-          return item.meta.hasTag(input.str) && item.actualMass >= (outputMass ?? item.meta.mass);
+          return item.meta.hasTag(input.str) && item.entryMass >= (outputMass ?? item.meta.mass);
         },
       ));
     }
@@ -257,7 +257,7 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
       final input = inputs.findFirstByTag(tag.str);
       assert(input != null, "$tag not found in $inputs");
       if (input == null) return ItemEntry.empty;
-      final inputMass = input.actualMass;
+      final inputMass = input.entryMass;
       sumMass += inputMass;
       sumWet += WetComp.tryGetWet(input) * inputMass;
     }

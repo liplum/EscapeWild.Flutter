@@ -34,7 +34,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
   ItemEntry splitItemInBackpack(ItemEntry item, int massOfPart) {
     assert(item.meta.mergeable, "${item.meta.name} can't split, because it's unmergeable");
     if (!item.meta.mergeable) return ItemEntry.empty;
-    final actualMass = item.actualMass;
+    final actualMass = item.entryMass;
     if (massOfPart <= 0) {
       return ItemEntry.empty;
     }
@@ -80,7 +80,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     if (item.isEmpty) return true;
     final hasRemoved = items.remove(item);
     if (hasRemoved) {
-      mass -= item.actualMass;
+      mass -= item.entryMass;
       notifyListeners();
     }
     return hasRemoved;
@@ -99,7 +99,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     if (newMass <= 0) {
       removeItem(item);
     } else {
-      final delta = item.actualMass - newMass;
+      final delta = item.entryMass - newMass;
       item.mass = newMass;
       mass -= delta;
       notifyListeners();
@@ -150,14 +150,14 @@ extension BackpackX on Backpack {
     } else {
       items.add(item);
     }
-    mass += item.actualMass;
+    mass += item.entryMass;
     return true;
   }
 
   double sumMass() {
     var sum = 0.0;
     for (final item in items) {
-      sum += item.actualMass;
+      sum += item.entryMass;
     }
     return sum;
   }

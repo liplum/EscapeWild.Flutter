@@ -121,7 +121,7 @@ class _BackpackPageState extends State<BackpackPage> {
     return [
       ListTile(
         title: item.displayName().text(style: context.textTheme.titleLarge),
-        subtitle: item.meta.localizedDescription().text(),
+        subtitle: item.meta.l10nDescription().text(),
       ),
     ].column().inCard(elevation: 4);
   }
@@ -230,7 +230,7 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Future<void> onDiscard(ItemEntry item) async {
     if (item.meta.mergeable) {
-      $selectedMass.value = item.actualMass;
+      $selectedMass.value = item.entryMass;
       final confirmed = await context.showAnyRequest(
         title: _I.discardRequest,
         make: (_) => ItemEntryMassSelector(
@@ -278,7 +278,7 @@ class _BackpackPageState extends State<BackpackPage> {
   Future<void> onUse(ItemEntry item, UseType useType, List<UsableComp> usableComps) async {
     final modifiers = usableComps.ofType<ModifyAttrComp>().toList(growable: false);
     if (item.meta.mergeable) {
-      $selectedMass.value = item.actualMass;
+      $selectedMass.value = item.entryMass;
       final confirmed = await context.showAnyRequest(
         title: item.displayName(),
         isPrimaryDefault: true,

@@ -33,12 +33,12 @@ class ItemEntryCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: AutoSizeText(
-        item.meta.localizedName(),
+        item.meta.l10nName(),
         maxLines: 2,
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: !showMass ? null : I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
+      subtitle: !showMass ? null : I.item.massWithUnit(item.entryMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: !showMass ? null : pad,
     ).center();
@@ -57,7 +57,7 @@ class ItemCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: AutoSizeText(
-        item.localizedName(),
+        item.l10nName(),
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
@@ -174,7 +174,7 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
 
   @override
   Widget build(BuildContext context) {
-    var maxMass = item.actualMass;
+    var maxMass = item.entryMass;
     return [
       SfSlider(
         value: $selectedMass.value.clamp(0, maxMass),
@@ -187,7 +187,7 @@ class _ItemEntryMassSelectorState extends State<ItemEntryMassSelector> {
         shouldAlwaysShowTooltip: true,
         numberFormat: NumberFormat(I.item.massWithUnit("#")),
         onChanged: (v) {
-          final newMass = (v as double).round().clamp(0, item.actualMass);
+          final newMass = (v as double).round().clamp(0, item.entryMass);
           setState(() {
             $selectedMass.value = newMass;
           });
