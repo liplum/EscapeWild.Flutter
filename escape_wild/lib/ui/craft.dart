@@ -38,7 +38,10 @@ class _CraftPageState extends State<CraftPage> {
         const VerticalDivider(
           thickness: 1,
         ),
-        buildRecipes(cat2Recipes[selectedCatIndex].value).flexible(flex: isPortrait ? 10 : 12),
+        if (isPortrait)
+          buildRecipesPortrait(cat2Recipes[selectedCatIndex].value).flexible(flex: 10)
+        else
+          buildRecipesLandscape(cat2Recipes[selectedCatIndex].value).flexible(flex: 12),
       ].row().padAll(5),
     );
   }
@@ -66,8 +69,23 @@ class _CraftPageState extends State<CraftPage> {
     );
   }
 
-  Widget buildRecipes(List<CraftRecipeProtocol> recipes) {
+  Widget buildRecipesPortrait(List<CraftRecipeProtocol> recipes) {
     return ListView.builder(
+      physics: const RangeMaintainingScrollPhysics(),
+      itemCount: recipes.length,
+      itemBuilder: (ctx, i) {
+        final recipe = recipes[i];
+        return CraftRecipeEntry(recipe);
+      },
+    );
+  }
+
+  Widget buildRecipesLandscape(List<CraftRecipeProtocol> recipes) {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 350,
+        childAspectRatio: 1.5,
+      ),
       physics: const RangeMaintainingScrollPhysics(),
       itemCount: recipes.length,
       itemBuilder: (ctx, i) {
@@ -314,12 +332,24 @@ class _CraftingSheetState extends State<CraftingSheet> {
         ),
         backgroundColor: Colors.transparent,
       ),
-      child: [
-        buildTableView().expanded(),
-        const Divider(thickness: 2, indent: 10, endIndent: 10),
-        buildBackpackView().expanded(),
-      ].column().padAll(5),
+      child: context.isPortrait ? buildPortrait() : buildLandscape(),
     );
+  }
+
+  Widget buildPortrait() {
+    return [
+      buildTableView().expanded(),
+      const Divider(thickness: 2, indent: 10, endIndent: 10),
+      buildBackpackView().expanded(),
+    ].column().padAll(5);
+  }
+
+  Widget buildLandscape() {
+    return [
+      buildTableView().expanded(),
+      const VerticalDivider(thickness: 2, indent: 10, endIndent: 10),
+      buildBackpackView().expanded(),
+    ].row().padAll(5);
   }
 
   void onCraft() {
