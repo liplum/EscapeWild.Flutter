@@ -34,12 +34,13 @@ class ItemEntryCell extends StatelessWidget {
     return ListTile(
       title: AutoSizeText(
         item.meta.localizedName(),
+        maxLines: 2,
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
       subtitle: !showMass ? null : I.item.massWithUnit(item.actualMass.toString()).text(textAlign: TextAlign.right),
       dense: true,
-      contentPadding: pad,
+      contentPadding: !showMass ? null : pad,
     ).center();
   }
 }

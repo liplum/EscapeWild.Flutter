@@ -174,6 +174,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
         });
       }
     });
+    player.backpack.addListener(updateAllMatched);
   }
 
   void updateAllMatched() {
@@ -223,6 +224,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   void dispose() {
     super.dispose();
     marqueeTimer.cancel();
+    player.backpack.removeListener(updateAllMatched);
   }
 }
 
@@ -381,6 +383,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   Widget buildBackpackView() {
+    showTimePicker;
     return GridView.builder(
       itemCount: accepted.length + unaccepted.length,
       physics: const RangeMaintainingScrollPhysics(),

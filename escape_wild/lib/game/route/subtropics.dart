@@ -195,7 +195,8 @@ class PlainPlace extends SubtropicsPlace {
   static const berry = 0.6;
   static const dirtyWater = 0.3;
   static const sticks = 0.2;
-  static const cutGrass = 0.1;
+  static const cutGrass = 0.2;
+  static const stone = 0.1;
 
   PlainPlace(super.name);
 
@@ -210,6 +211,7 @@ class PlainPlace extends SubtropicsPlace {
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(sticks * p, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(cutGrass * p, gain, () => Stuff.cutGrass.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await showGain(ActionType.explore, gain);
@@ -230,6 +232,8 @@ class ForestPlace extends SubtropicsPlace {
   static const dirtyWater = 0.1;
   static const cutDownLog = 0.9;
   static const cutDownSticks = 0.9;
+  static const stone = 0.1;
+  static const moss = 0.1;
 
   ForestPlace(super.name);
 
@@ -280,6 +284,8 @@ class ForestPlace extends SubtropicsPlace {
     randGain(nuts * p, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
     randGain(log * p, gain, () => Stuff.log.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(sticks * p, gain, () => Stuff.sticks.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await showGain(ActionType.explore, gain);
@@ -294,9 +300,10 @@ class ForestPlace extends SubtropicsPlace {
 class RiversidePlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.1;
-  static const stone = 0.1;
+  static const stone = 0.6;
   static const clearWater = 0.8;
   static const fishing = 0.8;
+  static const moss = 0.2;
 
   RiversidePlace(super.name);
 
@@ -339,7 +346,8 @@ class RiversidePlace extends SubtropicsPlace {
     final gain = <ItemEntry>[];
     randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(clearWater * p, gain, () => Foods.clearWater.create(massF: Rand.fluctuate(0.2)), 2);
-    randGain(stone * p, gain, () => Stuff.log.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.float(1.2, 2.2)), 2);
+    randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await showGain(ActionType.explore, gain);
@@ -354,7 +362,8 @@ class RiversidePlace extends SubtropicsPlace {
 class CavePlace extends SubtropicsPlace {
   static const maxExploreTimes = 2;
   static const berry = 0.1;
-  static const stone = 0.1;
+  static const stone = 0.4;
+  static const moss = 0.4;
   static const dirtyWater = 0.8;
 
   CavePlace(super.name);
@@ -367,7 +376,8 @@ class CavePlace extends SubtropicsPlace {
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
     final gain = <ItemEntry>[];
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
-    randGain(stone * p, gain, () => Stuff.log.create(massF: Rand.fluctuate(0.2)), 1);
+    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.float(1.2, 2.2)), 2);
+    randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
     await showGain(ActionType.explore, gain);
