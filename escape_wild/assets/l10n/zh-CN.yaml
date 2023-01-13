@@ -8,7 +8,7 @@ ui:
     title: 逃离荒野
     new-game: 新建游戏
     continue: 继续游戏
-  attr:
+  hud:
     health: 生命
     food: 饱腹
     water: 水分

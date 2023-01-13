@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/ui/backpack.dart';
-import 'package:escape_wild/ui/campfire.dart';
+import 'package:escape_wild/ui/game/backpack.dart';
+import 'package:escape_wild/ui/game/campfire.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'action.dart';

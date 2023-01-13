@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/ui/main.dart';
+import 'package:escape_wild/ui/main/main.dart';
 import 'package:flutter/material.dart';
 
 // ignore: non_constant_identifier_names

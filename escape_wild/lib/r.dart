@@ -6,11 +6,11 @@ class R {
   R._();
 
   static const defaultLocale = Locale('en');
-  static const zhLocale = Locale('zh');
+  static const zhCnLocale = Locale('zh-CN');
   static const frLocale = Locale('fr');
   static const supportedLocales = [
     defaultLocale,
-    zhLocale,
+    zhCnLocale,
     frLocale,
   ];
   static const packageName = "net.liplum.escape_wild.flutter";

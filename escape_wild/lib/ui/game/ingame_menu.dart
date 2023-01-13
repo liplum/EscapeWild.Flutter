@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/build_context/show.dart';
 
-import 'main.dart';
+import '../main/main.dart';
 
 extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {

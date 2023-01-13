@@ -1,6 +1,6 @@
 part of 'hud.dart';
 
-const _attr = "ui.attr";
+const _attr = "ui.hud";
 
 class _I {
   _I._();

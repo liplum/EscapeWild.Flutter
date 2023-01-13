@@ -1,6 +1,6 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/ui/ingame_menu.dart';
-import 'package:escape_wild/ui/shared.dart';
+import 'package:escape_wild/ui/game/ingame_menu.dart';
+import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
