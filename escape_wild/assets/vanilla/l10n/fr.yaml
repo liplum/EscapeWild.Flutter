@@ -23,7 +23,7 @@ craft-type:
 item:
   empty:
     name: Vide
-    desc: Il s'agot d'une descritpion vide.
+    desc: Il s'agit d'une descritpion vide.
   energy-bar:
     name: Barre d'Énergie
     desc: Vous n'êtes pas vous-même lorsque vous avez faim.
