@@ -9,12 +9,10 @@ ui:
     craft: Fabriquer
     campfire: Feu de camp
   backpack:
-    mass-load: "{cur}g / {max}g"
+    mass-load: '{cur} / {max}'
     discard-request: Jeter ?
     discard-confirm: "Confirmer pour jeter {} ?"
     empty-tip: Votre sac à dos est vide.
-item:
-  mass-with-unit: "{}g"
 ok: OK
 yes: Oui
 no: Non

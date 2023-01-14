@@ -1,4 +1,5 @@
 import 'package:easy_localization_loader/easy_localization_loader.dart';
+import 'package:escape_wild/i18n.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/game/items/foods.dart';
@@ -6,6 +7,9 @@ import 'package:escape_wild/game/items/medicine.dart';
 import 'package:escape_wild/game/items/stuff.dart';
 import 'package:escape_wild/game/items/tools.dart';
 import 'package:escape_wild/game/recipes/craft.dart';
+import 'package:escape_wild/db.dart';
+import 'package:escape_wild/game/register.dart' as game_register;
+import 'package:escape_wild/core/register.dart' as core_register;
 
 export 'package:escape_wild/game/items/foods.dart';
 export 'package:escape_wild/game/recipes/craft.dart';
@@ -19,8 +23,11 @@ export 'package:escape_wild/design/dialog.dart';
 export 'package:escape_wild/design/extension.dart';
 export 'package:escape_wild/utils/collection.dart';
 export 'package:escape_wild/db.dart';
-import 'package:escape_wild/game/register.dart' as game_register;
-import 'package:escape_wild/core/register.dart' as core_register;
+
+class Measurement {
+  Measurement._();
+  static var mass = UnitConverter.gram;
+}
 
 final yamlAssetsLoader = YamlAssetLoader();
 final isGameLoaded = ValueNotifier(false);
@@ -74,4 +81,8 @@ void loadVanilla() {
 void registerConverter() {
   core_register.registerTypes(Cvt);
   game_register.registerTypes(Cvt);
+}
+
+void initPreference() {
+  Measurement.mass = UnitConverter.getMassForName(DB.preference.measurementSystemOfMass);
 }

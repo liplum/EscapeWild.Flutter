@@ -15,14 +15,40 @@ ui:
     craft: Craft
     campfire: Campfire
   backpack:
-    # unit: gram
-    mass-load: "{cur}g / {max}g"
+    mass-load: '{cur} / {max}'
     # The title of discard request
     discard-request: Discard?
     # Ask before player is going to discard something in backpack.
     discard-confirm: "Confirm to discard {}?"
     # Display when backpack is empty
     empty-tip: Your backpack is empty.
+
+physical-quantity:
+  mass: Mass
+  length: Length
+  temperature: Temperature
+# The unit of measurement system.
+unit:
+  mass:
+    gram:
+      name: Gram(g)
+      format: '{}g'
+    kilogram:
+      name: Kilogram(kg)
+      format: '{}kg'
+    pound:
+      name: Pound(lb)
+      format: '{}lbs'
+    ounce:
+      name: Ounce(oz)
+      format: '{}oz'
+  temperature:
+    celsius:
+      name: Celsius(°C)
+      format: '{}°C'
+    fahrenheit:
+      name: Fahrenheit(°F)
+      format: '{}°F'
 # unit: gram
 item:
   mass-with-unit: '{}g'

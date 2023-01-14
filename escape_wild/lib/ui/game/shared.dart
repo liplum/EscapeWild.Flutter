@@ -41,7 +41,7 @@ class ItemStackCell extends StatelessWidget {
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: !showMass ? null : I.item.massWithUnit(item.stackMass.toString()).text(textAlign: TextAlign.right),
+      subtitle: !showMass ? null : I.massOf(item.stackMass).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: !showMass ? null : pad,
     ).center();
@@ -188,7 +188,7 @@ class _ItemStackMassSelectorState extends State<ItemStackMassSelector> {
         interval: maxMass / 2,
         minorTicksPerInterval: 2,
         shouldAlwaysShowTooltip: true,
-        numberFormat: NumberFormat(I.item.massWithUnit("#")),
+        //numberFormat: NumberFormat(I.massOf(item.stackMass)),
         onChanged: (v) {
           final newMass = (v as double).round().clamp(0, item.stackMass);
           setState(() {

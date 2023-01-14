@@ -77,3 +77,38 @@ class LeavingBlank extends StatelessWidget {
         .padAll(10);
   }
 }
+
+class NavigationListTile extends StatelessWidget {
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final WidgetBuilder? to;
+
+  const NavigationListTile({
+    super.key,
+    this.leading,
+    this.title,
+    this.subtitle,
+    this.to,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final to = this.to;
+    return ListTile(
+      leading: leading,
+      title: title,
+      subtitle: subtitle,
+      onTap: to == null
+          ? null
+          : () {
+              context.navigator.push(MaterialPageRoute(builder: to));
+            },
+      trailing: to == null
+          ? null
+          : const Icon(
+              Icons.navigate_next_rounded,
+            ),
+    );
+  }
+}

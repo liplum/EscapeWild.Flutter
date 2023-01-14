@@ -6,8 +6,8 @@ class _I {
   _I._();
 
   static String massLoad(int cur, int max) => "$_n.mass-load".tr(namedArgs: {
-        "cur": cur.toString(),
-        "max": max.toString(),
+        "cur": I.massOf(cur),
+        "max": I.massOf(max),
       });
 
   static String get discardRequest => "$_n.discard-request".tr();

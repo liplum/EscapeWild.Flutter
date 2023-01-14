@@ -9,12 +9,10 @@ ui:
     craft: 合成
     campfire: 营火
   backpack:
-    mass-load: "{cur}g / {max}g"
+    mass-load: '{cur} / {max}'
     discard-request: 是否丢弃？
     discard-confirm: "确定要丢弃 {} 吗？"
     empty-tip: 背包空荡荡的
-item:
-  mass-with-unit: '{}g'
 ok: 好的
 yes: 是
 no: 否

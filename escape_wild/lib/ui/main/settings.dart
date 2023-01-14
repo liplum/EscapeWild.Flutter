@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -12,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late final List<WidgetBuilder> entries = buildVirtualEntries();
+  static const iconSize = 28.0;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
       (_) => NavigationListTile(
         leading: const Icon(
           Icons.public_rounded,
-          size: 28,
+          size: iconSize,
         ),
         title: "Language".text(),
         subtitle: "language.$curLocale".tr().text(),
@@ -74,40 +76,124 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+    all.add(
+      (_) => NavigationListTile(
+        leading: const Icon(
+          Icons.straighten_rounded,
+          size: iconSize,
+        ),
+        title: "Measurement".text(),
+        //subtitle: "language.$curLocale".tr().text(),
+        to: (_) => MeasurementSelectorPage(
+          quality2Candidates: UnitConverter.measurement2Converters,
+          quality2Selected: {},
+        ),
+      ),
+    );
+
     return all;
   }
 }
 
-class NavigationListTile extends StatelessWidget {
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
-  final WidgetBuilder? to;
+class MeasurementSelectorPage extends StatefulWidget {
+  final Map<String, List<UnitConverter>> quality2Candidates;
+  final Map<String, UnitConverter> quality2Selected;
 
-  const NavigationListTile({
+  const MeasurementSelectorPage({
     super.key,
-    this.leading,
-    this.title,
-    this.subtitle,
-    this.to,
+    required this.quality2Candidates,
+    required this.quality2Selected,
   });
 
   @override
+  State<MeasurementSelectorPage> createState() => _MeasurementSelectorPageState();
+}
+
+class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
+  late var curQuality2Selected = widget.quality2Selected;
+
+  @override
   Widget build(BuildContext context) {
-    final to = this.to;
+    final quality2Candidates = widget.quality2Candidates.entries.toList();
+    return WillPopScope(
+      onWillPop: () async {
+        //await context.setLocale(curSelected);
+        return true;
+      },
+      child: Scaffold(
+        body: CustomScrollView(
+          physics: const RangeMaintainingScrollPhysics(),
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: true,
+              snap: false,
+              floating: false,
+              expandedHeight: 100.0,
+              flexibleSpace: FlexibleSpaceBar(
+                title: "Measurement".tr().text(),
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                childCount: quality2Candidates.length,
+                (ctx, index) {
+                  final p = quality2Candidates[index];
+                  return MeasurementSelection(
+                    candidates: p.value,
+                    selected: Measurement.mass,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MeasurementSelection extends StatefulWidget {
+  final List<UnitConverter> candidates;
+  final UnitConverter selected;
+
+  const MeasurementSelection({
+    super.key,
+    required this.candidates,
+    required this.selected,
+  });
+
+  @override
+  State<MeasurementSelection> createState() => _MeasurementSelectionState();
+}
+
+class _MeasurementSelectionState extends State<MeasurementSelection> {
+  late var curSelected = widget.selected;
+
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      title: "AAA".text(),
+      initiallyExpanded: true,
+      children: widget.candidates.map((cvt) => buildOption(cvt)).toList(),
+    );
+  }
+
+  Widget buildOption(UnitConverter cvt) {
     return ListTile(
-      leading: leading,
-      title: title,
-      subtitle: subtitle,
-      onTap: to == null
+      title: cvt.l10nName().text(),
+      onTap: cvt == curSelected
           ? null
           : () {
-              context.navigator.push(MaterialPageRoute(builder: to));
+              setState(() {
+                curSelected = cvt;
+              });
             },
-      trailing: to == null
+      subtitle: cvt.convertWithUnit(1000).text(),
+      trailing: cvt != curSelected
           ? null
           : const Icon(
-              Icons.navigate_next_rounded,
+              Icons.check,
+              color: Colors.green,
             ),
     );
   }
@@ -133,12 +219,13 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async{
+      onWillPop: () async {
         await context.setLocale(curSelected);
         return true;
       },
       child: Scaffold(
         body: CustomScrollView(
+          physics: const RangeMaintainingScrollPhysics(),
           slivers: <Widget>[
             SliverAppBar(
               pinned: true,

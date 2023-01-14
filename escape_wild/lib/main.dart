@@ -21,6 +21,7 @@ void main() async {
   }
   await DB.init();
   registerConverter();
+  initPreference();
   runApp(
     const EscapeWildApp().withEasyLocalization(),
   );
