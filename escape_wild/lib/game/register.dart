@@ -8,4 +8,5 @@ void registerTypes(JConverter cvt) {
   cvt.addAuto(s.RiversidePlace.type, s.RiversidePlace.fromJson);
   cvt.addAuto(s.CavePlace.type, s.CavePlace.fromJson);
   cvt.addAuto(s.HutPlace.type, s.HutPlace.fromJson);
+  cvt.addAuto(s.VillagePlace.type, s.VillagePlace.fromJson);
 }

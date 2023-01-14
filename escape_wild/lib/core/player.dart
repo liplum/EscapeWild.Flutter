@@ -5,7 +5,6 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/game/route/subtropics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:jconverter/jconverter.dart';
 import 'package:rettulf/rettulf.dart';
 
 final player = Player();
@@ -161,7 +160,6 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   Map<String, dynamic> toJsonObj() {
-    Cvt.logger = JConverterLogger(onError: (m, e, s) => print("$m,$e,$s"));
     final json = {
       "attrs": attrs.toJson(),
       "backpack": Cvt.toJsonObj(backpack),

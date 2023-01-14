@@ -149,3 +149,24 @@ Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
   val['ec'] = instance.exploreCount;
   return val;
 }
+
+VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
+      json['name'] as String,
+    )
+      ..extra = json['extra'] as Map<String, dynamic>?
+      ..exploreCount = json['ec'] as int;
+
+Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('extra', instance.extra);
+  val['name'] = instance.name;
+  val['ec'] = instance.exploreCount;
+  return val;
+}

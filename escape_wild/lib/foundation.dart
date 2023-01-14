@@ -10,6 +10,7 @@ import 'package:escape_wild/game/recipes/craft.dart';
 import 'package:escape_wild/db.dart';
 import 'package:escape_wild/game/register.dart' as game_register;
 import 'package:escape_wild/core/register.dart' as core_register;
+import 'package:jconverter/jconverter.dart';
 
 export 'package:escape_wild/game/items/foods.dart';
 export 'package:escape_wild/game/recipes/craft.dart';
@@ -95,6 +96,7 @@ void loadVanilla() {
 }
 
 void registerConverter() {
+  Cvt.logger = JConverterLogger(onError: (m, e, s) => print("$m,$e,$s"));
   core_register.registerTypes(Cvt);
   game_register.registerTypes(Cvt);
 }

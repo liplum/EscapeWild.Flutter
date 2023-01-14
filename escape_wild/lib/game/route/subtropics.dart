@@ -511,6 +511,7 @@ class HutPlace extends SubtropicsPlace {
   String get typeName => type;
 }
 
+@JsonSerializable()
 class VillagePlace extends SubtropicsPlace {
   VillagePlace(super.name);
 
@@ -527,4 +528,14 @@ class VillagePlace extends SubtropicsPlace {
       await player.onGameWin();
     }
   }
+
+  static const type = "Subtropics.VillagePlace";
+
+  @override
+  String get typeName => type;
+
+  factory VillagePlace.fromJson(Map<String, dynamic> json) => _$VillagePlaceFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$VillagePlaceToJson(this);
 }
