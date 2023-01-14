@@ -18,13 +18,23 @@ class CraftPage extends StatefulWidget {
 }
 
 class _CraftPageState extends State<CraftPage> {
-  int selectedCatIndex = 0;
+  int _selectedCatIndex = 0;
+
+  int get selectedCatIndex => _selectedCatIndex;
+
+  set selectedCatIndex(int v) {
+    _selectedCatIndex = v;
+    lastSelectedIndex = v;
+  }
+
+  static int lastSelectedIndex = 0;
   late List<MapEntry<CraftRecipeCat, List<CraftRecipeProtocol>>> cat2Recipes;
 
   @override
   void initState() {
     super.initState();
     cat2Recipes = Contents.craftRecipes.cat2Recipes.entries.toList();
+    selectedCatIndex = lastSelectedIndex.clamp(0, cat2Recipes.length - 1);
     setState(() {});
   }
 

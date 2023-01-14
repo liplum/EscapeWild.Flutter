@@ -25,18 +25,29 @@ Widget buildEmptyBackpack() {
 class _BackpackPageState extends State<BackpackPage> {
   ItemStack? _selected;
 
+  ItemStack? get $selected => _selected;
+  static int lastSelectedIndex = 0;
+
+  set $selected(ItemStack? v) {
+    _selected = v;
+    lastSelectedIndex = player.backpack.indexOfStack(v);
+  }
+
   @override
   void initState() {
     super.initState();
     player.backpack.addListener(() {
       updateDefaultSelection();
     });
+    if (lastSelectedIndex >= 0) {
+      $selected = player.backpack[lastSelectedIndex];
+    }
     updateDefaultSelection();
   }
 
   void updateDefaultSelection() {
-    if (_selected == null && player.backpack.isNotEmpty) {
-      _selected = player.backpack.firstOrNull;
+    if ($selected == null && player.backpack.isNotEmpty) {
+      $selected = player.backpack.firstOrNull;
       if (!mounted) return;
       setState(() {});
     }
@@ -80,9 +91,9 @@ class _BackpackPageState extends State<BackpackPage> {
       return buildEmptyBackpack();
     } else {
       return [
-        buildDetailArea(_selected).flexible(flex: 2),
+        buildDetailArea($selected).flexible(flex: 2),
         buildItems(player.backpack).flexible(flex: 5),
-        buildButtonArea(_selected).flexible(flex: 1),
+        buildButtonArea($selected).flexible(flex: 1),
       ].column(maa: MainAxisAlignment.spaceBetween);
     }
   }
@@ -94,8 +105,8 @@ class _BackpackPageState extends State<BackpackPage> {
     } else {
       return [
         [
-          buildDetailArea(_selected).flexible(flex: 4),
-          buildButtonArea(_selected).flexible(flex: 2),
+          buildDetailArea($selected).flexible(flex: 4),
+          buildButtonArea($selected).flexible(flex: 2),
         ].column(maa: MainAxisAlignment.spaceBetween).expanded(),
         buildItems(player.backpack).expanded(),
       ].row();
@@ -133,8 +144,8 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   void runAndTrackCurrentSelected(ItemStack item, Function() between) {
-    if (item == _selected) {
-      var index = player.backpack.indexOfItem(item);
+    if (item == $selected) {
+      var index = player.backpack.indexOfStack(item);
       var isLast = false;
       if (index == player.backpack.itemCount - 1) {
         isLast = true;
@@ -148,9 +159,9 @@ class _BackpackPageState extends State<BackpackPage> {
       if (itemCount > 0) {
         // If the index is not changed, it should be the next one.
         index = (index % itemCount).clamp(0, itemCount - 1);
-        _selected = player.backpack[index];
+        $selected = player.backpack[index];
       } else {
-        _selected = null;
+        $selected = null;
       }
     } else {
       between();
@@ -158,8 +169,8 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Future<void> runAndTrackCurrentSelectedAsync(ItemStack item, Future Function() between) async {
-    if (item == _selected) {
-      var index = player.backpack.indexOfItem(item);
+    if (item == $selected) {
+      var index = player.backpack.indexOfStack(item);
       var isLast = false;
       if (index == player.backpack.itemCount - 1) {
         isLast = true;
@@ -173,9 +184,9 @@ class _BackpackPageState extends State<BackpackPage> {
       if (itemCount > 0) {
         // If the index is not changed, it should be the next one.
         index = (index % itemCount).clamp(0, itemCount - 1);
-        _selected = player.backpack[index];
+        $selected = player.backpack[index];
       } else {
-        _selected = null;
+        $selected = null;
       }
     } else {
       between();
@@ -327,13 +338,13 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Widget buildItem(ItemStack item) {
-    final isSelected = _selected == item;
+    final isSelected = $selected == item;
     return CardButton(
-      elevation: isSelected ? 20 : 1,
+      elevation: isSelected ? 20 : 0.8,
       onTap: () {
-        if (_selected != item) {
+        if ($selected != item) {
           setState(() {
-            _selected = item;
+            $selected = item;
           });
         }
       },

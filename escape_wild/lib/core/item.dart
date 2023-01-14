@@ -1127,7 +1127,7 @@ class FreshnessComp extends ItemComp {
     final toMass = to.stackMass;
     final fromFreshness = geFreshness(from) * fromMass;
     final toFreshness = geFreshness(to) * toMass;
-    final merged = (toFreshness + fromFreshness) / (fromMass + toMass);
+    final merged = (fromFreshness + toFreshness) / (fromMass + toMass);
     setFreshness(to, merged);
   }
 

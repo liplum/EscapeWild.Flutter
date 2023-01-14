@@ -1,3 +1,4 @@
+import 'package:escape_wild/core.dart';
 import 'package:escape_wild/core/content.dart';
 import 'package:escape_wild/core/item.dart';
 
@@ -68,16 +69,11 @@ class Tools {
     ]);
     // fire starter
     Contents.items.addAll([
-      handDrillKit =
-          Item.unmergeable("hand-drill-kit", mass: 500).hasDurability(max: 100).asFireStarter(chance: 0.4, cost: 20),
-    ]);
-    // Cooker
-    Contents.items.addAll([
-      woodenBowl = Item.container(
-        "wooden-bowl",
-        mass: 200,
-        acceptTags: ["liquid"],
-      ).hasDurability(max: 100),
+      handDrillKit = Item.unmergeable("hand-drill-kit", mass: 500)
+          .hasDurability(max: 100)
+          .asFireStarter(chance: 0.4, cost: 20)
+          .asFuel(heatValue: 20)
+          .tagged(["wooden"]),
     ]);
   }
 }

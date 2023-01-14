@@ -92,9 +92,10 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     return hasRemoved;
   }
 
-  int indexOfItem(ItemStack item) {
-    if (item.isEmpty) return -1;
-    return items.indexOf(item);
+  int indexOfStack(ItemStack? stack) {
+    if (stack == null) return -1;
+    if (stack.isEmpty) return -1;
+    return items.indexOf(stack);
   }
 
   /// It will directly change the mass of item and track [Backpack.mass] without calling [ItemComp.onSplit],
@@ -176,7 +177,8 @@ extension BackpackX on Backpack {
 
   bool get isNotEmpty => items.isNotEmpty;
 
-  ItemStack operator [](int index) => items[index];
+  /// safe to get an [ItemStack] in [items].
+  ItemStack operator [](int index) => items[index.clamp(0, items.length - 1)];
 
   ItemStack? getItemByName(String name) => items.firstWhereOrNull((e) => e.meta.name == name);
 

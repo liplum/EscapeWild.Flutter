@@ -14,7 +14,7 @@ class Stuff {
   static late final Item stone, sharpStone;
 
   // container
-  static late final Item can, battleBottle, plasticBottle;
+  static late final Item can, battleBottle, plasticBottle, woodenBowl;
 
   static void registerAll() {
     Contents.items.addAll([
@@ -55,6 +55,11 @@ class Stuff {
         acceptTags: ["liquid"],
         capacity: 2000,
       ).tagged(["metal", "bottle"]),
+      woodenBowl = Item.container(
+        "wooden-bowl",
+        mass: 200,
+        acceptTags: ["liquid"],
+      ).hasDurability(max: 100).tagged(["wooden", "bowl"]),
     ]);
   }
 }

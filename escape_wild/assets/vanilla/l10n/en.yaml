@@ -71,7 +71,7 @@ item:
     desc: It looks clean now. What a magic!
   cut-grass:
     name: Cut Grass
-    desc: It's not green and but still renewable.
+    desc: It's not green but still renewable.
   sticks:
     name: Sticks
     desc: You can find them anywhere.
@@ -112,6 +112,7 @@ item:
   bear-trap:
     name: Bear Trap
     desc: Wait and see.
+  # https://en.wikipedia.org/wiki/Moss
   moss:
     name: Moss
     desc: ...
@@ -145,7 +146,8 @@ item:
     name: Straw Rope
     desc: ...
   wooden-bowl:
-    name: ...
+    name: Wooden Bowl
+    desc: ...
 route:
   subtropics:
     plain:
