@@ -23,7 +23,7 @@ use-type:
   medical: Medical
 craft-type:
   craft: Fabriquer
-  fix: Réparer
+  repair: Réparer
   process: Process
 item:
   empty:

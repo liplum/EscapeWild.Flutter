@@ -19,12 +19,12 @@ craft-recipe-cat:
   tool: 工具
   food: 食物
   fire: 燃烧
-  refine: 提炼
-  medical: 药品
+  refine: 精炼
+  medical: 药物
 craft-type:
-  craft: 合成
-  fix: 修复
-  process: 处理
+  craft: 制作
+  repair: 修理
+  process: 加工
 item:
   empty:
     name: 空空如也

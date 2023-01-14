@@ -19,6 +19,63 @@ const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   childAspectRatio: 2.2,
 );
 
+class AttrProgress extends ImplicitlyAnimatedWidget {
+  final double value;
+  final Color? color;
+
+  const AttrProgress({
+    super.key,
+    super.duration = const Duration(milliseconds: 1200),
+    required this.value,
+    this.color,
+    super.curve = Curves.fastLinearToSlowEaseIn,
+  });
+
+  @override
+  ImplicitlyAnimatedWidgetState<AttrProgress> createState() => _AttrProgressState();
+}
+
+class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
+  late Tween<double> $progress;
+
+  @override
+  void initState() {
+    $progress = Tween<double>(
+      begin: widget.value,
+      end: widget.value,
+    );
+    super.initState();
+    if ($progress.begin != $progress.end) {
+      controller.forward();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      child: buildBar($progress.evaluate(animation)),
+    );
+  }
+
+  Widget buildBar(double v) {
+    return LinearProgressIndicator(
+      value: v,
+      minHeight: 8,
+      color: widget.color,
+      backgroundColor: Colors.grey.withOpacity(0.2),
+    );
+  }
+
+  @override
+  void forEachTween(TweenVisitor<dynamic> visitor) {
+    $progress = visitor($progress, widget.value, (dynamic value) {
+      assert(false);
+      throw StateError('Constructor will never be called because null is never provided as current tween.');
+    }) as Tween<double>;
+  }
+}
+
 class ItemStackCell extends StatelessWidget {
   final ItemStack stack;
   final EdgeInsetsGeometry? pad;
@@ -27,13 +84,14 @@ class ItemStackCell extends StatelessWidget {
   const ItemStackCell(
     this.stack, {
     super.key,
-    this.pad = const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+    this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
     this.showMass = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    final durabilityComp = DurabilityComp.of(stack);
+    final tile = ListTile(
       title: AutoSizeText(
         stack.meta.l10nName(),
         maxLines: 2,
@@ -44,6 +102,17 @@ class ItemStackCell extends StatelessWidget {
       dense: true,
       contentPadding: !showMass ? null : pad,
     ).center();
+    if (durabilityComp != null) {
+      final ratio = durabilityComp.durabilityRatio(stack);
+      return [
+        Opacity(opacity: 0.55, child: AttrProgress(value: ratio)).align(
+          at: const Alignment(1.0, -0.8),
+        ).padH(5),
+        tile,
+      ].stack();
+    } else {
+      return tile;
+    }
   }
 }
 

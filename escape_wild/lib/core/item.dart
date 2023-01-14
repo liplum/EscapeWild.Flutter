@@ -563,8 +563,10 @@ extension ItemStackListX on List<ItemStack> {
     }
   }
 }
+
 typedef ItemTypeMatcher = bool Function(Item item);
 typedef ItemStackMatcher = bool Function(ItemStack stack);
+
 class ItemMatcher {
   final ItemTypeMatcher typeOnly;
   final ItemStackMatcher exact;
@@ -641,14 +643,18 @@ String _getItemMetaName(Item meta) => meta.name;
 
 class DurabilityComp extends ItemComp {
   static const _durabilityK = "Durability.durability";
-  static const defaultDurability = 0.0;
   final double max;
 
   const DurabilityComp(this.max);
 
-  double getDurability(ItemStack item) => item[_durabilityK] ?? defaultDurability;
+  double getDurability(ItemStack stack) => stack[_durabilityK] ?? max;
 
-  void setDurability(ItemStack item, double value) => item[_durabilityK] = value;
+  void setDurability(ItemStack stack, double value) => stack[_durabilityK] = value;
+
+  Ratio durabilityRatio(ItemStack stack) {
+    if (max < 0.0) return 1;
+    return getDurability(stack) / max;
+  }
 
   @override
   void onMerge(ItemStack from, ItemStack to) {
@@ -666,13 +672,13 @@ class DurabilityComp extends ItemComp {
     }
   }
 
-  static DurabilityComp? of(ItemStack item) => item.meta.getFirstComp<DurabilityComp>();
+  static DurabilityComp? of(ItemStack stack) => stack.meta.getFirstComp<DurabilityComp>();
 
-  static double tryGetDurability(ItemStack item) =>
-      item.meta.getFirstComp<DurabilityComp>()?.getDurability(item) ?? defaultDurability;
+  static double tryGetDurability(ItemStack stack) =>
+      stack.meta.getFirstComp<DurabilityComp>()?.getDurability(stack) ?? 0.0;
 
-  static void trySetDurability(ItemStack item, double durability) =>
-      item.meta.getFirstComp<DurabilityComp>()?.setDurability(item, durability);
+  static void trySetDurability(ItemStack stack, double durability) =>
+      stack.meta.getFirstComp<DurabilityComp>()?.setDurability(stack, durability);
   static const type = "Durability";
 
   @override

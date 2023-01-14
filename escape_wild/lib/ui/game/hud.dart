@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:rettulf/rettulf.dart';
 
+import 'shared.dart';
+
 class Hud extends StatefulWidget {
   final AttrModel attrs;
   final TextStyle? textStyle;
@@ -61,62 +63,5 @@ class MiniHud extends StatelessWidget {
     return ListTile(
       subtitle: Hud(attrs: attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
     ).padAll(5);
-  }
-}
-
-class AttrProgress extends ImplicitlyAnimatedWidget {
-  final double value;
-  final Color? color;
-
-  const AttrProgress({
-    super.key,
-    super.duration = const Duration(milliseconds: 1200),
-    required this.value,
-    this.color,
-    super.curve = Curves.fastLinearToSlowEaseIn,
-  });
-
-  @override
-  ImplicitlyAnimatedWidgetState<AttrProgress> createState() => _AttrProgressState();
-}
-
-class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
-  late Tween<double> $progress;
-
-  @override
-  void initState() {
-    $progress = Tween<double>(
-      begin: widget.value,
-      end: widget.value,
-    );
-    super.initState();
-    if ($progress.begin != $progress.end) {
-      controller.forward();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: buildBar($progress.evaluate(animation)),
-    );
-  }
-
-  Widget buildBar(double v) {
-    return LinearProgressIndicator(
-      value: v,
-      minHeight: 8,
-      color: widget.color,
-      backgroundColor: Colors.grey.withOpacity(0.2),
-    );
-  }
-
-  @override
-  void forEachTween(TweenVisitor<dynamic> visitor) {
-    $progress = visitor($progress, widget.value, (dynamic value) {
-      assert(false);
-      throw StateError('Constructor will never be called because null is never provided as current tween.');
-    }) as Tween<double>;
   }
 }
