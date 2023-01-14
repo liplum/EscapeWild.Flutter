@@ -460,7 +460,6 @@ class ContainerItemStack extends ItemStack {
     }
   }
 
-
   /// The container itself can't be merged.
   @override
   bool get canMerge => false;
@@ -478,6 +477,7 @@ class ContainerItemStack extends ItemStack {
   ItemStack split(int massOfPart) {
     return this;
   }
+
   factory ContainerItemStack.fromJson(Map<String, dynamic> json) => _$ContainerItemStackFromJson(json);
 
   @override
@@ -566,12 +566,23 @@ extension ItemStackListX on List<ItemStack> {
 
 class ItemMatcher {
   final bool Function(Item item) typeOnly;
-  final bool Function(ItemStack item) exact;
+  final bool Function(ItemStack stack) exact;
 
   const ItemMatcher({
     required this.typeOnly,
     required this.exact,
   });
+
+  static ItemMatcher hasTag(List<String> tags) => ItemMatcher(
+        typeOnly: (item) => item.hasTags(tags),
+        exact: (item) => item.meta.hasTags(tags),
+      );
+
+  static ItemMatcher hasComp(List<Type> compTypes) => ItemMatcher(
+        typeOnly: (item) => item.hasComps(compTypes),
+        exact: (item) => item.meta.hasComps(compTypes),
+      );
+  static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => true);
 }
 
 extension ItemMatcherX on ItemMatcher {
@@ -589,29 +600,29 @@ extension ItemMatcherX on ItemMatcher {
     }
   }
 
-  Iterable<ItemStack> filterExactMatchedEntries(Iterable<ItemStack> items, {bool requireMatched = true}) sync* {
-    for (final item in items) {
+  Iterable<ItemStack> filterExactMatchedStacks(Iterable<ItemStack> stacks, {bool requireMatched = true}) sync* {
+    for (final stack in stacks) {
       if (requireMatched) {
-        if (exact(item)) {
-          yield item;
+        if (exact(stack)) {
+          yield stack;
         }
       } else {
-        if (!exact(item)) {
-          yield item;
+        if (!exact(stack)) {
+          yield stack;
         }
       }
     }
   }
 
-  Iterable<ItemStack> filterTypedMatchedEntries(Iterable<ItemStack> items, {bool requireMatched = true}) sync* {
-    for (final item in items) {
+  Iterable<ItemStack> filterTypedMatchedStacks(Iterable<ItemStack> stacks, {bool requireMatched = true}) sync* {
+    for (final stack in stacks) {
       if (requireMatched) {
-        if (typeOnly(item.meta)) {
-          yield item;
+        if (typeOnly(stack.meta)) {
+          yield stack;
         }
       } else {
-        if (!typeOnly(item.meta)) {
-          yield item;
+        if (!typeOnly(stack.meta)) {
+          yield stack;
         }
       }
     }
@@ -631,33 +642,21 @@ String _getItemMetaName(Item meta) => meta.name;
 class ToolAttr implements Comparable<ToolAttr> {
   @JsonKey()
   final double efficiency;
-  @JsonKey()
-  final double durability;
 
-  const ToolAttr({required this.efficiency, required this.durability});
+  const ToolAttr({required this.efficiency});
 
   static const ToolAttr low = ToolAttr(
         efficiency: 0.6,
-        durability: 0.6,
       ),
       normal = ToolAttr(
         efficiency: 1.0,
-        durability: 1.0,
       ),
       high = ToolAttr(
         efficiency: 1.8,
-        durability: 1.5,
       ),
       max = ToolAttr(
         efficiency: 2.0,
-        durability: 2.0,
       );
-
-  /// When [durability] is under zero, tool will suffer more damage.
-  double fixDamage(double damage) {
-    // TODO: Better formula
-    return damage / durability;
-  }
 
   factory ToolAttr.fromJson(Map<String, dynamic> json) => _$ToolAttrFromJson(json);
 
@@ -723,7 +722,6 @@ class ToolComp extends ItemComp {
   });
 
   void damageTool(ItemStack item, double damage) {
-    damage = attr.fixDamage(damage);
     final former = getHealth(item);
     setHealth(item, former - damage);
   }

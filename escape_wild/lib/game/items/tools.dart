@@ -14,6 +14,9 @@ class Tools {
   // fire starter
   static late final Item handDrillKit;
 
+  // cooker
+  static late final Item woodenBowl;
+
   static void registerAll() {
     // cutting
     Contents.items.addAll([
@@ -63,6 +66,14 @@ class Tools {
     // fire starter
     Contents.items.addAll([
       handDrillKit = Item.unmergeable("hand-drill-kit", mass: 500),
+    ]);
+    // Cooker
+    Contents.items.addAll([
+      woodenBowl = Item.container(
+        "wooden-bowl",
+        mass: 200,
+        acceptTags: ["liquid"],
+      ),
     ]);
   }
 }

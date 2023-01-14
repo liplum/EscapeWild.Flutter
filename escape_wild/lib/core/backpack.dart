@@ -120,11 +120,11 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
 
 extension BackpackX on Backpack {
   List<ItemStack> matchItemsWithType(ItemMatcher matcher) {
-    return matcher.filterTypedMatchedEntries(items).toList();
+    return matcher.filterTypedMatchedStacks(items).toList();
   }
 
   List<ItemStack> matchExactItems(ItemMatcher matcher) {
-    return matcher.filterExactMatchedEntries(items).toList();
+    return matcher.filterExactMatchedStacks(items).toList();
   }
 
   MapEntry<List<ItemStack>, List<ItemStack>> splitMatchedAndUnmatched(

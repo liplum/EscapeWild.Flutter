@@ -54,7 +54,6 @@ Map<String, dynamic> _$ContainerItemStackToJson(ContainerItemStack instance) {
 
 ToolAttr _$ToolAttrFromJson(Map<String, dynamic> json) => ToolAttr(
       efficiency: (json['efficiency'] as num).toDouble(),
-      durability: (json['durability'] as num).toDouble(),
     );
 
 ToolComp _$ToolCompFromJson(Map<String, dynamic> json) => ToolComp(

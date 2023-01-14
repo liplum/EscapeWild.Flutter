@@ -99,7 +99,7 @@ extension TagsMixinX<T extends TagsMixin> on T {
 
   bool hasTag(String tag) => tags.contains(tag);
 
-  bool hasTags(Iterable<String> tag) => tags.containsAll(tag);
+  bool hasTags(Iterable<String> tags) => this.tags.containsAll(tags);
 }
 
 abstract class Comp implements JConvertibleProtocol {
@@ -153,6 +153,15 @@ extension CompMixinX<TComp extends Comp> on CompMixin<TComp> {
 
   bool hasComp(Type compType) {
     return _components.containsKey(compType);
+  }
+
+  bool hasComps(Iterable<Type> compTypes) {
+    for (final compType in compTypes) {
+      if (!_components.containsKey(compType)) {
+        return false;
+      }
+    }
+    return true;
   }
 }
 
