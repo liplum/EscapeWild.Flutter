@@ -16,6 +16,7 @@ export 'package:escape_wild/utils/random.dart';
 export 'package:escape_wild/i18n.dart';
 export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/design/dialog.dart';
+export 'package:escape_wild/design/extension.dart';
 export 'package:escape_wild/utils/collection.dart';
 export 'package:escape_wild/db.dart';
 import 'package:escape_wild/game/register.dart' as game_register;

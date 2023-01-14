@@ -23,7 +23,6 @@ ui:
     discard-request: Jeter ?
     discard-confirm: "Confirmer pour jeter {} ?"
     empty-tip: Votre sac à dos est vide.
-    cannot-use: "Impossible d'utiliser"
 item:
   mass-with-unit: "{}g"
 ok: OK

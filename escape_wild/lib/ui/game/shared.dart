@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
@@ -308,5 +310,110 @@ class _UnmergeableItemStackUsePreviewState extends State<UnmergeableItemStackUse
           }
           return MiniHud(attrs: mock.attrs).inCard();
         };
+  }
+}
+
+enum DynamicMatchingBehavior {
+  onlyBackpack,
+  onlyRegistry,
+  both;
+
+  bool get includingBackpack => this != onlyRegistry;
+
+  bool get includingRegistry => this != onlyBackpack;
+}
+
+class DynamicMatchingCell extends StatefulWidget {
+  final ItemMatcher matcher;
+  final DynamicMatchingBehavior behavior;
+  final Widget Function(Item item) onNotInBackpack;
+  final Widget Function(ItemStack item) onInBackpack;
+
+  const DynamicMatchingCell({
+    super.key,
+    required this.matcher,
+    this.behavior = DynamicMatchingBehavior.both,
+    required this.onNotInBackpack,
+    required this.onInBackpack,
+  });
+
+  @override
+  State<DynamicMatchingCell> createState() => _DynamicMatchingCellState();
+}
+
+class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
+  ItemMatcher get matcher => widget.matcher;
+  var curIndex = 0;
+  List<dynamic> allMatched = const [];
+  var active = false;
+  late Timer marqueeTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    updateAllMatched();
+    marqueeTimer = Timer.periodic(const Duration(milliseconds: 1200), (timer) {
+      if (allMatched.isNotEmpty) {
+        setState(() {
+          curIndex = (curIndex + 1) % allMatched.length;
+        });
+      }
+    });
+    player.backpack.addListener(updateAllMatched);
+  }
+
+  void updateAllMatched() {
+    final behavior = widget.behavior;
+    allMatched = behavior.includingBackpack ? player.backpack.matchExactItems(matcher) : const [];
+    if (allMatched.isNotEmpty) {
+      curIndex = curIndex % allMatched.length;
+      active = true;
+    } else {
+      // If player don't have any of them, or backpack is excluded, try to browser all items.
+      allMatched = behavior.includingRegistry ? Contents.getMatchedItems(matcher) : const [];
+      assert(
+          allMatched.isNotEmpty || !behavior.includingRegistry, "ItemMatcher should match at least one of all items.");
+      if (allMatched.isNotEmpty) {
+        curIndex = curIndex % allMatched.length;
+      }
+      active = false;
+    }
+    setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(covariant DynamicMatchingCell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      if (!widget.behavior.includingBackpack) {
+        player.backpack.removeListener(updateAllMatched);
+      }
+      updateAllMatched();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (allMatched.isNotEmpty) {
+      final cur = allMatched[curIndex];
+      if (cur is Item) {
+        return widget.onNotInBackpack(cur);
+      } else if (cur is ItemStack) {
+        return widget.onInBackpack(cur);
+      } else {
+        assert(false, "${cur.runtimeType} is neither $Item nor $ItemStack.");
+        return const NullItemCell();
+      }
+    } else {
+      assert(false, "No item matched.");
+      return const NullItemCell();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    marqueeTimer.cancel();
+    player.backpack.removeListener(updateAllMatched);
   }
 }

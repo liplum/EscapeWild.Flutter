@@ -44,23 +44,16 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildNewGameBtn() {
-    return ElevatedButton(
-      onPressed: () async {
-        DB.deleteGameSave();
-        await onNewGame();
-        while (context.navigator.canPop()) {
-          context.navigator.pop();
-        }
-        context.navigator.push(MaterialPageRoute(
-          builder: (_) => const Homepage(),
-        ));
-      },
-      child: _I.newGame
-          .text(
-            style: TextStyle(fontSize: 28),
-          )
-          .padAll(5),
-    ).padAll(5);
+    return buildBtn(_I.newGame, () async {
+      DB.deleteGameSave();
+      await onNewGame();
+      while (context.navigator.canPop()) {
+        context.navigator.pop();
+      }
+      context.navigator.push(MaterialPageRoute(
+        builder: (_) => const Homepage(),
+      ));
+    });
   }
 
   Future<void> onLoadGameSave(String gameSave) async {
@@ -86,18 +79,25 @@ class _GamePageState extends State<GamePage> {
     return DB.$gameSave.listenable() <<
         (ctx, v, _) {
           final lastSave = DB.getGameSave();
-          return ElevatedButton(
-            onPressed: lastSave == null
-                ? null
-                : () async {
-                    await onLoadGameSave(lastSave);
-                  },
-            child: _I.$continue
-                .text(
-                  style: TextStyle(fontSize: 28),
-                )
-                .padAll(5),
-          ).padAll(5);
+          return buildBtn(
+              _I.$continue,
+              lastSave == null
+                  ? null
+                  : () async {
+                      await onLoadGameSave(lastSave);
+                    });
         };
+  }
+
+  Widget buildBtn(String text, [VoidCallback? onTap]) {
+    return ElevatedButton(
+      onPressed: onTap,
+      child: text
+          .autoSizeText(
+            maxLines: 1,
+            style: TextStyle(fontSize: 28),
+          )
+          .padAll(5),
+    ).padAll(5).constrained(minH: 60);
   }
 }

@@ -6,7 +6,7 @@ attr:
 ui:
   main:
     title: 逃离荒野
-    new-game: 新建游戏
+    new-game: 新的游戏
     continue: 继续游戏
   hud:
     health: 生命
@@ -23,13 +23,12 @@ ui:
     discard-request: 是否丢弃？
     discard-confirm: "确定要丢弃 {} 吗？"
     empty-tip: 背包空荡荡的
-    cannot-use: 无法使用
 item:
   mass-with-unit: '{}g'
-ok: OK
+ok: 好的
 yes: 是
 no: 否
-not-now: 目前不可用
+not-now: 再等等
 cancel: 取消
 alright: 好吧
 discard: 丢弃

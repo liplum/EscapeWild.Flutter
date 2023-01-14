@@ -1,3 +1,4 @@
+# Don't translate "language" section. It's used to display when player is selecting a language.
 language:
   en: English
   fr: Français
@@ -28,7 +29,6 @@ ui:
     discard-request: Discard?
     discard-confirm: "Confirm to discard {}?"
     empty-tip: Your backpack is empty.
-    cannot-use: "Can't Use"
 item:
   mass-with-unit: '{}g'
 # To express knowing.

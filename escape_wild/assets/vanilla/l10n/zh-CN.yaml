@@ -9,11 +9,11 @@ use-type:
   use: 使用
   eat: 食用
   drink: 饮用
-  equip: Equip
+  equip: 装备
 craft-recipe-cat:
   tool: 工具
   food: 食物
-  fire: Fire
+  fire: 燃烧
   refine: 提炼
   medical: 药品
 craft-type:
@@ -49,10 +49,10 @@ item:
     name: 塑料瓶
     desc: 工业最美妙的馈赠。
   filtered-water:
-    name: 滤水
+    name: 滤过的水
     desc: 万万没想到，现在看起来干净了!
   cut-grass:
-    name: 割草
+    name: 割下的草
     desc: 没有那么翠绿了，但还是很有用。
   sticks:
     name: 木棍
@@ -97,7 +97,7 @@ item:
     name: 苔藓
     desc: ...
   pine-needle:
-    name: 松树枝
+    name: 松针
     desc: ...
   tinder:
     name: 引火物

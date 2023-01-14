@@ -113,7 +113,7 @@ item:
   # https://wikipedia.org/wiki/Tinder
   tinder:
     name: Tinder
-    desc: ...
+    desc: An easily combustible material.
   raw-rabbit:
     name: Raw Rabbit
     desc: No fat, rich in protein.
@@ -135,6 +135,8 @@ item:
   straw-rope:
     name: Straw Rope
     desc: ...
+  wooden-bowl:
+    name: ...
 route:
   subtropics:
     plain:

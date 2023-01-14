@@ -192,8 +192,8 @@ class _BackpackPageState extends State<BackpackPage> {
         onTap: onTap,
         elevation: onTap != null ? 5 : 0,
         child: text
-            .text(
-              style: context.textTheme.headlineMedium?.copyWith(
+            .autoSizeText(
+              style: context.textTheme.headlineSmall?.copyWith(
                 color: color,
               ),
               textAlign: TextAlign.center,
@@ -221,7 +221,7 @@ class _BackpackPageState extends State<BackpackPage> {
         },
       ));
     } else {
-      buttons.add(btn(_I.cannotUse, onTap: null));
+      buttons.add(btn(UseType.use.l10nName(), onTap: null));
     }
     return buttons.row();
   }
