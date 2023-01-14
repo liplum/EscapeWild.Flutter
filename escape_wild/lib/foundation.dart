@@ -26,7 +26,23 @@ export 'package:escape_wild/db.dart';
 
 class Measurement {
   Measurement._();
+
   static var mass = UnitConverter.gram;
+
+  static reload() {
+    Measurement.mass = UnitConverter.getMassForName(DB.preference.getMeasurementSystemOf(PhysicalQuantity.mass.name));
+  }
+
+  static void set(PhysicalQuantity quantity, UnitConverter cvt) {
+    DB.preference.setMeasurementSystemOf(PhysicalQuantity.mass.name, cvt.name);
+  }
+
+  static UnitConverter? get(PhysicalQuantity quantity){
+    if(quantity == PhysicalQuantity.mass){
+      return mass;
+    }
+    return null;
+  }
 }
 
 final yamlAssetsLoader = YamlAssetLoader();
@@ -84,5 +100,5 @@ void registerConverter() {
 }
 
 void initPreference() {
-  Measurement.mass = UnitConverter.getMassForName(DB.preference.measurementSystemOfMass);
+  Measurement.reload();
 }

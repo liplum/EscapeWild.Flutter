@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:flutter/material.dart';
 
 class I {
   I._();
@@ -35,7 +36,34 @@ class _Action {
   String toolBroken(String tool) => "$_n.tool-broken".tr(args: [tool]);
 }
 
+class PhysicalQuantity {
+  final String name;
+
+  const PhysicalQuantity(this.name);
+
+  static const mass = PhysicalQuantity("mass"),
+      length = PhysicalQuantity("length"),
+      temperature = PhysicalQuantity("temperature");
+  static const all = [
+    mass,
+    length,
+    temperature,
+  ];
+
+  @override
+  String toString() => name;
+}
+
+extension PhysicalQuantityX on PhysicalQuantity {
+  String l10nName() => "physical-quantity.$name".tr();
+}
+
 abstract class UnitConverter {
+  final PhysicalQuantity quantity;
+  final String name;
+
+  const UnitConverter(this.quantity, this.name);
+
   String l10nName();
 
   num convertToNum(int si);
@@ -60,55 +88,71 @@ abstract class UnitConverter {
         "ounce",
         (gram) => gram * gram2OunceUnit,
       );
-  static final Map<String, UnitConverter> name2MassCvt = {
+  static final Map<String, UnitConverter> name2Cvt$Mass = {
     "gram": gram,
     "kilogram": kilogram,
     "pound": pound,
     "ounce": ounce,
   };
 
-  static UnitConverter getMassForName(String? name) => name2MassCvt[name] ?? gram;
-  static final Map<String, List<UnitConverter>> measurement2Converters = {
-    "mass": [gram, kilogram, pound, ounce],
+  static UnitConverter getMassForName(String? name) => name2Cvt$Mass[name] ?? gram;
+  static final Map<PhysicalQuantity, List<UnitConverter>> measurement2Converters = {
+    PhysicalQuantity.mass: [gram, kilogram, pound, ounce],
   };
 }
 
-class _UnitConverterImpl implements UnitConverter {
-  final String physicalQuantity;
-  final String name;
+class _UnitConverterImpl extends UnitConverter {
   final num Function(int gram) converter;
-  final int fixedDigit;
+  final int maxTrailingZero;
 
   const _UnitConverterImpl(
-    this.physicalQuantity,
-    this.name,
+    super.quantity,
+    super.name,
     this.converter, {
-    this.fixedDigit = 2,
+    this.maxTrailingZero = 2,
   });
 
   const _UnitConverterImpl.mass(
-    this.name,
+    String name,
     this.converter, {
-    this.fixedDigit = 2,
-  }) : physicalQuantity = "mass";
+    this.maxTrailingZero = 2,
+  }) : super(PhysicalQuantity.mass, name);
 
   @override
   num convertToNum(int gram) => converter(gram);
 
   @override
   String convertWithUnit(int gram) {
+    if (gram == 0) {
+      return withUnit("0");
+    }
     final target = converter(gram);
     if (target is int) {
       return withUnit("$target");
     } else {
-      return withUnit(target.toStringAsFixed(fixedDigit));
+      final formatted = target.toStringAsFixed(maxTrailingZero);
+      return withUnit(removeTrailingZeros(formatted));
     }
   }
 
+  String removeTrailingZeros(String s) {
+    var lastNotZeroIndex = 0;
+    for (var i = 0; i < s.length; i++) {
+      final char = s[i];
+      if (char != "0") {
+        lastNotZeroIndex = i;
+      }
+    }
+    if (s[lastNotZeroIndex] == ".") {
+      lastNotZeroIndex--;
+    }
+    return s.substring(0, lastNotZeroIndex + 1);
+  }
+
   String withUnit(String number) {
-    return "unit.$physicalQuantity.$name.format".tr(args: [number]);
+    return "unit.$quantity.$name.format".tr(args: [number]);
   }
 
   @override
-  String l10nName() => "unit.$physicalQuantity.$name.name".tr();
+  String l10nName() => "unit.$quantity.$name.name".tr();
 }

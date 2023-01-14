@@ -27,8 +27,4 @@ class Preference {
   String? getMeasurementSystemOf(String name) => box.get("measurement-system.$name");
 
   setMeasurementSystemOf(String name, String? v) => box.put("measurement-system.$name", v);
-
-  String? get measurementSystemOfMass => getMeasurementSystemOf("mass");
-
-  set measurementSystemOfMass(String? v) => setMeasurementSystemOf("mass", v);
 }

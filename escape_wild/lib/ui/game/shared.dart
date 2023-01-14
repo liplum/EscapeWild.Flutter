@@ -188,7 +188,15 @@ class _ItemStackMassSelectorState extends State<ItemStackMassSelector> {
         interval: maxMass / 2,
         minorTicksPerInterval: 2,
         shouldAlwaysShowTooltip: true,
-        //numberFormat: NumberFormat(I.massOf(item.stackMass)),
+        labelFormatterCallback: (v, format) {
+          return I.massOf((v as num).toInt());
+        },
+        tooltipTextFormatterCallback: (v, format) {
+          return I.massOf((v as num).toInt());
+        },
+        semanticFormatterCallback: (v) {
+          return I.massOf((v as num).toInt());
+        },
         onChanged: (v) {
           final newMass = (v as double).round().clamp(0, item.stackMass);
           setState(() {

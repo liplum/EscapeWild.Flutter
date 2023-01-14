@@ -84,9 +84,8 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         title: "Measurement".text(),
         //subtitle: "language.$curLocale".tr().text(),
-        to: (_) => MeasurementSelectorPage(
-          quality2Candidates: UnitConverter.measurement2Converters,
-          quality2Selected: {},
+        to: (_) => const MeasurementSelectorPage(
+          quality2Selected: Measurement.get,
         ),
       ),
     );
@@ -96,12 +95,10 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class MeasurementSelectorPage extends StatefulWidget {
-  final Map<String, List<UnitConverter>> quality2Candidates;
-  final Map<String, UnitConverter> quality2Selected;
+  final UnitConverter? Function(PhysicalQuantity quantity) quality2Selected;
 
   const MeasurementSelectorPage({
     super.key,
-    required this.quality2Candidates,
     required this.quality2Selected,
   });
 
@@ -110,14 +107,39 @@ class MeasurementSelectorPage extends StatefulWidget {
 }
 
 class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
-  late var curQuality2Selected = widget.quality2Selected;
+  final Map<PhysicalQuantity, UnitConverter> curQuality2Selected = {};
+
+  @override
+  void initState() {
+    super.initState();
+    updateSelected();
+  }
+
+  @override
+  void didUpdateWidget(covariant MeasurementSelectorPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    updateSelected();
+  }
+
+  void updateSelected() {
+    curQuality2Selected.clear();
+    for (final q in PhysicalQuantity.all) {
+      final cvt = widget.quality2Selected(q);
+      if (cvt != null) {
+        curQuality2Selected[q] = cvt;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final quality2Candidates = widget.quality2Candidates.entries.toList();
+    final sections = buildSections();
     return WillPopScope(
       onWillPop: () async {
-        //await context.setLocale(curSelected);
+        for (final p in curQuality2Selected.entries) {
+          Measurement.set(p.key, p.value);
+        }
+        Measurement.reload();
         return true;
       },
       child: Scaffold(
@@ -135,14 +157,8 @@ class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                childCount: quality2Candidates.length,
-                (ctx, index) {
-                  final p = quality2Candidates[index];
-                  return MeasurementSelection(
-                    candidates: p.value,
-                    selected: Measurement.mass,
-                  );
-                },
+                childCount: sections.length,
+                (ctx, index) => sections[index],
               ),
             ),
           ],
@@ -150,16 +166,37 @@ class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
       ),
     );
   }
+
+  List<Widget> buildSections() {
+    final all = <Widget>[];
+    // mass
+    all.add(MeasurementSelection(
+      quantity: PhysicalQuantity.mass,
+      candidates: UnitConverter.name2Cvt$Mass.values.toList(),
+      selected: Measurement.mass,
+      example: 1000,
+      onSelected: (cvt) {
+        curQuality2Selected[PhysicalQuantity.mass] = cvt;
+      },
+    ));
+    return all;
+  }
 }
 
 class MeasurementSelection extends StatefulWidget {
+  final PhysicalQuantity quantity;
   final List<UnitConverter> candidates;
   final UnitConverter selected;
+  final int? example;
+  final ValueChanged<UnitConverter> onSelected;
 
   const MeasurementSelection({
     super.key,
+    required this.quantity,
     required this.candidates,
     required this.selected,
+    required this.onSelected,
+    this.example,
   });
 
   @override
@@ -172,13 +209,14 @@ class _MeasurementSelectionState extends State<MeasurementSelection> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: "AAA".text(),
+      title: widget.quantity.l10nName().text(),
       initiallyExpanded: true,
       children: widget.candidates.map((cvt) => buildOption(cvt)).toList(),
     );
   }
 
   Widget buildOption(UnitConverter cvt) {
+    final example = widget.example;
     return ListTile(
       title: cvt.l10nName().text(),
       onTap: cvt == curSelected
@@ -187,8 +225,9 @@ class _MeasurementSelectionState extends State<MeasurementSelection> {
               setState(() {
                 curSelected = cvt;
               });
+              widget.onSelected(cvt);
             },
-      subtitle: cvt.convertWithUnit(1000).text(),
+      subtitle: example == null ? null : cvt.convertWithUnit(example).text(),
       trailing: cvt != curSelected
           ? null
           : const Icon(

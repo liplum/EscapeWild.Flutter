@@ -31,24 +31,24 @@ physical-quantity:
 unit:
   mass:
     gram:
-      name: Gram(g)
-      format: '{}g'
+      name: Gram (g)
+      format: '{} g'
     kilogram:
-      name: Kilogram(kg)
-      format: '{}kg'
+      name: Kilogram (kg)
+      format: '{} kg'
     pound:
-      name: Pound(lb)
-      format: '{}lbs'
+      name: Pound (lb)
+      format: '{} lbs'
     ounce:
-      name: Ounce(oz)
-      format: '{}oz'
+      name: Ounce (oz)
+      format: '{} oz'
   temperature:
     celsius:
       name: Celsius(°C)
-      format: '{}°C'
+      format: '{} °C'
     fahrenheit:
       name: Fahrenheit(°F)
-      format: '{}°F'
+      format: '{} °F'
 # unit: gram
 item:
   mass-with-unit: '{}g'
