@@ -30,7 +30,7 @@ class _IngameMenuState extends State<_IngameMenu> {
   Widget build(BuildContext context) {
     return [
       buildSaveGameBtn(),
-      buildSaveGameAndExitBtn(),
+     // buildSaveGameAndExitBtn(),
     ].column(mas: MainAxisSize.min, caa: CrossAxisAlignment.stretch);
   }
 

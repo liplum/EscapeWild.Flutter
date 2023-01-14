@@ -108,6 +108,53 @@ extension DialogEx on BuildContext {
       ),
     );
   }
+  Future<int?> show123({
+    required String title,
+    Widget? titleTrailing,
+    required WidgetBuilder make,
+    required String primary,
+    required String secondary,
+    required String tertiary,
+    int highlight = -1,
+    int isDefault = -1,
+    bool serious = false,
+    bool dismissible = true,
+  }) async {
+    return await showDialog(
+      context: this,
+      barrierDismissible: dismissible,
+      builder: (ctx) => $Dialog(
+        title: title,
+        titleTrailing: titleTrailing,
+        serious: serious,
+        make: make,
+        primary: $DialogAction(
+          text: primary,
+          warning: highlight == 1,
+          isDefault: isDefault == 1,
+          onPressed: () {
+            ctx.navigator.pop(1);
+          },
+        ),
+        secondary: $DialogAction(
+          text: secondary,
+          warning: highlight == 2,
+          isDefault: isDefault == 2,
+          onPressed: () {
+            ctx.navigator.pop(2);
+          },
+        ),
+        tertiary: $DialogAction(
+          text: tertiary,
+          warning: highlight == 3,
+          isDefault: isDefault == 3,
+          onPressed: () {
+            ctx.navigator.pop(3);
+          },
+        ),
+      ),
+    );
+  }
 }
 
 class $DialogAction {
@@ -129,6 +176,7 @@ class $Dialog extends StatelessWidget {
   final Widget? titleTrailing;
   final $DialogAction? primary;
   final $DialogAction? secondary;
+  final $DialogAction? tertiary;
   final Widget? icon;
 
   /// Highlight the title
@@ -143,14 +191,13 @@ class $Dialog extends StatelessWidget {
     required this.make,
     this.primary,
     this.secondary,
+    this.tertiary,
     this.serious = false,
   });
 
   @override
   Widget build(BuildContext context) {
     Widget dialog;
-    final second = secondary;
-    final first = primary;
     dialog = AlertDialog(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(28.0))),
       icon: icon,
@@ -162,32 +209,24 @@ class $Dialog extends StatelessWidget {
             ].row(maa: MainAxisAlignment.spaceBetween),
       content: make(context),
       actions: [
-        if (second != null)
-          TextButton(
-            onPressed: () {
-              second.onPressed?.call();
-            },
-            child: second.text.text(
-              style: TextStyle(
-                color: second.warning ? Colors.redAccent : null,
-                fontWeight: second.isDefault ? FontWeight.bold : null,
-                fontSize: context.textTheme.titleMedium?.fontSize,
-              ),
-            ),
-          ),
-        if (first != null)
-          TextButton(
-              onPressed: () {
-                first.onPressed?.call();
-              },
-              child: first.text.text(
-                style: TextStyle(
-                    color: first.warning ? Colors.redAccent : null,
-                    fontWeight: first.isDefault ? FontWeight.bold : null,
-                    fontSize: context.textTheme.titleMedium?.fontSize),
-              ))
+        if (tertiary != null) makeButton(context, tertiary!),
+        if (secondary != null) makeButton(context, secondary!),
+        if (primary != null) makeButton(context, primary!),
       ],
     );
     return dialog;
+  }
+
+  Widget makeButton(BuildContext ctx, $DialogAction action) {
+    return TextButton(
+        onPressed: () {
+          action.onPressed?.call();
+        },
+        child: action.text.text(
+          style: TextStyle(
+              color: action.warning ? Colors.redAccent : null,
+              fontWeight: action.isDefault ? FontWeight.bold : null,
+              fontSize: ctx.textTheme.titleMedium?.fontSize),
+        ));
   }
 }

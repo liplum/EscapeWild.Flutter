@@ -47,9 +47,6 @@ class _GamePageState extends State<GamePage> {
     return buildBtn(_I.newGame, () async {
       DB.deleteGameSave();
       await onNewGame();
-      while (context.navigator.canPop()) {
-        context.navigator.pop();
-      }
       context.navigator.push(MaterialPageRoute(
         builder: (_) => const Homepage(),
       ));

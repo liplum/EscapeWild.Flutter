@@ -37,15 +37,26 @@ class _HomePageState extends State<Homepage> {
         bottomNavigationBar: buildBottom(),
       ),
       onWillPop: () async {
-        final confirm = await context.showRequest(
+        final selection = await context.show123(
           title: "Leave?",
-          desc: "Your game state won't be saved",
-          yes: I.ok,
-          no: I.notNow,
-          highlight: true,
-          serious: true,
+          make: (_) => "Your unsaved game will be lost".text(),
+          primary: "Save&Leave",
+          secondary: "Leave",
+          tertiary: "Cancel",
+          highlight: 2,
+          isDefault: 1,
         );
-        return confirm == true;
+        if (selection == 1) {
+          // save and leave
+          final json = player.toJson();
+          DB.setGameSave(json);
+          return true;
+        } else if (selection == 2) {
+          // directly leave
+          return true;
+        } else {
+          return false;
+        }
       },
     );
   }
