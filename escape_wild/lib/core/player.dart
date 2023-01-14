@@ -35,7 +35,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   RouteProtocol? route;
 
   Future<void> performAction(ActionType action) async {
-    if (action == ActionType.die) {
+    if (action == ActionType.stopHeartbeat) {
       await onGameFailed();
     } else {
       final curLoc = location;
@@ -48,7 +48,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   List<PlaceAction> getAvailableActions() {
     if (isDead) {
-      return [PlaceAction.dieAndLose];
+      return [PlaceAction.stopHeartbeatAndLose];
     }
     return location?.getAvailableActions() ?? const [];
   }

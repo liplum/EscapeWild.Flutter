@@ -21,7 +21,7 @@ class ActionType with Moddable {
       fish = ActionType("fish");
 
   // Win or lose the game.
-  static final ActionType escapeWild = ActionType("escape-wild"), die = ActionType("die");
+  static final ActionType escapeWild = ActionType("escape-wild"), stopHeartbeat = ActionType("stop-heartbeat");
 
   static final List<ActionType> defaultActions = [
     move,

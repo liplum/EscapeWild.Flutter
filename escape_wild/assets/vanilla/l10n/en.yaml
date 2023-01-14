@@ -17,7 +17,7 @@ action:
   # When player win the game
   escape-wild: Escape Wild
   # When player lose the game
-  die: Die
+  stop-heartbeat: Stop Heartbeat
 use-type:
   use: Use
   eat: Eat

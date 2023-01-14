@@ -57,7 +57,7 @@ class PlaceAction {
     () => player.backpack.hasAnyToolOfType(ToolType.axe),
   );
   static final rest = PlaceAction(ActionType.rest, () => true);
-  static final dieAndLose = PlaceAction(ActionType.die, () => true);
+  static final stopHeartbeatAndLose = PlaceAction(ActionType.stopHeartbeat, () => true);
   static final escapeWildAndWin = PlaceAction(ActionType.escapeWild, () => true);
 }
 

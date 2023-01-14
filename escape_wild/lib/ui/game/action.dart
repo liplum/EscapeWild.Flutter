@@ -20,26 +20,6 @@ class _ActionPageState extends State<ActionPage> {
     return context.isPortrait ? buildPortrait() : buildLandscape();
   }
 
-  Widget buildLandscape() {
-    return [
-      Scaffold(
-        appBar: AppBar(
-          title: player.$location <<
-              (ctx, l, __) => "${l?.displayName()}".text(
-                    style: ctx.textTheme.headlineMedium,
-                  ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-        ),
-        body: [
-          player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
-          (player.$attrs << (ctx, attr, __) => buildHud(attr)).expanded(),
-        ].column(maa: MainAxisAlignment.center),
-      ).expanded(),
-      const ActionButtonArea().expanded(),
-    ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
-  }
-
   Widget buildPortrait() {
     return Scaffold(
       appBar: AppBar(
@@ -65,6 +45,26 @@ class _ActionPageState extends State<ActionPage> {
     );
   }
 
+  Widget buildLandscape() {
+    return [
+      Scaffold(
+        appBar: AppBar(
+          title: player.$location <<
+              (ctx, l, __) => "${l?.displayName()}".text(
+                    style: ctx.textTheme.headlineMedium,
+                  ),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+        ),
+        body: [
+          player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
+          (player.$attrs << (ctx, attr, __) => buildHud(attr)).expanded(),
+        ].column(maa: MainAxisAlignment.center),
+      ).expanded(),
+      const ActionButtonArea().expanded(),
+    ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
+  }
+
   Widget buildHud(AttrModel attr) {
     return Hud(
       attrs: attr,
@@ -88,18 +88,18 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
   @override
   Widget build(BuildContext context) {
     final actions = player.getAvailableActions();
-    /*if (actions.length == 1) {
-      return buildActionBtn(actions[0]).sized(w:180,h:40).container();
-    } else {*/
-    return GridView(
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 256,
-        childAspectRatio: 3,
-      ),
-      children: buildActions(actions),
-    );
-    /*}*/
+    if (actions.length == 1) {
+      return buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center();
+    } else {
+      return GridView(
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 256,
+          childAspectRatio: 3,
+        ),
+        children: buildActions(actions),
+      );
+    }
   }
 
   List<Widget> buildActions(List<PlaceAction> actions) {
@@ -133,7 +133,8 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
               color: canPerform ? null : Colors.grey,
             ),
           )
-          .center().padAll(5),
+          .center()
+          .padAll(5),
     );
   }
 }
