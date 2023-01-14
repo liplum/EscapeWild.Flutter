@@ -1,18 +1,8 @@
-attr:
-  health: 生命
-  food: 饱腹
-  water: 水分
-  energy: 体力
 ui:
   main:
     title: 逃离荒野
     new-game: 新的游戏
     continue: 继续游戏
-  hud:
-    health: 生命
-    food: 饱腹
-    water: 水分
-    energy: 体力
   home:
     action: 行动
     backpack: 背包

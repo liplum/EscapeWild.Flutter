@@ -1,3 +1,8 @@
+attribute:
+  health: Health
+  food: Food
+  water: Water
+  energy: Energy
 action:
   # Move forward
   move: Move

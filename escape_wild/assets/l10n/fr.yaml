@@ -1,18 +1,8 @@
-attr:
-  health: Vie
-  food: Nourriture
-  water: Eau
-  energy: Énergie
 ui:
   main:
     title: Escape Wild
     new-game: Nouvelle Partie
     continue: Continuer
-  hud:
-    health: VIE
-    food: NOURRITURE
-    water: EAU
-    energy: ÉNERGIE
   home:
     action: Action
     backpack: Sac à dos

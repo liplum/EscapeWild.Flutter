@@ -1,3 +1,8 @@
+attribute:
+  health: 生命
+  food: 饱腹
+  water: 水分
+  energy: 体力
 action:
   move: 前进
   explore: 探索

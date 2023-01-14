@@ -1,11 +1,8 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core/attribute.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:rettulf/rettulf.dart';
-
-part 'hud.i18n.dart';
 
 class Hud extends StatefulWidget {
   final AttrModel attrs;
@@ -43,7 +40,7 @@ class _HudState extends State<Hud> {
   }
 
   Widget label(Attr attr) {
-    return _I.attr(attr).text(style: widget.textStyle).center();
+    return attr.l10nName().toUpperCase().text(style: widget.textStyle).center();
   }
 
   Widget buildBar(double value, Color color) {

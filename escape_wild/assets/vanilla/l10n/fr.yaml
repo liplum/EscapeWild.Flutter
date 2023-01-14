@@ -1,3 +1,8 @@
+attribute:
+  health: Vie
+  food: Nourriture
+  water: Eau
+  energy: Énergie
 action:
   move: Se déplacer
   explore: Explorer
