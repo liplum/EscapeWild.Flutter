@@ -15,6 +15,13 @@ class BackpackPage extends StatefulWidget {
   State<BackpackPage> createState() => _BackpackPageState();
 }
 
+Widget buildEmptyBackpack() {
+  return LeavingBlank(
+    icon: Icons.no_backpack_outlined,
+    desc: _I.emptyTip,
+  );
+}
+
 class _BackpackPageState extends State<BackpackPage> {
   ItemStack? _selected;
 
@@ -93,13 +100,6 @@ class _BackpackPageState extends State<BackpackPage> {
         buildItems(player.backpack).expanded(),
       ].row();
     }
-  }
-
-  Widget buildEmptyBackpack() {
-    return LeavingBlank(
-      icon: Icons.no_backpack_outlined,
-      desc: _I.emptyTip,
-    );
   }
 
   Widget buildItems(Backpack backpack) {

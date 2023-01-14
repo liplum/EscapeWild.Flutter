@@ -58,12 +58,12 @@ class LeavingBlank extends StatelessWidget {
           buildDesc(context),
           sub,
         ].column().expanded(),
-      ].column(maa: MAAlign.spaceAround).center();
+      ].column(maa: MAAlign.spaceAround, mas: MainAxisSize.min).center();
     } else {
       return [
         icon.expanded(),
         buildDesc(context).expanded(),
-      ].column(maa: MAAlign.spaceAround).center();
+      ].column(maa: MAAlign.spaceAround, mas: MainAxisSize.min).center();
     }
   }
 

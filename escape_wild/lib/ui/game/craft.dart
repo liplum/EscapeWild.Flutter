@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 
+import 'backpack.dart';
 import 'shared.dart';
 
 class CraftPage extends StatefulWidget {
@@ -157,19 +158,6 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
   }
 }
 
-class CraftSlot {
-  ItemStack item = ItemStack.empty;
-
-  void reset() => item = ItemStack.empty;
-
-  bool get isEmpty => item == ItemStack.empty;
-
-  bool get isNotEmpty => !isEmpty;
-  final ItemMatcher matcher;
-
-  CraftSlot(this.matcher);
-}
-
 class CraftingSheet extends StatefulWidget {
   final CraftRecipeProtocol recipe;
 
@@ -184,7 +172,7 @@ class CraftingSheet extends StatefulWidget {
 
 class _CraftingSheetState extends State<CraftingSheet> {
   CraftRecipeProtocol get recipe => widget.recipe;
-  final List<CraftSlot> craftSlots = [];
+  final List<ItemStackReqSlot> itemStackReqSlots = [];
   List<ItemStack> accepted = [];
   List<ItemStack> unaccepted = [];
 
@@ -192,7 +180,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   void initState() {
     super.initState();
     for (final input in recipe.inputSlots) {
-      craftSlots.add(CraftSlot(input));
+      itemStackReqSlots.add(ItemStackReqSlot(input));
     }
     updateBackpackFilter();
   }
@@ -202,7 +190,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
     unaccepted.clear();
     for (final item in player.backpack.items) {
       var isAccepted = false;
-      for (final slot in craftSlots) {
+      for (final slot in itemStackReqSlots) {
         if (slot.matcher.typeOnly(item.meta)) {
           accepted.add(item);
           isAccepted = true;
@@ -217,7 +205,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   bool get isSatisfyAllConditions {
-    return !craftSlots.any((slot) => slot.isEmpty);
+    return !itemStackReqSlots.any((slot) => slot.isEmpty);
   }
 
   @override
@@ -250,7 +238,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   Widget buildPortrait() {
     return [
       buildTableView().expanded(),
-      const Divider(thickness: 2, indent: 10, endIndent: 10),
+      const Divider(thickness: 2, indent: 10, endIndent: 10, height: 1),
       buildBackpackView().expanded(),
     ].column().padAll(5);
   }
@@ -264,7 +252,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   void onCraft() {
-    final material = craftSlots.map((slot) => slot.item).toList(growable: false);
+    final material = itemStackReqSlots.map((slot) => slot.stack).toList(growable: false);
     final result = recipe.onCraft(material);
     if (result.isNotEmpty) {
       recipe.onConsume(material, player.backpack.consumeItemInBackpack);
@@ -276,55 +264,37 @@ class _CraftingSheetState extends State<CraftingSheet> {
   Widget buildTableView() {
     return [
       GridView.builder(
-        itemCount: craftSlots.length,
+        itemCount: itemStackReqSlots.length,
         physics: const RangeMaintainingScrollPhysics(),
         gridDelegate: itemCellGridDelegate,
         itemBuilder: (ctx, i) {
-          return buildInputSlot(craftSlots[i]);
+          return buildInputSlot(itemStackReqSlots[i]);
         },
       ).expanded(),
     ].column();
   }
 
-  Widget buildInputSlot(CraftSlot slot) {
-    ShapeBorder? shape;
-    final satisfyCondition = slot.isNotEmpty;
-    if (!satisfyCondition) {
-      shape = RoundedRectangleBorder(
-        side: BorderSide(
-          color: context.theme.colorScheme.outline,
-        ),
-        borderRadius: context.cardBorderRadius ?? BorderRadius.zero,
-      );
-    }
-    return CardButton(
-      elevation: satisfyCondition ? 4 : 0,
-      onTap: !satisfyCondition
-          ? null
-          : () {
-              goBackToAccepted(slot);
-            },
-      shape: shape,
-      child: satisfyCondition
-          ? ItemStackCell(slot.item)
-          : DynamicMatchingCell(
-              matcher: slot.matcher,
-              onNotInBackpack: (item) => ItemCell(item),
-              onInBackpack: (item) => ItemStackCell(item, showMass: false),
-            ),
+  Widget buildInputSlot(ItemStackReqSlot slot) {
+    return ItemStackReqCell(
+      slot: slot,
+      onTapSatisfied: () {
+        goBackToAccepted(slot);
+      },
     );
   }
 
-  void goBackToAccepted(CraftSlot slot) {
+  void goBackToAccepted(ItemStackReqSlot slot) {
     if (slot.isNotEmpty) {
-      accepted.add(slot.item);
+      accepted.add(slot.stack);
       slot.reset();
       setState(() {});
     }
   }
 
   Widget buildBackpackView() {
-    showTimePicker;
+    if (player.backpack.isEmpty) {
+      return buildEmptyBackpack().padV(30);
+    }
     return GridView.builder(
       itemCount: accepted.length + unaccepted.length,
       physics: const RangeMaintainingScrollPhysics(),
@@ -352,9 +322,9 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   void gotoFirstMatchedSlot(ItemStack item) {
-    for (final slot in craftSlots) {
+    for (final slot in itemStackReqSlots) {
       if (slot.matcher.exact(item)) {
-        slot.item = item;
+        slot.stack = item;
         accepted.remove(item);
         setState(() {});
         break;

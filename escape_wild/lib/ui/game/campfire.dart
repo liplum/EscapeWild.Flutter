@@ -13,6 +13,8 @@ class CampfirePage extends StatefulWidget {
 }
 
 class _CampfirePageState extends State<CampfirePage> {
+  final fireStarterSlot = ItemStackReqSlot(ItemMatcher.hasComp([FireStarterComp]));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,10 +52,11 @@ class _CampfirePageState extends State<CampfirePage> {
   }
 
   Widget buildFireStarterCell() {
-    return DynamicMatchingCell(
-      matcher: ItemMatcher.any,
+    return ItemStackReqCell(
+      slot: fireStarterSlot,
+      onSatisfy: (stack) => wrapCell(ItemStackCell(stack)),
       onNotInBackpack: (item) => wrapCell(ItemCell(item)),
-      onInBackpack: (stack) => wrapCell(ItemStackCell(stack)),
+      onInBackpack: (stack) => wrapCell(ItemStackCell(stack, showMass: false)),
     );
   }
 

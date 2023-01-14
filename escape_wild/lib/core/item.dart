@@ -563,10 +563,11 @@ extension ItemStackListX on List<ItemStack> {
     }
   }
 }
-
+typedef ItemTypeMatcher = bool Function(Item item);
+typedef ItemStackMatcher = bool Function(ItemStack stack);
 class ItemMatcher {
-  final bool Function(Item item) typeOnly;
-  final bool Function(ItemStack stack) exact;
+  final ItemTypeMatcher typeOnly;
+  final ItemStackMatcher exact;
 
   const ItemMatcher({
     required this.typeOnly,
@@ -637,6 +638,57 @@ class EmptyComp extends Comp {
 }
 
 String _getItemMetaName(Item meta) => meta.name;
+
+class DurabilityComp extends ItemComp {
+  static const _durabilityK = "Durability.durability";
+  static const defaultDurability = 0.0;
+  final double max;
+
+  const DurabilityComp(this.max);
+
+  double getDurability(ItemStack item) => item[_durabilityK] ?? defaultDurability;
+
+  void setDurability(ItemStack item, double value) => item[_durabilityK] = value;
+
+  @override
+  void onMerge(ItemStack from, ItemStack to) {
+    if (!from.hasIdenticalMeta(to)) return;
+    setDurability(to, getDurability(from) + getDurability(to));
+  }
+
+  @override
+  void validateItemConfig(Item item) {
+    if (item.hasComp(DurabilityComp)) {
+      throw ItemCompConflictError(
+        "Only allow one $DurabilityComp.",
+        item,
+      );
+    }
+  }
+
+  static DurabilityComp? of(ItemStack item) => item.meta.getFirstComp<DurabilityComp>();
+
+  static double tryGetDurability(ItemStack item) =>
+      item.meta.getFirstComp<DurabilityComp>()?.getDurability(item) ?? defaultDurability;
+
+  static void trySetDurability(ItemStack item, double durability) =>
+      item.meta.getFirstComp<DurabilityComp>()?.setDurability(item, durability);
+  static const type = "Durability";
+
+  @override
+  String get typeName => type;
+}
+
+extension DurabilityCompX on Item {
+  Item hasDurability({
+    required double max,
+  }) {
+    final comp = DurabilityComp(max);
+    comp.validateItemConfig(this);
+    addComp(comp);
+    return this;
+  }
+}
 
 @JsonSerializable(createToJson: false)
 class ToolAttr implements Comparable<ToolAttr> {
@@ -710,27 +762,28 @@ class ToolType {
 class ToolComp extends ItemComp {
   @JsonKey(fromJson: ToolAttr.fromJson)
   final ToolAttr attr;
-  @JsonKey()
-  final double maxHealth;
   @JsonKey(fromJson: ToolType.named)
   final ToolType toolType;
 
   const ToolComp({
     this.attr = ToolAttr.normal,
     required this.toolType,
-    required this.maxHealth,
   });
 
   void damageTool(ItemStack item, double damage) {
-    final former = getHealth(item);
-    setHealth(item, former - damage);
+    final durabilityComp = DurabilityComp.of(item);
+    // the tool is unbreakable
+    if (durabilityComp == null) return;
+    final former = durabilityComp.getDurability(item);
+    durabilityComp.setDurability(item, former - damage);
   }
 
-  double getHealth(ItemStack item) => item["Tool.health"] ?? 0.0;
-
-  bool isBroken(ItemStack item) => getHealth(item) <= 0;
-
-  void setHealth(ItemStack item, double value) => item["Tool.health"] = value;
+  bool isBroken(ItemStack item) {
+    final durabilityComp = DurabilityComp.of(item);
+    // the tool is unbreakable
+    if (durabilityComp == null) return false;
+    return durabilityComp.getDurability(item) <= 0;
+  }
 
   @override
   void validateItemConfig(Item item) {
@@ -754,12 +807,10 @@ extension ToolCompX on Item {
   Item asTool({
     required ToolType type,
     ToolAttr attr = ToolAttr.normal,
-    required double health,
   }) {
     final comp = ToolComp(
       attr: attr,
       toolType: type,
-      maxHealth: health,
     );
     comp.validateItemConfig(this);
     addComp(comp);
@@ -1042,7 +1093,7 @@ class WetComp extends ItemComp {
   static const type = "Wet";
 
   @override
-  String get typeName => "Wet";
+  String get typeName => type;
 }
 
 extension WetCompX on Item {
@@ -1093,6 +1144,53 @@ class FreshnessComp extends ItemComp {
 extension FreshnessCompX on Item {
   Item hasFreshness() {
     const comp = FreshnessComp();
+    comp.validateItemConfig(this);
+    addComp(comp);
+    return this;
+  }
+}
+
+class FireStarterComp extends ItemComp {
+  final Ratio chance;
+  final double cost;
+
+  const FireStarterComp({
+    required this.chance,
+    required this.cost,
+  });
+
+  @override
+  void validateItemConfig(Item item) {
+    if (item.mergeable) {
+      throw ItemMergeableCompConflictError(
+        "$FireStarterComp doesn't conform to mergeable item.",
+        item,
+        mergeableShouldBe: false,
+      );
+    }
+    if (item.hasComp(FireStarterComp)) {
+      throw ItemCompConflictError(
+        "Only allow one $FireStarterComp.",
+        item,
+      );
+    }
+  }
+
+  static const type = "FireStarter";
+
+  @override
+  String get typeName => type;
+}
+
+extension FireStarterCompX on Item {
+  Item asFireStarter({
+    required Ratio chance,
+    required double cost,
+  }) {
+    final comp = FireStarterComp(
+      chance: chance,
+      cost: cost,
+    );
     comp.validateItemConfig(this);
     addComp(comp);
     return this;

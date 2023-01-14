@@ -61,7 +61,6 @@ ToolComp _$ToolCompFromJson(Map<String, dynamic> json) => ToolComp(
           ? ToolAttr.normal
           : ToolAttr.fromJson(json['attr'] as Map<String, dynamic>),
       toolType: ToolType.named(json['toolType'] as String),
-      maxHealth: (json['maxHealth'] as num).toDouble(),
     );
 
 ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>

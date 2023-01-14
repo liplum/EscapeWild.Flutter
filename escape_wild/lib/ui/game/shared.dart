@@ -5,7 +5,6 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
@@ -21,12 +20,12 @@ const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
 );
 
 class ItemStackCell extends StatelessWidget {
-  final ItemStack item;
+  final ItemStack stack;
   final EdgeInsetsGeometry? pad;
   final bool showMass;
 
   const ItemStackCell(
-    this.item, {
+    this.stack, {
     super.key,
     this.pad = const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
     this.showMass = true,
@@ -36,12 +35,12 @@ class ItemStackCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: AutoSizeText(
-        item.meta.l10nName(),
+        stack.meta.l10nName(),
         maxLines: 2,
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: !showMass ? null : I.massOf(item.stackMass).text(textAlign: TextAlign.right),
+      subtitle: !showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: !showMass ? null : pad,
     ).center();
@@ -335,7 +334,7 @@ class DynamicMatchingCell extends StatefulWidget {
   final ItemMatcher matcher;
   final DynamicMatchingBehavior behavior;
   final Widget Function(Item item) onNotInBackpack;
-  final Widget Function(ItemStack item) onInBackpack;
+  final Widget Function(ItemStack stack) onInBackpack;
 
   const DynamicMatchingCell({
     super.key,
@@ -423,5 +422,72 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
     super.dispose();
     marqueeTimer.cancel();
     player.backpack.removeListener(updateAllMatched);
+  }
+}
+
+class ItemStackReqSlot {
+  ItemStack stack = ItemStack.empty;
+
+  void reset() => stack = ItemStack.empty;
+
+  bool get isEmpty => stack == ItemStack.empty;
+
+  bool get isNotEmpty => !isEmpty;
+  final ItemMatcher matcher;
+
+  ItemStackReqSlot(this.matcher);
+
+  ItemStackReqSlot.match({
+    required ItemTypeMatcher typeOnly,
+    required ItemStackMatcher exact,
+  }) : matcher = ItemMatcher(typeOnly: typeOnly, exact: exact);
+}
+
+class ItemStackReqCell extends StatelessWidget {
+  final ItemStackReqSlot slot;
+  final VoidCallback? onTapSatisfied;
+  final VoidCallback? onTapUnsatisfied;
+  final Widget Function(ItemStack stack)? onSatisfy;
+  final Widget Function(Item item)? onNotInBackpack;
+  final Widget Function(ItemStack item)? onInBackpack;
+
+  const ItemStackReqCell({
+    super.key,
+    required this.slot,
+    this.onTapSatisfied,
+    this.onTapUnsatisfied,
+    this.onSatisfy,
+    this.onNotInBackpack,
+    this.onInBackpack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    ShapeBorder? shape;
+    final satisfyCondition = slot.isNotEmpty;
+    if (!satisfyCondition) {
+      shape = RoundedRectangleBorder(
+        side: BorderSide(
+          color: context.theme.colorScheme.outline,
+        ),
+        borderRadius: context.cardBorderRadius ?? BorderRadius.zero,
+      );
+    }
+    return CardButton(
+      elevation: satisfyCondition ? 4 : 0,
+      onTap: !satisfyCondition
+          ? onTapUnsatisfied
+          : () {
+              onTapSatisfied?.call();
+            },
+      shape: shape,
+      child: satisfyCondition
+          ? onSatisfy?.call(slot.stack) ?? ItemStackCell(slot.stack)
+          : DynamicMatchingCell(
+              matcher: slot.matcher,
+              onNotInBackpack: onNotInBackpack ?? (item) => ItemCell(item),
+              onInBackpack: onInBackpack ?? (stack) => ItemStackCell(stack, showMass: false),
+            ),
+    );
   }
 }

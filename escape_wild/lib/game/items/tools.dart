@@ -20,52 +20,56 @@ class Tools {
   static void registerAll() {
     // cutting
     Contents.items.addAll([
-      survivalKnife = Item.unmergeable("survival-knife", mass: 100).asTool(
-        attr: ToolAttr.high,
-        type: ToolType.cutting,
-        health: 40.0,
-      ),
+      survivalKnife = Item.unmergeable("survival-knife", mass: 100)
+          .asTool(
+            attr: ToolAttr.high,
+            type: ToolType.cutting,
+          )
+          .hasDurability(max: 500.0),
     ]);
     // axe
     Contents.items.addAll([
-      oldAxe = Item.unmergeable("old-axe", mass: 3000).asTool(
-        type: ToolType.axe,
-        attr: ToolAttr.normal,
-        health: 150.0,
-      ),
-      stoneAxe = Item.unmergeable("stone-axe", mass: 1500).asTool(
-        type: ToolType.axe,
-        attr: ToolAttr.low,
-        health: 80.0,
-      )
+      oldAxe = Item.unmergeable("old-axe", mass: 3000)
+          .asTool(type: ToolType.axe, attr: ToolAttr.normal)
+          .hasDurability(max: 300.0),
+      stoneAxe = Item.unmergeable("stone-axe", mass: 1500)
+          .asTool(
+            type: ToolType.axe,
+            attr: ToolAttr.low,
+          )
+          .hasDurability(max: 100.0)
     ]);
     // fishing
     Contents.items.addAll([
-      oldFishRod = Item.unmergeable("old-fish-rod", mass: 500).asTool(
-        type: ToolType.fishing,
-        attr: ToolAttr.normal,
-        health: 50.0,
-      )
+      oldFishRod = Item.unmergeable("old-fish-rod", mass: 500)
+          .asTool(
+            type: ToolType.fishing,
+            attr: ToolAttr.normal,
+          )
+          .hasDurability(max: 300.0)
     ]);
     // gun
     Contents.items.addAll([
-      oldShotgun = Item.unmergeable("old-shotgun", mass: 3000).asTool(
-        type: ToolType.gun,
-        attr: ToolAttr.low,
-        health: 50.0,
-      )
+      oldShotgun = Item.unmergeable("old-shotgun", mass: 3000)
+          .asTool(
+            type: ToolType.gun,
+            attr: ToolAttr.low,
+          )
+          .hasDurability(max: 300.0)
     ]);
     // trap
     Contents.items.addAll([
-      bearTrap = Item.unmergeable("bear-trap", mass: 2000).asTool(
-        type: ToolType.trap,
-        attr: ToolAttr.high,
-        health: 30.0,
-      )
+      bearTrap = Item.unmergeable("bear-trap", mass: 2000)
+          .asTool(
+            type: ToolType.trap,
+            attr: ToolAttr.high,
+          )
+          .hasDurability(max: 100.0)
     ]);
     // fire starter
     Contents.items.addAll([
-      handDrillKit = Item.unmergeable("hand-drill-kit", mass: 500),
+      handDrillKit =
+          Item.unmergeable("hand-drill-kit", mass: 500).hasDurability(max: 100).asFireStarter(chance: 0.4, cost: 20),
     ]);
     // Cooker
     Contents.items.addAll([
@@ -73,7 +77,7 @@ class Tools {
         "wooden-bowl",
         mass: 200,
         acceptTags: ["liquid"],
-      ),
+      ).hasDurability(max: 100),
     ]);
   }
 }
