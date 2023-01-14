@@ -23,6 +23,7 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     route.insert(Rand.int(0, route.placeCount - 1), HutPlace("hut"));
     route.addAll(genCave(route, (dst * 0.1).toInt()));
     route.addAll(genPlain(route, (dst * 0.15).toInt()));
+    route.add(VillagePlace("village"));
     return route;
   }
 
@@ -508,4 +509,22 @@ class HutPlace extends SubtropicsPlace {
 
   @override
   String get typeName => type;
+}
+
+class VillagePlace extends SubtropicsPlace {
+  VillagePlace(super.name);
+
+  @override
+  List<PlaceAction> getAvailableActions() {
+    return [
+      PlaceAction.escapeWildAndWin,
+    ];
+  }
+
+  @override
+  Future<void> performOthers(ActionType action) async {
+    if (action == ActionType.escapeWild) {
+      await player.onGameWin();
+    }
+  }
 }

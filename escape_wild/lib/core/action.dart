@@ -1,9 +1,9 @@
 import 'package:escape_wild/core.dart';
 
-class ActionType {
+class ActionType with Moddable {
   final String name;
 
-  const ActionType(this.name);
+  ActionType(this.name);
 
   factory ActionType.named(String name) => ActionType(name);
 
@@ -11,13 +11,19 @@ class ActionType {
 
   @override
   String toString() => name;
-  static const ActionType move = ActionType("move"),
+
+  // Interact with environment
+  static final ActionType move = ActionType("move"),
       explore = ActionType("explore"),
       rest = ActionType("rest"),
       hunt = ActionType("hunt"),
       cutDownTree = ActionType("cut-down-tree"),
       fish = ActionType("fish");
-  static const List<ActionType> defaultActions = [
+
+  // Win or lose the game.
+  static final ActionType escapeWild = ActionType("escape-wild"), die = ActionType("die");
+
+  static final List<ActionType> defaultActions = [
     move,
     explore,
     rest,

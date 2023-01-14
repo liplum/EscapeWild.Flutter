@@ -14,6 +14,10 @@ action:
   cut-down-tree: Cut Down
   # Go fishing
   fish: Fish
+  # When player win the game
+  escape-wild: Escape Wild
+  # When player lose the game
+  die: Die
 use-type:
   use: Use
   eat: Eat
@@ -154,3 +158,5 @@ route:
       name: Cave
     hut:
       name: Hut
+    village:
+      name: Village

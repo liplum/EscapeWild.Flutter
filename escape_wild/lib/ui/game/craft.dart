@@ -116,21 +116,24 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
   }
 
   Widget buildOutputItem() {
+    final canAct = player.canPlayerAct();
     final output = recipe.outputItem;
     return ItemCell(output)
         .inkWell(
           borderRadius: context.cardBorderRadius,
-          onTap: () async {
-            await showCupertinoModalBottomSheet(
-              context: context,
-              enableDrag: false,
-              builder: (_) => CraftingSheet(
-                recipe: recipe,
-              ),
-            );
-          },
+          onTap: !canAct
+              ? null
+              : () async {
+                  await showCupertinoModalBottomSheet(
+                    context: context,
+                    enableDrag: false,
+                    builder: (_) => CraftingSheet(
+                      recipe: recipe,
+                    ),
+                  );
+                },
         )
-        .inCard(elevation: 12);
+        .inCard(elevation: canAct ? 12 : 0);
   }
 
   Widget buildInputGrid() {

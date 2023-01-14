@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/game/route/subtropics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
+import 'package:rettulf/rettulf.dart';
 
 final player = Player();
 const polymorphismSave = Object();
@@ -17,6 +20,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   var backpack = Backpack();
   var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
+  final $isWin = ValueNotifier(false);
   final $fireState = ValueNotifier(FireState.off);
   var routeGeneratorSeed = 0;
   @noSave
@@ -32,14 +36,21 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   RouteProtocol? route;
 
   Future<void> performAction(ActionType action) async {
-    final curLoc = location;
-    if (curLoc != null) {
-      await curLoc.performAction(action);
-      actionTimes++;
+    if (action == ActionType.die) {
+      await onGameFailed();
+    } else {
+      final curLoc = location;
+      if (curLoc != null) {
+        await curLoc.performAction(action);
+        actionTimes++;
+      }
     }
   }
 
-  Iterable<PlaceAction> getAvailableActions() {
+  List<PlaceAction> getAvailableActions() {
+    if (isDead) {
+      return [PlaceAction.dieAndLose];
+    }
     return location?.getAvailableActions() ?? const [];
   }
 
@@ -64,6 +75,32 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   @override
   set attrs(AttrModel value) => $attrs.value = value;
+
+  bool canPlayerAct() {
+    if(isWin) return false;
+    if(isDead) return false;
+    return true;
+  }
+
+  Future<void> onGameWin() async {
+    await AppCtx.showTip(
+      title: "Configurations!",
+      desc: "You win the game after $actionTimes actions.",
+      ok: "OK",
+      dismissible: false,
+    );
+    AppCtx.navigator.pop();
+  }
+
+  Future<void> onGameFailed() async {
+    await AppCtx.showTip(
+      title: "YOU DIED",
+      desc: "Your soul is lost in the wilderness, but you have still tried $actionTimes times.",
+      ok: "Alright",
+      dismissible: false,
+    );
+    AppCtx.navigator.pop();
+  }
 
   Future<void> init() async {
     if (initialized) return;
@@ -153,6 +190,10 @@ extension PlayerX on Player {
   bool get isDead => health <= 0;
 
   bool get isAlive => !isDead;
+
+  bool get isWin => $isWin.value;
+
+  set isWin(bool v) => $isWin.value = v;
 
   int get actionTimes => $actionTimes.value;
 

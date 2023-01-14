@@ -188,9 +188,10 @@ class _BackpackPageState extends State<BackpackPage> {
       return "?".text();
     }
     Widget btn(String text, {VoidCallback? onTap, Color? color}) {
+      final canAct = player.canPlayerAct() && onTap != null;
       return CardButton(
-        onTap: onTap,
-        elevation: onTap != null ? 5 : 0,
+        onTap: !canAct ? null : onTap,
+        elevation: canAct ? 5 : 0,
         child: text
             .autoSizeText(
               style: context.textTheme.headlineSmall?.copyWith(

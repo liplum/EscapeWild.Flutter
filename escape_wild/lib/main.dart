@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/db.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';

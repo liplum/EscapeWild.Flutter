@@ -57,6 +57,8 @@ class PlaceAction {
     () => player.backpack.hasAnyToolOfType(ToolType.axe),
   );
   static final rest = PlaceAction(ActionType.rest, () => true);
+  static final dieAndLose = PlaceAction(ActionType.die, () => true);
+  static final escapeWildAndWin = PlaceAction(ActionType.escapeWild, () => true);
 }
 
 class RouteGenerateContext {
@@ -105,6 +107,8 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
       await performRest();
     } else if (action == ActionType.hunt) {
       await performHunt();
+    } else {
+      await performOthers(action);
     }
   }
 
@@ -119,4 +123,7 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
   Future<void> performRest() async {}
 
   Future<void> performHunt() async {}
+
+  /// Called when the [action] is not caught by other delegates
+  Future<void> performOthers(ActionType action) async {}
 }

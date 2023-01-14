@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/extension.dart';
 import 'package:escape_wild/ui/game/ingame_menu.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +78,7 @@ class _ActionPageState extends State<ActionPage> {
 }
 
 class ActionButtonArea extends StatefulWidget {
-  const ActionButtonArea({Key? key}) : super(key: key);
+  const ActionButtonArea({super.key});
 
   @override
   State<ActionButtonArea> createState() => _ActionButtonAreaState();
@@ -86,19 +87,24 @@ class ActionButtonArea extends StatefulWidget {
 class _ActionButtonAreaState extends State<ActionButtonArea> {
   @override
   Widget build(BuildContext context) {
+    final actions = player.getAvailableActions();
+    /*if (actions.length == 1) {
+      return buildActionBtn(actions[0]).sized(w:180,h:40).container();
+    } else {*/
     return GridView(
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
         maxCrossAxisExtent: 256,
         childAspectRatio: 3,
       ),
-      children: buildActions(),
+      children: buildActions(actions),
     );
+    /*}*/
   }
 
-  List<Widget> buildActions() {
+  List<Widget> buildActions(List<PlaceAction> actions) {
     var res = <Widget>[];
-    for (final action in player.getAvailableActions()) {
+    for (final action in actions) {
       res.add(buildActionBtn(action));
     }
     return res;
@@ -120,12 +126,14 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
       child: type
           .l10nName()
           .toUpperCase()
-          .text(
+          .autoSizeText(
+            maxLines: 1,
+            minFontSize: 8,
             style: context.textTheme.headlineSmall?.copyWith(
               color: canPerform ? null : Colors.grey,
             ),
           )
-          .center(),
+          .center().padAll(5),
     );
   }
 }
