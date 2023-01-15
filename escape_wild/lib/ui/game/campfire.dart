@@ -14,6 +14,38 @@ class CampfirePage extends StatefulWidget {
 }
 
 class _CampfirePageState extends State<CampfirePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: player.$fireState << (ctx, state, _) => buildBody(state),
+    );
+  }
+
+  Widget buildBody(FireState fireState) {
+    if (fireState.active) {
+      return const Placeholder();
+    } else {
+      return const FireStartingPage();
+    }
+  }
+}
+
+Widget buildCampfire(BuildContext ctx) {
+  return SvgPicture.asset(
+    "assets/img/campfire.svg",
+    color: ctx.themeColor,
+    placeholderBuilder: (_) => const Placeholder(),
+  ).constrained(maxW: 200, maxH: 200);
+}
+
+class FireStartingPage extends StatefulWidget {
+  const FireStartingPage({super.key});
+
+  @override
+  State<FireStartingPage> createState() => _FireStartingPageState();
+}
+
+class _FireStartingPageState extends State<FireStartingPage> {
   final fireStarterSlot = ItemStackReqSlot(ItemMatcher.hasComp([FireStarterComp]));
   static int lastSelectedIndex = -1;
 
@@ -32,14 +64,12 @@ class _CampfirePageState extends State<CampfirePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: context.isPortrait ? buildPortrait() : buildLandscape(),
-    );
+    return context.isPortrait ? buildPortrait() : buildLandscape();
   }
 
   Widget buildPortrait() {
     return [
-      buildCampfire(),
+      buildCampfire(context),
       buildFireStarterCell(),
       buildTryButton(),
     ].column(maa: MainAxisAlignment.spaceEvenly).center();
@@ -47,7 +77,7 @@ class _CampfirePageState extends State<CampfirePage> {
 
   Widget buildLandscape() {
     return [
-      buildCampfire().expanded(),
+      buildCampfire(context).expanded(),
       [
         buildFireStarterCell(),
         buildTryButton(),
@@ -58,17 +88,6 @@ class _CampfirePageState extends State<CampfirePage> {
           )
           .expanded()
     ].row();
-  }
-
-  Widget buildCampfire() {
-    return buildFireImg("assets/img/campfire.svg");
-  }
-
-  Widget buildFireImg(String path) {
-    return SvgPicture.asset(
-      path,
-      color: context.themeColor,
-    ).constrained(maxW: 200, maxH: 200);
   }
 
   Widget buildFireStarterCell() {
@@ -108,13 +127,13 @@ class _CampfirePageState extends State<CampfirePage> {
       onTap: maybeFireStarter.isEmpty
           ? null
           : () async {
-              await onTry(maybeFireStarter);
+              await onStartFire(maybeFireStarter);
             },
-      child: "Try".text(style: context.textTheme.headlineSmall).center(),
+      child: "Start Fire".text(style: context.textTheme.headlineSmall).center(),
     ).sized(w: 180, h: 80);
   }
 
-  Future<void> onTry(ItemStack fireStarter) async {
+  Future<void> onStartFire(ItemStack fireStarter) async {
     final comp = FireStarterComp.of(fireStarter);
     assert(comp != null, "$fireStarter doesn't have $FireStarterComp.");
     if (comp != null) {
@@ -128,5 +147,19 @@ class _CampfirePageState extends State<CampfirePage> {
       }
       setState(() {});
     }
+  }
+}
+
+class CookPage extends StatefulWidget {
+  const CookPage({super.key});
+
+  @override
+  State<CookPage> createState() => _CookPageState();
+}
+
+class _CookPageState extends State<CookPage> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

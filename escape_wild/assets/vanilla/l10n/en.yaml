@@ -148,6 +148,14 @@ item:
   wooden-bowl:
     name: Wooden Bowl
     desc: ...
+  bandage:
+    name: Bandage
+    desc: ...
+  first-aid-kit:
+    name: First Aid Kit
+    # https://www.youtube.com/watch?v=qXfPAodBVZQ&ab_channel=OgreJoe
+    # Overwatch `I Need Healing` meme
+    desc: I need healing.
 route:
   subtropics:
     plain:
