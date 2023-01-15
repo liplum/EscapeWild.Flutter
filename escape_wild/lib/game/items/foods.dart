@@ -155,7 +155,7 @@ class Foods {
             output: () => cookedBearMeat,
           )
           .tagged(["meat", "raw", "food"]),
-      cookedBearMeat = Item.mergeable("cookedBearMeat", mass: 666).asEatable([
+      cookedBearMeat = Item.mergeable("cooked-bear-meat", mass: 666).asEatable([
         Attr.food + 0.4,
       ]).tagged(["meat", "cooked", "food"]),
     ]);

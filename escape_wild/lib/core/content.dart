@@ -49,6 +49,8 @@ extension ItemContentsX on ItemContents {
       this << item;
     }
   }
+
+  List<Item> toList() => name2Item.values.toList();
 }
 
 class ModContents {
@@ -100,11 +102,11 @@ extension HardnessContentsX on HardnessContents {
   }
 }
 
-class ItemPoolContents{
-  Map<String,ItemPool> name2Pool = {};
+class ItemPoolContents {
+  Map<String, ItemPool> name2Pool = {};
 }
 
-extension ItemPoolContentsX on ItemPoolContents{
+extension ItemPoolContentsX on ItemPoolContents {
   ItemPool? operator [](String name) => name2Pool[name];
 
   void operator <<(ItemPool pool) => name2Pool[pool.registerName] = pool;

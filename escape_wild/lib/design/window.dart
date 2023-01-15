@@ -135,7 +135,7 @@ class _WindowState extends State<Window> {
       ).sized(w: windowSize.width),
       widget.builder(ctx).sizedIn(windowSize),
     ].column();
-    content = content.inCard();
+    content = content.inCard(elevation: 0);
     return content;
   }
 

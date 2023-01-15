@@ -24,7 +24,8 @@ class Stuff {
       flower = Item.mergeable("dandelion", mass: 10),
       pineNeedle = Item.mergeable("pine-needle", mass: 50).asFuel(heatValue: 5.0).tagged(["flammable-floc"]),
       //It is said that dandelion boiled with water can relieve some constipation
-      ember = Item.mergeable("ember", mass: 5),
+      // Ember will reduce durability over time.
+      ember = Item.mergeable("ember", mass: 5).hasDurability(max: 100),
       tinder = Item.mergeable("tinder", mass: 5).tagged(["tinder"]),
       //Put the semi-wet moss or grass into the wooden tube rolled by the bark,
       // and Mars can carry it

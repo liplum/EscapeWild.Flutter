@@ -108,7 +108,6 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
 extension ItemX on Item {
   ItemStack create({int? mass, double? massF}) {
     if (mergeable) {
-      assert(mass != null || massF != null, "`mass` and `massFactor` can't be both null for mergeable");
       if (mass != null) {
         return ItemStack(this, mass: mass);
       }

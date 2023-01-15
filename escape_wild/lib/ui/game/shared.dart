@@ -17,7 +17,7 @@ const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
 );
 const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 160,
-  childAspectRatio: 2.2,
+  childAspectRatio: 2,
 );
 
 class AttrProgress extends ImplicitlyAnimatedWidget {
@@ -79,18 +79,22 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 
 class ItemCellTheme {
   final double? nameOpacity;
+  final TextStyle? nameStyle;
 
   const ItemCellTheme({
     this.nameOpacity,
+    this.nameStyle,
   });
 
   double get $nameOpacity => nameOpacity ?? 1;
 
   ItemCellTheme copyWith({
     double? nameOpacity,
+    TextStyle? nameStyle,
   }) =>
       ItemCellTheme(
         nameOpacity: nameOpacity ?? this.nameOpacity,
+        nameStyle: nameStyle ?? this.nameStyle,
       );
 }
 
@@ -108,13 +112,36 @@ class ItemCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = AutoSizeText(
       item.l10nName(),
-      style: context.textTheme.titleLarge,
+      maxLines: 2,
+      style: theme.nameStyle ?? context.textTheme.titleLarge,
       textAlign: TextAlign.center,
     ).opacityOrNot(theme.$nameOpacity);
     return ListTile(
       title: title,
       dense: true,
     ).center();
+  }
+}
+
+class NullItemCell extends StatelessWidget {
+  final ItemCellTheme theme;
+
+  const NullItemCell({
+    super.key,
+    this.theme = const ItemCellTheme(),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // never reached.
+    return ListTile(
+      title: AutoSizeText(
+        "?",
+        style: theme.nameStyle ?? context.textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ).opacityOrNot(theme.$nameOpacity),
+      dense: true,
+    );
   }
 }
 
@@ -129,6 +156,7 @@ class ItemStackCellTheme extends ItemCellTheme {
     this.showProgressBar = true,
     this.progressBarOpacity = 0.55,
     super.nameOpacity = 1,
+    super.nameStyle,
     this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
   });
 
@@ -146,6 +174,7 @@ class ItemStackCellTheme extends ItemCellTheme {
     bool? showProgressBar,
     double? progressBarOpacity,
     double? nameOpacity,
+    TextStyle? nameStyle,
     EdgeInsetsGeometry? pad,
   }) =>
       ItemStackCellTheme(
@@ -153,6 +182,7 @@ class ItemStackCellTheme extends ItemCellTheme {
         showProgressBar: showProgressBar ?? this.showProgressBar,
         progressBarOpacity: progressBarOpacity ?? this.progressBarOpacity,
         nameOpacity: nameOpacity ?? this.nameOpacity,
+        nameStyle: nameStyle ?? this.nameStyle,
         pad: pad ?? this.pad,
       );
 }
@@ -173,7 +203,7 @@ class ItemStackCell extends StatelessWidget {
       title: AutoSizeText(
         stack.meta.l10nName(),
         maxLines: 2,
-        style: context.textTheme.titleLarge,
+        style: theme.nameStyle ?? context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
       subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
@@ -195,28 +225,6 @@ class ItemStackCell extends StatelessWidget {
     } else {
       return tile;
     }
-  }
-}
-
-class NullItemCell extends StatelessWidget {
-  final ItemCellTheme theme;
-
-  const NullItemCell({
-    super.key,
-    this.theme = const ItemCellTheme(),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // never reached.
-    return ListTile(
-      title: AutoSizeText(
-        "?",
-        style: context.textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ).opacityOrNot(theme.$nameOpacity),
-      dense: true,
-    );
   }
 }
 
