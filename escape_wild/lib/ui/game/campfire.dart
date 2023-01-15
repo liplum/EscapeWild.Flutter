@@ -15,18 +15,18 @@ class CampfirePage extends StatefulWidget {
 
 class _CampfirePageState extends State<CampfirePage> {
   final fireStarterSlot = ItemStackReqSlot(ItemMatcher.hasComp([FireStarterComp]));
-  static ItemStack lastSelected = ItemStack.empty;
+  static int lastSelectedIndex = -1;
 
   @override
   void initState() {
     super.initState();
-    if (player.backpack.hasItem(lastSelected)) {
+    if (lastSelectedIndex >= 0) {
       setState(() {
-        fireStarterSlot.stack = lastSelected;
+        fireStarterSlot.stack = player.backpack[lastSelectedIndex];
       });
     }
-    fireStarterSlot.onChange = (newStack){
-      lastSelected = newStack;
+    fireStarterSlot.onChange = (newStack) {
+      lastSelectedIndex = player.backpack.indexOfStack(newStack);
     };
   }
 
@@ -61,11 +61,7 @@ class _CampfirePageState extends State<CampfirePage> {
   }
 
   Widget buildCampfire() {
-    if (player.fireState.active) {
-      return buildFireImg("assets/img/campfire.svg");
-    } else {
-      return buildFireImg("assets/img/no-campfire.svg");
-    }
+    return buildFireImg("assets/img/campfire.svg");
   }
 
   Widget buildFireImg(String path) {
@@ -78,15 +74,13 @@ class _CampfirePageState extends State<CampfirePage> {
   Widget buildFireStarterCell() {
     Widget cell = ItemStackReqCell(
       slot: fireStarterSlot,
-      onSatisfy: (stack) => ItemStackCell(stack),
       onTapSatisfied: onSelectFireStarter,
       onTapUnsatisfied: onSelectFireStarter,
-      onNotInBackpack: (item) => ItemCell(item),
-      onInBackpack: (stack) => ItemStackCell(
-        stack,
-        showMass: false,
-        showProgressBar: false,
-      ),
+      onInBackpack: (stack) => ItemStackCell(stack,
+          theme: const ItemStackCellTheme(
+            showMass: false,
+            showProgressBar: false,
+          )),
     ).constrained(maxW: 180, maxH: 80);
     return cell;
   }

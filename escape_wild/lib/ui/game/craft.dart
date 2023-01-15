@@ -160,7 +160,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
           onNotInBackpack: (item) => ItemCell(item).inCard(elevation: 0),
           onInBackpack: (item) => ItemStackCell(
             item,
-            pad: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            theme: const ItemStackCellTheme(pad: EdgeInsets.symmetric(vertical: 4, horizontal: 8)),
           ).inCard(elevation: 5),
         );
       },
@@ -298,7 +298,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
 
   Widget buildBackpackView() {
     if (player.backpack.isEmpty) {
-      return buildEmptyBackpack().padV(30);
+      return buildEmptyBackpack();
     }
     return GridView.builder(
       itemCount: accepted.length + unaccepted.length,

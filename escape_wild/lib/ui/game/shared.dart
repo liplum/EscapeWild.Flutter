@@ -77,34 +77,108 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
   }
 }
 
-class ItemStackCell extends StatelessWidget {
-  final ItemStack stack;
-  final EdgeInsetsGeometry? pad;
+class ItemCellTheme {
+  final double nameOpacity;
+  static const $default = ItemCellTheme();
+
+  const ItemCellTheme({
+    this.nameOpacity = 1,
+  });
+
+  ItemCellTheme copyWith({
+    double? nameOpacity = 1,
+  }) =>
+      ItemCellTheme(
+        nameOpacity: nameOpacity ?? this.nameOpacity,
+      );
+}
+
+class ItemCell extends StatelessWidget {
+  final Item item;
+  final double nameOpacity;
+
+  const ItemCell(
+      this.item, {
+        super.key,
+        this.nameOpacity = 1,
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget title = AutoSizeText(
+      item.l10nName(),
+      style: context.textTheme.titleLarge,
+      textAlign: TextAlign.center,
+    );
+    if (nameOpacity < 1) {
+      title = Opacity(opacity: 0.5, child: title);
+    }
+    return ListTile(
+      title: title,
+      dense: true,
+    ).center();
+  }
+}
+
+class ItemStackCellTheme extends ItemCellTheme {
   final bool showMass;
   final bool showProgressBar;
+  final EdgeInsetsGeometry pad;
+  static const $default = ItemStackCellTheme();
+
+  const ItemStackCellTheme({
+    this.showMass = true,
+    this.showProgressBar = true,
+    super.nameOpacity = 1,
+    this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+  });
+
+  @override
+  ItemStackCellTheme copyWith({
+    bool? showMass,
+    bool? showProgressBar,
+    double? nameOpacity = 1,
+    EdgeInsetsGeometry? pad,
+  }) =>
+      ItemStackCellTheme(
+        showMass: showMass ?? this.showMass,
+        showProgressBar: showProgressBar ?? this.showProgressBar,
+        nameOpacity: nameOpacity ?? this.nameOpacity,
+        pad: pad ?? this.pad,
+      );
+}
+
+class ItemStackCell extends StatelessWidget {
+  final ItemStack stack;
+  final ItemStackCellTheme theme;
 
   const ItemStackCell(
     this.stack, {
     super.key,
-    this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-    this.showMass = true,
-    this.showProgressBar = true,
+    this.theme = ItemStackCellTheme.$default,
   });
 
   @override
   Widget build(BuildContext context) {
-    final tile = ListTile(
+    Widget tile = ListTile(
       title: AutoSizeText(
         stack.meta.l10nName(),
         maxLines: 2,
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: !showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
+      subtitle: !theme.showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
       dense: true,
-      contentPadding: !showMass ? null : pad,
-    ).center();
-    if (!showProgressBar) return tile;
+      contentPadding: !theme.showMass ? null : theme.pad,
+    );
+    if (theme.nameOpacity < 1) {
+      tile = Opacity(
+        opacity: theme.nameOpacity,
+        child: tile,
+      );
+    }
+    tile = tile.center();
+    if (!theme.showProgressBar) return tile;
     final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
       final ratio = durabilityComp.durabilityRatio(stack);
@@ -122,29 +196,9 @@ class ItemStackCell extends StatelessWidget {
   }
 }
 
-class ItemCell extends StatelessWidget {
-  final Item item;
-
-  const ItemCell(
-    this.item, {
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: AutoSizeText(
-        item.l10nName(),
-        style: context.textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ),
-      dense: true,
-    ).center();
-  }
-}
-
 class NullItemCell extends StatelessWidget {
-  const NullItemCell({super.key});
+  final ItemCellTheme theme;
+  const NullItemCell({super.key, this.theme = ItemCellTheme.$default});
 
   @override
   Widget build(BuildContext context) {
@@ -538,6 +592,7 @@ class ItemStackReqCell extends StatelessWidget {
   final Widget Function(ItemStack stack)? onSatisfy;
   final Widget Function(Item item)? onNotInBackpack;
   final Widget Function(ItemStack item)? onInBackpack;
+  static const opacityOnMissing = 0.5;
 
   const ItemStackReqCell({
     super.key,
@@ -573,8 +628,17 @@ class ItemStackReqCell extends StatelessWidget {
           ? onSatisfy?.call(slot.stack) ?? ItemStackCell(slot.stack)
           : DynamicMatchingCell(
               matcher: slot.matcher,
-              onNotInBackpack: onNotInBackpack ?? (item) => ItemCell(item),
-              onInBackpack: onInBackpack ?? (stack) => ItemStackCell(stack, showMass: false),
+              onNotInBackpack: onNotInBackpack ??
+                  (item) => ItemCell(
+                        item,
+                        nameOpacity: opacityOnMissing,
+                      ),
+              onInBackpack: onInBackpack ??
+                  (stack) => ItemStackCell(stack,
+                      theme: const ItemStackCellTheme(
+                        nameOpacity: opacityOnMissing,
+                        showMass: false,
+                      )),
             ),
     );
   }
@@ -630,54 +694,54 @@ class _BackpackSheetState extends State<BackpackSheet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        physics: const RangeMaintainingScrollPhysics(),
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 60.0,
-            leading: IconButton(
-              icon: const Icon(Icons.close_rounded),
-              onPressed: () {
-                context.navigator.pop();
-              },
+      body: LayoutBuilder(
+        builder: (_, box) => CustomScrollView(
+          physics: const RangeMaintainingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 60.0,
+              leading: IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () {
+                  context.navigator.pop();
+                },
+              ),
+              centerTitle: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: "Backpack".text(),
+              ),
+              actions: [
+                if (widget.behavior.showFilterButton)
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        toggleFilter = !toggleFilter;
+                      });
+                    },
+                    icon: Icon(
+                      toggleFilter ? Icons.filter_alt_rounded : Icons.filter_alt_off_rounded,
+                    ),
+                  )
+              ],
             ),
-            centerTitle: true,
-            flexibleSpace: FlexibleSpaceBar(
-              title: "Backpack".text(),
-            ),
-            actions: [
-              if (widget.behavior.showFilterButton)
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      toggleFilter = !toggleFilter;
-                    });
-                  },
-                  icon: Icon(
-                    toggleFilter ? Icons.filter_alt_rounded : Icons.filter_alt_off_rounded,
-                  ),
-                )
-            ],
-          ),
-          buildBackpackView(),
-        ],
+            buildBackpackView(box),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildBackpackView() {
+  Widget buildBackpackView(BoxConstraints box) {
     if (player.backpack.isEmpty) {
-      return SliverToBoxAdapter(child: buildEmptyBackpack().padV(30));
+      // to center the empty backpack tip
+      return SliverToBoxAdapter(child: buildEmptyBackpack().padV(box.maxHeight * 0.2));
     }
     var length = accepted.length;
     if (showUnaccepted) {
       length += unaccepted.length;
     }
     return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 180,
-        childAspectRatio: 1.5,
-      ),
+      gridDelegate: itemCellGridDelegate,
       delegate: SliverChildBuilderDelegate(
         childCount: length,
         (ctx, i) {

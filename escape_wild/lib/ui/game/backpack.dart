@@ -23,12 +23,12 @@ Widget buildEmptyBackpack() {
 }
 
 class _BackpackPageState extends State<BackpackPage> {
-  ItemStack? _selected;
+  ItemStack _selected = ItemStack.empty;
 
-  ItemStack? get $selected => _selected;
+  ItemStack get $selected => _selected;
   static int lastSelectedIndex = 0;
 
-  set $selected(ItemStack? v) {
+  set $selected(ItemStack v) {
     _selected = v;
     lastSelectedIndex = player.backpack.indexOfStack(v);
   }
@@ -46,8 +46,8 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   void updateDefaultSelection() {
-    if ($selected == null && player.backpack.isNotEmpty) {
-      $selected = player.backpack.firstOrNull;
+    if ($selected.isEmpty && player.backpack.isNotEmpty) {
+      $selected = player.backpack.firstOrEmpty;
       if (!mounted) return;
       setState(() {});
     }
@@ -161,7 +161,7 @@ class _BackpackPageState extends State<BackpackPage> {
         index = (index % itemCount).clamp(0, itemCount - 1);
         $selected = player.backpack[index];
       } else {
-        $selected = null;
+        $selected = ItemStack.empty;
       }
     } else {
       between();
@@ -186,7 +186,7 @@ class _BackpackPageState extends State<BackpackPage> {
         index = (index % itemCount).clamp(0, itemCount - 1);
         $selected = player.backpack[index];
       } else {
-        $selected = null;
+        $selected = ItemStack.empty;
       }
     } else {
       between();

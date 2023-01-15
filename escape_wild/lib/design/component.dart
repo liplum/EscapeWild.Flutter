@@ -8,8 +8,16 @@ class LeavingBlank extends StatelessWidget {
   final String desc;
   final VoidCallback? onIconTap;
   final Widget? subtitle;
+  final bool isExpanded;
 
-  const LeavingBlank.builder({super.key, required this.iconBuilder, required this.desc, this.onIconTap, this.subtitle});
+  const LeavingBlank.builder({
+    super.key,
+    required this.iconBuilder,
+    required this.desc,
+    this.onIconTap,
+    this.subtitle,
+    this.isExpanded = false,
+  });
 
   factory LeavingBlank({
     Key? key,
@@ -18,11 +26,13 @@ class LeavingBlank extends StatelessWidget {
     VoidCallback? onIconTap,
     double size = 120,
     Widget? subtitle,
+    bool isExpanded = false,
   }) {
     return LeavingBlank.builder(
       iconBuilder: (ctx) => icon.make(size: size, color: ctx.themeColor),
       desc: desc,
       onIconTap: onIconTap,
+      isExpanded: isExpanded,
       subtitle: subtitle,
     );
   }
@@ -35,11 +45,13 @@ class LeavingBlank extends StatelessWidget {
     double width = 120,
     double height = 120,
     Widget? subtitle,
+    bool isExpanded = false,
   }) {
     return LeavingBlank.builder(
       iconBuilder: (ctx) => SvgPicture.asset(assetName, width: width, height: height),
       desc: desc,
       onIconTap: onIconTap,
+      isExpanded: isExpanded,
       subtitle: subtitle,
     );
   }
@@ -53,18 +65,23 @@ class LeavingBlank extends StatelessWidget {
     final sub = subtitle;
     if (sub != null) {
       return [
-        icon.expanded(),
-        [
+        maybeExpanded(icon),
+        maybeExpanded([
           buildDesc(context),
           sub,
-        ].column().expanded(),
+        ].column()),
       ].column(maa: MAAlign.spaceAround, mas: MainAxisSize.min).center();
     } else {
       return [
-        icon.expanded(),
-        buildDesc(context).expanded(),
+        maybeExpanded(icon),
+        maybeExpanded(buildDesc(context)),
       ].column(maa: MAAlign.spaceAround, mas: MainAxisSize.min).center();
     }
+  }
+
+  Widget maybeExpanded(Widget child) {
+    if (isExpanded) return child.expanded();
+    return child;
   }
 
   Widget buildDesc(BuildContext ctx) {

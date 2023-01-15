@@ -186,7 +186,9 @@ extension BackpackX on Backpack {
     return sum;
   }
 
-  ItemStack? get firstOrNull => items.first;
+  ItemStack? get firstOrNull => items.firstOrNull;
+
+  ItemStack get firstOrEmpty => items.firstOrNull ?? ItemStack.empty;
 
   int get itemCount => items.length;
 
@@ -195,7 +197,7 @@ extension BackpackX on Backpack {
   bool get isNotEmpty => items.isNotEmpty;
 
   /// safe to get an [ItemStack] in [items].
-  ItemStack operator [](int index) => items[index.clamp(0, items.length - 1)];
+  ItemStack operator [](int index) => items.isEmpty? ItemStack.empty: items[index.clamp(0, items.length - 1)];
 
   ItemStack? getItemByName(String name) => items.firstWhereOrNull((e) => e.meta.name == name);
 
