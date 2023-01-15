@@ -63,7 +63,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   bool damageTool(ItemStack item, ToolComp comp, double damage) {
     comp.damageTool(item, damage);
     if (comp.isBroken(item)) {
-      backpack.removeItem(item);
+      backpack.removeStack(item);
       return true;
     }
     return false;
@@ -76,8 +76,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   set attrs(AttrModel value) => $attrs.value = value;
 
   bool canPlayerAct() {
-    if(isWin) return false;
-    if(isDead) return false;
+    if (isWin) return false;
+    if (isDead) return false;
     return true;
   }
 
@@ -142,6 +142,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       // set fields
       this.attrs = attrs;
       this.backpack.loadFrom(backpack!);
+      this.backpack.validate();
       this.fireState = fireState;
       this.actionTimes = actionTimes;
       this.hardness = hardness;
@@ -160,6 +161,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   Map<String, dynamic> toJsonObj() {
+    backpack.validate();
     final json = {
       "attrs": attrs.toJson(),
       "backpack": Cvt.toJsonObj(backpack),

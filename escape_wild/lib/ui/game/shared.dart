@@ -503,12 +503,16 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
 class ItemStackReqSlot {
   ItemStack stack = ItemStack.empty;
 
-  void reset() => stack = ItemStack.empty;
+  void reset() {
+    stack = ItemStack.empty;
+    onChange?.call(stack);
+  }
 
   bool get isEmpty => stack == ItemStack.empty;
 
   bool get isNotEmpty => !isEmpty;
   final ItemMatcher matcher;
+  ValueChanged<ItemStack>? onChange;
 
   ItemStackReqSlot(this.matcher);
 
@@ -522,6 +526,7 @@ class ItemStackReqSlot {
       reset();
     } else if (matcher.exact(newStack).isMatched) {
       stack = newStack;
+      onChange?.call(stack);
     }
   }
 }

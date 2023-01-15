@@ -139,7 +139,7 @@ class _BackpackPageState extends State<BackpackPage> {
 
   void removeItem(ItemStack item) {
     runAndTrackCurrentSelected(item, () {
-      player.backpack.removeItem(item);
+      player.backpack.removeStack(item);
     });
   }
 

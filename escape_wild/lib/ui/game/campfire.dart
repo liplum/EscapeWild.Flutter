@@ -15,6 +15,20 @@ class CampfirePage extends StatefulWidget {
 
 class _CampfirePageState extends State<CampfirePage> {
   final fireStarterSlot = ItemStackReqSlot(ItemMatcher.hasComp([FireStarterComp]));
+  static ItemStack lastSelected = ItemStack.empty;
+
+  @override
+  void initState() {
+    super.initState();
+    if (player.backpack.hasItem(lastSelected)) {
+      setState(() {
+        fireStarterSlot.stack = lastSelected;
+      });
+    }
+    fireStarterSlot.onChange = (newStack){
+      lastSelected = newStack;
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +128,10 @@ class _CampfirePageState extends State<CampfirePage> {
       final started = comp.tryStartFire(fireStarter);
       if (started) {
         player.fireState = FireState.active(fuel: FuelComp.tryGetHeatValue(fireStarter));
+      }
+      if (DurabilityComp.tryGetIsBroken(fireStarter)) {
+        player.backpack.removeStack(fireStarter);
+        fireStarterSlot.reset();
       }
       setState(() {});
     }

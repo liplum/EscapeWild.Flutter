@@ -659,6 +659,8 @@ class DurabilityComp extends ItemComp {
 
   double getDurability(ItemStack stack) => stack[_durabilityK] ?? max;
 
+  bool isBroken(ItemStack stack) => getDurability(stack) <= 0.0;
+
   void setDurability(ItemStack stack, double value) => stack[_durabilityK] = value;
 
   Ratio durabilityRatio(ItemStack stack) {
@@ -685,6 +687,9 @@ class DurabilityComp extends ItemComp {
   static DurabilityComp? of(ItemStack stack) => stack.meta.getFirstComp<DurabilityComp>();
 
   static double tryGetDurability(ItemStack stack) => of(stack)?.getDurability(stack) ?? 0.0;
+
+  /// Default is false
+  static bool tryGetIsBroken(ItemStack stack) => of(stack)?.isBroken(stack) ?? false;
 
   /// Default is 1.0
   static double tryGetDurabilityRatio(ItemStack stack) => of(stack)?.durabilityRatio(stack) ?? 1.0;
@@ -796,10 +801,7 @@ class ToolComp extends ItemComp {
   }
 
   bool isBroken(ItemStack item) {
-    final durabilityComp = DurabilityComp.of(item);
-    // the tool is unbreakable
-    if (durabilityComp == null) return false;
-    return durabilityComp.getDurability(item) <= 0;
+    return DurabilityComp.tryGetIsBroken(item);
   }
 
   @override

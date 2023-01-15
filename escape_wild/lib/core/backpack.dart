@@ -45,7 +45,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
       return ItemStack.empty;
     }
     if (massOfPart >= actualMass) {
-      removeItem(item);
+      removeStack(item);
       return item;
     } else {
       final part = item.split(massOfPart);
@@ -61,7 +61,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     if (mass != null) {
       splitItemInBackpack(item, mass);
     } else {
-      removeItem(item);
+      removeStack(item);
     }
   }
 
@@ -82,7 +82,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
   }
 
   /// It will remove the [item] in backpack, and won't change [item]'s state.
-  bool removeItem(ItemStack item) {
+  bool removeStack(ItemStack item) {
     if (item.isEmpty) return true;
     final hasRemoved = items.remove(item);
     if (hasRemoved) {
@@ -104,13 +104,30 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     assert(item.meta.mergeable, "mass of unmergeable can't be changed");
     if (!item.meta.mergeable) return;
     if (newMass <= 0) {
-      removeItem(item);
+      removeStack(item);
     } else {
       final delta = item.stackMass - newMass;
       item.mass = newMass;
       mass -= delta;
       notifyListeners();
     }
+  }
+
+  void removeEmptyOrBrokenStacks() {
+    final toRemoved = <ItemStack>[];
+    for (final stack in items) {
+      if (stack.isEmpty || DurabilityComp.tryGetIsBroken(stack)) {
+        toRemoved.add(stack);
+      }
+    }
+    for (final removed in toRemoved) {
+      removeStack(removed);
+    }
+  }
+
+  void validate() {
+    removeEmptyOrBrokenStacks();
+    mass = sumMass();
   }
 
   static const type = "Backpack";
@@ -161,8 +178,8 @@ extension BackpackX on Backpack {
     return true;
   }
 
-  double sumMass() {
-    var sum = 0.0;
+  int sumMass() {
+    var sum = 0;
     for (final item in items) {
       sum += item.stackMass;
     }
@@ -185,6 +202,8 @@ extension BackpackX on Backpack {
   ItemStack? getItemByIdenticalMeta(ItemStack item) => items.firstWhereOrNull((e) => e.meta == item.meta);
 
   bool hasItemOfName(String name) => items.any((e) => e.meta.name == name);
+
+  bool hasItem(ItemStack stack) => items.contains(stack);
 
   int countItemOfName(String name) => items.count((e) => e.meta.name == name);
 
