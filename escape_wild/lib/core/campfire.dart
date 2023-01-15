@@ -14,6 +14,10 @@ class FireState {
     this.fuel = 0.0,
   });
 
+  const FireState.active({
+    this.fuel = 0.0,
+  }) : active = true;
+
   factory FireState.fromJson(Map<String, dynamic> json) => _$FireStateFromJson(json);
 
   Map<String, dynamic> toJson() => _$FireStateToJson(this);

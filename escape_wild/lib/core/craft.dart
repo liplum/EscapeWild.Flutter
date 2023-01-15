@@ -127,7 +127,11 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(tag.str),
-        exact: (item) => item.meta.hasTag(tag.str) && item.stackMass >= (tag.mass ?? 0.0),
+        exact: (item) {
+          if (!item.meta.hasTag(tag.str)) return ItemStackMatchResult.typeUnmatched;
+          if (item.stackMass < (tag.mass ?? 0.0)) return ItemStackMatchResult.massUnmatched;
+          return ItemStackMatchResult.matched;
+        },
       ));
     }
   }
@@ -180,7 +184,7 @@ class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtoc
     for (final req in items) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.name == req.str,
-        exact: (item) => item.meta.name == req.str,
+        exact: (item) => item.meta.name == req.str ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
       ));
     }
   }
@@ -240,7 +244,9 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(input.str),
         exact: (item) {
-          return item.meta.hasTag(input.str) && item.stackMass >= (outputMass ?? item.meta.mass);
+          if (!item.meta.hasTag(input.str)) return ItemStackMatchResult.typeUnmatched;
+          if (item.stackMass < (outputMass ?? item.meta.mass)) return ItemStackMatchResult.massUnmatched;
+          return ItemStackMatchResult.matched;
         },
       ));
     }

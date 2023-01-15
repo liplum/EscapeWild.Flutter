@@ -209,6 +209,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     await route.setRouteProgress(routeProgress + 1.0);
     player.journeyProgress = route.journeyProgress;
     player.location = route.current;
+    player.putOutCampfire();
   }
 
   @override

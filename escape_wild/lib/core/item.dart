@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -565,7 +566,15 @@ extension ItemStackListX on List<ItemStack> {
 }
 
 typedef ItemTypeMatcher = bool Function(Item item);
-typedef ItemStackMatcher = bool Function(ItemStack stack);
+typedef ItemStackMatcher = ItemStackMatchResult Function(ItemStack stack);
+
+enum ItemStackMatchResult {
+  matched,
+  typeUnmatched,
+  massUnmatched;
+
+  bool get isMatched => this == matched;
+}
 
 class ItemMatcher {
   final ItemTypeMatcher typeOnly;
@@ -578,14 +587,15 @@ class ItemMatcher {
 
   static ItemMatcher hasTag(List<String> tags) => ItemMatcher(
         typeOnly: (item) => item.hasTags(tags),
-        exact: (item) => item.meta.hasTags(tags),
+        exact: (item) => item.meta.hasTags(tags) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
       );
 
   static ItemMatcher hasComp(List<Type> compTypes) => ItemMatcher(
         typeOnly: (item) => item.hasComps(compTypes),
-        exact: (item) => item.meta.hasComps(compTypes),
+        exact: (item) =>
+            item.meta.hasComps(compTypes) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
       );
-  static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => true);
+  static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => ItemStackMatchResult.matched);
 }
 
 extension ItemMatcherX on ItemMatcher {
@@ -606,11 +616,11 @@ extension ItemMatcherX on ItemMatcher {
   Iterable<ItemStack> filterExactMatchedStacks(Iterable<ItemStack> stacks, {bool requireMatched = true}) sync* {
     for (final stack in stacks) {
       if (requireMatched) {
-        if (exact(stack)) {
+        if (exact(stack).isMatched) {
           yield stack;
         }
       } else {
-        if (!exact(stack)) {
+        if (!exact(stack).isMatched) {
           yield stack;
         }
       }
@@ -674,11 +684,12 @@ class DurabilityComp extends ItemComp {
 
   static DurabilityComp? of(ItemStack stack) => stack.meta.getFirstComp<DurabilityComp>();
 
-  static double tryGetDurability(ItemStack stack) =>
-      stack.meta.getFirstComp<DurabilityComp>()?.getDurability(stack) ?? 0.0;
+  static double tryGetDurability(ItemStack stack) => of(stack)?.getDurability(stack) ?? 0.0;
 
-  static void trySetDurability(ItemStack stack, double durability) =>
-      stack.meta.getFirstComp<DurabilityComp>()?.setDurability(stack, durability);
+  /// Default is 1.0
+  static double tryGetDurabilityRatio(ItemStack stack) => of(stack)?.durabilityRatio(stack) ?? 1.0;
+
+  static void trySetDurability(ItemStack stack, double durability) => of(stack)?.setDurability(stack, durability);
   static const type = "Durability";
 
   @override
@@ -1032,13 +1043,21 @@ class FuelComp extends ItemComp {
 
   const FuelComp(this.heatValue);
 
-  /// If the [item] has [WetComp], reduce the [heatValue] based on its wet.
-  double getActualHeatValue(ItemStack item) {
-    final wetComp = item.meta.getFirstComp<WetComp>();
-    final wet = wetComp?.getWet(item) ?? 0.0;
-    return heatValue * (1.0 - wet);
+  /// If the [stack] has [WetComp], reduce the [heatValue] based on its wet.
+  double getActualHeatValue(ItemStack stack) {
+    var res = heatValue;
+    // check wet
+    final wet = WetComp.tryGetWet(stack);
+    res *= 1.0 - wet;
+    // check durability
+    final ratio = DurabilityComp.tryGetDurabilityRatio(stack);
+    res *= ratio;
+    return res;
   }
 
+  static FuelComp? of(ItemStack stack) => stack.meta.getFirstComp<FuelComp>();
+
+  static double tryGetHeatValue(ItemStack stack) => of(stack)?.getActualHeatValue(stack) ?? 0.0;
   static const type = "Fuel";
 
   @override
@@ -1091,11 +1110,11 @@ class WetComp extends ItemComp {
     }
   }
 
-  static WetComp? of(ItemStack item) => item.meta.getFirstComp<WetComp>();
+  static WetComp? of(ItemStack stack) => stack.meta.getFirstComp<WetComp>();
 
-  static double tryGetWet(ItemStack item) => item.meta.getFirstComp<WetComp>()?.getWet(item) ?? defaultWet;
+  static double tryGetWet(ItemStack stack) => of(stack)?.getWet(stack) ?? defaultWet;
 
-  static void trySetWet(ItemStack item, double wet) => item.meta.getFirstComp<WetComp>()?.setWet(item, wet);
+  static void trySetWet(ItemStack stack, double wet) => of(stack)?.setWet(stack, wet);
   static const type = "Wet";
 
   @override
@@ -1165,6 +1184,17 @@ class FireStarterComp extends ItemComp {
     required this.cost,
   });
 
+  bool tryStartFire(ItemStack stack, [Random? rand]) {
+    rand ??= Rand.backend;
+    var success = rand.one() <= chance;
+    final durabilityComp = DurabilityComp.of(stack);
+    if (durabilityComp != null) {
+      final durability = durabilityComp.getDurability(stack);
+      durabilityComp.setDurability(stack, durability - cost);
+    }
+    return success;
+  }
+
   @override
   void validateItemConfig(Item item) {
     if (item.mergeable) {
@@ -1181,6 +1211,8 @@ class FireStarterComp extends ItemComp {
       );
     }
   }
+
+  static FireStarterComp? of(ItemStack stack) => stack.meta.getFirstComp<FireStarterComp>();
 
   static const type = "FireStarter";
 

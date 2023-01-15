@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+import 'backpack.dart';
 import 'hud.dart';
 
 const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
@@ -80,17 +81,18 @@ class ItemStackCell extends StatelessWidget {
   final ItemStack stack;
   final EdgeInsetsGeometry? pad;
   final bool showMass;
+  final bool showProgressBar;
 
   const ItemStackCell(
     this.stack, {
     super.key,
     this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
     this.showMass = true,
+    this.showProgressBar = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final durabilityComp = DurabilityComp.of(stack);
     final tile = ListTile(
       title: AutoSizeText(
         stack.meta.l10nName(),
@@ -102,12 +104,16 @@ class ItemStackCell extends StatelessWidget {
       dense: true,
       contentPadding: !showMass ? null : pad,
     ).center();
+    if (!showProgressBar) return tile;
+    final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
       final ratio = durabilityComp.durabilityRatio(stack);
       return [
-        Opacity(opacity: 0.55, child: AttrProgress(value: ratio)).align(
-          at: const Alignment(1.0, -0.8),
-        ).padH(5),
+        Opacity(opacity: 0.55, child: AttrProgress(value: ratio))
+            .align(
+              at: const Alignment(1.0, -0.86),
+            )
+            .padH(5),
         tile,
       ].stack();
     } else {
@@ -510,6 +516,14 @@ class ItemStackReqSlot {
     required ItemTypeMatcher typeOnly,
     required ItemStackMatcher exact,
   }) : matcher = ItemMatcher(typeOnly: typeOnly, exact: exact);
+
+  void toggle(ItemStack newStack) {
+    if (newStack == stack) {
+      reset();
+    } else if (matcher.exact(newStack).isMatched) {
+      stack = newStack;
+    }
+  }
 }
 
 class ItemStackReqCell extends StatelessWidget {
@@ -557,6 +571,131 @@ class ItemStackReqCell extends StatelessWidget {
               onNotInBackpack: onNotInBackpack ?? (item) => ItemCell(item),
               onInBackpack: onInBackpack ?? (stack) => ItemStackCell(stack, showMass: false),
             ),
+    );
+  }
+}
+
+enum BackpackFilterDisplayBehavior {
+  onlyAccepted,
+  both,
+  toggleable;
+
+  bool get showFilterButton => this == toggleable;
+}
+
+class BackpackSheet extends StatefulWidget {
+  final ItemMatcher matcher;
+  final ValueChanged<ItemStack>? onSelect;
+  final BackpackFilterDisplayBehavior behavior;
+
+  const BackpackSheet({
+    super.key,
+    required this.matcher,
+    this.onSelect,
+    this.behavior = BackpackFilterDisplayBehavior.toggleable,
+  });
+
+  @override
+  State<BackpackSheet> createState() => _BackpackSheetState();
+}
+
+class _BackpackSheetState extends State<BackpackSheet> {
+  ItemMatcher get matcher => widget.matcher;
+  List<ItemStack> accepted = const [];
+  List<ItemStack> unaccepted = const [];
+  bool toggleFilter = false;
+
+  bool get showUnaccepted =>
+      widget.behavior == BackpackFilterDisplayBehavior.both ||
+      (widget.behavior == BackpackFilterDisplayBehavior.toggleable && !toggleFilter);
+
+  @override
+  void initState() {
+    super.initState();
+    updateBackpackFilter();
+  }
+
+  void updateBackpackFilter() {
+    final p = player.backpack.separateMatchedFromUnmatched((stack) => matcher.typeOnly(stack.meta));
+    accepted = p.key;
+    unaccepted = p.value;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CustomScrollView(
+        physics: const RangeMaintainingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 60.0,
+            leading: IconButton(
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () {
+                context.navigator.pop();
+              },
+            ),
+            centerTitle: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: "Backpack".text(),
+            ),
+            actions: [
+              if (widget.behavior.showFilterButton)
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      toggleFilter = !toggleFilter;
+                    });
+                  },
+                  icon: Icon(
+                    toggleFilter ? Icons.filter_alt_rounded : Icons.filter_alt_off_rounded,
+                  ),
+                )
+            ],
+          ),
+          buildBackpackView(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBackpackView() {
+    if (player.backpack.isEmpty) {
+      return SliverToBoxAdapter(child: buildEmptyBackpack().padV(30));
+    }
+    var length = accepted.length;
+    if (showUnaccepted) {
+      length += unaccepted.length;
+    }
+    return SliverGrid(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 180,
+        childAspectRatio: 1.5,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        childCount: length,
+        (ctx, i) {
+          if (i < accepted.length) {
+            return buildItem(accepted[i], accepted: true);
+          } else {
+            return buildItem(unaccepted[i - accepted.length], accepted: false);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildItem(ItemStack stack, {required bool accepted}) {
+    final onSelect = widget.onSelect;
+    return CardButton(
+      elevation: accepted ? 4 : 0,
+      onTap: !accepted || onSelect == null
+          ? null
+          : () {
+              onSelect(stack);
+            },
+      child: ItemStackCell(stack),
     );
   }
 }

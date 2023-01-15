@@ -4,26 +4,26 @@ import 'dart:math';
 class Rand {
   Rand._();
 
-  static Random _rand = Random();
+  static Random backend = Random();
 
   static void setSeed(core.int seed) {
-    _rand = Random(seed);
+    backend = Random(seed);
   }
 
   static core.int int(core.int min, core.int max) {
-    return _rand.nextInt(max - min) + min;
+    return backend.nextInt(max - min) + min;
   }
 
   static core.bool bool() {
-    return _rand.nextInt(2) == 1;
+    return backend.nextInt(2) == 1;
   }
 
   static core.double float(core.double min, core.double max) {
-    return _rand.nextDouble() * (max - min) + min;
+    return backend.nextDouble() * (max - min) + min;
   }
 
   static core.double one() {
-    return _rand.nextDouble();
+    return backend.nextDouble();
   }
 
   static core.double fluctuate(core.double fluctuate, [core.double basedOn = 1]) {
@@ -35,5 +35,9 @@ class Rand {
 extension RandomX on Random {
   core.double float(core.double min, core.double max) {
     return nextDouble() * (max - min) + min;
+  }
+
+  core.double one() {
+    return nextDouble();
   }
 }

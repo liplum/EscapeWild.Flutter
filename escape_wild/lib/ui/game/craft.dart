@@ -183,8 +183,8 @@ class CraftingSheet extends StatefulWidget {
 class _CraftingSheetState extends State<CraftingSheet> {
   CraftRecipeProtocol get recipe => widget.recipe;
   final List<ItemStackReqSlot> itemStackReqSlots = [];
-  List<ItemStack> accepted = [];
-  List<ItemStack> unaccepted = [];
+  List<ItemStack> accepted = const [];
+  List<ItemStack> unaccepted = const [];
 
   @override
   void initState() {
@@ -196,21 +196,16 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   void updateBackpackFilter() {
-    accepted.clear();
-    unaccepted.clear();
-    for (final item in player.backpack.items) {
-      var isAccepted = false;
+    final p = player.backpack.separateMatchedFromUnmatched((stack) {
       for (final slot in itemStackReqSlots) {
-        if (slot.matcher.typeOnly(item.meta)) {
-          accepted.add(item);
-          isAccepted = true;
-          break;
+        if (slot.matcher.typeOnly(stack.meta)) {
+          return true;
         }
       }
-      if (!isAccepted) {
-        unaccepted.add(item);
-      }
-    }
+      return false;
+    });
+    accepted = p.key;
+    unaccepted = p.value;
     setState(() {});
   }
 
@@ -333,7 +328,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
 
   void gotoFirstMatchedSlot(ItemStack item) {
     for (final slot in itemStackReqSlots) {
-      if (slot.matcher.exact(item)) {
+      if (slot.matcher.exact(item).isMatched) {
         slot.stack = item;
         accepted.remove(item);
         setState(() {});

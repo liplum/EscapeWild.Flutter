@@ -128,14 +128,14 @@ extension BackpackX on Backpack {
     return matcher.filterExactMatchedStacks(items).toList();
   }
 
-  MapEntry<List<ItemStack>, List<ItemStack>> splitMatchedAndUnmatched(
-    ItemMatcher matcher, {
-    bool exact = true,
-  }) {
+  /// Separate the [items] into matched and unmatched.
+  MapEntry<List<ItemStack>, List<ItemStack>> separateMatchedFromUnmatched(
+    bool Function(ItemStack stack) matcher,
+  ) {
     final matched = <ItemStack>[];
     final unmatched = <ItemStack>[];
     for (final item in items) {
-      if (exact ? matcher.exact(item) : matcher.typeOnly(item.meta)) {
+      if (matcher(item)) {
         matched.add(item);
       } else {
         unmatched.add(item);
