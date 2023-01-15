@@ -5,6 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'craft.g.dart';
 
 class CraftType with Moddable {
+  @override
   final String name;
 
   CraftType(this.name);
@@ -29,6 +30,7 @@ class CraftType with Moddable {
 }
 
 class CraftRecipeCat with Moddable {
+  @override
   final String name;
 
   CraftRecipeCat(this.name);
@@ -65,6 +67,7 @@ abstract class CraftRecipeProtocol with Moddable {
   final CraftRecipeCat cat;
   @JsonKey(fromJson: CraftType.named, toJson: _craftType2Name)
   final CraftType craftType;
+  @override
   @JsonKey()
   final String name;
 

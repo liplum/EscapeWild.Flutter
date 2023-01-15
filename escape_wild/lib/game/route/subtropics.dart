@@ -21,7 +21,7 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
     route.addAll(genForest(route, (dst * 0.2).toInt()));
     route.addAll(genRiverside(route, (dst * 0.2).toInt()));
     // randomly add a hut before cave.
-    route.insert(Rand.int(0, route.placeCount - 1), HutPlace("hut"));
+    route.insert(Rand.i(0, route.placeCount - 1), HutPlace("hut"));
     route.addAll(genCave(route, (dst * 0.1).toInt()));
     route.addAll(genPlain(route, (dst * 0.15).toInt()));
     route.add(VillagePlace("village"));
@@ -316,7 +316,6 @@ class ForestPlace extends SubtropicsPlace {
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
     isToolBroken = player.damageTool(tool.item, comp, dmg * 10.0);
-    await showGain(ActionType.fish, gain);
     if (isToolBroken) {
       await showToolBroken(ActionType.cutDownTree, tool.item);
     }
@@ -402,7 +401,7 @@ class RiversidePlace extends SubtropicsPlace {
     final gain = <ItemStack>[];
     randGain(berry * p, gain, () => Foods.berry.create(massF: Rand.fluctuate(0.2)), 1);
     randGain(clearWater * p, gain, () => Foods.clearWater.create(massF: Rand.fluctuate(0.2)), 2);
-    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.float(1.2, 2.2)), 2);
+    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.f(1.2, 2.2)), 2);
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
@@ -445,7 +444,7 @@ class CavePlace extends SubtropicsPlace {
     final p = (maxExploreTimes - exploreCount) / maxExploreTimes;
     final gain = <ItemStack>[];
     randGain(dirtyWater * p, gain, () => Foods.dirtyWater.create(massF: Rand.fluctuate(0.2)), 1);
-    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.float(1.2, 2.2)), 2);
+    randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.f(1.2, 2.2)), 2);
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
@@ -490,8 +489,8 @@ class HutPlace extends SubtropicsPlace {
         gain.addItemOrMerge(Tools.oldFishRod.create());
       }
     } else if (exploreCount == 2) {
-      gain.addItemOrMerge(Stuff.log.create(massF: Rand.float(1.0, 2.0)));
-      final r = Rand.float(0.0, trap + gun);
+      gain.addItemOrMerge(Stuff.log.create(massF: Rand.f(1.0, 2.0)));
+      final r = Rand.f(0.0, trap + gun);
       if (r < trap) {
         gain.addItemOrMerge(Tools.bearTrap.create());
       } else if (r < trap + gun) {

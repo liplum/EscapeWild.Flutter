@@ -1,4 +1,3 @@
-import 'dart:core' as core;
 import 'dart:math';
 
 class Rand {
@@ -6,38 +5,50 @@ class Rand {
 
   static Random backend = Random();
 
-  static void setSeed(core.int seed) {
+  static void setSeed(int seed) {
     backend = Random(seed);
   }
 
-  static core.int int(core.int min, core.int max) {
+  /// [min] is inclusive, [max] is exclusive
+  static int i(int min, int max) {
     return backend.nextInt(max - min) + min;
   }
 
-  static core.bool bool() {
+  static bool b() {
     return backend.nextInt(2) == 1;
   }
 
-  static core.double float(core.double min, core.double max) {
+  /// [min] is inclusive, [max] is exclusive
+  static double f(double min, double max) {
     return backend.nextDouble() * (max - min) + min;
   }
 
-  static core.double one() {
+  static double one() {
     return backend.nextDouble();
   }
 
-  static core.double fluctuate(core.double fluctuate, [core.double basedOn = 1]) {
+  static double fluctuate(double fluctuate, [double basedOn = 1]) {
     fluctuate = fluctuate.abs();
-    return float(basedOn - fluctuate, basedOn + fluctuate);
+    return f(basedOn - fluctuate, basedOn + fluctuate);
   }
 }
 
 extension RandomX on Random {
-  core.double float(core.double min, core.double max) {
+  /// [min] is inclusive, [max] is exclusive
+  double f(double min, double max) {
     return nextDouble() * (max - min) + min;
   }
 
-  core.double one() {
+  /// [min] is inclusive, [max] is exclusive
+  int i(int min, int max) {
+    return nextInt(max - min) + min;
+  }
+
+  bool b() {
+    return nextInt(2) == 1;
+  }
+
+  double one() {
     return nextDouble();
   }
 }

@@ -41,6 +41,7 @@ extension NamedItemGetterX on String {
 ///
 class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   static final empty = Item("empty", mergeable: true, mass: 0);
+  @override
   final String name;
 
   /// Unit: [g] gram
@@ -92,6 +93,16 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   String l10nName() => i18n("item.$name.name");
 
   String l10nDescription() => i18n("item.$name.desc");
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! Item || other.runtimeType != runtimeType) return false;
+    return name == other.name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
 extension ItemX on Item {
@@ -1047,7 +1058,7 @@ class FuelComp extends ItemComp {
 
   /// If the [stack] has [WetComp], reduce the [heatValue] based on its wet.
   double getActualHeatValue(ItemStack stack) {
-    var res = heatValue;
+    var res = heatValue * stack.massMultiplier;
     // check wet
     final wet = WetComp.tryGetWet(stack);
     res *= 1.0 - wet;
@@ -1188,7 +1199,11 @@ class FireStarterComp extends ItemComp {
 
   bool tryStartFire(ItemStack stack, [Random? rand]) {
     rand ??= Rand.backend;
-    var success = rand.one() <= chance;
+    var chance = this.chance;
+    // check wet
+    final wet = WetComp.tryGetWet(stack);
+    chance *= 1.0 - wet;
+    final success = rand.one() <= chance;
     final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
       final durability = durabilityComp.getDurability(stack);

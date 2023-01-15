@@ -42,11 +42,11 @@ class ItemContents {
 extension ItemContentsX on ItemContents {
   Item? operator [](String name) => name2Item[name];
 
-  void operator <<(Item item) => name2Item[item.name] = item;
+  void operator <<(Item item) => name2Item[item.registerName] = item;
 
   void addAll(Iterable<Item> items) {
     for (final item in items) {
-      name2Item[item.name] = item;
+      this << item;
     }
   }
 }
@@ -68,7 +68,7 @@ extension CraftRecipeContentsX on CraftRecipeContents {
   List<CraftRecipeProtocol>? operator [](CraftRecipeCat cat) => cat2Recipes[cat];
 
   void operator <<(CraftRecipeProtocol recipe) {
-    name2Recipe[recipe.name] = recipe;
+    name2Recipe[recipe.registerName] = recipe;
     var list = cat2Recipes[recipe.cat];
     if (list == null) {
       list = <CraftRecipeProtocol>[];
@@ -91,11 +91,27 @@ class HardnessContents {
 extension HardnessContentsX on HardnessContents {
   Hardness? operator [](String name) => name2Hardness[name];
 
-  void operator <<(Hardness hardness) => name2Hardness[hardness.name] = hardness;
+  void operator <<(Hardness hardness) => name2Hardness[hardness.registerName] = hardness;
 
   void addAll(Iterable<Hardness> hardnessList) {
     for (final hardness in hardnessList) {
-      name2Hardness[hardness.name] = hardness;
+      this << hardness;
+    }
+  }
+}
+
+class ItemPoolContents{
+  Map<String,ItemPool> name2Pool = {};
+}
+
+extension ItemPoolContentsX on ItemPoolContents{
+  ItemPool? operator [](String name) => name2Pool[name];
+
+  void operator <<(ItemPool pool) => name2Pool[pool.registerName] = pool;
+
+  void addAll(Iterable<ItemPool> poolList) {
+    for (final name2Pool in poolList) {
+      this << name2Pool;
     }
   }
 }

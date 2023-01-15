@@ -148,6 +148,10 @@ mixin Moddable implements I18nScopeProtocol {
   @JsonKey(toJson: mod2ModIdFunc, fromJson: modId2ModFunc)
   ModProtocol mod = Vanilla.instance;
 
+  String get name;
+
+  String get registerName => mod.decorateRegisterName(name);
+
   @override
   String get i18nNamespace => mod.modId;
 

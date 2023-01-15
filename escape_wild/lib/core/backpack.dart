@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/utils/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -82,12 +81,13 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
     }
   }
 
-  /// It will remove the [item] in backpack, and won't change [item]'s state.
-  bool removeStack(ItemStack item) {
-    if (item.isEmpty) return true;
-    final hasRemoved = items.remove(item);
+  /// It will remove the [stack] in backpack, and won't change [stack]'s state.
+  bool removeStack(ItemStack stack) {
+    if (stack.isEmpty) return true;
+    final removedMass = stack.stackMass;
+    final hasRemoved = items.remove(stack);
     if (hasRemoved) {
-      mass -= item.stackMass;
+      mass -= removedMass;
       notifyListeners();
     }
     return hasRemoved;
@@ -162,20 +162,21 @@ extension BackpackX on Backpack {
     return MapEntry(matched, unmatched);
   }
 
-  /// return whether [item] is added or merged.
-  bool _addItemOrMerge(ItemStack item) {
-    if (item.isEmpty) return false;
-    if (item.meta.mergeable) {
-      final existed = getItemByIdenticalMeta(item);
+  /// return whether [addition] is added or merged.
+  bool _addItemOrMerge(ItemStack addition) {
+    if (addition.isEmpty) return false;
+    final additionMass = addition.stackMass;
+    if (addition.meta.mergeable) {
+      final existed = getItemByIdenticalMeta(addition);
       if (existed != null) {
-        item.mergeTo(existed);
+        addition.mergeTo(existed);
       } else {
-        items.add(item);
+        items.add(addition);
       }
     } else {
-      items.add(item);
+      items.add(addition);
     }
-    mass += item.stackMass;
+    mass += additionMass;
     return true;
   }
 
