@@ -32,7 +32,8 @@ class _IngameMenuState extends State<_IngameMenu> {
   Widget build(BuildContext context) {
     return [
       buildSaveGameBtn(),
-      if (kDebugMode) buildShowDebugConsoleBtn(),
+      // TODO: Unlock the debug mode for online demo.
+      if (kDebugMode || true) buildShowDebugConsoleBtn(),
     ].column(mas: MainAxisSize.min, caa: CrossAxisAlignment.stretch);
   }
 
