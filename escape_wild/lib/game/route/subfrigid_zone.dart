@@ -3,6 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:escape_wild/utils/collection.dart';
 import 'dart:math';
 
+import 'package:noitcelloc/noitcelloc.dart';
+
 part 'subfrigid_zone.g.dart';
 
 class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {

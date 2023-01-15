@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:noitcelloc/noitcelloc.dart';
 
 import 'shared.dart';
 

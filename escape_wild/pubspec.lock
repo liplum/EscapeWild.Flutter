@@ -485,6 +485,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.0"
+  noitcelloc:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4a2106a0b3564032e1a7bef2d2fa58e3ea60f440"
+      url: "https://github.com/liplum/noitcelloc.git"
+    source: git
+    version: "1.0.0"
   package_config:
     dependency: transitive
     description:
@@ -640,7 +649,7 @@ packages:
       name: rettulf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.9"
+    version: "0.0.10"
   shared_preferences:
     dependency: transitive
     description:

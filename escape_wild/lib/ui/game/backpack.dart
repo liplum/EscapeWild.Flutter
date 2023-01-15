@@ -1,6 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
 

@@ -45,11 +45,14 @@ dependencies:
     git:
       url: https://github.com/liplum/DartPackage.git
       path: platform_safe_func
+  noitcelloc:
+    git:
+      url: https://github.com/liplum/noitcelloc.git
   json_annotation: ^4.7.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   provider: ^6.0.5
-  rettulf: ^0.0.9
+  rettulf: ^0.0.10
   easy_localization: ^3.0.1
   flutter_layout_grid: ^2.0.1
   easy_localization_loader: ^1.0.1+1

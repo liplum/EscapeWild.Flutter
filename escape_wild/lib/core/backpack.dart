@@ -4,6 +4,7 @@ import 'package:escape_wild/utils/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:noitcelloc/noitcelloc.dart';
 
 part 'backpack.g.dart';
 

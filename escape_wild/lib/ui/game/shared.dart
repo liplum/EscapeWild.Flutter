@@ -95,24 +95,21 @@ class ItemCellTheme {
 
 class ItemCell extends StatelessWidget {
   final Item item;
-  final double nameOpacity;
+  final ItemCellTheme theme;
 
   const ItemCell(
-      this.item, {
-        super.key,
-        this.nameOpacity = 1,
-      });
+    this.item, {
+    super.key,
+    this.theme = ItemCellTheme.$default,
+  });
 
   @override
   Widget build(BuildContext context) {
-    Widget title = AutoSizeText(
+    final title = AutoSizeText(
       item.l10nName(),
       style: context.textTheme.titleLarge,
       textAlign: TextAlign.center,
-    );
-    if (nameOpacity < 1) {
-      title = Opacity(opacity: 0.5, child: title);
-    }
+    ).opacityOrNot(opacity: theme.nameOpacity).center();
     return ListTile(
       title: title,
       dense: true,
@@ -123,12 +120,14 @@ class ItemCell extends StatelessWidget {
 class ItemStackCellTheme extends ItemCellTheme {
   final bool showMass;
   final bool showProgressBar;
+  final double progressBarOpacity;
   final EdgeInsetsGeometry pad;
   static const $default = ItemStackCellTheme();
 
   const ItemStackCellTheme({
     this.showMass = true,
     this.showProgressBar = true,
+    this.progressBarOpacity = 0.55,
     super.nameOpacity = 1,
     this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
   });
@@ -137,12 +136,14 @@ class ItemStackCellTheme extends ItemCellTheme {
   ItemStackCellTheme copyWith({
     bool? showMass,
     bool? showProgressBar,
+    double? progressBarOpacity,
     double? nameOpacity = 1,
     EdgeInsetsGeometry? pad,
   }) =>
       ItemStackCellTheme(
         showMass: showMass ?? this.showMass,
         showProgressBar: showProgressBar ?? this.showProgressBar,
+        progressBarOpacity: progressBarOpacity ?? this.progressBarOpacity,
         nameOpacity: nameOpacity ?? this.nameOpacity,
         pad: pad ?? this.pad,
       );
@@ -160,7 +161,7 @@ class ItemStackCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tile = ListTile(
+    final tile = ListTile(
       title: AutoSizeText(
         stack.meta.l10nName(),
         maxLines: 2,
@@ -170,20 +171,13 @@ class ItemStackCell extends StatelessWidget {
       subtitle: !theme.showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: !theme.showMass ? null : theme.pad,
-    );
-    if (theme.nameOpacity < 1) {
-      tile = Opacity(
-        opacity: theme.nameOpacity,
-        child: tile,
-      );
-    }
-    tile = tile.center();
-    if (!theme.showProgressBar) return tile;
+    ).opacityOrNot(opacity: theme.nameOpacity).center();
+    if (!theme.showProgressBar || theme.progressBarOpacity <= 0) return tile;
     final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
       final ratio = durabilityComp.durabilityRatio(stack);
       return [
-        Opacity(opacity: 0.55, child: AttrProgress(value: ratio))
+        Opacity(opacity: theme.progressBarOpacity, child: AttrProgress(value: ratio))
             .align(
               at: const Alignment(1.0, -0.86),
             )
@@ -198,6 +192,7 @@ class ItemStackCell extends StatelessWidget {
 
 class NullItemCell extends StatelessWidget {
   final ItemCellTheme theme;
+
   const NullItemCell({super.key, this.theme = ItemCellTheme.$default});
 
   @override
@@ -631,7 +626,7 @@ class ItemStackReqCell extends StatelessWidget {
               onNotInBackpack: onNotInBackpack ??
                   (item) => ItemCell(
                         item,
-                        nameOpacity: opacityOnMissing,
+                        theme: const ItemCellTheme(nameOpacity: opacityOnMissing),
                       ),
               onInBackpack: onInBackpack ??
                   (stack) => ItemStackCell(stack,
