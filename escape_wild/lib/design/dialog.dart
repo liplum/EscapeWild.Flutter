@@ -108,6 +108,7 @@ extension DialogEx on BuildContext {
       ),
     );
   }
+
   Future<int?> show123({
     required String title,
     Widget? titleTrailing,

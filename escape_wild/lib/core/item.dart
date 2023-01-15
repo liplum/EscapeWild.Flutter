@@ -203,6 +203,7 @@ class ContainerComp extends ContainerCompProtocol {
 
   @override
   bool checkPossibleAccept(ContainerItemStack container, ItemStack outer) {
+    if (outer.meta.isContainer) return false;
     final inner = container.inner;
     if (inner == null) {
       // container is empty

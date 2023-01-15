@@ -83,6 +83,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     return res;
   }
 }
+
 List<SubFrigidZonePlace> _placesFromJson(dynamic json) => deserializeList<SubFrigidZonePlace>(json);
 
 @JsonSerializable()
@@ -98,8 +99,8 @@ class SubFrigidZoneRoute extends RouteProtocol {
 
   int get placeCount => places.length;
 
-  double routeProgress = 0.0;//勾股定理一下
-  double getRouteProgress() => routeProgress;//
+  double routeProgress = 0.0; //勾股定理一下
+  double getRouteProgress() => routeProgress; //
 
   void add(SubFrigidZonePlace place) {
     places.add(place);

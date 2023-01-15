@@ -1,11 +1,7 @@
 abstract class ExploreActionProtocol {}
 
 /// [ExplorePlace]
-class ExploreSelectPlace extends ExploreActionProtocol {
-
-}
+class ExploreSelectPlace extends ExploreActionProtocol {}
 
 /// [ExploreSelectPlace]
-class ExplorePlace {
-
-}
+class ExplorePlace {}

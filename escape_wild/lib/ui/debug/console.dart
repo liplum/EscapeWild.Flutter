@@ -90,7 +90,7 @@ class _ItemGridState extends State<_ItemGrid> {
   Widget buildCell(Item item) {
     return CardButton(
       elevation: 5,
-      onTap: (){
+      onTap: () {
         player.backpack.addItemOrMerge(item.create());
       },
       child: ItemCell(

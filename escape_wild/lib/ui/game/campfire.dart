@@ -1,5 +1,6 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
+import 'package:escape_wild/r.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -17,25 +18,100 @@ class _CampfirePageState extends State<CampfirePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: player.$fireState << (ctx, state, _) => buildBody(state),
+      body: player.$fireState <<
+          (ctx, state, _) => AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: buildBody(state),
+              ),
     );
   }
 
   Widget buildBody(FireState fireState) {
     if (fireState.active) {
-      return const Placeholder();
+      return const CookPage();
     } else {
       return const FireStartingPage();
     }
   }
 }
 
-Widget buildCampfire(BuildContext ctx) {
-  return SvgPicture.asset(
-    "assets/img/campfire.svg",
-    color: ctx.themeColor,
-    placeholderBuilder: (_) => const Placeholder(),
-  ).constrained(maxW: 200, maxH: 200);
+class CampfireImage extends StatelessWidget {
+  final Color? color;
+
+  const CampfireImage({
+    super.key,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      "assets/img/campfire.svg",
+      //color: context.themeColor,
+      color: color ?? context.themeColor,
+      placeholderBuilder: (_) => const Placeholder(),
+    ).constrained(maxW: 200, maxH: 200);
+  }
+}
+
+class AnimatedCampfireImage extends StatefulWidget {
+  final Color notCookingColor;
+  final Color cookingColor;
+  final ValueNotifier<bool> $isCooking;
+
+  const AnimatedCampfireImage({
+    super.key,
+    required this.notCookingColor,
+    required this.cookingColor,
+    required this.$isCooking,
+  });
+
+  @override
+  State<AnimatedCampfireImage> createState() => _AnimatedCampfireImageState();
+}
+
+class _AnimatedCampfireImageState extends State<AnimatedCampfireImage> with SingleTickerProviderStateMixin {
+  late AnimationController _animationCtrl;
+  late Animation _burningAnimation;
+  bool? lastCookingState;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _burningAnimation = ColorTween(begin: widget.notCookingColor, end: widget.cookingColor).animate(_animationCtrl);
+    widget.$isCooking.addListener(onCookingStateChange);
+  }
+
+  void onCookingStateChange() {
+    final newState = widget.$isCooking.value;
+    if (newState != lastCookingState) {
+      if (newState) {
+        // start cooking
+        _animationCtrl.forward();
+      } else {
+        // end cooking
+        _animationCtrl.reverse();
+      }
+      lastCookingState = newState;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _burningAnimation,
+      builder: (ctx, _) => CampfireImage(
+        color: _burningAnimation.value,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    widget.$isCooking.removeListener(onCookingStateChange);
+    super.dispose();
+  }
 }
 
 class FireStartingPage extends StatefulWidget {
@@ -69,18 +145,18 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
   Widget buildPortrait() {
     return [
-      buildCampfire(context),
+      const CampfireImage(),
       buildFireStarterCell(),
-      buildTryButton(),
+      buildStartFireButton(),
     ].column(maa: MainAxisAlignment.spaceEvenly).center();
   }
 
   Widget buildLandscape() {
     return [
-      buildCampfire(context).expanded(),
+      const CampfireImage().expanded(),
       [
         buildFireStarterCell(),
-        buildTryButton(),
+        buildStartFireButton(),
       ]
           .column(
             caa: CrossAxisAlignment.center,
@@ -120,10 +196,10 @@ class _FireStartingPageState extends State<FireStartingPage> {
     );
   }
 
-  Widget buildTryButton() {
+  Widget buildStartFireButton() {
     final maybeFireStarter = fireStarterSlot.stack;
     return CardButton(
-      elevation: maybeFireStarter.isNotEmpty ? 12 : 0,
+      elevation: maybeFireStarter.isNotEmpty ? 12 : 0.5,
       onTap: maybeFireStarter.isEmpty
           ? null
           : () async {
@@ -158,8 +234,35 @@ class CookPage extends StatefulWidget {
 }
 
 class _CookPageState extends State<CookPage> {
+  var $isCooking = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return [
+      buildBackground(),
+      buildBody(),
+    ].stack();
+  }
+
+  Widget buildBackground() {
+    return AnimatedCampfireImage(
+      notCookingColor: context.themeColor,
+      cookingColor: R.fireColor,
+      $isCooking: $isCooking,
+    ).center().opacity(0.35);
+  }
+
+  Widget buildBody() {
+    return ElevatedButton(
+      onPressed: () {
+        $isCooking.value = !$isCooking.value;
+      },
+      child: "Cook".text(style: TextStyle(fontSize: 20)),
+    ).align(at: Alignment.bottomCenter);
   }
 }

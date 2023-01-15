@@ -625,7 +625,7 @@ class ItemStackReqCell extends StatelessWidget {
     if (!satisfyCondition) {
       shape = RoundedRectangleBorder(
         side: BorderSide(
-          color: context.theme.colorScheme.outline,
+          color: context.isDarkMode ? context.colorScheme.outline : context.colorScheme.secondary,
         ),
         borderRadius: context.cardBorderRadius ?? BorderRadius.zero,
       );
