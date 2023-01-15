@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:escape_wild/utils/collection.dart';
 import 'dart:math';
 
-//part 'cole_temperate_zone.g.dart';
+part 'subfrigid_zone.g.dart';
 
 class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   @override
@@ -39,7 +39,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   List<SubFrigidZonePlace> genSnowfield(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
-      final place = IceSheet("icesheet");
+      final place = Snowfield("snowfield");
       res.add(place);
     }
     return res;
@@ -48,7 +48,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   List<SubFrigidZonePlace> genRivers(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
-      final place = IceSheet("icesheet");
+      final place = Rivers("rivers");
       res.add(place);
     }
     return res;
@@ -57,7 +57,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   List<SubFrigidZonePlace> genSwamp(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
-      final place = IceSheet("icesheet");
+      final place = Swamp("swamp");
       res.add(place);
     }
     return res;
@@ -66,35 +66,38 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
   List<SubFrigidZonePlace> genConiferousForest(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
-      final place = IceSheet("icesheet");
+      final place = ConiferousForest("coniferousforest");
       res.add(place);
     }
     return res;
   }
 
-  List<SubFrigidZonePlace> Tundra(SubFrigidZoneRoute route, int number) {
+  List<SubFrigidZonePlace> genTundra(SubFrigidZoneRoute route, int number) {
     final res = <SubFrigidZonePlace>[];
     for (var i = 0; i < number; i++) {
-      final place = IceSheet("icesheet");
+      final place = Tundra("tundra");
       res.add(place);
     }
     return res;
   }
 }
+List<SubFrigidZonePlace> _placesFromJson(dynamic json) => deserializeList<SubFrigidZonePlace>(json);
 
+@JsonSerializable()
 class SubFrigidZoneRoute extends RouteProtocol {
   @override
+  @JsonKey()
   final String name;
 
   SubFrigidZoneRoute(this.name);
 
+  @JsonKey(fromJson: _placesFromJson)
   List<SubFrigidZonePlace> places = [];
 
   int get placeCount => places.length;
 
-  double routeProgress = 0.0;
-
-  double getRouteProgress() => routeProgress;
+  double routeProgress = 0.0;//勾股定理一下
+  double getRouteProgress() => routeProgress;//
 
   void add(SubFrigidZonePlace place) {
     places.add(place);
@@ -112,9 +115,7 @@ class SubFrigidZoneRoute extends RouteProtocol {
     place.route = this;
   }
 
-  @override
-  // TODO: implement initialPlace
-  PlaceProtocol get initialPlace => places[0];
+  //factory SubFrigidZoneRoute.fromJson(Map<String, dynamic> json) => //_$SubtropicsRouteFromJson(json);
 
   @override
   void onRestored() {
@@ -124,14 +125,19 @@ class SubFrigidZoneRoute extends RouteProtocol {
   }
 
   @override
+  PlaceProtocol get initialPlace => places[0]; //初始地点不要
+
+  @override
   getRestoreIdOf(covariant PlaceProtocol place) {
     return places.indexOfAny(place);
   }
+  //返回具体地点也需要2维图来
 
   @override
   PlaceProtocol restoreById(restoreId) {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
+  //不太理解这个
 
   static const String type = "SubFrigidZoneRoute";
 
