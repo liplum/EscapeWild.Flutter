@@ -5,12 +5,12 @@ import 'package:rettulf/rettulf.dart';
 
 const _kWindowAspectRatio = 4 / 3;
 
-Future<TopEntry> showWindow({
+TopEntry showWindow({
   Key? key,
   required String title,
   required WidgetBuilder builder,
   BuildContext? context,
-}) async {
+}) {
   return showTop(
     context: context,
     key: key,
@@ -22,7 +22,7 @@ Future<TopEntry> showWindow({
   );
 }
 
-Future<void> closeWindowByKey(Key key, {BuildContext? context}) async {
+void closeWindowByKey(Key key, {BuildContext? context}) {
   final entry = getTopEntry(key: key, context: context);
   entry?.closeWindow();
 }
@@ -38,6 +38,7 @@ class Window extends StatefulWidget {
   final double aspectRatio;
   final CloseableProtocol? closeable;
   final WidgetBuilder builder;
+  final Duration fadeDuration;
 
   const Window({
     super.key,
@@ -45,6 +46,7 @@ class Window extends StatefulWidget {
     this.closeable,
     required this.builder,
     this.aspectRatio = _kWindowAspectRatio,
+    this.fadeDuration = const Duration(milliseconds: 200),
   });
 
   @override
@@ -105,7 +107,7 @@ class _WindowState extends State<Window> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: opacity,
-      duration: const Duration(milliseconds: 300),
+      duration: widget.fadeDuration,
       child: [
         Positioned(
           key: _mainBodyKey,
@@ -133,23 +135,6 @@ class _WindowState extends State<Window> {
       ).sized(w: windowSize.width),
       widget.builder(ctx).sizedIn(windowSize),
     ].column();
-    /* Glassmorphism
-    content = [
-        ClipRRect(
-          child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 6,
-            sigmaY: 6,
-          ),
-          child: SizedBox(
-            width: windowSize.width,
-            height: windowSize.height,
-          ),
-      ),
-        ),
-      content,
-    ].stack();
-    content = content.inCard(color: Colors.transparent);*/
     content = content.inCard();
     return content;
   }
@@ -195,7 +180,11 @@ class _WindowState extends State<Window> {
       buildTitle(ctx).expanded(),
       if (closeable != null)
         IconButton(
-            onPressed: () {
+            onPressed: () async {
+              setState(() {
+                opacity = 0.0;
+              });
+              await Future.delayed(widget.fadeDuration);
               closeable.closeWindow();
             },
             icon: const Icon(Icons.close)),

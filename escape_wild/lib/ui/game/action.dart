@@ -28,14 +28,7 @@ class _ActionPageState extends State<ActionPage> {
                   style: ctx.textTheme.headlineMedium,
                 ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await context.showIngameMenuDialog();
-            },
-            icon: const Icon(Icons.settings),
-          ),
-        ],
+        actions: buildAppBarActions(),
       ),
       body: [
         player.$attrs << (ctx, attr, __) => buildHud(attr),
@@ -53,6 +46,7 @@ class _ActionPageState extends State<ActionPage> {
               (ctx, l, __) => "${l?.displayName()}".text(
                     style: ctx.textTheme.headlineMedium,
                   ),
+          actions: buildAppBarActions(),
           centerTitle: true,
           backgroundColor: Colors.transparent,
         ),
@@ -63,6 +57,17 @@ class _ActionPageState extends State<ActionPage> {
       ).expanded(),
       const ActionButtonArea().expanded(),
     ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
+  }
+
+  List<Widget>? buildAppBarActions() {
+    return [
+      IconButton(
+        onPressed: () async {
+          await context.showIngameMenuDialog();
+        },
+        icon: const Icon(Icons.settings),
+      ),
+    ];
   }
 
   Widget buildHud(AttrModel attr) {
