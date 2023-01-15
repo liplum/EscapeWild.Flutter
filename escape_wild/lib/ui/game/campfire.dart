@@ -76,11 +76,10 @@ class _CampfirePageState extends State<CampfirePage> {
       slot: fireStarterSlot,
       onTapSatisfied: onSelectFireStarter,
       onTapUnsatisfied: onSelectFireStarter,
-      onInBackpack: (stack) => ItemStackCell(stack,
-          theme: const ItemStackCellTheme(
-            showMass: false,
-            showProgressBar: false,
-          )),
+      onInBackpack: const ItemStackCellTheme(
+        showMass: false,
+        showProgressBar: false,
+      ),
     ).constrained(maxW: 180, maxH: 80);
     return cell;
   }

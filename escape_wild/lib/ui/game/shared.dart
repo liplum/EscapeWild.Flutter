@@ -78,15 +78,16 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 }
 
 class ItemCellTheme {
-  final double nameOpacity;
-  static const $default = ItemCellTheme();
+  final double? nameOpacity;
 
   const ItemCellTheme({
-    this.nameOpacity = 1,
+    this.nameOpacity,
   });
 
+  double get $nameOpacity => nameOpacity ?? 1;
+
   ItemCellTheme copyWith({
-    double? nameOpacity = 1,
+    double? nameOpacity,
   }) =>
       ItemCellTheme(
         nameOpacity: nameOpacity ?? this.nameOpacity,
@@ -100,7 +101,7 @@ class ItemCell extends StatelessWidget {
   const ItemCell(
     this.item, {
     super.key,
-    this.theme = ItemCellTheme.$default,
+    this.theme = const ItemCellTheme(),
   });
 
   @override
@@ -109,7 +110,7 @@ class ItemCell extends StatelessWidget {
       item.l10nName(),
       style: context.textTheme.titleLarge,
       textAlign: TextAlign.center,
-    ).opacityOrNot(opacity: theme.nameOpacity).center();
+    ).opacityOrNot(theme.$nameOpacity);
     return ListTile(
       title: title,
       dense: true,
@@ -118,11 +119,10 @@ class ItemCell extends StatelessWidget {
 }
 
 class ItemStackCellTheme extends ItemCellTheme {
-  final bool showMass;
-  final bool showProgressBar;
-  final double progressBarOpacity;
-  final EdgeInsetsGeometry pad;
-  static const $default = ItemStackCellTheme();
+  final bool? showMass;
+  final bool? showProgressBar;
+  final double? progressBarOpacity;
+  final EdgeInsetsGeometry? pad;
 
   const ItemStackCellTheme({
     this.showMass = true,
@@ -132,12 +132,20 @@ class ItemStackCellTheme extends ItemCellTheme {
     this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
   });
 
+  bool get $showMass => showMass ?? true;
+
+  bool get $showProgressBar => showProgressBar ?? true;
+
+  double get $progressBarOpacity => progressBarOpacity ?? 0.55;
+
+  EdgeInsetsGeometry get $pad => pad ?? const EdgeInsets.symmetric(vertical: 10, horizontal: 8);
+
   @override
   ItemStackCellTheme copyWith({
     bool? showMass,
     bool? showProgressBar,
     double? progressBarOpacity,
-    double? nameOpacity = 1,
+    double? nameOpacity,
     EdgeInsetsGeometry? pad,
   }) =>
       ItemStackCellTheme(
@@ -156,7 +164,7 @@ class ItemStackCell extends StatelessWidget {
   const ItemStackCell(
     this.stack, {
     super.key,
-    this.theme = ItemStackCellTheme.$default,
+    this.theme = const ItemStackCellTheme(),
   });
 
   @override
@@ -168,16 +176,16 @@ class ItemStackCell extends StatelessWidget {
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
-      subtitle: !theme.showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
+      subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
       dense: true,
-      contentPadding: !theme.showMass ? null : theme.pad,
-    ).opacityOrNot(opacity: theme.nameOpacity).center();
-    if (!theme.showProgressBar || theme.progressBarOpacity <= 0) return tile;
+      contentPadding: !theme.$showMass ? null : theme.pad,
+    ).opacityOrNot(theme.$nameOpacity).center();
+    if (!theme.$showProgressBar || theme.$progressBarOpacity <= 0) return tile;
     final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
       final ratio = durabilityComp.durabilityRatio(stack);
       return [
-        Opacity(opacity: theme.progressBarOpacity, child: AttrProgress(value: ratio))
+        Opacity(opacity: theme.$progressBarOpacity, child: AttrProgress(value: ratio))
             .align(
               at: const Alignment(1.0, -0.86),
             )
@@ -193,7 +201,10 @@ class ItemStackCell extends StatelessWidget {
 class NullItemCell extends StatelessWidget {
   final ItemCellTheme theme;
 
-  const NullItemCell({super.key, this.theme = ItemCellTheme.$default});
+  const NullItemCell({
+    super.key,
+    this.theme = const ItemCellTheme(),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -203,7 +214,7 @@ class NullItemCell extends StatelessWidget {
         "?",
         style: context.textTheme.titleLarge,
         textAlign: TextAlign.center,
-      ),
+      ).opacityOrNot(theme.$nameOpacity),
       dense: true,
     );
   }
@@ -584,9 +595,9 @@ class ItemStackReqCell extends StatelessWidget {
   final ItemStackReqSlot slot;
   final VoidCallback? onTapSatisfied;
   final VoidCallback? onTapUnsatisfied;
-  final Widget Function(ItemStack stack)? onSatisfy;
-  final Widget Function(Item item)? onNotInBackpack;
-  final Widget Function(ItemStack item)? onInBackpack;
+  final ItemStackCellTheme onSatisfy;
+  final ItemCellTheme onNotInBackpack;
+  final ItemStackCellTheme onInBackpack;
   static const opacityOnMissing = 0.5;
 
   const ItemStackReqCell({
@@ -594,9 +605,9 @@ class ItemStackReqCell extends StatelessWidget {
     required this.slot,
     this.onTapSatisfied,
     this.onTapUnsatisfied,
-    this.onSatisfy,
-    this.onNotInBackpack,
-    this.onInBackpack,
+    this.onSatisfy = const ItemStackCellTheme(),
+    this.onNotInBackpack = const ItemCellTheme(),
+    this.onInBackpack = const ItemStackCellTheme(),
   });
 
   @override
@@ -620,20 +631,21 @@ class ItemStackReqCell extends StatelessWidget {
             },
       shape: shape,
       child: satisfyCondition
-          ? onSatisfy?.call(slot.stack) ?? ItemStackCell(slot.stack)
+          ? ItemStackCell(
+              slot.stack,
+              theme: onSatisfy,
+            )
           : DynamicMatchingCell(
               matcher: slot.matcher,
-              onNotInBackpack: onNotInBackpack ??
-                  (item) => ItemCell(
-                        item,
-                        theme: const ItemCellTheme(nameOpacity: opacityOnMissing),
-                      ),
-              onInBackpack: onInBackpack ??
-                  (stack) => ItemStackCell(stack,
-                      theme: const ItemStackCellTheme(
-                        nameOpacity: opacityOnMissing,
-                        showMass: false,
-                      )),
+              onNotInBackpack: (item) => ItemCell(
+                item,
+                theme: onNotInBackpack.copyWith(nameOpacity: opacityOnMissing),
+              ),
+              onInBackpack: (stack) => ItemStackCell(stack,
+                  theme: onInBackpack.copyWith(
+                    nameOpacity: opacityOnMissing,
+                    showMass: false,
+                  )),
             ),
     );
   }
