@@ -23,14 +23,14 @@ class CraftRecipes {
         ],
         output: () => Tools.handDrillKit,
       ),
-      TaggedCraftRecipe(
+      MixCraftRecipe(
         "straw-rope",
         CraftRecipeCat.refine,
         tags: [200.g("straw")],
         output: () => Stuff.strawRope,
         outputMass: 100,
       ),
-      TaggedCraftRecipe(
+      MixCraftRecipe(
         "stone-axe",
         CraftRecipeCat.tool,
         tags: [
@@ -40,6 +40,13 @@ class CraftRecipes {
         ],
         output: () => Tools.stoneAxe,
       ),
+/*      MixCraftRecipe("water-filter", CraftRecipeCat.survival,
+          names: [20.g("plastic-bottle")],
+          tags: [
+            300.g("sand"),
+            200.g("straw"),
+          ],
+          output: () => Tools.waterFilter)*/
     ]);
   }
 }

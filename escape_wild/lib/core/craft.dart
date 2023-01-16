@@ -38,6 +38,7 @@ class CraftRecipeCat with Moddable {
   CraftRecipeCat.named(this.name);
 
   static final CraftRecipeCat tool = CraftRecipeCat("tool"),
+      survival = CraftRecipeCat("survival"),
       food = CraftRecipeCat("food"),
       fire = CraftRecipeCat("fire"),
       refine = CraftRecipeCat("refine"),
@@ -87,6 +88,7 @@ abstract class CraftRecipeProtocol with Moddable {
 
   ItemStack onCraft(List<ItemStack> inputs);
 
+  /// The order of [inputs] should be the same as [inputSlots].
   void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume);
 }
 
@@ -102,10 +104,20 @@ class StringMassEntry {
   factory StringMassEntry.fromJson(Map<String, dynamic> json) => _$StringMassEntryFromJson(json);
 
   Map<String, dynamic> toJson() => _$StringMassEntryToJson(this);
+
+  @override
+  String toString() {
+    final mass = this.mass;
+    return mass == null ? str : "$str ${mass}g";
+  }
 }
 
 @JsonSerializable(createToJson: false)
-class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
+class MixCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
+  /// Item names.
+  @JsonKey()
+  final List<StringMassEntry> names;
+
   /// Item tags.
   @JsonKey()
   final List<StringMassEntry> tags;
@@ -114,19 +126,30 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
   @override
   @JsonKey(ignore: true)
   List<ItemMatcher> toolSlots = [];
+
+  /// The order of inputs should be
+  /// - [names]
+  /// - [tags]
   @override
   @JsonKey(ignore: true)
   List<ItemMatcher> inputSlots = [];
   final int? outputMass;
 
-  TaggedCraftRecipe(
+  MixCraftRecipe(
     super.name,
     super.cat, {
-    required this.tags,
+    this.names = const [],
+    this.tags = const [],
     super.craftType,
     this.outputMass,
     required this.output,
   }) {
+    for (final name in names) {
+      inputSlots.add(ItemMatcher(
+        typeOnly: (item) => item.name == name.str,
+        exact: (item) => item.meta.name == name.str ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
+      ));
+    }
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(tag.str),
@@ -142,8 +165,8 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
   @override
   Item get outputItem => output();
 
-  factory TaggedCraftRecipe.fromJson(Map<String, dynamic> json) => _$TaggedCraftRecipeFromJson(json);
-  static const type = "TaggedCraftRecipe";
+  factory MixCraftRecipe.fromJson(Map<String, dynamic> json) => _$MixCraftRecipeFromJson(json);
+  static const type = "MixCraftRecipe";
 
   @override
   String get typeName => type;
@@ -155,65 +178,16 @@ class TaggedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProto
 
   @override
   void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
+    var i = 0;
+    for (final name in names) {
+      final input = inputs[i];
+      consume(input, name.mass);
+      i++;
+    }
     for (final tag in tags) {
-      final input = inputs.findFirstByTag(tag.str);
-      assert(input != null, "$tag not found in $inputs");
-      if (input == null) continue;
+      final input = inputs[i];
       consume(input, tag.mass);
-    }
-  }
-}
-
-@JsonSerializable(createToJson: false)
-class NamedCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
-  /// Item names.
-  final List<StringMassEntry> items;
-  @JsonKey(fromJson: NamedItemGetter.create)
-  final ItemGetter<Item> output;
-  @override
-  @JsonKey(ignore: true)
-  List<ItemMatcher> toolSlots = [];
-  @override
-  @JsonKey(ignore: true)
-  List<ItemMatcher> inputSlots = [];
-
-  NamedCraftRecipe(
-    super.name,
-    super.cat, {
-    super.craftType,
-    required this.items,
-    required this.output,
-  }) {
-    for (final req in items) {
-      inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.name == req.str,
-        exact: (item) => item.meta.name == req.str ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
-      ));
-    }
-  }
-
-  @override
-  Item get outputItem => output();
-
-  static const type = "NamedCraftRecipe";
-
-  @override
-  String get typeName => type;
-
-  factory NamedCraftRecipe.fromJson(Map<String, dynamic> json) => _$NamedCraftRecipeFromJson(json);
-
-  @override
-  ItemStack onCraft(List<ItemStack> inputs) {
-    return output().create();
-  }
-
-  @override
-  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
-    for (final item in items) {
-      final input = inputs.findFirstByName(item.str);
-      assert(input != null, "$item not found in $inputs");
-      if (input == null) continue;
-      consume(input, item.mass);
+      i++;
     }
   }
 }

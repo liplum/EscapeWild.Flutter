@@ -1,6 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/content.dart';
-import 'package:escape_wild/core/item.dart';
 
 class Tools {
   Tools._();
@@ -11,6 +9,9 @@ class Tools {
   static late final Item bearTrap;
   static late final Item oldShotgun;
   static late final Item catchingNet;
+
+  // survival tool
+  static late final Item waterFilter;
 
   // fire starter
   static late final Item handDrillKit;
@@ -74,6 +75,10 @@ class Tools {
           .asFireStarter(chance: 0.4, cost: 20)
           .asFuel(heatValue: 20)
           .tagged(["wooden"]),
+    ]);
+    // survival tool
+    Contents.items.addAll([
+      waterFilter = Item.unmergeable("water-filter", mass: 500).hasDurability(max: 50),
     ]);
   }
 }

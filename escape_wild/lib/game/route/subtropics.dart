@@ -376,7 +376,7 @@ class ForestPlace extends SubtropicsPlace {
   static const maxExploreTimes = 3;
   static const berry = 0.6;
   static const nuts = 0.4;
-  static const log = 0.1;
+  static const log = 0.3;
   static const sticks = 0.4;
   static const dirtyWater = 0.1;
   static const cutDownLog = 0.9;

@@ -26,6 +26,7 @@ use-type:
 craft-recipe-cat:
   # Such as axe and trap.
   tool: Tool
+  survival: Survival
   food: Food
   # Fire, burning and combustion
   fire: Fire
@@ -171,6 +172,9 @@ item:
   sand:
     name: Sand
     desc: Ashes to ashes, dust to dust.
+  water-filter:
+    name: Water Filter
+    desc: ...
 route:
   subtropics:
     plain:

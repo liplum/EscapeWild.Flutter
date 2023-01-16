@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
@@ -43,7 +42,7 @@ class _CraftPageState extends State<CraftPage> {
     final isPortrait = context.isPortrait;
     return Scaffold(
       body: [
-        buildCatView(context).flexible(flex: isPortrait ? 3 : 3),
+        buildCatView(context).flexible(flex: isPortrait ? 4 : 3),
         const VerticalDivider(thickness: 1),
         if (isPortrait)
           buildRecipesPortrait(cat2Recipes[selectedCatIndex].value).flexible(flex: 10)
@@ -63,8 +62,9 @@ class _CraftPageState extends State<CraftPage> {
         final cat = cat2Recipes[i].key;
         final style = ctx.isPortrait ? ctx.textTheme.titleMedium : ctx.textTheme.titleLarge;
         return ListTile(
-          title: AutoSizeText(cat.l10nName(), maxLines: 1, style: style, textAlign: TextAlign.center),
+          title: cat.l10nName().autoSizeText(maxLines: 1, style: style, textAlign: TextAlign.center),
           selected: isSelected,
+          dense: true,
         ).inCard(elevation: isSelected ? 10 : null).onTap(() {
           if (selectedCatIndex != i) {
             setState(() {

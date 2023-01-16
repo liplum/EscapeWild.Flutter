@@ -11,15 +11,23 @@ SubtropicsLevel _$SubtropicsLevelFromJson(Map<String, dynamic> json) =>
       ..route = json['route'] == null
           ? null
           : SubtropicsRoute.fromJson(json['route'] as Map<String, dynamic>)
-      ..routeSeed = json['routeGeneratorSeed'] as int
+      ..routeSeed = json['routeSeed'] as int
       ..hardness = Contents.getHardnessByName(json['hardness'] as String);
 
-Map<String, dynamic> _$SubtropicsLevelToJson(SubtropicsLevel instance) =>
-    <String, dynamic>{
-      'route': instance.route,
-      'routeGeneratorSeed': instance.routeSeed,
-      'hardness': Hardness.toName(instance.hardness),
-    };
+Map<String, dynamic> _$SubtropicsLevelToJson(SubtropicsLevel instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('route', instance.route);
+  val['routeSeed'] = instance.routeSeed;
+  val['hardness'] = Hardness.toName(instance.hardness);
+  return val;
+}
 
 SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) =>
     SubtropicsRoute(
