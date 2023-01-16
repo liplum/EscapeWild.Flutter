@@ -9,6 +9,7 @@ typedef RandomGetter<T> = T Function(Random rand);
 
 /// TODO: Add to [Contents].
 class Hardness with Moddable, TagsMixin {
+  @override
   final String name;
   final ValueFixer attrCostFix;
   final ValueGetter<Times> maxFireMakingPrompt;
@@ -30,26 +31,26 @@ class Hardness with Moddable, TagsMixin {
   String localizedDesc() => I18n["hardness.$name.desc"];
   static final Hardness easy = Hardness(
     name: "easy",
-    attrCostFix: (e) => e * Rand.float(0.5, 0.8),
+    attrCostFix: (e) => e * Rand.f(0.5, 0.8),
     maxFireMakingPrompt: () => 2,
-    attrBounceFix: (e) => e * Rand.float(1.2, 1.5),
-    journeyDistance: (rand) => 40 * rand.float(0.9, 1.1),
-    resourceIntensity: () => 10 * Rand.float(0.9, 1.1),
+    attrBounceFix: (e) => e * Rand.f(1.2, 1.5),
+    journeyDistance: (rand) => 40 * rand.f(0.9, 1.1),
+    resourceIntensity: () => 10 * Rand.f(0.9, 1.1),
   );
   static final Hardness normal = Hardness(
     name: "normal",
-    attrCostFix: (e) => e * Rand.float(0.8, 1.2),
+    attrCostFix: (e) => e * Rand.f(0.8, 1.2),
     maxFireMakingPrompt: () => 4,
-    attrBounceFix: (e) => e * Rand.float(0.8, 1.2),
-    journeyDistance: (rand) => 48 * rand.float(1, 1.2),
-    resourceIntensity: () => Rand.float(0.8, 1.2),
+    attrBounceFix: (e) => e * Rand.f(0.8, 1.2),
+    journeyDistance: (rand) => 48 * rand.f(1, 1.2),
+    resourceIntensity: () => Rand.f(0.8, 1.2),
   );
   static final Hardness hard = Hardness(
     name: "hard",
-    attrCostFix: (e) => e * Rand.float(1.1, 1.5),
+    attrCostFix: (e) => e * Rand.f(1.1, 1.5),
     maxFireMakingPrompt: () => 8,
-    attrBounceFix: (e) => e * Rand.float(0.8, 1.0),
-    journeyDistance: (rand) => 55 * rand.float(1.2, 1.8),
-    resourceIntensity: () => Rand.float(0.8, 1.2),
+    attrBounceFix: (e) => e * Rand.f(0.8, 1.0),
+    journeyDistance: (rand) => 55 * rand.f(1.2, 1.8),
+    resourceIntensity: () => Rand.f(0.8, 1.2),
   );
 }

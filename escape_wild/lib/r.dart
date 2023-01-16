@@ -25,4 +25,6 @@ class R {
   static const foodColor = Color(0xfffeaa1a);
   static const waterColor = Color(0xff1ca3ec);
   static const energyColor = Color(0xfffbad67);
+  static const flameColor = Color(0xffe25822);
+  static const fuelYellowColor = Color(0xffefa537);
 }

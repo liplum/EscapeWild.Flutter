@@ -5,6 +5,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
@@ -17,18 +18,20 @@ const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
 );
 const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 160,
-  childAspectRatio: 2.2,
+  childAspectRatio: 2,
 );
 
 class AttrProgress extends ImplicitlyAnimatedWidget {
   final double value;
   final Color? color;
+  final double? minHeight;
 
   const AttrProgress({
     super.key,
     super.duration = const Duration(milliseconds: 1200),
     required this.value,
     this.color,
+    this.minHeight = 8,
     super.curve = Curves.fastLinearToSlowEaseIn,
   });
 
@@ -62,7 +65,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
   Widget buildBar(double v) {
     return LinearProgressIndicator(
       value: v,
-      minHeight: 8,
+      minHeight: widget.minHeight,
       color: widget.color,
       backgroundColor: Colors.grey.withOpacity(0.2),
     );
@@ -79,18 +82,22 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 
 class ItemCellTheme {
   final double? nameOpacity;
+  final TextStyle? nameStyle;
 
   const ItemCellTheme({
     this.nameOpacity,
+    this.nameStyle,
   });
 
   double get $nameOpacity => nameOpacity ?? 1;
 
   ItemCellTheme copyWith({
     double? nameOpacity,
+    TextStyle? nameStyle,
   }) =>
       ItemCellTheme(
         nameOpacity: nameOpacity ?? this.nameOpacity,
+        nameStyle: nameStyle ?? this.nameStyle,
       );
 }
 
@@ -108,13 +115,36 @@ class ItemCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = AutoSizeText(
       item.l10nName(),
-      style: context.textTheme.titleLarge,
+      maxLines: 2,
+      style: theme.nameStyle ?? context.textTheme.titleLarge,
       textAlign: TextAlign.center,
     ).opacityOrNot(theme.$nameOpacity);
     return ListTile(
       title: title,
       dense: true,
     ).center();
+  }
+}
+
+class NullItemCell extends StatelessWidget {
+  final ItemCellTheme theme;
+
+  const NullItemCell({
+    super.key,
+    this.theme = const ItemCellTheme(),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // never reached.
+    return ListTile(
+      title: AutoSizeText(
+        "?",
+        style: theme.nameStyle ?? context.textTheme.titleLarge,
+        textAlign: TextAlign.center,
+      ).opacityOrNot(theme.$nameOpacity),
+      dense: true,
+    );
   }
 }
 
@@ -129,6 +159,7 @@ class ItemStackCellTheme extends ItemCellTheme {
     this.showProgressBar = true,
     this.progressBarOpacity = 0.55,
     super.nameOpacity = 1,
+    super.nameStyle,
     this.pad = const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
   });
 
@@ -146,6 +177,7 @@ class ItemStackCellTheme extends ItemCellTheme {
     bool? showProgressBar,
     double? progressBarOpacity,
     double? nameOpacity,
+    TextStyle? nameStyle,
     EdgeInsetsGeometry? pad,
   }) =>
       ItemStackCellTheme(
@@ -153,6 +185,7 @@ class ItemStackCellTheme extends ItemCellTheme {
         showProgressBar: showProgressBar ?? this.showProgressBar,
         progressBarOpacity: progressBarOpacity ?? this.progressBarOpacity,
         nameOpacity: nameOpacity ?? this.nameOpacity,
+        nameStyle: nameStyle ?? this.nameStyle,
         pad: pad ?? this.pad,
       );
 }
@@ -173,7 +206,7 @@ class ItemStackCell extends StatelessWidget {
       title: AutoSizeText(
         stack.meta.l10nName(),
         maxLines: 2,
-        style: context.textTheme.titleLarge,
+        style: theme.nameStyle ?? context.textTheme.titleLarge,
         textAlign: TextAlign.center,
       ),
       subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
@@ -198,30 +231,8 @@ class ItemStackCell extends StatelessWidget {
   }
 }
 
-class NullItemCell extends StatelessWidget {
-  final ItemCellTheme theme;
-
-  const NullItemCell({
-    super.key,
-    this.theme = const ItemCellTheme(),
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // never reached.
-    return ListTile(
-      title: AutoSizeText(
-        "?",
-        style: context.textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ).opacityOrNot(theme.$nameOpacity),
-      dense: true,
-    );
-  }
-}
-
 class CardButton extends ImplicitlyAnimatedWidget {
-  final double elevation;
+  final double? elevation;
   final Widget child;
   final VoidCallback? onTap;
   final ShapeBorder? shape;
@@ -230,7 +241,7 @@ class CardButton extends ImplicitlyAnimatedWidget {
     super.key,
     super.duration = const Duration(milliseconds: 80),
     super.curve = Curves.easeInOut,
-    this.elevation = 1.0,
+    this.elevation,
     this.shape,
     this.onTap,
     required this.child,
@@ -247,8 +258,8 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
   @override
   void initState() {
     $elevation = Tween<double>(
-      begin: widget.elevation,
-      end: widget.elevation,
+      begin: widget.elevation ?? 1.0,
+      end: widget.elevation ?? 1.0,
     );
     $shape = ShapeBorderTween(
       begin: widget.shape,
@@ -275,7 +286,7 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    $elevation = visitor($elevation, widget.elevation, (dynamic value) {
+    $elevation = visitor($elevation, widget.elevation ?? 1.0, (dynamic value) {
       assert(false);
       throw StateError('Constructor will never be called because null is never provided as current tween.');
     }) as Tween<double>;
@@ -560,19 +571,30 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   }
 }
 
-class ItemStackReqSlot {
-  ItemStack stack = ItemStack.empty;
+class ItemStackReqSlot with ChangeNotifier {
+  var _stack = ItemStack.empty;
+
+  ItemStack get stack => _stack;
+
+  set stack(ItemStack v) {
+    _stack = v;
+    notifyListeners();
+  }
 
   void reset() {
     stack = ItemStack.empty;
-    onChange?.call(stack);
+  }
+
+  void resetIfEmpty() {
+    if (stack.isEmpty) {
+      stack = ItemStack.empty;
+    }
   }
 
   bool get isEmpty => stack == ItemStack.empty;
 
   bool get isNotEmpty => !isEmpty;
   final ItemMatcher matcher;
-  ValueChanged<ItemStack>? onChange;
 
   ItemStackReqSlot(this.matcher);
 
@@ -586,8 +608,12 @@ class ItemStackReqSlot {
       reset();
     } else if (matcher.exact(newStack).isMatched) {
       stack = newStack;
-      onChange?.call(stack);
     }
+  }
+
+  /// manually call [notifyListeners] if the [stack] was changed outside.
+  void notifyChange() {
+    notifyListeners();
   }
 }
 
@@ -612,12 +638,16 @@ class ItemStackReqCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return slot << (_, __) => buildBody(context);
+  }
+
+  Widget buildBody(BuildContext context) {
     ShapeBorder? shape;
     final satisfyCondition = slot.isNotEmpty;
     if (!satisfyCondition) {
       shape = RoundedRectangleBorder(
         side: BorderSide(
-          color: context.theme.colorScheme.outline,
+          color: context.isDarkMode ? context.colorScheme.outline : context.colorScheme.secondary,
         ),
         borderRadius: context.cardBorderRadius ?? BorderRadius.zero,
       );
@@ -772,6 +802,24 @@ class _BackpackSheetState extends State<BackpackSheet> {
               onSelect(stack);
             },
       child: ItemStackCell(stack),
+    );
+  }
+}
+
+extension BackpackBuildContextX on BuildContext {
+  Future<T?> showMatchBackpack<T>({
+    required ItemMatcher matcher,
+    ValueChanged<ItemStack>? onSelect,
+    BackpackFilterDisplayBehavior behavior = BackpackFilterDisplayBehavior.toggleable,
+  }) async {
+    return await showCupertinoModalBottomSheet<T>(
+      context: this,
+      enableDrag: false,
+      builder: (ctx) => BackpackSheet(
+        matcher: matcher,
+        onSelect: onSelect,
+        behavior: behavior,
+      ).constrained(maxH: mediaQuery.size.height * 0.5),
     );
   }
 }

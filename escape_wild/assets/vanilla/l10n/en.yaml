@@ -102,6 +102,7 @@ item:
     desc: Old but still sharp.
   stone-axe:
     name: Stone Axe
+    # The Stone Age
     desc: I think time travel is possible.
   old-fish-rod:
     name: Old Fish Rod
@@ -148,6 +149,28 @@ item:
   wooden-bowl:
     name: Wooden Bowl
     desc: ...
+  bandage:
+    name: Bandage
+    desc: ...
+  first-aid-kit:
+    name: First Aid Kit
+    # https://www.youtube.com/watch?v=qXfPAodBVZQ&ab_channel=OgreJoe
+    # Overwatch `I Need Healing` meme
+    desc: I need healing.
+  purified-water:
+    name: Purified Water
+    desc: ...
+  # A tomato can.
+  can:
+    name: Can
+    desc: It still smells like tomato.
+  battle-bottle:
+    name: Battle Bottle
+    desc: This is left by a veteran.
+  # Something like ash
+  ember:
+    name: Ember
+    desc: Shhh, don't blow out the fire.
 route:
   subtropics:
     plain:

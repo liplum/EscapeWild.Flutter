@@ -77,7 +77,7 @@ class _HomePageState extends State<Homepage> {
         BottomNavigationBarItem(
           label: _I.action,
           icon: const Icon(Icons.grid_view_outlined),
-          activeIcon: const Icon(Icons.grid_view_rounded),
+          activeIcon: const Icon(Icons.grid_view_sharp),
         ),
         BottomNavigationBarItem(
           label: _I.backpack,
@@ -92,7 +92,7 @@ class _HomePageState extends State<Homepage> {
         BottomNavigationBarItem(
           label: _I.campfire,
           icon: const Icon(Icons.local_fire_department_outlined),
-          activeIcon: const Icon(Icons.local_fire_department_rounded),
+          activeIcon: const Icon(Icons.local_fire_department),
         ),
       ],
     );

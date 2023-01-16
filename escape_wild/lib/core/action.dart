@@ -1,6 +1,7 @@
 import 'package:escape_wild/core.dart';
 
 class ActionType with Moddable {
+  @override
   final String name;
 
   ActionType(this.name);

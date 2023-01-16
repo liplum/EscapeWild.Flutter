@@ -17,12 +17,11 @@ export 'package:escape_wild/game/recipes/craft.dart';
 export 'package:escape_wild/game/items/medicine.dart';
 export 'package:escape_wild/game/items/stuff.dart';
 export 'package:escape_wild/game/items/tools.dart';
-export 'package:escape_wild/utils/random.dart';
 export 'package:escape_wild/i18n.dart';
 export 'package:escape_wild/design/component.dart';
 export 'package:escape_wild/design/dialog.dart';
 export 'package:escape_wild/design/extension.dart';
-export 'package:escape_wild/utils/collection.dart';
+export 'package:escape_wild/utils.dart';
 export 'package:escape_wild/db.dart';
 
 class Measurement {
@@ -38,8 +37,8 @@ class Measurement {
     DB.preference.setMeasurementSystemOf(PhysicalQuantity.mass.name, cvt.name);
   }
 
-  static UnitConverter? get(PhysicalQuantity quantity){
-    if(quantity == PhysicalQuantity.mass){
+  static UnitConverter? get(PhysicalQuantity quantity) {
+    if (quantity == PhysicalQuantity.mass) {
       return mass;
     }
     return null;

@@ -41,9 +41,12 @@ extension NamedItemGetterX on String {
 ///
 class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   static final empty = Item("empty", mergeable: true, mass: 0);
+  @override
   final String name;
 
-  /// Unit: [g] gram
+  /// Unit: [g] gram.
+  ///
+  /// [mass] > 0
   final int mass;
   final bool mergeable;
 
@@ -64,7 +67,8 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   Item.unmergeable(
     this.name, {
     required this.mass,
-  }) : mergeable = false;
+  })  : mergeable = false,
+        assert(mass > 0);
 
   Item.mergeable(
     this.name, {
@@ -92,12 +96,21 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   String l10nName() => i18n("item.$name.name");
 
   String l10nDescription() => i18n("item.$name.desc");
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! Item || other.runtimeType != runtimeType) return false;
+    return name == other.name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
 extension ItemX on Item {
   ItemStack create({int? mass, double? massF}) {
     if (mergeable) {
-      assert(mass != null || massF != null, "`mass` and `massFactor` can't be both null for mergeable");
       if (mass != null) {
         return ItemStack(this, mass: mass);
       }
@@ -193,6 +206,7 @@ class ContainerComp extends ContainerCompProtocol {
 
   @override
   bool checkPossibleAccept(ContainerItemStack container, ItemStack outer) {
+    if (outer.meta.isContainer) return false;
     final inner = container.inner;
     if (inner == null) {
       // container is empty
@@ -491,7 +505,8 @@ class ContainerItemStack extends ItemStack {
 }
 
 extension ItemStackX on ItemStack {
-  double get massMultiplier => stackMass / meta.mass;
+  /// [massMultiplier] is always 1.0 when [Item.mergeable] is true.
+  double get massMultiplier => meta.mergeable ? stackMass / meta.mass : 1.0;
 
   bool canMergeTo(ItemStack to) {
     return hasIdenticalMeta(to) && meta.mergeable;
@@ -995,12 +1010,29 @@ class CookableComp extends ItemComp {
     this.cookedOutput,
   );
 
-  double getActualFuelCost(ItemStack item) {
-    if (item.meta.mergeable) {
-      return item.massMultiplier * fuelCost;
+  double getActualFuelCost(ItemStack raw) {
+    if (raw.meta.mergeable) {
+      return raw.massMultiplier * fuelCost;
     } else {
       return fuelCost;
     }
+  }
+
+  double getUnitFuelCostPerMass(ItemStack raw) {
+    return fuelCost / raw.meta.mass;
+  }
+
+  int getMaxCookablePart(ItemStack raw, double totalFuel) {
+    if (raw.meta.mergeable) {
+      return totalFuel ~/ (fuelCost / raw.meta.mass);
+    } else {
+      return totalFuel >= fuelCost ? raw.stackMass : 0;
+    }
+  }
+
+  ItemStack cook(ItemStack raw) {
+    final cooked = cookedOutput();
+    return cooked.create()..mass = (raw.massMultiplier * cooked.mass).toInt();
   }
 
   @override
@@ -1012,6 +1044,8 @@ class CookableComp extends ItemComp {
       );
     }
   }
+
+  static CookableComp? of(ItemStack stack) => stack.meta.getFirstComp<CookableComp>();
 
   static const type = "Cookable";
 
@@ -1047,7 +1081,7 @@ class FuelComp extends ItemComp {
 
   /// If the [stack] has [WetComp], reduce the [heatValue] based on its wet.
   double getActualHeatValue(ItemStack stack) {
-    var res = heatValue;
+    var res = heatValue * stack.massMultiplier;
     // check wet
     final wet = WetComp.tryGetWet(stack);
     res *= 1.0 - wet;
@@ -1188,7 +1222,11 @@ class FireStarterComp extends ItemComp {
 
   bool tryStartFire(ItemStack stack, [Random? rand]) {
     rand ??= Rand.backend;
-    var success = rand.one() <= chance;
+    var chance = this.chance;
+    // check wet
+    final wet = WetComp.tryGetWet(stack);
+    chance *= 1.0 - wet;
+    final success = rand.one() <= chance;
     final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
       final durability = durabilityComp.getDurability(stack);

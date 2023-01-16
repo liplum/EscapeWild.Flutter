@@ -1,4 +1,4 @@
-part  of 'game.dart';
+part of 'game.dart';
 
 const _n = "ui.main";
 

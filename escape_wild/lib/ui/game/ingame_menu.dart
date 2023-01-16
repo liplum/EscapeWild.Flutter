@@ -1,17 +1,19 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:escape_wild/stage_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/build_context/show.dart';
-
-import '../main/game.dart';
 
 extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {
     await this.showDialog(
       builder: (ctx) => $Dialog(
-        icon: const Icon(Icons.exit_to_app,size: 36,),
+        icon: const Icon(
+          Icons.local_fire_department_rounded,
+          size: 36,
+        ),
         make: (ctx) => const _IngameMenu(),
       ),
     );
@@ -30,54 +32,38 @@ class _IngameMenuState extends State<_IngameMenu> {
   Widget build(BuildContext context) {
     return [
       buildSaveGameBtn(),
-     // buildSaveGameAndExitBtn(),
+      // TODO: Unlock the debug mode for online demo.
+      if (kDebugMode || true) buildShowDebugConsoleBtn(),
     ].column(mas: MainAxisSize.min, caa: CrossAxisAlignment.stretch);
   }
 
   Widget buildSaveGameBtn() {
-    return CupertinoButton(
-      onPressed: onSaveGame,
-      child: "Save".text(
-        style: TextStyle(fontSize: 20),
-      ),
-    ).inCard();
-  }
-
-  Future<void> onSaveGame() async {
-    final json = player.toJson();
-    DB.setGameSave(json);
-    await context.showTip(
-      title: I.done,
-      desc: "Your game is saved.",
-      ok: I.ok,
-    );
-    context.navigator.pop();
-  }
-
-  Widget buildSaveGameAndExitBtn() {
-    return CupertinoButton(
-      onPressed: onSaveGameAndExit,
-      child: "Save & Exit".text(
-        style: TextStyle(fontSize: 20),
-      ),
-    ).inCard();
-  }
-
-  Future<void> onSaveGameAndExit() async {
-    final confirm = await context.showTip(
-      title: "Leave?",
-      desc: "Confirm to save and leave?",
-      ok: I.ok,
-    );
-    if (confirm == true) {
+    return btn("Save", () async {
       final json = player.toJson();
       DB.setGameSave(json);
-      while (context.navigator.canPop()) {
-        context.navigator.pop();
-      }
-      context.navigator.pushReplacement(MaterialPageRoute(
-        builder: (_) => const GamePage(),
-      ));
-    }
+      await context.showTip(
+        title: I.done,
+        desc: "Your game is saved.",
+        ok: I.ok,
+      );
+      context.navigator.pop();
+    });
+  }
+
+  Widget buildShowDebugConsoleBtn() {
+    return btn("Debug Console", () async {
+      StageManager.showDebugConsole(context);
+      await Future.delayed(const Duration(milliseconds: 300));
+      context.navigator.pop();
+    });
+  }
+
+  Widget btn(String text, VoidCallback? onTap) {
+    return ElevatedButton(
+      onPressed: onTap,
+      child: text.text(
+        style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize),
+      ),
+    );
   }
 }

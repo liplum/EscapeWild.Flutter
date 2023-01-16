@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 String getToolType() => "axe";
 
 void main() {
-  test("test tool Type", () {
+  test("test $ToolType", () {
     assert(ToolType.axe == ToolType(getToolType()));
   });
 }

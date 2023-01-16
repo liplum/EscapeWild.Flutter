@@ -126,7 +126,8 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
 
   set attrs(AttrModel value);
 
-  /// If the result should be is more than [maxValue], the [delta] will be attenuated based on overflow.
+  /// If the result is more than [maxValue], the [delta] will be attenuated based on overflow.
+  /// If the [water], [food] or [energy] is under zero, [underflowPunishmentRadio] will be applied on health.
   @override
   void modify(Attr attr, double delta) {
     // TODO: Better formula

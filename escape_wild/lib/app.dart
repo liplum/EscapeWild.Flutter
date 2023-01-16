@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:escape_wild/design/top.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/main/home.dart';
 import 'package:flutter/material.dart';
@@ -17,42 +18,24 @@ class EscapeWildApp extends StatefulWidget {
 }
 
 class _EscapeWildAppState extends State<EscapeWildApp> {
-  Locale? lastLocale;
-
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      while (true) {
-        final state = AppKey.currentState;
-        if (state != null) {
-          await loadL10n();
-          break;
-        } else {
-          await Future.delayed(const Duration(milliseconds: 500));
-        }
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final newLocale = context.locale;
-    if (newLocale != lastLocale) {
-      lastLocale = newLocale;
-      if (isL10nLoaded) {
-        onLocaleChange();
-      }
-    }
-    return MaterialApp(
-      title: 'Escape Wild',
-      navigatorKey: AppKey,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      theme: bakeTheme(context, ThemeData.light()),
-      darkTheme: bakeTheme(context, ThemeData.dark()),
-      home: const AppWrapper(),
+    return Top.global(
+      child: MaterialApp(
+        title: 'Escape Wild',
+        navigatorKey: AppKey,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        theme: bakeTheme(context, ThemeData.light()),
+        darkTheme: bakeTheme(context, ThemeData.dark()),
+        home: const AppWrapper(),
+      ),
     );
   }
 

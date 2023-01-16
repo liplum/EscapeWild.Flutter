@@ -8,6 +8,7 @@ class FireState {
   final bool active;
   @JsonKey()
   final double fuel;
+  static const maxVisualFuel = 500.0;
 
   const FireState({
     this.active = false,

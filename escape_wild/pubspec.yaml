@@ -96,3 +96,8 @@ flutter:
     - assets/vanilla/
     - assets/vanilla/l10n/
     - assets/img/
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: google_fonts/Roboto-Regular.ttf

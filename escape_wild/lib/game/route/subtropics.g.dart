@@ -6,24 +6,21 @@ part of 'subtropics.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) =>
-    SubtropicsRoute(
+SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) => SubtropicsRoute(
       json['name'] as String,
     )
       ..places = _placesFromJson(json['places'])
       ..routeProgress = (json['routeProgress'] as num).toDouble()
       ..mod = Moddable.modId2ModFunc(json['mod'] as String);
 
-Map<String, dynamic> _$SubtropicsRouteToJson(SubtropicsRoute instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$SubtropicsRouteToJson(SubtropicsRoute instance) => <String, dynamic>{
       'name': instance.name,
       'places': instance.places,
       'routeProgress': instance.routeProgress,
       'mod': Moddable.mod2ModIdFunc(instance.mod),
     };
 
-SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
-    SubtropicsPlace(
+SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) => SubtropicsPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
@@ -86,8 +83,7 @@ Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
   return val;
 }
 
-RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
-    RiversidePlace(
+RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) => RiversidePlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?

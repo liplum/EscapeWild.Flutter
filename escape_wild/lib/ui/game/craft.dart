@@ -65,7 +65,7 @@ class _CraftPageState extends State<CraftPage> {
         return ListTile(
           title: AutoSizeText(cat.l10nName(), maxLines: 1, style: style, textAlign: TextAlign.center),
           selected: isSelected,
-        ).inCard(elevation: isSelected ? 10 : 0).onTap(() {
+        ).inCard(elevation: isSelected ? 10 : null).onTap(() {
           if (selectedCatIndex != i) {
             setState(() {
               selectedCatIndex = i;
@@ -157,7 +157,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
       itemBuilder: (ctx, i) {
         return DynamicMatchingCell(
           matcher: inputSlots[i],
-          onNotInBackpack: (item) => ItemCell(item).inCard(elevation: 0),
+          onNotInBackpack: (item) => ItemCell(item).inCard(elevation: 0.5),
           onInBackpack: (item) => ItemStackCell(
             item,
             theme: const ItemStackCellTheme(pad: EdgeInsets.symmetric(vertical: 4, horizontal: 8)),
@@ -335,5 +335,13 @@ class _CraftingSheetState extends State<CraftingSheet> {
         break;
       }
     }
+  }
+
+  @override
+  void dispose() {
+    for (final slot in itemStackReqSlots) {
+      slot.dispose();
+    }
+    super.dispose();
   }
 }
