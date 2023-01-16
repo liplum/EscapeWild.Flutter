@@ -7,9 +7,57 @@ import 'package:noitcelloc/noitcelloc.dart';
 
 part 'subfrigid_zone.g.dart';
 
-class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
+class SubFrigidZoneMapGenerator {
+  //generateMap()
+  var map2d = list2dOf<SubFrigidZoneRoute>(50, 1, (x, y) {
+    return SubFrigidZoneRoute("aaa");
+  });
+
+  generatemap() {
+    final ctx = RouteGenerateContext(hardness: Hardness.easy);
+    for (int a = 0; a < 50; a++) {
+      int rd = Random(10000) as int;
+
+      final gRoute = SubFrigidZoneRouteGenerator();
+      var rt = gRoute.generateRoute(ctx, rd);
+      map2d[a] = rt as List<SubFrigidZoneRoute>;
+    }
+  }
+}
+
+class SubFrigidZoneRouteGenerator implements RouteGeneratorProtocol {
   @override
   RouteProtocol generateRoute(RouteGenerateContext ctx, int seed) {
+    final route = SubFrigidZoneRoute("subfrigidzone");
+
+    final zhongzi = Random(seed);
+
+    int countNum = 50;
+    var randomNum = Random();
+    List<double> saveRDN = [];
+    for (int d = 0; d <= 6; d++) {
+      int rdn = randomNum.nextInt(countNum);
+      countNum -= rdn;
+      double num = rdn / 50;
+      saveRDN.add(num);
+    }
+    const int dst = 50;
+    route.addAll(genIceSheet(route, (dst * saveRDN[0]).toInt()));
+    saveRDN.removeAt(0);
+    route.addAll(genSnowfield(route, (dst * saveRDN[0]).toInt()));
+    saveRDN.removeAt(0);
+    route.addAll(genRivers(route, (dst * saveRDN[0]).toInt()));
+    saveRDN.removeAt(0);
+    route.addAll(genSwamp(route, (dst * saveRDN[0]).toInt()));
+    saveRDN.removeAt(0);
+    route.addAll(genTundra(route, (dst * saveRDN[0]).toInt()));
+    saveRDN.removeAt(0);
+    route.addAll(genConiferousForest(route, (dst * saveRDN[0]).toInt()));
+    saveRDN.removeAt(0);
+
+    return route;
+
+    /*
     var map2d = list2dOf<SubFrigidZonePlace>(50, 1, (x, y) {
       return SubFrigidZonePlace("??????");
     });
@@ -24,9 +72,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
         double num = rdn / 50;
         saveRDN.add(num);
       }
-    }
-
-    throw UnimplementedError();
+     */
   }
 
   List<SubFrigidZonePlace> genIceSheet(SubFrigidZoneRoute route, int number) {
