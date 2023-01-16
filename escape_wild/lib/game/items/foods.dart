@@ -25,7 +25,7 @@ class Foods {
   static late final Item nuts, toastedNuts;
 
   // water
-  static late final Item bottledWater, dirtyWater, clearWater, cleanWater, boiledWater, filteredWater, purifiedWater;
+  static late final Item bottledWater, dirtyWater, clearWater, cleanWater, boiledWater, filteredWater;
 
   // tea
   static late final Item flowerTea;
@@ -81,9 +81,6 @@ class Foods {
         Attr.health - 0.01,
         Attr.water + 0.2,
       ]).tagged(["water", "drink", "liquid"]),
-      purifiedWater = Item.mergeable("purified-water", mass: 200).asDrinkable([
-        Attr.water + 0.25,
-      ]).tagged(["water", "drink", "clean-water", "liquid"]),
       energyDrink = Item.unmergeable("energy-drink", mass: 240).asDrinkable([
         Attr.energy + 0.12,
         Attr.water + 0.28,

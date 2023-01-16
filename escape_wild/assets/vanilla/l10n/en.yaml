@@ -116,10 +116,10 @@ item:
   # https://en.wikipedia.org/wiki/Moss
   moss:
     name: Moss
-    desc: ...
+    desc: "Search Box: Is moss edible?"
   pine-needle:
     name: Pine Needle
-    desc: ...
+    desc: Rich in vitamin C.
   # Tinder is used to start a fire. It's an easily combustible material.
   # https://wikipedia.org/wiki/Tinder
   tinder:
@@ -133,33 +133,30 @@ item:
     desc: It tastes a bit like chicken.
   raw-fish:
     name: Raw Fish
-    desc: Phishing.
+    desc: Beware of phishing net.
   cooked-fish:
     name: Cooked Fish
     desc: Beware of fishbone.
   stone:
     name: Stone
-    desc: ...
+    desc: I don't really want my backpack to be stuffed with this.
   sharp-stone:
     name: Sharp Stone
-    desc: ...
+    desc: I'm pretty sure I'm back in Paleolithic Age.
   straw-rope:
     name: Straw Rope
-    desc: ...
+    desc: Strong, tough and durable.
   wooden-bowl:
     name: Wooden Bowl
-    desc: ...
+    desc: Let's get into the bushes and make a salad!
   bandage:
     name: Bandage
-    desc: ...
+    desc: "Survival Tip: Sterilize your bandage first."
   first-aid-kit:
     name: First Aid Kit
     # https://www.youtube.com/watch?v=qXfPAodBVZQ&ab_channel=OgreJoe
     # Overwatch `I Need Healing` meme
     desc: I need healing.
-  purified-water:
-    name: Purified Water
-    desc: ...
   # A tomato can.
   can:
     name: Can
@@ -171,6 +168,9 @@ item:
   ember:
     name: Ember
     desc: Shhh, don't blow out the fire.
+  sand:
+    name: Sand
+    desc: Ashes to ashes, dust to dust.
 route:
   subtropics:
     plain:

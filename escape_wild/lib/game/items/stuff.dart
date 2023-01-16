@@ -10,8 +10,8 @@ class Stuff {
   static late final Item flower, pineNeedle;
   static late final Item strawRope;
 
-  // stone
-  static late final Item stone, sharpStone;
+  // materials
+  static late final Item stone, sand, sharpStone;
 
   // container
   static late final Item can, battleBottle, plasticBottle, woodenBowl;
@@ -29,6 +29,10 @@ class Stuff {
       tinder = Item.mergeable("tinder", mass: 5).asFuel(heatValue: 15.0).tagged(["tinder"]),
       //Put the semi-wet moss or grass into the wooden tube rolled by the bark,
       // and Mars can carry it
+    ]);
+    // material
+    Contents.items.addAll([
+      sand = Item.mergeable("sand", mass: 100).tagged(["sand"]),
       stone = Item.mergeable("stone", mass: 200).tagged(["stone"]),
       sharpStone = Item.mergeable("sharp-stone", mass: 200).tagged(["stone"]),
     ]);

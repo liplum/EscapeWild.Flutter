@@ -28,7 +28,7 @@ abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertiblePr
 
   String displayName() => localizedName();
 
-  String localizedName()  => i18n("route.${route.name}.$name.name");
+  String localizedName() => i18n("route.${route.name}.$name.name");
 
   String localizedDescription() => i18n("route.${route.name}.$name.desc");
 
@@ -47,18 +47,28 @@ class PlaceAction {
   static final exploreWithEnergy = PlaceAction(ActionType.explore, () => player.energy > 0.0);
   static final huntWithTool = PlaceAction(
     ActionType.hunt,
-    () => player.backpack.hasAnyToolOfTypes([
-      ToolType.trap,
-      ToolType.gun,
-    ]),
+    () =>
+        player.energy > 0.0 &&
+        player.backpack.hasAnyToolOfTypes([
+          ToolType.trap,
+          ToolType.gun,
+        ]),
   );
   static final fishWithTool = PlaceAction(
     ActionType.fish,
-    () => player.backpack.hasAnyToolOfType(ToolType.fishing),
+    () =>
+        player.energy > 0.0 &&
+        player.backpack.hasAnyToolOfType(
+          ToolType.fishing,
+        ),
   );
   static final cutDownTreeWithTool = PlaceAction(
     ActionType.cutDownTree,
-    () => player.backpack.hasAnyToolOfType(ToolType.axe),
+    () =>
+        player.energy > 0.0 &&
+        player.backpack.hasAnyToolOfType(
+          ToolType.axe,
+        ),
   );
   static final rest = PlaceAction(ActionType.rest, () => true);
   static final stopHeartbeatAndLose = PlaceAction(ActionType.stopHeartbeat, () => true);
