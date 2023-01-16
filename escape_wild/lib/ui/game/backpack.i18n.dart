@@ -1,6 +1,6 @@
 part of 'backpack.dart';
 
-const _n = "ui.backpack";
+const _n = "ui.game.backpack";
 
 class _I {
   _I._();
