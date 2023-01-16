@@ -195,7 +195,7 @@ class _CookPageState extends State<CookPage> {
 
   double get fireFuel => fireState.fuel;
 
-  set fireFuel(double v) => fireState = fireState.copyWith(fuel: fireState.fuel - v);
+  set fireFuel(double v) => fireState = fireState.copyWith(fuel: v);
 
   @override
   void initState() {
