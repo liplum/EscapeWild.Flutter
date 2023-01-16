@@ -3,7 +3,7 @@ import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 
-Future<void> showToolBroken(ActionType action, ItemStack tool) async {
+Future<void> showToolBroken(UAction action, ItemStack tool) async {
   await AppCtx.showTip(
     title: action.l10nName(),
     desc: "action.tool-broken".tr(args: [tool.displayName()]),
@@ -11,7 +11,7 @@ Future<void> showToolBroken(ActionType action, ItemStack tool) async {
   );
 }
 
-Future<void> showGain(ActionType action, List<ItemStack> gain) async {
+Future<void> showGain(UAction action, List<ItemStack> gain) async {
   if (gain.isEmpty) {
     await AppCtx.showTip(
       title: action.l10nName(),

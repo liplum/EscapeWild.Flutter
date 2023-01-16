@@ -1,6 +1,5 @@
 import 'package:animations/animations.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/design/top.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/main/home.dart';
 import 'package:flutter/material.dart';

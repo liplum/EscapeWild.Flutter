@@ -222,10 +222,11 @@ class SubFrigidZonePlace extends PlaceProtocol with PlaceActionDelegateMixin {
   @override
   List<PlaceAction> getAvailableActions() {
     return [
-      PlaceAction.moveWithEnergy,
+      // TODO: You should add route-specific actions.
+      /*PlaceAction.moveWithEnergy,
       PlaceAction.exploreWithEnergy,
       PlaceAction.rest,
-      PlaceAction.huntWithTool,
+      PlaceAction.huntWithTool,*/
     ];
   }
 }

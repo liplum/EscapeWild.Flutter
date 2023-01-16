@@ -39,7 +39,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     _isExecutingOnPass = false;
   }
 
-  Future<void> performAction(ActionType action) {
+  Future<void> performAction(UAction action) {
     return level.performAction(action);
   }
 

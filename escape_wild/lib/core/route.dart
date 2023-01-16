@@ -34,47 +34,16 @@ abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertiblePr
 
   String localizedDescription() => i18n("route.${route.name}.$name.desc");
 
-  Future<void> performAction(ActionType action);
+  Future<void> performAction(UAction action);
 
   List<PlaceAction> getAvailableActions();
 }
 
 class PlaceAction {
-  final ActionType type;
+  final UAction type;
   final bool Function() canPerform;
 
   const PlaceAction(this.type, this.canPerform);
-
-  static final moveWithEnergy = PlaceAction(ActionType.move, () => player.energy > 0.0);
-  static final exploreWithEnergy = PlaceAction(ActionType.explore, () => player.energy > 0.0);
-  static final huntWithTool = PlaceAction(
-    ActionType.hunt,
-    () =>
-        player.energy > 0.0 &&
-        player.backpack.hasAnyToolOfTypes([
-          ToolType.trap,
-          ToolType.gun,
-        ]),
-  );
-  static final fishWithTool = PlaceAction(
-    ActionType.fish,
-    () =>
-        player.energy > 0.0 &&
-        player.backpack.hasAnyToolOfType(
-          ToolType.fishing,
-        ),
-  );
-  static final cutDownTreeWithTool = PlaceAction(
-    ActionType.cutDownTree,
-    () =>
-        player.energy > 0.0 &&
-        player.backpack.hasAnyToolOfType(
-          ToolType.axe,
-        ),
-  );
-  static final rest = PlaceAction(ActionType.rest, () => true);
-  static final stopHeartbeatAndLose = PlaceAction(ActionType.stopHeartbeat, () => true);
-  static final escapeWildAndWin = PlaceAction(ActionType.escapeWild, () => true);
 }
 
 class RouteGenerateContext {
@@ -106,23 +75,23 @@ extension PlaceProps on PlaceProtocol {
   set wet(double v) => this[wetK] = v;
 }
 
-/// [PlaceActionDelegateMixin] will create delegates for each [ActionType].
+/// [PlaceActionDelegateMixin] will create delegates for each [UAction].
 /// It's easy to provide default behaviors.
 mixin PlaceActionDelegateMixin on PlaceProtocol {
   @override
-  Future<void> performAction(ActionType action) async {
-    if (action == ActionType.explore) {
+  Future<void> performAction(UAction action) async {
+    if (action.belongsToOrSelf(UAction.explore)) {
       await performExplore();
-    } else if (action == ActionType.move) {
-      await performMove();
-    } else if (action == ActionType.cutDownTree) {
-      await performCutDownTree();
-    } else if (action == ActionType.fish) {
+    } else if (action.belongsToOrSelf(UAction.move)) {
+      await performMove(action);
+    } else if (action.belongsToOrSelf(UAction.gather)) {
+      await performGather(action);
+    } else if (action.belongsToOrSelf(UAction.fish)) {
       await performFish();
-    } else if (action == ActionType.rest) {
-      await performRest();
-    } else if (action == ActionType.hunt) {
-      await performHunt();
+    } else if (action.belongsToOrSelf(UAction.shelter)) {
+      await performShelter(action);
+    } else if (action.belongsToOrSelf(UAction.hunt)) {
+      await performHunt(action);
     } else {
       await performOthers(action);
     }
@@ -130,18 +99,18 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
 
   Future<void> performExplore() async {}
 
-  Future<void> performMove() async {}
+  Future<void> performMove(UAction action) async {}
 
-  Future<void> performCutDownTree() async {}
+  Future<void> performGather(UAction action) async {}
 
   Future<void> performFish() async {}
 
-  Future<void> performRest() async {}
+  Future<void> performShelter(UAction action) async {}
 
-  Future<void> performHunt() async {}
+  Future<void> performHunt(UAction action) async {}
 
   /// Called when the [action] is not caught by other delegates
-  Future<void> performOthers(ActionType action) async {}
+  Future<void> performOthers(UAction action) async {}
 }
 
 abstract class CampfirePlaceProtocol {

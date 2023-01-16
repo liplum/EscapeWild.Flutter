@@ -18,7 +18,7 @@ abstract class LevelProtocol implements JConvertibleProtocol {
 
   List<PlaceAction> getAvailableActions();
 
-  Future<void> performAction(ActionType action);
+  Future<void> performAction(UAction action);
 
   Future<void> onPass(TS delta);
 
@@ -45,7 +45,7 @@ class _EmptyLevel extends LevelProtocol {
   }
 
   @override
-  Future<void> performAction(ActionType action) async {
+  Future<void> performAction(UAction action) async {
     player.actionTimes++;
   }
 

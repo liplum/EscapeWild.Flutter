@@ -12,6 +12,37 @@ part 'subtropics.g.dart';
 
 const per = TS(5);
 
+final moveWithEnergy = PlaceAction(UAction.move, () => player.energy > 0.0);
+final exploreWithEnergy = PlaceAction(UAction.explore, () => player.energy > 0.0);
+final huntWithTool = PlaceAction(
+  UAction.hunt,
+      () =>
+  player.energy > 0.0 &&
+      player.backpack.hasAnyToolOfTypes([
+        ToolType.trap,
+        ToolType.gun,
+      ]),
+);
+final fishWithTool = PlaceAction(
+  UAction.fish,
+      () =>
+  player.energy > 0.0 &&
+      player.backpack.hasAnyToolOfType(
+        ToolType.fishing,
+      ),
+);
+final cutDownTreeWithTool = PlaceAction(
+  UAction.gatherGetWood,
+      () =>
+  player.energy > 0.0 &&
+      player.backpack.hasAnyToolOfType(
+        ToolType.axe,
+      ),
+);
+final rest = PlaceAction(UAction.shelterRest, () => true);
+final stopHeartbeatAndLose = PlaceAction(UAction.stopHeartbeat, () => true);
+final escapeWildAndWin = PlaceAction(UAction.escapeWild, () => true);
+
 @JsonSerializable()
 class SubtropicsLevel extends LevelProtocol {
   @JsonKey(includeIfNull: false)
@@ -27,14 +58,14 @@ class SubtropicsLevel extends LevelProtocol {
   @override
   List<PlaceAction> getAvailableActions() {
     if (player.isDead) {
-      return [PlaceAction.stopHeartbeatAndLose];
+      return [stopHeartbeatAndLose];
     }
     return player.location?.getAvailableActions() ?? const [];
   }
 
   @override
-  Future<void> performAction(ActionType action) async {
-    if (action == ActionType.stopHeartbeat) {
+  Future<void> performAction(UAction action) async {
+    if (action == UAction.stopHeartbeat) {
       await player.onGameFailed();
     } else {
       final curLoc = player.location;
@@ -283,15 +314,15 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   @override
   List<PlaceAction> getAvailableActions() {
     return [
-      PlaceAction.moveWithEnergy,
-      PlaceAction.exploreWithEnergy,
-      PlaceAction.rest,
-      PlaceAction.huntWithTool,
+      moveWithEnergy,
+      exploreWithEnergy,
+      rest,
+      huntWithTool,
     ];
   }
 
   @override
-  Future<void> performHunt() async {
+  Future<void> performHunt(UAction action) async {
     final tool = player.backpack.findBesToolOfTypes([ToolType.trap, ToolType.gun]);
     if (tool == null) return;
     final comp = tool.comp;
@@ -307,14 +338,14 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
     if (any) {
       isToolBroken = player.damageTool(tool.item, comp, 30.0);
     }
-    await showGain(ActionType.hunt, gain);
+    await showGain(UAction.hunt, gain);
     if (isToolBroken) {
-      await showToolBroken(ActionType.hunt, tool.item);
+      await showToolBroken(UAction.hunt, tool.item);
     }
   }
 
   @override
-  Future<void> performMove() async {
+  Future<void> performMove(UAction action) async {
     await player.onPass(const TS(30));
     player.modifyX(Attr.food, -0.05);
     player.modifyX(Attr.water, -0.05);
@@ -326,7 +357,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   }
 
   @override
-  Future<void> performRest() async {
+  Future<void> performShelter(UAction action) async {
     await player.onPass(const TS(30));
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
@@ -374,7 +405,7 @@ class PlainPlace extends SubtropicsPlace {
     randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(ActionType.explore, gain);
+    await showGain(UAction.explore, gain);
   }
 
   factory PlainPlace.fromJson(Map<String, dynamic> json) => _$PlainPlaceFromJson(json);
@@ -405,11 +436,10 @@ class ForestPlace extends SubtropicsPlace {
   @override
   List<PlaceAction> getAvailableActions() {
     final res = super.getAvailableActions();
-    res.add(PlaceAction.cutDownTreeWithTool);
+    res.add(cutDownTreeWithTool);
     return res;
   }
 
-  @override
   Future<void> performCutDownTree() async {
     await player.onPass(const TS(30));
     final tool = player.backpack.findBesToolOfType(ToolType.axe);
@@ -432,9 +462,9 @@ class ForestPlace extends SubtropicsPlace {
     var isToolBroken = false;
     isToolBroken = player.damageTool(tool.item, comp, dmg * 30.0);
     if (isToolBroken) {
-      await showToolBroken(ActionType.cutDownTree, tool.item);
+      await showToolBroken(UAction.gatherGetWood, tool.item);
     }
-    await showGain(ActionType.cutDownTree, gain);
+    await showGain(UAction.gatherGetWood, gain);
   }
 
   @override
@@ -454,7 +484,7 @@ class ForestPlace extends SubtropicsPlace {
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(ActionType.explore, gain);
+    await showGain(UAction.explore, gain);
   }
 
   factory ForestPlace.fromJson(Map<String, dynamic> json) => _$ForestPlaceFromJson(json);
@@ -481,7 +511,7 @@ class RiversidePlace extends SubtropicsPlace {
   @override
   List<PlaceAction> getAvailableActions() {
     final res = super.getAvailableActions();
-    res.add(PlaceAction.fishWithTool);
+    res.add(fishWithTool);
     return res;
   }
 
@@ -503,9 +533,9 @@ class RiversidePlace extends SubtropicsPlace {
     if (any) {
       isToolBroken = player.damageTool(tool.item, comp, 30.0);
     }
-    await showGain(ActionType.fish, gain);
+    await showGain(UAction.fish, gain);
     if (isToolBroken) {
-      await showToolBroken(ActionType.fish, tool.item);
+      await showToolBroken(UAction.fish, tool.item);
     }
   }
 
@@ -523,7 +553,7 @@ class RiversidePlace extends SubtropicsPlace {
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(ActionType.explore, gain);
+    await showGain(UAction.explore, gain);
   }
 
   factory RiversidePlace.fromJson(Map<String, dynamic> json) => _$RiversidePlaceFromJson(json);
@@ -550,7 +580,7 @@ class CavePlace extends SubtropicsPlace {
   List<PlaceAction> getAvailableActions() {
     final res = super.getAvailableActions();
     // You can't hunt in cave.
-    res.remove(PlaceAction.huntWithTool);
+    res.remove(huntWithTool);
     return res;
   }
 
@@ -567,7 +597,7 @@ class CavePlace extends SubtropicsPlace {
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(ActionType.explore, gain);
+    await showGain(UAction.explore, gain);
   }
 
   factory CavePlace.fromJson(Map<String, dynamic> json) => _$CavePlaceFromJson(json);
@@ -619,7 +649,7 @@ class HutPlace extends SubtropicsPlace {
     }
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(ActionType.explore, gain);
+    await showGain(UAction.explore, gain);
   }
 
   factory HutPlace.fromJson(Map<String, dynamic> json) => _$HutPlaceFromJson(json);
@@ -639,13 +669,13 @@ class VillagePlace extends SubtropicsPlace {
   @override
   List<PlaceAction> getAvailableActions() {
     return [
-      PlaceAction.escapeWildAndWin,
+      escapeWildAndWin,
     ];
   }
 
   @override
-  Future<void> performOthers(ActionType action) async {
-    if (action == ActionType.escapeWild) {
+  Future<void> performOthers(UAction action) async {
+    if (action == UAction.escapeWild) {
       await player.onGameWin();
     }
   }
