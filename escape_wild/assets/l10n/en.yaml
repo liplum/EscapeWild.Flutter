@@ -35,11 +35,17 @@ ui:
       start-fire: Start Fire
       # verb: supply campfire with fuel
       fuel: Fuel
+      cook: Cook
   debug:
     debug-console:
       title: Debug Console
       cat:
         item: Item
+  settings:
+    language:
+      title: Language
+    measurement:
+      title: Measurement
 physical-quantity:
   mass: Mass
   length: Length
@@ -49,22 +55,28 @@ unit:
   mass:
     gram:
       name: Gram (g)
+      unit: g
       format: '{} g'
     kilogram:
       name: Kilogram (kg)
+      unit: kg
       format: '{} kg'
     pound:
       name: Pound (lb)
+      unit: lbs
       format: '{} lbs'
     ounce:
       name: Ounce (oz)
+      unit: oz
       format: '{} oz'
   temperature:
     celsius:
       name: Celsius(°C)
+      unit: '°C'
       format: '{} °C'
     fahrenheit:
       name: Fahrenheit(°F)
+      unit: '°F'
       format: '{} °F'
 # unit: gram
 item:

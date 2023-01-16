@@ -4,6 +4,8 @@ import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
+part 'settings.i18n.dart';
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -46,19 +48,6 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget buildEntries() {
-    final all = <Widget>[];
-    final curLocale = context.locale;
-    all.add(ListTile(
-      title: "Language".text(),
-      subtitle: "language.$curLocale".tr().text(),
-    ));
-    return ListView(
-      physics: const RangeMaintainingScrollPhysics(),
-      children: all,
-    );
-  }
-
   List<WidgetBuilder> buildVirtualEntries() {
     final all = <WidgetBuilder>[];
     final curLocale = context.locale;
@@ -68,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
           Icons.public_rounded,
           size: iconSize,
         ),
-        title: "Language".text(),
+        title: _I.languageTitle.text(),
         subtitle: "language.$curLocale".tr().text(),
         to: (_) => LanguageSelectorPage(
           candidates: R.supportedLocales,
@@ -76,16 +65,17 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
     );
+    final q2cvt = Measurement.toMap();
     all.add(
       (_) => NavigationListTile(
         leading: const Icon(
           Icons.straighten_rounded,
           size: iconSize,
         ),
-        title: "Measurement".text(),
-        subtitle: "Unit of physical quality".text(),
-        to: (_) => const MeasurementSelectorPage(
-          quality2Selected: Measurement.get,
+        title: _I.measurementTitle.text(),
+        subtitle: q2cvt.values.map((cvt) => cvt.l10nUnit()).join(", ").text(),
+        to: (_) => MeasurementSelectorPage(
+          quality2Selected: q2cvt,
         ),
       ),
     );
@@ -95,7 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
 }
 
 class MeasurementSelectorPage extends StatefulWidget {
-  final UnitConverter? Function(PhysicalQuantity quantity) quality2Selected;
+  final Map<PhysicalQuantity, UnitConverter> quality2Selected;
 
   const MeasurementSelectorPage({
     super.key,
@@ -107,36 +97,14 @@ class MeasurementSelectorPage extends StatefulWidget {
 }
 
 class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
-  final Map<PhysicalQuantity, UnitConverter> curQuality2Selected = {};
-
-  @override
-  void initState() {
-    super.initState();
-    updateSelected();
-  }
-
-  @override
-  void didUpdateWidget(covariant MeasurementSelectorPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    updateSelected();
-  }
-
-  void updateSelected() {
-    curQuality2Selected.clear();
-    for (final q in PhysicalQuantity.all) {
-      final cvt = widget.quality2Selected(q);
-      if (cvt != null) {
-        curQuality2Selected[q] = cvt;
-      }
-    }
-  }
+  late final cur = Map.from(widget.quality2Selected);
 
   @override
   Widget build(BuildContext context) {
     final sections = buildSections();
     return WillPopScope(
       onWillPop: () async {
-        for (final p in curQuality2Selected.entries) {
+        for (final p in cur.entries) {
           Measurement.set(p.key, p.value);
         }
         Measurement.reload();
@@ -176,7 +144,7 @@ class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
       selected: Measurement.mass,
       example: 1000,
       onSelected: (cvt) {
-        curQuality2Selected[PhysicalQuantity.mass] = cvt;
+        cur[PhysicalQuantity.mass] = cvt;
       },
     ));
     return all;

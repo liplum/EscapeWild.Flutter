@@ -66,6 +66,8 @@ abstract class UnitConverter {
 
   String l10nName();
 
+  String l10nUnit();
+
   num convertToNum(int si);
 
   String convertWithUnit(int si);
@@ -155,4 +157,7 @@ class _UnitConverterImpl extends UnitConverter {
 
   @override
   String l10nName() => "unit.$quantity.$name.name".tr();
+
+  @override
+  String l10nUnit() => "unit.$quantity.$name.unit".tr();
 }

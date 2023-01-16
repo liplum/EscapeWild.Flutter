@@ -45,6 +45,17 @@ class Measurement {
     }
     return null;
   }
+
+  static Map<PhysicalQuantity, UnitConverter> toMap() {
+    final res = <PhysicalQuantity, UnitConverter>{};
+    for (final quantity in PhysicalQuantity.all) {
+      final cvt = get(quantity);
+      if (cvt != null) {
+        res[quantity] = cvt;
+      }
+    }
+    return res;
+  }
 }
 
 final yamlAssetsLoader = YamlAssetLoader();
