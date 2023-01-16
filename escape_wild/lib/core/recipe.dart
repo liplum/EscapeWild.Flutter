@@ -2,22 +2,21 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'recipe.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class TagMassEntry {
   @JsonKey()
-  final String tag;
+  final Iterable<String> tags;
   @JsonKey()
   final int? mass;
 
-  const TagMassEntry(this.tag, this.mass);
+  const TagMassEntry(this.tags, this.mass);
 
   factory TagMassEntry.fromJson(Map<String, dynamic> json) => _$TagMassEntryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$TagMassEntryToJson(this);
 
   @override
   String toString() {
     final mass = this.mass;
-    return mass == null ? tag : "$tag ${mass}g";
+    final tagsStr = tags.join(", ");
+    return mass == null ? tagsStr : "$tagsStr ${mass}g";
   }
 }

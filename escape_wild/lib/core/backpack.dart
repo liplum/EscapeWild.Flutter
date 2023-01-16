@@ -9,6 +9,17 @@ part 'backpack.g.dart';
 
 @JsonSerializable()
 class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConvertibleProtocol {
+  /// [tracked] is an annotation to declare [ItemStack] or its list is tracked by [Backpack].
+  /// For example, those items come from [Backpack.items].
+  ///
+  /// You should change [ItemStack]'s with [Backpack].
+  static const tracked = Object();
+
+  /// [untracked] is an annotation to declare [ItemStack] or its list is untracked by [Backpack].
+  /// For example, those items are on campfire.
+  ///
+  /// You can safely change [ItemStack]'s state.
+  static const untracked = Object();
   @JsonKey()
   List<ItemStack> items = [];
   @JsonKey()

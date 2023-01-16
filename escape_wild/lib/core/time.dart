@@ -40,6 +40,8 @@ class TS extends MinuteProtocol {
 
   const TS.hm({required int hour, required int minute}) : super.hm(hour: hour, minute: minute);
 
+  static const jsonKey = JsonKey(fromJson: TS.fromJsom);
+
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
 

@@ -21,24 +21,29 @@ abstract class FoodRecipeProtocol with Moddable {
   /// ## Constrains
   /// - [inputs] is in no order.
   /// - [inputs.length] equals to [slotRequired].
-  bool match(List<ItemStack> inputs);
+  /// - [slots] is [Backpack.untracked].
+  bool match(@Backpack.untracked List<ItemStack> inputs);
 
   /// ## Constrains
-  /// - [inputs] is in no order.
-  /// - [inputs] is already matched.
-  List<ItemStack> checkCook(List<ItemStack> inputs, TS timePassed);
+  /// - [slots] is in no order.
+  /// - [slots] is already matched.
+  /// - [slots] is [Backpack.untracked].
+  /// - return whether cooking is finished.
+  bool updateCooking(@Backpack.untracked List<ItemStack> slots, TS totalTimePassed);
 }
 
-/// [FoodRecipe] will output the food as long as [cookingTime] is reached.
+/// - [FoodRecipe] will output the food as long as [cookingTime] is reached.
+/// - [FoodRecipe] can only output one item.
 ///
 /// [Item.container] is not allowed.
 @JsonSerializable(createToJson: false)
 class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
   @JsonKey()
   final List<TagMassEntry> ingredients;
-  @JsonKey()
-  final List<TagMassEntry> outputs;
-  @JsonKey(fromJson: TS.fromJsom)
+  @itemGetterJsonKey
+  final ItemGetter output;
+  final int? outputMass;
+  @TS.jsonKey
   final TS cookingTime;
 
   @override
@@ -47,11 +52,11 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
   FoodRecipe(
     super.name, {
     required this.ingredients,
-    required this.outputs,
+    required this.output,
     required this.cookingTime,
+    this.outputMass,
   }) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
-    assert(outputs.isNotEmpty, "Outputs of $registerName is empty.");
   }
 
   factory FoodRecipe.fromJson(Map<String, dynamic> json) => _$FoodRecipeFromJson(json);
@@ -63,15 +68,15 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
     if (inputs.any((input) => input.meta.isContainer)) return false;
     final rest = Set.of(inputs);
     for (final ingredient in ingredients) {
-      final tagMatched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
-      if (tagMatched == null) return false;
-      rest.remove(tagMatched);
+      final matched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
+      if (matched == null) return false;
+      rest.remove(matched);
     }
     return rest.isEmpty;
   }
 
   bool isMatched(ItemStack input, TagMassEntry ingredient) {
-    if (!input.meta.hasTag(ingredient.tag)) return false;
+    if (!input.meta.hasTags(ingredient.tags)) return false;
     final massReq = ingredient.mass;
     // [massReq] is null, the input should be unmergeable.
     // otherwise, [ItemStack.stackMass] should reach the [massReq].
@@ -83,20 +88,26 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
   }
 
   @override
-  List<ItemStack> checkCook(List<ItemStack> inputs, TS timePassed) {
+  bool updateCooking(List<ItemStack> slots, TS totalTimePassed) {
     // It must reach the [cookingTime]
-    if (timePassed < cookingTime) return inputs;
-    if (inputs.length != slotRequired) return inputs;
-    final rest = Set.of(inputs);
-    final res = [];
+    if (totalTimePassed < cookingTime) return false;
+    if (slots.length != slotRequired) return false;
+    // Cooked!
+    final rest = Set.of(slots);
     for (final ingredient in ingredients) {
-      final tagMatched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
-      assert(tagMatched != null, "$inputs should match $registerName in $checkCook");
-      if (tagMatched == null) return inputs;
-      rest.remove(tagMatched);
-
+      final matched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
+      assert(matched != null, "$slots should match $registerName in $updateCooking");
+      if (matched == null) return false;
+      rest.remove(matched);
+      if (matched.meta.mergeable) {
+        matched.mass = matched.stackMass - (ingredient.mass ?? 0);
+      } else {
+        slots.removeStack(matched);
+      }
     }
-    return const [];
+    slots.cleanEmptyStack();
+    slots.add(output().create(mass: outputMass));
+    return true;
   }
 
   static const type = "FoodRecipe";

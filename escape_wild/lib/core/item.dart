@@ -7,20 +7,22 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'item.g.dart';
 
-typedef ItemGetter<T extends Item> = T Function();
+typedef ItemGetter = Item Function();
 
-class NamedItemGetter<T extends Item> {
+const itemGetterJsonKey = JsonKey(fromJson: NamedItemGetter.create);
+
+class NamedItemGetter {
   final String name;
 
   const NamedItemGetter(this.name);
 
-  static ItemGetter<T> create<T extends Item>(String name) => NamedItemGetter(name).get as ItemGetter<T>;
+  static ItemGetter create(String name) => NamedItemGetter(name).get;
 
-  T get() => Contents.getItemMetaByName(name) as T;
+  Item get() => Contents.getItemMetaByName(name);
 }
 
 extension NamedItemGetterX on String {
-  ItemGetter<T> getAsItem<T extends Item>() => NamedItemGetter.create<T>(this);
+  ItemGetter getAsItem() => NamedItemGetter.create(this);
 }
 
 /// # Item
@@ -599,6 +601,14 @@ extension ItemStackListX on List<ItemStack> {
       add(addition);
     }
   }
+
+  bool removeStack(ItemStack stack){
+    return remove(stack);
+  }
+
+  void cleanEmptyStack() {
+    retainWhere((stack) => stack.isNotEmpty);
+  }
 }
 
 typedef ItemTypeMatcher = bool Function(Item item);
@@ -910,8 +920,8 @@ class ModifyAttrComp extends UsableComp {
   Type get compType => UsableComp;
   @JsonKey()
   final List<AttrModifier> modifiers;
-  @JsonKey(fromJson: NamedItemGetter.create)
-  final ItemGetter<Item>? afterUsedItem;
+  @itemGetterJsonKey
+  final ItemGetter? afterUsedItem;
 
   const ModifyAttrComp(
     super.useType,
@@ -956,7 +966,7 @@ extension ModifyAttrCompX on Item {
   Item modifyAttr(
     UseType useType,
     List<AttrModifier> modifiers, {
-    ItemGetter<Item>? afterUsed,
+    ItemGetter? afterUsed,
   }) {
     final comp = ModifyAttrComp(
       useType,
@@ -970,7 +980,7 @@ extension ModifyAttrCompX on Item {
 
   Item asEatable(
     List<AttrModifier> modifiers, {
-    ItemGetter<Item>? afterUsedItem,
+    ItemGetter? afterUsedItem,
   }) {
     final comp = ModifyAttrComp(
       UseType.eat,
@@ -984,7 +994,7 @@ extension ModifyAttrCompX on Item {
 
   Item asUsable(
     List<AttrModifier> modifiers, {
-    ItemGetter<Item>? afterUsedItem,
+    ItemGetter? afterUsedItem,
   }) {
     final comp = ModifyAttrComp(
       UseType.use,
@@ -998,7 +1008,7 @@ extension ModifyAttrCompX on Item {
 
   Item asDrinkable(
     List<AttrModifier> modifiers, {
-    ItemGetter<Item>? afterUsed,
+    ItemGetter? afterUsed,
   }) {
     final comp = ModifyAttrComp(
       UseType.drink,
@@ -1027,7 +1037,7 @@ class CookableComp extends ItemComp {
   @JsonKey()
   final double fuelCost;
   @JsonKey(fromJson: NamedItemGetter.create)
-  final ItemGetter<Item> cookedOutput;
+  final ItemGetter cookedOutput;
 
   const CookableComp(
     this.cookType,
@@ -1084,7 +1094,7 @@ extension CookableCompX on Item {
   Item asCookable(
     CookType cookType, {
     required double fuelCost,
-    required ItemGetter<Item> output,
+    required ItemGetter output,
   }) {
     final comp = CookableComp(
       cookType,

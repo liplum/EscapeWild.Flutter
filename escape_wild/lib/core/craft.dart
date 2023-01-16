@@ -89,7 +89,8 @@ abstract class CraftRecipeProtocol with Moddable {
   ItemStack onCraft(List<ItemStack> inputs);
 
   /// The order of [inputs] should be the same as [inputSlots].
-  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume);
+  /// - [inputs] is [Backpack.untracked].
+  void onConsume(@Backpack.tracked List<ItemStack> inputs, ItemStackConsumeReceiver consume);
 }
 
 @JsonSerializable(createToJson: false)
@@ -97,7 +98,7 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   @JsonKey()
   final List<TagMassEntry> ingredients;
   @JsonKey(fromJson: NamedItemGetter.create)
-  final ItemGetter<Item> output;
+  final ItemGetter output;
   @override
   @JsonKey(ignore: true)
   List<ItemMatcher> toolSlots = [];
@@ -121,9 +122,9 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
     for (final ingredient in ingredients) {
       inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.hasTag(ingredient.tag),
+        typeOnly: (item) => item.hasTags(ingredient.tags),
         exact: (item) {
-          if (!item.meta.hasTag(ingredient.tag)) return ItemStackMatchResult.typeUnmatched;
+          if (!item.meta.hasTags(ingredient.tags)) return ItemStackMatchResult.typeUnmatched;
           if (item.stackMass < (ingredient.mass ?? 0.0)) return ItemStackMatchResult.massUnmatched;
           return ItemStackMatchResult.matched;
         },
@@ -155,7 +156,6 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
 
   @override
   String get typeName => type;
-
 }
 
 @JsonSerializable(createToJson: false)
@@ -164,8 +164,8 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
   final List<TagMassEntry> inputTags;
   @JsonKey()
   final int? outputMass;
-  @JsonKey(fromJson: NamedItemGetter.create)
-  final ItemGetter<Item> output;
+  @itemGetterJsonKey
+  final ItemGetter output;
 
   @override
   @JsonKey(ignore: true)
@@ -185,9 +185,9 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
   }) {
     for (final input in inputTags) {
       inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.hasTag(input.tag),
+        typeOnly: (item) => item.hasTags(input.tags),
         exact: (item) {
-          if (!item.meta.hasTag(input.tag)) return ItemStackMatchResult.typeUnmatched;
+          if (!item.meta.hasTags(input.tags)) return ItemStackMatchResult.typeUnmatched;
           if (item.stackMass < (outputMass ?? item.meta.mass)) return ItemStackMatchResult.massUnmatched;
           return ItemStackMatchResult.matched;
         },
@@ -203,7 +203,7 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
     var sumMass = 0;
     var sumWet = 0.0;
     for (final tag in inputTags) {
-      final input = inputs.findFirstByTag(tag.tag);
+      final input = inputs.findFirstByTags(tag.tags);
       assert(input != null, "$tag not found in $inputs");
       if (input == null) return ItemStack.empty;
       final inputMass = input.stackMass;
@@ -218,7 +218,7 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
   @override
   void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
     for (final tag in inputTags) {
-      final input = inputs.findFirstByTag(tag.tag);
+      final input = inputs.findFirstByTags(tag.tags);
       assert(input != null, "$tag not found in $inputs");
       if (input == null) continue;
       consume(input, tag.mass);
