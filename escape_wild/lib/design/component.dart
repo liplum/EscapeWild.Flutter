@@ -100,6 +100,7 @@ class NavigationListTile extends StatelessWidget {
   final Widget? title;
   final Widget? subtitle;
   final WidgetBuilder? to;
+  final VoidCallback? onPop;
 
   const NavigationListTile({
     super.key,
@@ -107,6 +108,7 @@ class NavigationListTile extends StatelessWidget {
     this.title,
     this.subtitle,
     this.to,
+    this.onPop,
   });
 
   @override
@@ -118,8 +120,9 @@ class NavigationListTile extends StatelessWidget {
       subtitle: subtitle,
       onTap: to == null
           ? null
-          : () {
-              context.navigator.push(MaterialPageRoute(builder: to));
+          : () async {
+              await context.navigator.push(MaterialPageRoute(builder: to));
+              onPop?.call();
             },
       trailing: to == null
           ? null

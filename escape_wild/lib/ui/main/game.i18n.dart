@@ -1,6 +1,6 @@
 part of 'game.dart';
 
-const _n = "ui.main";
+const _n = "ui.main.game";
 
 class _I {
   _I._();

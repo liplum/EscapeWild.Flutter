@@ -9,7 +9,7 @@ ui:
       game: Game
       # A bottom navigation about user themselves.
       mine: Mine
-    main:
+    game:
       title: Escape Wild
       new-game: New Game
       continue: Continue

@@ -25,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget buildBody() {
+    final entries = buildVirtualEntries();
     return CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
@@ -51,8 +52,10 @@ class _SettingsPageState extends State<SettingsPage> {
   List<WidgetBuilder> buildVirtualEntries() {
     final all = <WidgetBuilder>[];
     final curLocale = context.locale;
+    void onPop() => setState(() {});
     all.add(
       (_) => NavigationListTile(
+        onPop: onPop,
         leading: const Icon(
           Icons.public_rounded,
           size: iconSize,
@@ -68,12 +71,13 @@ class _SettingsPageState extends State<SettingsPage> {
     final q2cvt = Measurement.toMap();
     all.add(
       (_) => NavigationListTile(
+        onPop: onPop,
         leading: const Icon(
           Icons.straighten_rounded,
           size: iconSize,
         ),
         title: _I.measurementTitle.text(),
-        subtitle: q2cvt.values.map((cvt) => cvt.l10nUnit()).join(", ").text(),
+        subtitle: q2cvt.values.map((cvt) => "(${cvt.l10nUnit()})").join(", ").text(),
         to: (_) => MeasurementSelectorPage(
           quality2Selected: q2cvt,
         ),
