@@ -11,7 +11,7 @@ part 'subtropics.g.dart';
 
 @JsonSerializable()
 class SubtropicsLevel extends LevelProtocol {
-  @JsonKey()
+  @JsonKey(includeIfNull: false)
   SubtropicsRoute? route;
   @JsonKey()
   var routeSeed = 0;
@@ -72,6 +72,16 @@ class SubtropicsLevel extends LevelProtocol {
   @override
   PlaceProtocol restoreLastLocation(dynamic locationRestoreId) {
     return route!.restoreById(locationRestoreId);
+  }
+
+  @override
+  void onGenerateRoute() {
+    final generator = SubtropicsRouteGenerator();
+    final ctx = RouteGenerateContext(hardness: hardness);
+    routeSeed = DateTime.now().millisecondsSinceEpoch;
+    final generatedRoute = generator.generateRoute(ctx, routeSeed);
+    route = generatedRoute;
+    player.location = generatedRoute.initialPlace;
   }
 }
 
@@ -218,10 +228,9 @@ class SubtropicsRoute extends RouteProtocol {
 
 @JsonSerializable()
 class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
+  /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(ignore: true)
-
-  /// To reduce the json size, the mod will be set later during restoration.
   ModProtocol get mod => super.mod;
   @override
   @JsonKey(ignore: true)

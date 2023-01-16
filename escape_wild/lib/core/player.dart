@@ -106,15 +106,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     backpack.clear();
     fireState = FireState.off;
     journeyProgress = 0;
-    // Route
+    // Create level.
     final level = SubtropicsLevel();
     this.level = level;
-    final generator = SubtropicsRouteGenerator();
-    final ctx = RouteGenerateContext(hardness: level.hardness);
-    level.routeSeed = DateTime.now().millisecondsSinceEpoch;
-    final generatedRoute = generator.generateRoute(ctx, level.routeSeed);
-    level.route = generatedRoute;
-    location = generatedRoute.initialPlace;
+    level.onGenerateRoute();
   }
 
   void loadFromJson(String json) {

@@ -27,6 +27,8 @@ abstract class LevelProtocol implements JConvertibleProtocol {
   dynamic getLocationRestoreId(PlaceProtocol place);
 
   void onRestore();
+
+  void onGenerateRoute();
 }
 
 class _EmptyLevelMeta extends LevelMetaProtocol {
@@ -68,4 +70,7 @@ class _EmptyLevel extends LevelProtocol {
   PlaceProtocol restoreLastLocation(locationRestoreId) {
     throw UnimplementedError();
   }
+
+  @override
+  void onGenerateRoute() {}
 }
