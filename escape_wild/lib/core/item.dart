@@ -1150,7 +1150,7 @@ class WetComp extends ItemComp {
 
   @override
   Future<void> onPass(ItemStack stack, TS delta) async {
-    final lost = delta ~/ dryTime;
+    final lost = delta / dryTime;
     final wet = getWet(stack);
     setWet(stack, wet - lost);
   }
@@ -1214,7 +1214,7 @@ class FreshnessComp extends ItemComp {
 
   @override
   Future<void> onPass(ItemStack stack, TS delta) async {
-    final lost = delta ~/ expire;
+    final lost = delta / expire;
     final freshness = getFreshness(stack);
     setFreshness(stack, freshness - lost);
   }

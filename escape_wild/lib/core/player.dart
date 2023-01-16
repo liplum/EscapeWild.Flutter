@@ -25,9 +25,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   @noSave
   final $location = ValueNotifier<PlaceProtocol?>(null);
   @noSave
-  final $maxMassLoad = ValueNotifier(2000);
+  final $maxMassLoad = ValueNotifier(10000);
   final $actionTimes = ValueNotifier(0);
-
+  static const startClock = Clock.hm(7, 0);
+  final $time = ValueNotifier(TS.zero);
   var _isExecutingOnPass = false;
   LevelProtocol level = LevelProtocol.empty;
 
@@ -88,7 +89,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   Future<void> onGameFailed() async {
     await AppCtx.showTip(
       title: "YOU DIED",
-      desc: "Your soul is lost in the wilderness, but you have still tried $actionTimes times.",
+      desc:
+          "Your soul is lost in the wilderness, but you have still tried $actionTimes times and last ${time.hourPart} hours ${time.minutePart} minutes.",
       ok: "Alright",
       dismissible: false,
     );
@@ -101,6 +103,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   Future<void> restart() async {
     await init();
+    _isExecutingOnPass = false;
     actionTimes = 0;
     attrs = AttrModel.full;
     backpack.clear();
@@ -175,6 +178,10 @@ extension PlayerX on Player {
   bool get isWin => $isWin.value;
 
   set isWin(bool v) => $isWin.value = v;
+
+  TS get time => $time.value;
+
+  set time(TS v) => $time.value = v;
 
   int get actionTimes => $actionTimes.value;
 
