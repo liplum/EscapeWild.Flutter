@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:jconverter/jconverter.dart';
 
 abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
@@ -140,4 +141,8 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
 
   /// Called when the [action] is not caught by other delegates
   Future<void> performOthers(ActionType action) async {}
+}
+
+abstract class CampfirePlaceProtocol {
+  ValueNotifier<FireState> get $fireState;
 }

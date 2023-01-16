@@ -7,11 +7,11 @@ part of 'campfire.dart';
 // **************************************************************************
 
 FireState _$FireStateFromJson(Map<String, dynamic> json) => FireState(
-      active: json['active'] as bool? ?? false,
+      ember: (json['ember'] as num?)?.toDouble() ?? 0.0,
       fuel: (json['fuel'] as num?)?.toDouble() ?? 0.0,
     );
 
 Map<String, dynamic> _$FireStateToJson(FireState instance) => <String, dynamic>{
-      'active': instance.active,
+      'ember': instance.ember,
       'fuel': instance.fuel,
     };

@@ -50,7 +50,9 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   final val = <String, dynamic>{};
@@ -64,6 +66,7 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }
 
@@ -71,7 +74,9 @@ PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
   final val = <String, dynamic>{};
@@ -85,6 +90,7 @@ Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }
 
@@ -92,7 +98,9 @@ ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
   final val = <String, dynamic>{};
@@ -106,6 +114,7 @@ Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }
 
@@ -114,7 +123,9 @@ RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
   final val = <String, dynamic>{};
@@ -128,6 +139,7 @@ Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }
 
@@ -135,7 +147,9 @@ CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
   final val = <String, dynamic>{};
@@ -149,6 +163,7 @@ Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }
 
@@ -156,7 +171,9 @@ HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
   final val = <String, dynamic>{};
@@ -170,6 +187,7 @@ Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }
 
@@ -177,7 +195,9 @@ VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int;
+      ..exploreCount = json['ec'] as int
+      ..fireState =
+          FireState.fromJson(json['fireState'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
   final val = <String, dynamic>{};
@@ -191,5 +211,6 @@ Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
+  val['fireState'] = instance.fireState;
   return val;
 }

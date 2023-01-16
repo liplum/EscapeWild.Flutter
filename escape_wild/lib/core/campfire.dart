@@ -5,19 +5,17 @@ part 'campfire.g.dart';
 @JsonSerializable()
 class FireState {
   @JsonKey()
-  final bool active;
+  final double ember;
   @JsonKey()
   final double fuel;
   static const maxVisualFuel = 500.0;
 
   const FireState({
-    this.active = false,
+    this.ember = 0.0,
     this.fuel = 0.0,
   });
 
-  const FireState.active({
-    this.fuel = 0.0,
-  }) : active = true;
+  bool get active => fuel > 0 || ember > 0;
 
   factory FireState.fromJson(Map<String, dynamic> json) => _$FireStateFromJson(json);
 
@@ -26,11 +24,11 @@ class FireState {
   static const FireState off = FireState();
 
   FireState copyWith({
-    bool? active,
+    double? ember,
     double? fuel,
   }) =>
       FireState(
-        active: active ?? this.active,
+        ember: ember ?? this.ember,
         fuel: fuel ?? this.fuel,
       );
 }

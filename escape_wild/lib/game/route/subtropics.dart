@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:flutter/src/foundation/change_notifier.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 
@@ -238,7 +239,7 @@ class SubtropicsRoute extends RouteProtocol {
 }
 
 @JsonSerializable()
-class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
+class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin implements CampfirePlaceProtocol {
   /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(ignore: true)
@@ -254,6 +255,14 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   @JsonKey(name: "ec")
   int exploreCount = 0;
   static const hunt = 0.8;
+
+  @JsonKey()
+  FireState get fireState => $fireState.value;
+
+  set fireState(FireState v) => $fireState.value = v;
+  @override
+  @JsonKey(ignore: true)
+  var $fireState = ValueNotifier<FireState>(FireState.off);
 
   SubtropicsPlace(this.name);
 
@@ -306,7 +315,6 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     await route.setRouteProgress(routeProgress + 1.0);
     player.journeyProgress = route.journeyProgress;
     player.location = route.current;
-    player.putOutCampfire();
   }
 
   @override

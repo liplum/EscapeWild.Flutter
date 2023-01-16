@@ -20,107 +20,38 @@ class CampfirePage extends StatefulWidget {
 class _CampfirePageState extends State<CampfirePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: (player.$fireState <<
-              (ctx, state, _) => AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: buildBody(state),
-                  ))
-          .padAll(5),
-    );
-  }
-
-  Widget buildBody(FireState fireState) {
-    if (fireState.active) {
-      return const CookPage();
+    final loc = player.location;
+    if (loc is CampfirePlaceProtocol) {
+      final $fireState = (loc as CampfirePlaceProtocol).$fireState;
+      return Scaffold(
+        body: ($fireState <<
+                (ctx, state, _) => AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: buildBody($fireState),
+                    ))
+            .padAll(5),
+      );
     } else {
-      return const FireStartingPage();
-    }
-  }
-}
-
-class CampfireImage extends StatelessWidget {
-  final Color? color;
-
-  const CampfireImage({
-    super.key,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      "assets/img/campfire.svg",
-      //color: context.themeColor,
-      color: color ?? context.themeColor,
-      placeholderBuilder: (_) => const Placeholder(),
-    ).constrained(maxW: 200, maxH: 200);
-  }
-}
-
-class AnimatedCampfireImage extends StatefulWidget {
-  final Color notCookingColor;
-  final Color cookingColor;
-  final ValueNotifier<bool> $isCooking;
-
-  const AnimatedCampfireImage({
-    super.key,
-    required this.notCookingColor,
-    required this.cookingColor,
-    required this.$isCooking,
-  });
-
-  @override
-  State<AnimatedCampfireImage> createState() => _AnimatedCampfireImageState();
-}
-
-class _AnimatedCampfireImageState extends State<AnimatedCampfireImage> with SingleTickerProviderStateMixin {
-  late AnimationController _animationCtrl;
-  late Animation _burningAnimation;
-  bool? lastCookingState;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    _burningAnimation = ColorTween(begin: widget.notCookingColor, end: widget.cookingColor).animate(_animationCtrl);
-    widget.$isCooking.addListener(onCookingStateChange);
-  }
-
-  void onCookingStateChange() {
-    final newState = widget.$isCooking.value;
-    if (newState != lastCookingState) {
-      if (newState) {
-        // start cooking
-        _animationCtrl.forward();
-      } else {
-        // end cooking
-        _animationCtrl.reverse();
-      }
-      lastCookingState = newState;
+      return LeavingBlank(icon: Icons.close_rounded, desc: "Here doesn't allow fire.");
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _burningAnimation,
-      builder: (ctx, _) => CampfireImage(
-        color: _burningAnimation.value,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    widget.$isCooking.removeListener(onCookingStateChange);
-    _animationCtrl.dispose();
-    super.dispose();
+  Widget buildBody(ValueNotifier<FireState> $fireState) {
+    if ($fireState.value.active) {
+      return CookPage($fireState: $fireState);
+    } else {
+      return FireStartingPage($fireState: $fireState);
+    }
   }
 }
 
 class FireStartingPage extends StatefulWidget {
-  const FireStartingPage({super.key});
+  final ValueNotifier<FireState> $fireState;
+
+  const FireStartingPage({
+    super.key,
+    required this.$fireState,
+  });
 
   @override
   State<FireStartingPage> createState() => _FireStartingPageState();
@@ -129,6 +60,10 @@ class FireStartingPage extends StatefulWidget {
 class _FireStartingPageState extends State<FireStartingPage> {
   final fireStarterSlot = ItemStackReqSlot(ItemMatcher.hasComp([FireStarterComp]));
   static int lastSelectedIndex = -1;
+
+  FireState get fireState => widget.$fireState.value;
+
+  set fireState(FireState v) => widget.$fireState.value = v;
 
   @override
   void initState() {
@@ -220,7 +155,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
     if (comp != null) {
       final started = comp.tryStartFire(fireStarter);
       if (started) {
-        player.fireState = FireState.active(fuel: FuelComp.tryGetHeatValue(fireStarter));
+        fireState = FireState(fuel: FuelComp.tryGetHeatValue(fireStarter));
       }
       if (DurabilityComp.tryGetIsBroken(fireStarter)) {
         player.backpack.removeStack(fireStarter);
@@ -238,7 +173,12 @@ class _FireStartingPageState extends State<FireStartingPage> {
 }
 
 class CookPage extends StatefulWidget {
-  const CookPage({super.key});
+  final ValueNotifier<FireState> $fireState;
+
+  const CookPage({
+    super.key,
+    required this.$fireState,
+  });
 
   @override
   State<CookPage> createState() => _CookPageState();
@@ -248,6 +188,14 @@ class _CookPageState extends State<CookPage> {
   var $isCooking = ValueNotifier(false);
   final cookSlot = ItemStackReqSlot(ItemMatcher.hasComp(const [CookableComp]));
   static int lastSelectedIndex = -1;
+
+  FireState get fireState => widget.$fireState.value;
+
+  set fireState(FireState v) => widget.$fireState.value = v;
+
+  double get fireFuel => fireState.fuel;
+
+  set fireFuel(double v) => fireState = fireState.copyWith(fuel: fireState.fuel - v);
 
   @override
   void initState() {
@@ -271,7 +219,7 @@ class _CookPageState extends State<CookPage> {
     return [
       buildBackground(),
       buildBody(),
-      player.$fireState << (_, state, __) => buildFuelState(state),
+      widget.$fireState << (_, state, __) => buildFuelState(state),
       buildFoodSlot(),
     ].stack();
   }
@@ -307,7 +255,7 @@ class _CookPageState extends State<CookPage> {
   }
 
   Widget buildBody() {
-    final canCook = cookSlot.isNotEmpty && player.fireFuel > 0;
+    final canCook = cookSlot.isNotEmpty && fireFuel > 0;
     final cookBtn = CardButton(
       elevation: canCook ? 5 : null,
       onTap: !canCook
@@ -316,12 +264,12 @@ class _CookPageState extends State<CookPage> {
               final raw = cookSlot.stack;
               final cookComp = CookableComp.of(raw);
               if (cookComp == null) return;
-              final maxCookablePart = cookComp.getMaxCookablePart(raw, player.fireFuel);
+              final maxCookablePart = cookComp.getMaxCookablePart(raw, fireFuel);
               if (maxCookablePart <= 0) return;
               final partToCook = player.backpack.splitItemInBackpack(raw, maxCookablePart);
               $isCooking.value = true;
               await Future.delayed(const Duration(milliseconds: 500));
-              player.fireFuel -= cookComp.getActualFuelCost(partToCook);
+              fireFuel -= cookComp.getActualFuelCost(partToCook);
               await Future.delayed(const Duration(milliseconds: 500));
               $isCooking.value = false;
               final result = cookComp.cook(partToCook);
@@ -353,7 +301,7 @@ class _CookPageState extends State<CookPage> {
     if (selected == null) return;
     if (!mounted) return;
     final heatValue = FuelComp.tryGetHeatValue(selected);
-    player.fireFuel += heatValue;
+    fireFuel += heatValue;
     player.backpack.removeStack(selected);
   }
 
@@ -386,6 +334,86 @@ class _CookPageState extends State<CookPage> {
   @override
   void dispose() {
     cookSlot.dispose();
+    super.dispose();
+  }
+}
+
+class CampfireImage extends StatelessWidget {
+  final Color? color;
+
+  const CampfireImage({
+    super.key,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      "assets/img/campfire.svg",
+      //color: context.themeColor,
+      color: color ?? context.themeColor,
+      placeholderBuilder: (_) => const Placeholder(),
+    ).constrained(maxW: 200, maxH: 200);
+  }
+}
+
+class AnimatedCampfireImage extends StatefulWidget {
+  final Color notCookingColor;
+  final Color cookingColor;
+  final ValueNotifier<bool> $isCooking;
+
+  const AnimatedCampfireImage({
+    super.key,
+    required this.notCookingColor,
+    required this.cookingColor,
+    required this.$isCooking,
+  });
+
+  @override
+  State<AnimatedCampfireImage> createState() => _AnimatedCampfireImageState();
+}
+
+class _AnimatedCampfireImageState extends State<AnimatedCampfireImage> with SingleTickerProviderStateMixin {
+  late AnimationController _animationCtrl;
+  late Animation _burningAnimation;
+  bool? lastCookingState;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _burningAnimation = ColorTween(begin: widget.notCookingColor, end: widget.cookingColor).animate(_animationCtrl);
+    widget.$isCooking.addListener(onCookingStateChange);
+  }
+
+  void onCookingStateChange() {
+    final newState = widget.$isCooking.value;
+    if (newState != lastCookingState) {
+      if (newState) {
+        // start cooking
+        _animationCtrl.forward();
+      } else {
+        // end cooking
+        _animationCtrl.reverse();
+      }
+      lastCookingState = newState;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _burningAnimation,
+      builder: (ctx, _) => CampfireImage(
+        color: _burningAnimation.value,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    widget.$isCooking.removeListener(onCookingStateChange);
+    _animationCtrl.dispose();
     super.dispose();
   }
 }
