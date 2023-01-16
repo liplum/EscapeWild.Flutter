@@ -138,9 +138,10 @@ class _FireStartingPageState extends State<FireStartingPage> {
         });
       }
     }
-    fireStarterSlot.onChange = (newStack) {
+    fireStarterSlot.addListener(() {
+      final newStack = fireStarterSlot.stack;
       lastSelectedIndex = player.backpack.indexOfStack(newStack);
-    };
+    });
   }
 
   @override
@@ -290,23 +291,28 @@ class _CookPageState extends State<CookPage> {
   }
 
   Widget buildBody() {
+    final canCook = cookSlot.isNotEmpty && player.fireFuel > 0;
     final cookBtn = CardButton(
-      elevation: cookSlot.isNotEmpty ? 5 : null,
-      onTap: cookSlot.isEmpty
+      elevation: canCook ? 5 : null,
+      onTap: !canCook
           ? null
           : () async {
               final raw = cookSlot.stack;
               final cookComp = CookableComp.of(raw);
               if (cookComp == null) return;
+              final maxCookablePart = cookComp.getMaxCookablePart(raw, player.fireFuel);
+              if (maxCookablePart <= 0) return;
+              final partToCook = player.backpack.splitItemInBackpack(raw, maxCookablePart);
               $isCooking.value = true;
               await Future.delayed(const Duration(milliseconds: 500));
-              player.fireFuel -= cookComp.getActualFuelCost(raw);
+              player.fireFuel -= cookComp.getActualFuelCost(partToCook);
               await Future.delayed(const Duration(milliseconds: 500));
               $isCooking.value = false;
-              final result = cookComp.cook(raw);
-              cookSlot.reset();
-              player.backpack.removeStack(raw);
+              final result = cookComp.cook(partToCook);
               player.backpack.addItemOrMerge(result);
+              cookSlot.resetIfEmpty();
+              if (!mounted) return;
+              setState(() {});
             },
       child: "Cook".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
     ).expanded();

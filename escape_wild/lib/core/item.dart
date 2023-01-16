@@ -44,7 +44,9 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   @override
   final String name;
 
-  /// Unit: [g] gram
+  /// Unit: [g] gram.
+  ///
+  /// [mass] > 0
   final int mass;
   final bool mergeable;
 
@@ -65,7 +67,8 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   Item.unmergeable(
     this.name, {
     required this.mass,
-  }) : mergeable = false;
+  })  : mergeable = false,
+        assert(mass > 0);
 
   Item.mergeable(
     this.name, {
@@ -502,7 +505,8 @@ class ContainerItemStack extends ItemStack {
 }
 
 extension ItemStackX on ItemStack {
-  double get massMultiplier => stackMass / meta.mass;
+  /// [massMultiplier] is always 1.0 when [Item.mergeable] is true.
+  double get massMultiplier => meta.mergeable ? stackMass / meta.mass : 1.0;
 
   bool canMergeTo(ItemStack to) {
     return hasIdenticalMeta(to) && meta.mergeable;
@@ -1014,8 +1018,21 @@ class CookableComp extends ItemComp {
     }
   }
 
+  double getUnitFuelCostPerMass(ItemStack raw) {
+    return fuelCost / raw.meta.mass;
+  }
+
+  int getMaxCookablePart(ItemStack raw, double totalFuel) {
+    if (raw.meta.mergeable) {
+      return totalFuel ~/ (fuelCost / raw.meta.mass);
+    } else {
+      return totalFuel >= fuelCost ? raw.stackMass : 0;
+    }
+  }
+
   ItemStack cook(ItemStack raw) {
-    return cookedOutput().create();
+    final cooked = cookedOutput();
+    return cooked.create()..mass = (raw.massMultiplier * cooked.mass).toInt();
   }
 
   @override

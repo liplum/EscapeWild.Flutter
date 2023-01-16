@@ -84,6 +84,7 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
   /// It will remove the [stack] in backpack, and won't change [stack]'s state.
   bool removeStack(ItemStack stack) {
     if (stack.isEmpty) return true;
+    stack.mass = 0;
     final removedMass = stack.stackMass;
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {

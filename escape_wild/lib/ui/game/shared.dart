@@ -571,22 +571,30 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   }
 }
 
-class ItemStackReqSlot {
-  ItemStack get stack => $stack.value;
+class ItemStackReqSlot with ChangeNotifier {
+  var _stack = ItemStack.empty;
 
-  set stack(ItemStack v) => $stack.value = v;
-  final $stack = ValueNotifier(ItemStack.empty);
+  ItemStack get stack => _stack;
+
+  set stack(ItemStack v) {
+    _stack = v;
+    notifyListeners();
+  }
 
   void reset() {
     stack = ItemStack.empty;
-    onChange?.call(stack);
+  }
+
+  void resetIfEmpty() {
+    if (stack.isEmpty) {
+      stack = ItemStack.empty;
+    }
   }
 
   bool get isEmpty => stack == ItemStack.empty;
 
   bool get isNotEmpty => !isEmpty;
   final ItemMatcher matcher;
-  ValueChanged<ItemStack>? onChange;
 
   ItemStackReqSlot(this.matcher);
 
@@ -600,12 +608,12 @@ class ItemStackReqSlot {
       reset();
     } else if (matcher.exact(newStack).isMatched) {
       stack = newStack;
-      onChange?.call(stack);
     }
   }
 
-  void dispose() {
-    $stack.dispose();
+  /// manually call [notifyListeners] if the [stack] was changed outside.
+  void notifyChange() {
+    notifyListeners();
   }
 }
 
@@ -630,7 +638,7 @@ class ItemStackReqCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return slot.$stack << (_, stack, __) => buildBody(context);
+    return slot << (_, __) => buildBody(context);
   }
 
   Widget buildBody(BuildContext context) {
