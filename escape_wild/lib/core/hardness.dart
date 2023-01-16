@@ -53,4 +53,6 @@ class Hardness with Moddable, TagsMixin {
     journeyDistance: (rand) => 55 * rand.f(1.2, 1.8),
     resourceIntensity: () => Rand.f(0.8, 1.2),
   );
+
+  static String toName(Hardness hardness) => hardness.name;
 }

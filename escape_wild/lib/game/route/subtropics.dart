@@ -9,10 +9,76 @@ import 'shared.dart';
 
 part 'subtropics.g.dart';
 
-/// As the first route generator, the generating is hardcoded and not mod-friendly.
-class SubtropicsRouteGenerator implements RouteGeneratorProtocol {
+@JsonSerializable()
+class SubtropicsLevel extends LevelProtocol {
+  @JsonKey()
+  SubtropicsRoute? route;
+  @JsonKey()
+  var routeSeed = 0;
   @override
-  RouteProtocol generateRoute(RouteGenerateContext ctx, int seed) {
+  @JsonKey(toJson: Hardness.toName, fromJson: Contents.getHardnessByName)
+  var hardness = Hardness.normal;
+
+  SubtropicsLevel();
+
+  @override
+  List<PlaceAction> getAvailableActions() {
+    if (player.isDead) {
+      return [PlaceAction.stopHeartbeatAndLose];
+    }
+    return player.location?.getAvailableActions() ?? const [];
+  }
+
+  @override
+  Future<void> performAction(ActionType action) async {
+    if (action == ActionType.stopHeartbeat) {
+      await player.onGameFailed();
+    } else {
+      final curLoc = player.location;
+      if (curLoc != null) {
+        await curLoc.performAction(action);
+        player.actionTimes++;
+      }
+    }
+  }
+
+  @override
+  Future<void> onPass(TS delta) async {
+    for (final stack in player.backpack) {
+      await stack.onPass(delta);
+    }
+    await route?.onPass(delta);
+  }
+
+  factory SubtropicsLevel.fromJson(Map<String, dynamic> json) => _$SubtropicsLevelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SubtropicsLevelToJson(this);
+
+  static const type = "SubtropicsLevel";
+
+  @override
+  String get typeName => type;
+
+  @override
+  dynamic getLocationRestoreId(PlaceProtocol place) {
+    return route!.getRestoreIdOf(place);
+  }
+
+  @override
+  void onRestore() {
+    route?.onRestored();
+  }
+
+  @override
+  PlaceProtocol restoreLastLocation(dynamic locationRestoreId) {
+    return route!.restoreById(locationRestoreId);
+  }
+}
+
+/// As the first route generator, the generating is hardcoded and not mod-friendly.
+class SubtropicsRouteGenerator implements RouteGeneratorProtocol<SubtropicsRoute> {
+  @override
+  SubtropicsRoute generateRoute(RouteGenerateContext ctx, int seed) {
     final route = SubtropicsRoute("subtropics");
     // now just try to fill the route with plain.
     final rand = Random(seed);
@@ -94,6 +160,13 @@ class SubtropicsRoute extends RouteProtocol {
   PlaceProtocol get initialPlace => places[0];
 
   @override
+  Future<void> onPass(TS delta) async {
+    for (final place in places) {
+      await place.onPass(delta);
+    }
+  }
+
+  @override
   void onRestored() {
     for (final place in places) {
       place.route = this;
@@ -123,8 +196,6 @@ class SubtropicsRoute extends RouteProtocol {
     await current.onEnter();
   }
 
-  factory SubtropicsRoute.fromJson(Map<String, dynamic> json) => _$SubtropicsRouteFromJson(json);
-
   @override
   String get typeName => type;
 
@@ -137,6 +208,8 @@ class SubtropicsRoute extends RouteProtocol {
   PlaceProtocol restoreById(restoreId) {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
+
+  factory SubtropicsRoute.fromJson(Map<String, dynamic> json) => _$SubtropicsRouteFromJson(json);
 
   Map<String, dynamic> toJson() => _$SubtropicsRouteToJson(this);
 
@@ -163,6 +236,8 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
   static const hunt = 0.8;
 
   SubtropicsPlace(this.name);
+
+  Future<void> onPass(TS delta) async {}
 
   Future<void> onLeave() async {}
 

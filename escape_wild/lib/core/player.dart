@@ -17,46 +17,34 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
   @polymorphismSave
   var backpack = Backpack();
-  var hardness = Hardness.normal;
   final $journeyProgress = ValueNotifier<Progress>(0.0);
   final $isWin = ValueNotifier(false);
   final $fireState = ValueNotifier(FireState.off);
-  var routeGeneratorSeed = 0;
   @noSave
   var initialized = false;
   @noSave
   final $location = ValueNotifier<PlaceProtocol?>(null);
-
   @noSave
   final $maxMassLoad = ValueNotifier(2000);
   final $actionTimes = ValueNotifier(0);
 
-  /// It's evaluated at runtime, no need to serialization.
-  RouteProtocol? route;
+  var _isExecutingOnPass = false;
+  LevelProtocol level = LevelProtocol.empty;
 
   Future<void> onPass(TS delta) async {
-    for (final stack in backpack) {
-      await stack.onPass(delta);
-    }
+    assert(!_isExecutingOnPass, "[onPass] can't be called recursively.");
+    if (_isExecutingOnPass) return;
+    _isExecutingOnPass = true;
+    await level.onPass(delta);
+    _isExecutingOnPass = false;
   }
 
-  Future<void> performAction(ActionType action) async {
-    if (action == ActionType.stopHeartbeat) {
-      await onGameFailed();
-    } else {
-      final curLoc = location;
-      if (curLoc != null) {
-        await curLoc.performAction(action);
-        actionTimes++;
-      }
-    }
+  Future<void> performAction(ActionType action) {
+    return level.performAction(action);
   }
 
   List<PlaceAction> getAvailableActions() {
-    if (isDead) {
-      return [PlaceAction.stopHeartbeatAndLose];
-    }
-    return location?.getAvailableActions() ?? const [];
+    return level.getAvailableActions();
   }
 
   bool putOutCampfire() {
@@ -119,11 +107,13 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     fireState = FireState.off;
     journeyProgress = 0;
     // Route
+    final level = SubtropicsLevel();
+    this.level = level;
     final generator = SubtropicsRouteGenerator();
-    final ctx = RouteGenerateContext(hardness: hardness);
-    routeGeneratorSeed = DateTime.now().millisecondsSinceEpoch;
-    final generatedRoute = generator.generateRoute(ctx, routeGeneratorSeed);
-    route = generatedRoute;
+    final ctx = RouteGenerateContext(hardness: level.hardness);
+    level.routeSeed = DateTime.now().millisecondsSinceEpoch;
+    final generatedRoute = generator.generateRoute(ctx, level.routeSeed);
+    level.route = generatedRoute;
     location = generatedRoute.initialPlace;
   }
 
@@ -138,22 +128,18 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       final backpack = Cvt.fromJsonObj<Backpack>(json["backpack"]);
       final fireState = FireState.fromJson(json["fireState"]);
       final actionTimes = (json["actionTimes"] as num).toInt();
-      final hardness = Contents.getHardnessByName(json["hardness"]);
-      final routeGeneratorSeed = (json["routeGeneratorSeed"] as num).toInt();
       final journeyProgress = (json["journeyProgress"] as num).toDouble();
-      final route = Cvt.fromJsonObj<RouteProtocol>(json["route"]);
+      final level = Cvt.fromJsonObj<LevelProtocol>(json["level"]);
       final locationRestoreId = json["locationRestoreId"];
-      final lastLocation = route!.restoreById(locationRestoreId);
-      route.onRestored();
+      final lastLocation = level!.restoreLastLocation(locationRestoreId);
+      level.onRestore();
       // set fields
       this.attrs = attrs;
       this.backpack.loadFrom(backpack!);
       this.backpack.validate();
       this.fireState = fireState;
       this.actionTimes = actionTimes;
-      this.hardness = hardness;
-      this.routeGeneratorSeed = routeGeneratorSeed;
-      this.route = route;
+      this.level = level;
       this.journeyProgress = journeyProgress;
       location = lastLocation;
     } catch (e, stacktrace) {
@@ -174,15 +160,9 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       "journeyProgress": journeyProgress,
       "fireState": fireState.toJson(),
       "actionTimes": actionTimes,
-      "hardness": hardness.name,
-      "routeGeneratorSeed": routeGeneratorSeed,
-      "route": Cvt.toJsonObj(route),
+      "level": Cvt.toJsonObj(level),
+      "locationRestoreId": level.getLocationRestoreId(location!),
     };
-    final loc = location;
-    final r = route;
-    if (r != null && loc != null) {
-      json["locationRestoreId"] = r.getRestoreIdOf(loc);
-    }
     return json;
   }
 
@@ -231,9 +211,9 @@ extension PlayerX on Player {
 
   void modifyX(Attr attr, double delta) {
     if (delta < 0) {
-      delta = hardness.attrCostFix(delta);
+      delta = level.hardness.attrCostFix(delta);
     } else {
-      delta = hardness.attrBounceFix(delta);
+      delta = level.hardness.attrBounceFix(delta);
     }
     modify(attr, delta);
   }

@@ -3,6 +3,7 @@ import 'package:jconverter/jconverter.dart';
 export 'package:escape_wild/core/action.dart';
 export 'package:escape_wild/core/attribute.dart';
 export 'package:escape_wild/core/backpack.dart';
+export 'package:escape_wild/core/level.dart';
 export 'package:escape_wild/core/content.dart';
 export 'package:escape_wild/core/time.dart';
 export 'package:escape_wild/core/ecs.dart';

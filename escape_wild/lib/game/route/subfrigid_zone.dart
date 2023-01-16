@@ -192,6 +192,11 @@ class SubFrigidZoneRoute extends RouteProtocol {
 
   @override
   String get typeName => type;
+
+  @override
+  Future<void> onPass(TS delta) async {
+
+  }
 }
 
 @JsonSerializable()

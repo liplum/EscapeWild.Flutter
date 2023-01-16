@@ -2,11 +2,14 @@ import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 
 abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
+  @override
   String get name;
 
   RouteProtocol();
 
   PlaceProtocol get initialPlace;
+
+  Future<void> onPass(TS delta);
 
   void onRestored() {}
 
@@ -16,6 +19,7 @@ abstract class RouteProtocol with Moddable implements JConvertibleProtocol, Rest
 }
 
 abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertibleProtocol {
+  @override
   String get name;
 
   RouteProtocol get route;
@@ -24,7 +28,7 @@ abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertiblePr
 
   String displayName() => localizedName();
 
-  String localizedName() => i18n("route.${route.name}.$name.name");
+  String localizedName()  => i18n("route.${route.name}.$name.name");
 
   String localizedDescription() => i18n("route.${route.name}.$name.desc");
 
@@ -76,8 +80,8 @@ class RouteGenerateContext {
   }
 }
 
-abstract class RouteGeneratorProtocol {
-  RouteProtocol generateRoute(RouteGenerateContext ctx, int seed);
+abstract class RouteGeneratorProtocol<T> {
+  T generateRoute(RouteGenerateContext ctx, int seed);
 }
 
 /// It defines many properties that would affect the game.
