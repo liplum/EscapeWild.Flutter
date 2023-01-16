@@ -1,7 +1,9 @@
-abstract class MinuteProtocol {
+abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
   final int minutes;
 
-  const MinuteProtocol(this.minutes);
+  const MinuteProtocol({required this.minutes});
+
+  const MinuteProtocol.hm({required int hour, required int minute}) : minutes = hour * 60 + minute % 60;
 
   @override
   String toString() {
@@ -11,45 +13,59 @@ abstract class MinuteProtocol {
 }
 
 class Clock extends MinuteProtocol {
-  static const zero = Clock(0);
+  static const zero = Clock(minutes: 0);
 
-  const Clock(super.minutes);
+  const Clock({required super.minutes});
 
-  const Clock.hm(int hour, int min) : super(hour * 60 + min);
+  const Clock.hm({required int hour, required int minute}) : super.hm(hour: hour, minute: minute);
 
-  Clock operator +(TS delta) => Clock(minutes + delta.minutes);
+  Clock operator +(TS delta) => Clock(minutes: minutes + delta.minutes);
+
+  @override
+  int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
 }
 
 class TS extends MinuteProtocol {
-  static const zero = TS(0);
+  static const zero = TS(minutes: 0);
 
-  const TS(super.minutes);
+  const TS({required super.minutes});
 
-  const TS.hm(int hour, int min) : super(hour * 60 + min);
+  const TS.hm({required int hour, required int minute}) : super.hm(hour: hour, minute: minute);
+
+  @override
+  int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
 }
 
 extension IntX on int {
-  TS ts() => TS(this);
+  TS ts() => TS(minutes: this);
 }
 
-extension MinutesProtocolX on MinuteProtocol {
+extension MinutesProtocolX<T extends MinuteProtocol> on T {
   int get hourPart => minutes ~/ 60;
 
   int get minutePart => minutes % 60;
 
   double get hours => minutes / 60;
 
-  double operator /(MinuteProtocol b) => minutes / b.minutes;
+  double operator /(T b) => minutes / b.minutes;
+
+  bool operator >(T other) => minutes > other.minutes;
+
+  bool operator >=(T other) => minutes >= other.minutes;
+
+  bool operator <(T other) => minutes < other.minutes;
+
+  bool operator <=(T other) => minutes <= other.minutes;
 }
 
 extension TSX on TS {
-  TS operator +(TS b) => TS(minutes + b.minutes);
+  TS operator +(TS b) => TS(minutes: minutes + b.minutes);
 
-  TS operator -(TS b) => TS(minutes - b.minutes);
+  TS operator -(TS b) => TS(minutes: minutes - b.minutes);
 
-  TS operator *(double factor) => TS((minutes * factor).toInt());
+  TS operator *(double factor) => TS(minutes: (minutes * factor).toInt());
 
-  TS operator ~/(double factor) => TS(minutes ~/ factor);
+  TS operator ~/(double factor) => TS(minutes: minutes ~/ factor);
 }
 
 extension TSDoubleX on double {}

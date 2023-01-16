@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:flutter/material.dart';
 
 class I {
   I._();
@@ -24,6 +24,25 @@ class I {
   static String get alright => "alright".tr();
 
   static String get discard => "discard".tr();
+  static const _t = "time";
+
+  static String timeMinuteOf(String min) => "$_t.minute".tr(args: [min]);
+
+  static String timeHourOf(String hour) => "$_t.hour".tr(args: [hour]);
+
+  static String timeHmOf(String hour, String minute) => "$_t.hm".tr(namedArgs: {
+        "hour": hour,
+        "min": minute,
+      });
+
+  static String ts(TS ts) {
+    final hour = ts.hourPart;
+    if (hour <= 0) {
+      return timeMinuteOf(ts.minutes.toString());
+    } else {
+      return timeHmOf(hour.toString(), ts.minutePart.toString());
+    }
+  }
 }
 
 class _Action {

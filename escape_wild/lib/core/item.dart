@@ -1143,7 +1143,7 @@ extension FuelCompX on Item {
 class WetComp extends ItemComp {
   static const _wetK = "Wet.wet";
   static const defaultWet = 0.0;
-  static const defaultDryTime = TS(30);
+  static const defaultDryTime = TS(minutes: 30);
   final TS dryTime;
 
   const WetComp({

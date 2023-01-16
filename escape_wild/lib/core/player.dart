@@ -13,6 +13,9 @@ const polymorphismSave = Object();
 /// It will be evaluated at runtime, no need to serialization.
 const noSave = Object();
 
+const actionTsStep = TS(minutes: 5);
+const maxActionDuration = TS.hm(hour: 2, minute: 0);
+
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
   @polymorphismSave
@@ -26,8 +29,9 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   @noSave
   final $maxMassLoad = ValueNotifier(10000);
   final $actionTimes = ValueNotifier(0);
-  static const startClock = Clock.hm(7, 0);
+  static const startClock = Clock.hm(hour: 7, minute: 0);
   final $time = ValueNotifier(TS.zero);
+  final $overallActionDuration = ValueNotifier(const TS(minutes: 30));
   var _isExecutingOnPass = false;
   LevelProtocol level = LevelProtocol.empty;
 
@@ -167,6 +171,10 @@ extension PlayerX on Player {
   bool get isWin => $isWin.value;
 
   set isWin(bool v) => $isWin.value = v;
+
+  TS get overallActionDuration => $overallActionDuration.value;
+
+  set overallActionDuration(TS v) => $overallActionDuration.value = v;
 
   TS get time => $time.value;
 

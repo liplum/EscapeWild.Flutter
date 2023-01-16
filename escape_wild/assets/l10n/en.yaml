@@ -46,6 +46,10 @@ ui:
       title: Language
     measurement:
       title: Measurement
+time:
+  hour: '{} hr'
+  minute: '{} min.'
+  hm: '{hour} hr {min} min.'
 physical-quantity:
   mass: Mass
   length: Length

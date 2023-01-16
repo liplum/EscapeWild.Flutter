@@ -12,7 +12,7 @@ action:
     up: Up
     down: Down
     forward: Forward
-    backwad: Backward
+    backward: Backward
   # Explore the surroundings
   explore:
     name: Explore
@@ -28,9 +28,11 @@ action:
   # Go fishing
   fish: Fish
   # When player win the game
-  escape-wild: Escape Wild
+  escape-wild:
+    name: Escape Wild
   # When player lose the game
-  stop-heartbeat: Stop Heartbeat
+  stop-heartbeat:
+    name: Stop Heartbeat
   shelter:
     name: Shelter
     sleep-till-tomorrow: Sleep Till Tomorrow
