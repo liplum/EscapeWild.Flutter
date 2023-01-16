@@ -61,6 +61,21 @@ class AttrModel {
       );
 }
 
+extension AttrModelX on AttrModel {
+  double get(Attr attr) {
+    switch (attr) {
+      case Attr.food:
+        return food;
+      case Attr.water:
+        return water;
+      case Attr.health:
+        return health;
+      default:
+        return energy;
+    }
+  }
+}
+
 abstract class AttributeManagerProtocol {
   void setAttr(Attr attr, double value);
 

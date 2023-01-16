@@ -6,14 +6,33 @@ import 'package:rettulf/rettulf.dart';
 
 import 'shared.dart';
 
-class Hud extends StatefulWidget {
-  final AttrModel attrs;
+abstract class HudWidgetProtocol extends StatefulWidget {
   final TextStyle? textStyle;
+  final double? opacity;
+
+  const HudWidgetProtocol({
+    super.key,
+    this.textStyle,
+    this.opacity,
+  });
+}
+
+extension HudX on HudWidgetProtocol {
+  Widget mini() {
+    return ListTile(
+      subtitle: this,
+    ).scrolled(physics: const NeverScrollableScrollPhysics()).padAll(5);
+  }
+}
+
+class Hud extends HudWidgetProtocol {
+  final AttrModel attrs;
 
   const Hud({
     super.key,
     required this.attrs,
-    this.textStyle,
+    super.textStyle,
+    super.opacity,
   });
 
   @override
@@ -46,22 +65,10 @@ class _HudState extends State<Hud> {
   }
 
   Widget buildBar(double value, Color color) {
+    final opacity = widget.opacity;
     return AttrProgress(
       value: value,
-      color: color,
+      color: opacity != null ? color.withOpacity(opacity) : color,
     ).center().padOnly(l: 12);
-  }
-}
-
-class MiniHud extends StatelessWidget {
-  final AttrModel attrs;
-
-  const MiniHud({super.key, required this.attrs});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      subtitle: Hud(attrs: attrs).scrolled(physics: const NeverScrollableScrollPhysics()),
-    ).padAll(5);
   }
 }

@@ -330,6 +330,8 @@ abstract class ItemComp extends Comp {
   /// ## contrarians:
   /// - Implementation mustn't change [ItemStack.mass].
   void onSplit(ItemStack from, ItemStack to) {}
+
+  Future<void> onPass(ItemStack stack, TS delta) async {}
 }
 
 class ItemCompPair<T extends Comp> {
@@ -427,6 +429,12 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
     return part;
   }
 
+  Future<void> onPass(TS delta) async {
+    for (final comp in meta.iterateComps()) {
+      await comp.onPass(this, delta);
+    }
+  }
+
   factory ItemStack.fromJson(Map<String, dynamic> json) => _$ItemStackFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemStackToJson(this);
@@ -460,7 +468,7 @@ class ContainerItemStack extends ItemStack {
   int get innerMass => inner?.stackMass ?? 0;
 
   ContainerItemStack(super.meta) {
-    assert(meta.isContainer, "ContainerItemStack requires item is a Container.");
+    assert(meta.isContainer, "ContainerItemStack requires [item] to be a container.");
   }
 
   bool get containsItem => inner?.isNotEmpty != true;
@@ -1118,12 +1126,16 @@ extension FuelCompX on Item {
 class WetComp extends ItemComp {
   static const _wetK = "Wet.wet";
   static const defaultWet = 0.0;
+  static const defaultDryTime = TS(30);
+  final TS dryTime;
 
-  const WetComp();
+  const WetComp({
+    this.dryTime = defaultDryTime,
+  });
 
   Ratio getWet(ItemStack item) => item[_wetK] ?? defaultWet;
 
-  void setWet(ItemStack item, Ratio value) => item[_wetK] = value;
+  void setWet(ItemStack item, Ratio value) => item[_wetK] = value.clamp(0.0, 1.0);
 
   @override
   void onMerge(ItemStack from, ItemStack to) {
@@ -1134,6 +1146,13 @@ class WetComp extends ItemComp {
     final toWet = getWet(to) * toMass;
     final merged = (fromWet + toWet) / (fromMass + toMass);
     setWet(to, merged);
+  }
+
+  @override
+  Future<void> onPass(ItemStack stack, TS delta) async {
+    final lost = delta ~/ dryTime;
+    final wet = getWet(stack);
+    setWet(stack, wet - lost);
   }
 
   @override
@@ -1158,8 +1177,12 @@ class WetComp extends ItemComp {
 }
 
 extension WetCompX on Item {
-  Item hasWet() {
-    const comp = WetComp();
+  Item hasWet({
+    TS dryTime = WetComp.defaultDryTime,
+  }) {
+    final comp = WetComp(
+      dryTime: dryTime,
+    );
     comp.validateItemConfig(this);
     addComp(comp);
     return this;
@@ -1168,22 +1191,32 @@ extension WetCompX on Item {
 
 class FreshnessComp extends ItemComp {
   static const _freshnessK = "Freshness.freshness";
+  final TS expire;
 
-  const FreshnessComp();
+  const FreshnessComp({
+    required this.expire,
+  });
 
-  Ratio geFreshness(ItemStack item) => item[_freshnessK] ?? 1.0;
+  Ratio getFreshness(ItemStack item) => item[_freshnessK] ?? 1.0;
 
-  void setFreshness(ItemStack item, Ratio value) => item[_freshnessK] = value;
+  void setFreshness(ItemStack item, Ratio value) => item[_freshnessK] = value.clamp(0.0, 1.0);
 
   @override
   void onMerge(ItemStack from, ItemStack to) {
     if (!from.hasIdenticalMeta(to)) return;
     final fromMass = from.stackMass;
     final toMass = to.stackMass;
-    final fromFreshness = geFreshness(from) * fromMass;
-    final toFreshness = geFreshness(to) * toMass;
+    final fromFreshness = getFreshness(from) * fromMass;
+    final toFreshness = getFreshness(to) * toMass;
     final merged = (fromFreshness + toFreshness) / (fromMass + toMass);
     setFreshness(to, merged);
+  }
+
+  @override
+  Future<void> onPass(ItemStack stack, TS delta) async {
+    final lost = delta ~/ expire;
+    final freshness = getFreshness(stack);
+    setFreshness(stack, freshness - lost);
   }
 
   @override
@@ -1203,8 +1236,10 @@ class FreshnessComp extends ItemComp {
 }
 
 extension FreshnessCompX on Item {
-  Item hasFreshness() {
-    const comp = FreshnessComp();
+  Item hasFreshness({
+    required TS expire,
+  }) {
+    final comp = FreshnessComp(expire: expire);
     comp.validateItemConfig(this);
     addComp(comp);
     return this;

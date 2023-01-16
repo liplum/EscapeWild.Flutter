@@ -34,6 +34,12 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   /// It's evaluated at runtime, no need to serialization.
   RouteProtocol? route;
 
+  Future<void> onPass(TS delta) async {
+    for (final stack in backpack) {
+      await stack.onPass(delta);
+    }
+  }
+
   Future<void> performAction(ActionType action) async {
     if (action == ActionType.stopHeartbeat) {
       await onGameFailed();

@@ -8,7 +8,7 @@ import 'package:noitcelloc/noitcelloc.dart';
 part 'backpack.g.dart';
 
 @JsonSerializable()
-class Backpack with ChangeNotifier implements JConvertibleProtocol {
+class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConvertibleProtocol {
   @JsonKey()
   List<ItemStack> items = [];
   @JsonKey()
@@ -137,6 +137,9 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
 
   @override
   String get typeName => type;
+
+  @override
+  Iterator<ItemStack> get iterator => items.iterator;
 }
 
 extension BackpackX on Backpack {

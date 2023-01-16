@@ -96,7 +96,7 @@ flutter:
     - assets/vanilla/
     - assets/vanilla/l10n/
     - assets/img/
-
+  # Offline fonts for whoever can't fetch `Roboto` font from network.
   fonts:
     - family: Roboto
       fonts:
