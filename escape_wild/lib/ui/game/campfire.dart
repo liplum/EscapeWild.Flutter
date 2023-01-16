@@ -1,10 +1,10 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 
 class CampfirePage extends StatefulWidget {
@@ -18,11 +18,12 @@ class _CampfirePageState extends State<CampfirePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: player.$fireState <<
-          (ctx, state, _) => AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: buildBody(state),
-              ),
+      body: (player.$fireState <<
+              (ctx, state, _) => AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: buildBody(state),
+                  ))
+          .padAll(5),
     );
   }
 
@@ -110,6 +111,7 @@ class _AnimatedCampfireImageState extends State<AnimatedCampfireImage> with Sing
   @override
   void dispose() {
     widget.$isCooking.removeListener(onCookingStateChange);
+    _animationCtrl.dispose();
     super.dispose();
   }
 }
@@ -129,9 +131,12 @@ class _FireStartingPageState extends State<FireStartingPage> {
   void initState() {
     super.initState();
     if (lastSelectedIndex >= 0) {
-      setState(() {
-        fireStarterSlot.stack = player.backpack[lastSelectedIndex];
-      });
+      final lastSelected = player.backpack[lastSelectedIndex];
+      if (fireStarterSlot.matcher.exact(lastSelected).isMatched) {
+        setState(() {
+          fireStarterSlot.stack = lastSelected;
+        });
+      }
     }
     fireStarterSlot.onChange = (newStack) {
       lastSelectedIndex = player.backpack.indexOfStack(newStack);
@@ -180,19 +185,15 @@ class _FireStartingPageState extends State<FireStartingPage> {
   }
 
   Future<void> onSelectFireStarter() async {
-    await showCupertinoModalBottomSheet(
-      context: context,
-      enableDrag: false,
-      builder: (ctx) => BackpackSheet(
-        matcher: fireStarterSlot.matcher,
-        onSelect: (selected) {
-          if (!mounted) return;
-          setState(() {
-            fireStarterSlot.toggle(selected);
-          });
-          ctx.navigator.pop();
-        },
-      ).constrained(maxH: context.mediaQuery.size.height * 0.5),
+    await context.showMatchBackpack(
+      matcher: fireStarterSlot.matcher,
+      onSelect: (selected) {
+        if (!mounted) return;
+        setState(() {
+          fireStarterSlot.toggle(selected);
+        });
+        context.navigator.pop();
+      },
     );
   }
 
@@ -224,6 +225,12 @@ class _FireStartingPageState extends State<FireStartingPage> {
       setState(() {});
     }
   }
+
+  @override
+  void dispose() {
+    fireStarterSlot.dispose();
+    super.dispose();
+  }
 }
 
 class CookPage extends StatefulWidget {
@@ -235,6 +242,7 @@ class CookPage extends StatefulWidget {
 
 class _CookPageState extends State<CookPage> {
   var $isCooking = ValueNotifier(false);
+  final cookSlot = ItemStackReqSlot(ItemMatcher.hasComp(const [CookableComp]));
 
   @override
   void initState() {
@@ -246,23 +254,116 @@ class _CookPageState extends State<CookPage> {
     return [
       buildBackground(),
       buildBody(),
+      player.$fireState << (_, state, __) => buildFuelState(state),
+      buildFoodSlot(),
     ].stack();
   }
 
   Widget buildBackground() {
     return AnimatedCampfireImage(
       notCookingColor: context.themeColor,
-      cookingColor: R.fireColor,
+      cookingColor: R.flameColor,
       $isCooking: $isCooking,
     ).center().opacity(0.35);
   }
 
-  Widget buildBody() {
-    return ElevatedButton(
-      onPressed: () {
-        $isCooking.value = !$isCooking.value;
+  Widget buildFoodSlot() {
+    return ItemStackReqCell(
+      slot: cookSlot,
+      onTapUnsatisfied: selectFood,
+      onTapSatisfied: selectFood,
+    ).aspectRatio(aspectRatio: 1.5).constrained(maxW: 160).align(at: const Alignment(0.0, -0.55));
+  }
+
+  Future<void> selectFood() async {
+    final selected = await context.showMatchBackpack<ItemStack>(
+      matcher: cookSlot.matcher,
+      onSelect: (selected) async {
+        context.navigator.pop(selected);
       },
-      child: "Cook".text(style: TextStyle(fontSize: 20)),
-    ).align(at: Alignment.bottomCenter);
+    );
+    if (selected == null) return;
+    if (!mounted) return;
+    setState(() {
+      cookSlot.toggle(selected);
+    });
+  }
+
+  Widget buildBody() {
+    final cookBtn = CardButton(
+      elevation: cookSlot.isNotEmpty ? 5 : null,
+      onTap: cookSlot.isEmpty
+          ? null
+          : () async {
+              final raw = cookSlot.stack;
+              final cookComp = CookableComp.of(raw);
+              if (cookComp == null) return;
+              $isCooking.value = true;
+              await Future.delayed(const Duration(milliseconds: 500));
+              player.fireFuel -= cookComp.getActualFuelCost(raw);
+              await Future.delayed(const Duration(milliseconds: 500));
+              $isCooking.value = false;
+              final result = cookComp.cook(raw);
+              cookSlot.reset();
+              player.backpack.removeStack(raw);
+              player.backpack.addItemOrMerge(result);
+            },
+      child: "Cook".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
+    ).expanded();
+    final fuelBtn = CardButton(
+      elevation: 5,
+      onTap: onFuel,
+      child: "Fuel".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
+    ).expanded();
+    return [
+      cookBtn,
+      fuelBtn,
+    ].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
+  }
+
+  Future<void> onFuel() async {
+    final selected = await context.showMatchBackpack<ItemStack>(
+      matcher: ItemMatcher.hasComp(const [FuelComp]),
+      onSelect: (selected) async {
+        context.navigator.pop(selected);
+      },
+    );
+    if (selected == null) return;
+    if (!mounted) return;
+    final heatValue = FuelComp.tryGetHeatValue(selected);
+    player.fireFuel += heatValue;
+    player.backpack.removeStack(selected);
+  }
+
+  Widget buildFuelState(FireState state) {
+    return LayoutBuilder(
+      builder: (_, box) {
+        final length = box.maxHeight * 0.4;
+        final halfP = state.fuel / FireState.maxVisualFuel / 2;
+        final left = buildFuelProgress(halfP, length);
+        final right = buildFuelProgress(halfP, length);
+        return [
+          left,
+          right,
+        ].row(maa: MainAxisAlignment.spaceBetween);
+      },
+    ).center();
+  }
+
+  Widget buildFuelProgress(Ratio progress, double length) {
+    return RotatedBox(
+      quarterTurns: -1,
+      child: AttrProgress(
+        value: progress,
+        minHeight: 16,
+        color: R.fuelYellowColor,
+      ).constrained(maxW: length),
+    );
+  }
+
+  @override
+  void dispose() {
+    cookSlot.dispose();
+    super.dispose();
   }
 }

@@ -5,6 +5,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
@@ -23,12 +24,14 @@ const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
 class AttrProgress extends ImplicitlyAnimatedWidget {
   final double value;
   final Color? color;
+  final double? minHeight;
 
   const AttrProgress({
     super.key,
     super.duration = const Duration(milliseconds: 1200),
     required this.value,
     this.color,
+    this.minHeight = 8,
     super.curve = Curves.fastLinearToSlowEaseIn,
   });
 
@@ -62,7 +65,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
   Widget buildBar(double v) {
     return LinearProgressIndicator(
       value: v,
-      minHeight: 8,
+      minHeight: widget.minHeight,
       color: widget.color,
       backgroundColor: Colors.grey.withOpacity(0.2),
     );
@@ -229,7 +232,7 @@ class ItemStackCell extends StatelessWidget {
 }
 
 class CardButton extends ImplicitlyAnimatedWidget {
-  final double elevation;
+  final double? elevation;
   final Widget child;
   final VoidCallback? onTap;
   final ShapeBorder? shape;
@@ -238,7 +241,7 @@ class CardButton extends ImplicitlyAnimatedWidget {
     super.key,
     super.duration = const Duration(milliseconds: 80),
     super.curve = Curves.easeInOut,
-    this.elevation = 1.0,
+    this.elevation,
     this.shape,
     this.onTap,
     required this.child,
@@ -255,8 +258,8 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
   @override
   void initState() {
     $elevation = Tween<double>(
-      begin: widget.elevation,
-      end: widget.elevation,
+      begin: widget.elevation ?? 1.0,
+      end: widget.elevation ?? 1.0,
     );
     $shape = ShapeBorderTween(
       begin: widget.shape,
@@ -283,7 +286,7 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    $elevation = visitor($elevation, widget.elevation, (dynamic value) {
+    $elevation = visitor($elevation, widget.elevation ?? 1.0, (dynamic value) {
       assert(false);
       throw StateError('Constructor will never be called because null is never provided as current tween.');
     }) as Tween<double>;
@@ -569,7 +572,10 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
 }
 
 class ItemStackReqSlot {
-  ItemStack stack = ItemStack.empty;
+  ItemStack get stack => $stack.value;
+
+  set stack(ItemStack v) => $stack.value = v;
+  final $stack = ValueNotifier(ItemStack.empty);
 
   void reset() {
     stack = ItemStack.empty;
@@ -597,6 +603,10 @@ class ItemStackReqSlot {
       onChange?.call(stack);
     }
   }
+
+  void dispose() {
+    $stack.dispose();
+  }
 }
 
 class ItemStackReqCell extends StatelessWidget {
@@ -620,6 +630,10 @@ class ItemStackReqCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return slot.$stack << (_, stack, __) => buildBody(context);
+  }
+
+  Widget buildBody(BuildContext context) {
     ShapeBorder? shape;
     final satisfyCondition = slot.isNotEmpty;
     if (!satisfyCondition) {
@@ -780,6 +794,24 @@ class _BackpackSheetState extends State<BackpackSheet> {
               onSelect(stack);
             },
       child: ItemStackCell(stack),
+    );
+  }
+}
+
+extension BackpackBuildContextX on BuildContext {
+  Future<T?> showMatchBackpack<T>({
+    required ItemMatcher matcher,
+    ValueChanged<ItemStack>? onSelect,
+    BackpackFilterDisplayBehavior behavior = BackpackFilterDisplayBehavior.toggleable,
+  }) async {
+    return await showCupertinoModalBottomSheet<T>(
+      context: this,
+      enableDrag: false,
+      builder: (ctx) => BackpackSheet(
+        matcher: matcher,
+        onSelect: onSelect,
+        behavior: behavior,
+      ).constrained(maxH: mediaQuery.size.height * 0.5),
     );
   }
 }

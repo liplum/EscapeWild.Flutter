@@ -1006,12 +1006,16 @@ class CookableComp extends ItemComp {
     this.cookedOutput,
   );
 
-  double getActualFuelCost(ItemStack item) {
-    if (item.meta.mergeable) {
-      return item.massMultiplier * fuelCost;
+  double getActualFuelCost(ItemStack raw) {
+    if (raw.meta.mergeable) {
+      return raw.massMultiplier * fuelCost;
     } else {
       return fuelCost;
     }
+  }
+
+  ItemStack cook(ItemStack raw) {
+    return cookedOutput().create();
   }
 
   @override
@@ -1023,6 +1027,8 @@ class CookableComp extends ItemComp {
       );
     }
   }
+
+  static CookableComp? of(ItemStack stack) => stack.meta.getFirstComp<CookableComp>();
 
   static const type = "Cookable";
 

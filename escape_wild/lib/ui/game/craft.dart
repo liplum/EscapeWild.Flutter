@@ -336,4 +336,12 @@ class _CraftingSheetState extends State<CraftingSheet> {
       }
     }
   }
+
+  @override
+  void dispose() {
+    for (final slot in itemStackReqSlots) {
+      slot.dispose();
+    }
+    super.dispose();
+  }
 }
