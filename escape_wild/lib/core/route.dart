@@ -117,9 +117,19 @@ abstract class CampfirePlaceProtocol {
   @JsonKey(ignore: true)
   ValueNotifier<FireState> get $fireState;
 
+  /// [onCampfire] is not growable.
   List<ItemStack> get onCampfire;
 
   set onCampfire(List<ItemStack> stack);
+
+  static const onCampfireJsonKey =
+      JsonKey(fromJson: onCampfireFromJson, toJson: onCampfireToJson, includeIfNull: false);
+
+  static List<ItemStack> onCampfireFromJson(dynamic json) => json == null
+      ? const []
+      : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
+
+  static dynamic onCampfireToJson(List<ItemStack> list) => list.isEmpty ? null : list;
 }
 
 mixin CampfirePlaceMixin implements CampfirePlaceProtocol {

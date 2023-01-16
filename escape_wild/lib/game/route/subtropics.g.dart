@@ -54,9 +54,8 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   final val = <String, dynamic>{};
@@ -72,7 +71,8 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }
 
@@ -84,9 +84,8 @@ PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
   final val = <String, dynamic>{};
@@ -102,7 +101,8 @@ Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }
 
@@ -114,9 +114,8 @@ ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
   final val = <String, dynamic>{};
@@ -132,7 +131,8 @@ Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }
 
@@ -145,9 +145,8 @@ RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
   final val = <String, dynamic>{};
@@ -163,7 +162,8 @@ Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }
 
@@ -175,9 +175,8 @@ CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
   final val = <String, dynamic>{};
@@ -193,7 +192,8 @@ Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }
 
@@ -205,9 +205,8 @@ HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
   final val = <String, dynamic>{};
@@ -223,7 +222,8 @@ Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }
 
@@ -235,9 +235,8 @@ VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..exploreCount = json['ec'] as int
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
-      ..onCampfire = (json['onCampfire'] as List<dynamic>)
-          .map((e) => ItemStack.fromJson(e as Map<String, dynamic>))
-          .toList();
+      ..onCampfire =
+          CampfirePlaceProtocol.onCampfireFromJson(json['onCampfire']);
 
 Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
   final val = <String, dynamic>{};
@@ -253,6 +252,7 @@ Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
   val['cookingTime'] = instance.cookingTime;
-  val['onCampfire'] = instance.onCampfire;
+  writeNotNull('onCampfire',
+      CampfirePlaceProtocol.onCampfireToJson(instance.onCampfire));
   return val;
 }

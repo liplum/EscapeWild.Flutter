@@ -309,7 +309,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   List<ItemStack> _onCampfire = [];
 
   @override
-  @JsonKey()
+  @CampfirePlaceProtocol.onCampfireJsonKey
   List<ItemStack> get onCampfire => _onCampfire;
 
   @override

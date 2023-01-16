@@ -75,7 +75,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   Future<void> onGameWin() async {
     await AppCtx.showTip(
-      title: "Configurations!",
+      title: "Congratulation!",
       desc: "You win the game after $actionTimes actions.",
       ok: "OK",
       dismissible: false,

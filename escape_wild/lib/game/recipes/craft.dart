@@ -26,14 +26,14 @@ class CraftRecipes {
       TagCraftRecipe(
         "straw-rope",
         CraftRecipeCat.refine,
-        tags: [200.g("straw")],
+        ingredients: [200.g("straw")],
         output: () => Stuff.strawRope,
         outputMass: 100,
       ),
       TagCraftRecipe(
         "stone-axe",
         CraftRecipeCat.tool,
-        tags: [
+        ingredients: [
           1000.g("stone"),
           500.g("log"),
           50.g("rope"),
@@ -52,7 +52,7 @@ class CraftRecipes {
 }
 
 extension _DSL on int {
-  StringMassEntry g(String tag) {
-    return StringMassEntry(tag, this);
+  TagMassEntry g(String tag) {
+    return TagMassEntry(tag, this);
   }
 }
