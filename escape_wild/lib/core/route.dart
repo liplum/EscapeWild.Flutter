@@ -114,7 +114,12 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
 }
 
 abstract class CampfirePlaceProtocol {
+  @JsonKey(ignore: true)
   ValueNotifier<FireState> get $fireState;
+
+  List<ItemStack> get onCampfire;
+
+  set onCampfire(List<ItemStack> stack);
 }
 
 mixin CampfirePlaceMixin implements CampfirePlaceProtocol {

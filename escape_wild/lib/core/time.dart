@@ -1,3 +1,5 @@
+import 'package:json_annotation/json_annotation.dart';
+
 abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
   final int minutes;
 
@@ -10,8 +12,11 @@ abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
     final hour = hourPart;
     return hour > 0 ? "$hour:${minutePart.toString().padRight(2)}" : minutePart.toString().padRight(2);
   }
+
+  int toJson() => minutes;
 }
 
+@JsonSerializable()
 class Clock extends MinuteProtocol {
   static const zero = Clock(minutes: 0);
 
@@ -23,8 +28,11 @@ class Clock extends MinuteProtocol {
 
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
+
+  factory Clock.fromJsom(int minutes) => Clock(minutes: minutes);
 }
 
+@JsonSerializable()
 class TS extends MinuteProtocol {
   static const zero = TS(minutes: 0);
 
@@ -34,6 +42,8 @@ class TS extends MinuteProtocol {
 
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
+
+  factory TS.fromJsom(int minutes) => TS(minutes: minutes);
 }
 
 extension IntX on int {

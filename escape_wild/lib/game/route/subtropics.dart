@@ -288,8 +288,11 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   @override
   @JsonKey()
   String name;
-  late PlaceAction forward = PlaceAction(UAction.moveForward, () => route.canMoveForward);
-  late PlaceAction backward = PlaceAction(UAction.moveBackward, () => route.canMoveBackward);
+
+  SubtropicsPlace(this.name);
+
+  late final PlaceAction forward = PlaceAction(UAction.moveForward, () => route.canMoveForward);
+  late final PlaceAction backward = PlaceAction(UAction.moveBackward, () => route.canMoveBackward);
 
   /// Short name to reduce json size.
   @JsonKey(name: "ec")
@@ -300,10 +303,20 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   double get fuelCostSpeed => 10;
 
   @override
-  @JsonKey(ignore: true)
-  var $fireState = ValueNotifier<FireState>(FireState.off);
+  final $fireState = ValueNotifier<FireState>(FireState.off);
+  @JsonKey(fromJson: TS.fromJsom)
+  TS cookingTime = TS.zero;
+  List<ItemStack> _onCampfire = [];
 
-  SubtropicsPlace(this.name);
+  @override
+  @JsonKey()
+  List<ItemStack> get onCampfire => _onCampfire;
+
+  @override
+  set onCampfire(List<ItemStack> v) {
+    _onCampfire = v;
+    cookingTime = TS.zero;
+  }
 
   @mustCallSuper
   Future<void> onPass(TS delta) async {
@@ -311,6 +324,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
     if (fireState.active) {
       final cost = delta / per * fuelCostSpeed;
       this.fireState = burningFuel(fireState, cost);
+      cookingTime += delta;
     }
   }
 

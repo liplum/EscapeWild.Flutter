@@ -17,8 +17,9 @@ export 'package:escape_wild/core/player.dart';
 export 'package:escape_wild/core/route.dart';
 export 'package:escape_wild/core/i18n.dart';
 export 'package:escape_wild/core/campfire.dart';
-export 'package:escape_wild/ambiguous.dart';
+export 'package:escape_wild/core/cooking.dart';
 export 'package:escape_wild/core/item_pool.dart';
+export 'package:escape_wild/ambiguous.dart';
 
 // ignore: non_constant_identifier_names
 final Cvt = JConverter();

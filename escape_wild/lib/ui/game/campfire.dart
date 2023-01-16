@@ -220,7 +220,7 @@ class _CookPageState extends State<CookPage> {
       buildBackground(),
       buildBody(),
       widget.$fireState << (_, state, __) => buildFuelState(state),
-      buildFoodSlot(),
+      buildFoodGrid(),
     ].stack();
   }
 
@@ -230,6 +230,11 @@ class _CookPageState extends State<CookPage> {
       cookingColor: R.flameColor,
       $isCooking: $isCooking,
     ).center().opacity(0.35);
+  }
+
+  Widget buildFoodGrid() {
+//return GridView(gridDelegate: itemCellGridDelegate,)
+    return buildFoodSlot();
   }
 
   Widget buildFoodSlot() {
