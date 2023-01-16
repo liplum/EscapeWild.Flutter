@@ -9,3 +9,5 @@ typedef Distance = double;
 
 /// the number of repeating
 typedef Times = int;
+
+typedef Matcher<T> = bool Function(T e);

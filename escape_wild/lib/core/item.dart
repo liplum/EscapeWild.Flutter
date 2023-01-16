@@ -621,6 +621,10 @@ class ItemMatcher {
   static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => ItemStackMatchResult.matched);
 }
 
+extension ItemStackMatcherX on ItemStackMatcher {
+  Matcher<ItemStack> get bool => (stack) => this(stack).isMatched;
+}
+
 extension ItemMatcherX on ItemMatcher {
   Iterable<Item> filterTypeMatchedItems(Iterable<Item> items, {bool requireMatched = true}) sync* {
     for (final item in items) {

@@ -620,6 +620,13 @@ class ItemStackReqSlot with ChangeNotifier {
   void notifyChange() {
     notifyListeners();
   }
+  /// Call this manually if [stack]'s state was changed outside.
+  /// - for example, [stack.stackMass] was changed.
+  void updateMatching() {
+    if (!matcher.exact(stack).isMatched) {
+      reset();
+    }
+  }
 }
 
 class ItemStackReqCell extends StatelessWidget {

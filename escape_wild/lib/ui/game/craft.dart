@@ -263,20 +263,29 @@ class _CraftingSheetState extends State<CraftingSheet> {
       recipe.onConsume(material, player.backpack.consumeItemInBackpack);
       player.backpack.addItemOrMerge(result);
     }
-    context.navigator.pop();
+    // if player doesn't have all items required, just pop.
+    var matchedAll = true;
+    for (final slot in itemStackReqSlots) {
+      slot.updateMatching();
+      matchedAll &= player.backpack.matchedAny(slot.matcher.exact.bool);
+    }
+    if (!matchedAll) {
+      context.navigator.pop();
+    }
   }
 
   Widget buildTableView() {
-    return [
-      GridView.builder(
-        itemCount: itemStackReqSlots.length,
-        physics: const RangeMaintainingScrollPhysics(),
-        gridDelegate: itemCellGridDelegate,
-        itemBuilder: (ctx, i) {
-          return buildInputSlot(itemStackReqSlots[i]);
-        },
-      ).expanded(),
-    ].column();
+    return player.backpack <<
+        (_, __) => [
+              GridView.builder(
+                itemCount: itemStackReqSlots.length,
+                physics: const RangeMaintainingScrollPhysics(),
+                gridDelegate: itemCellGridDelegate,
+                itemBuilder: (ctx, i) {
+                  return buildInputSlot(itemStackReqSlots[i]);
+                },
+              ).expanded(),
+            ].column();
   }
 
   Widget buildInputSlot(ItemStackReqSlot slot) {

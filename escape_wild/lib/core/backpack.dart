@@ -143,7 +143,17 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
 }
 
 extension BackpackX on Backpack {
-  List<ItemStack> matchItemsWithType(ItemMatcher matcher) {
+  bool matchedAny(Matcher<ItemStack> matcher) {
+    var hasMatchedAny = false;
+    for (final stack in items) {
+      if (matcher(stack)) {
+        hasMatchedAny = true;
+      }
+    }
+    return hasMatchedAny;
+  }
+
+  List<ItemStack> matchTypeOnlyItems(ItemMatcher matcher) {
     return matcher.filterTypedMatchedStacks(items).toList();
   }
 
