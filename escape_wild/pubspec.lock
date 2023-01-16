@@ -397,7 +397,7 @@ packages:
     description:
       path: jconverter
       ref: HEAD
-      resolved-ref: c56bb3c5e7b92c7216c8b5f4cc8f9a1ee8ebe32d
+      resolved-ref: "4c9953ad451f9e999587f87d101032ccd7ca8d1b"
       url: "https://github.com/liplum/DartPackage.git"
     source: git
     version: "1.0.0"

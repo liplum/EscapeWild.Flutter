@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'campfire.g.dart';
@@ -10,10 +12,11 @@ class FireState {
   final double fuel;
   static const maxVisualFuel = 500.0;
 
-  const FireState({
-    this.ember = 0.0,
-    this.fuel = 0.0,
-  });
+  FireState({
+    double ember = 0.0,
+    double fuel = 0.0,
+  })  : ember = max(0, ember),
+        fuel = max(0, fuel);
 
   bool get active => fuel > 0 || ember > 0;
 
@@ -21,7 +24,7 @@ class FireState {
 
   Map<String, dynamic> toJson() => _$FireStateToJson(this);
 
-  static const FireState off = FireState();
+  static final FireState off = FireState();
 
   FireState copyWith({
     double? ember,

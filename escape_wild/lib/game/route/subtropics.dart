@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:flutter/src/foundation/change_notifier.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 
@@ -239,7 +239,7 @@ class SubtropicsRoute extends RouteProtocol {
 }
 
 @JsonSerializable()
-class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin implements CampfirePlaceProtocol {
+class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, CampfirePlaceMixin {
   /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(ignore: true)
@@ -256,20 +256,28 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin implem
   int exploreCount = 0;
   static const hunt = 0.8;
 
-  @JsonKey()
-  FireState get fireState => $fireState.value;
+  /// It means how much fuel will be cost after [per].
+  double get fuelCostSpeed => 10;
 
-  set fireState(FireState v) => $fireState.value = v;
   @override
   @JsonKey(ignore: true)
   var $fireState = ValueNotifier<FireState>(FireState.off);
 
   SubtropicsPlace(this.name);
 
-  Future<void> onPass(TS delta) async {}
+  @mustCallSuper
+  Future<void> onPass(TS delta) async {
+    final fireState = this.fireState;
+    if (fireState.active) {
+      final cost = delta / per * fuelCostSpeed;
+      this.fireState = burningFuel(fireState, cost);
+    }
+  }
 
+  @mustCallSuper
   Future<void> onLeave() async {}
 
+  @mustCallSuper
   Future<void> onEnter() async {}
 
   @override

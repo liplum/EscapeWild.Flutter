@@ -153,9 +153,9 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     return json;
   }
 
-  String toJson() {
+  String toJson({int? indent}) {
     final jobj = toJsonObj();
-    return Cvt.toJson(jobj) ?? "{}";
+    return Cvt.toJson(jobj, indent: indent) ?? "{}";
   }
 }
 

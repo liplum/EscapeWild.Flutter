@@ -1,6 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:jconverter/jconverter.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
   @override
@@ -145,4 +146,11 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
 
 abstract class CampfirePlaceProtocol {
   ValueNotifier<FireState> get $fireState;
+}
+
+mixin CampfirePlaceMixin implements CampfirePlaceProtocol {
+  @JsonKey()
+  FireState get fireState => $fireState.value;
+
+  set fireState(FireState v) => $fireState.value = v;
 }

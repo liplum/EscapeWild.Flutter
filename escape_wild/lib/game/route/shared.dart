@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/foundation.dart';
 
 Future<void> showToolBroken(ActionType action, ItemStack tool) async {
@@ -41,4 +40,22 @@ bool randGain(double probability, List<ItemStack> gain, ItemStack Function() cto
     }
   }
   return any;
+}
+
+FireState burningFuel(
+  FireState former,
+  double cost,
+) {
+  final curFuel = former.fuel;
+  var resFuel = curFuel;
+  var resEmber = former.ember;
+  if (curFuel <= cost) {
+    final costOverflow = cost - curFuel;
+    resFuel = 0;
+    resEmber -= costOverflow * 2;
+  } else {
+    resFuel -= cost;
+    resEmber += cost;
+  }
+  return FireState(ember: resEmber, fuel: resFuel);
 }

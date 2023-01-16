@@ -48,6 +48,11 @@ class _DebugConsoleState extends State<DebugConsole> {
         return ListTile(
           title: item.name.autoSizeText(maxLines: 1),
           selected: isSelected,
+          onTap: () {
+            setState(() {
+              selected = i;
+            });
+          },
         ).inCard(elevation: isSelected ? 4 : 0);
       },
     );
@@ -62,6 +67,9 @@ class _DebugConsoleState extends State<DebugConsole> {
     final res = <_Item>[];
     res.add(_Item(_I.cat.item, (context) {
       return const _ItemGrid();
+    }));
+    res.add(_Item("save", (context) {
+      return player.toJson(indent: 2).text(style: context.textTheme.bodySmall).scrolled();
     }));
     return res;
   }
