@@ -193,7 +193,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin {
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
     if (any) {
-      isToolBroken = player.damageTool(tool.item, comp, 15.0);
+      isToolBroken = player.damageTool(tool.item, comp, 30.0);
     }
     await showGain(ActionType.hunt, gain);
     if (isToolBroken) {
@@ -315,7 +315,7 @@ class ForestPlace extends SubtropicsPlace {
     randGain(nuts, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
-    isToolBroken = player.damageTool(tool.item, comp, dmg * 10.0);
+    isToolBroken = player.damageTool(tool.item, comp, dmg * 30.0);
     if (isToolBroken) {
       await showToolBroken(ActionType.cutDownTree, tool.item);
     }
@@ -384,7 +384,7 @@ class RiversidePlace extends SubtropicsPlace {
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
     if (any) {
-      isToolBroken = player.damageTool(tool.item, comp, 15.0);
+      isToolBroken = player.damageTool(tool.item, comp, 30.0);
     }
     await showGain(ActionType.fish, gain);
     if (isToolBroken) {
