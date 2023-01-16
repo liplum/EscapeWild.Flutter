@@ -66,7 +66,7 @@ class Foods {
           .tagged(["water", "drink", "dirty-water", "liquid"]),
       clearWater = Item.mergeable("clear-water", mass: 200)
           .asDrinkable([
-            Attr.health - 0.06,
+            Attr.health - 0.04,
             Attr.water + 0.18,
           ])
           .asCookable(CookType.boil, fuelCost: 30, output: () => boiledWater)

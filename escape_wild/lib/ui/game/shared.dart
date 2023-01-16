@@ -58,13 +58,14 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: buildBar($progress.evaluate(animation)),
+      child: buildBar(),
     );
   }
 
-  Widget buildBar(double v) {
+  Widget buildBar() {
+    final progress = $progress.evaluate(animation);
     return LinearProgressIndicator(
-      value: v,
+      value: progress,
       minHeight: widget.minHeight,
       color: widget.color,
       backgroundColor: Colors.grey.withOpacity(0.2),
@@ -393,7 +394,7 @@ class _MergeableItemStackUsePreviewState extends State<MergeableItemStackUsePrev
 
   Widget buildPortrait() {
     return [
-      MiniHud(attrs: mock.attrs).inCard(),
+      buildHud(mock.attrs).inCard(),
       const SizedBox(height: 40),
       ItemStackMassSelector(
         template: template,
@@ -407,7 +408,7 @@ class _MergeableItemStackUsePreviewState extends State<MergeableItemStackUsePrev
 
   Widget buildLandscape() {
     return [
-      MiniHud(attrs: mock.attrs).expanded(),
+      buildHud(mock.attrs).expanded(),
       ItemStackMassSelector(
         template: template,
         $selectedMass: $selectedMass,
@@ -416,6 +417,10 @@ class _MergeableItemStackUsePreviewState extends State<MergeableItemStackUsePrev
         },
       ).expanded(),
     ].row(mas: MainAxisSize.max).constrained(minW: 500);
+  }
+
+  Widget buildHud(AttrModel attrs) {
+    return Hud(attrs: attrs).mini();
   }
 
   void onSelectedMassChange(int newMassOfPart) {
@@ -461,7 +466,7 @@ class _UnmergeableItemStackUsePreviewState extends State<UnmergeableItemStackUse
             }
             builder.performModification(mock);
           }
-          return MiniHud(attrs: mock.attrs).inCard();
+          return Hud(attrs: mock.attrs).mini().inCard();
         };
   }
 }
