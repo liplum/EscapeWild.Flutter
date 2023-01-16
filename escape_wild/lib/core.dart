@@ -4,6 +4,7 @@ export 'package:escape_wild/core/action.dart';
 export 'package:escape_wild/core/attribute.dart';
 export 'package:escape_wild/core/backpack.dart';
 export 'package:escape_wild/core/content.dart';
+export 'package:escape_wild/core/time.dart';
 export 'package:escape_wild/core/ecs.dart';
 export 'package:escape_wild/core/craft.dart';
 export 'package:escape_wild/core/i18n.dart';
