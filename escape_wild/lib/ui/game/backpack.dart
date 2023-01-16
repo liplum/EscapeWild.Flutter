@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'shared.dart';
 
 part 'backpack.i18n.dart';
+String get backpackTitle => _I.title;
 
 class BackpackPage extends StatefulWidget {
   const BackpackPage({super.key});

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
@@ -6,6 +7,8 @@ import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
+
+part 'campfire.i18n.dart';
 
 class CampfirePage extends StatefulWidget {
   const CampfirePage({super.key});
@@ -207,7 +210,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
           : () async {
               await onStartFire(maybeFireStarter);
             },
-      child: "Start Fire".text(style: context.textTheme.headlineSmall).center(),
+      child: _I.startFire.text(style: context.textTheme.headlineSmall).center(),
     ).sized(w: 180, h: 80);
   }
 
@@ -244,10 +247,23 @@ class CookPage extends StatefulWidget {
 class _CookPageState extends State<CookPage> {
   var $isCooking = ValueNotifier(false);
   final cookSlot = ItemStackReqSlot(ItemMatcher.hasComp(const [CookableComp]));
+  static int lastSelectedIndex = -1;
 
   @override
   void initState() {
     super.initState();
+    if (lastSelectedIndex >= 0) {
+      final lastSelected = player.backpack[lastSelectedIndex];
+      if (cookSlot.matcher.exact(lastSelected).isMatched) {
+        setState(() {
+          cookSlot.stack = lastSelected;
+        });
+      }
+    }
+    cookSlot.addListener(() {
+      final newStack = cookSlot.stack;
+      lastSelectedIndex = player.backpack.indexOfStack(newStack);
+    });
   }
 
   @override
@@ -314,12 +330,12 @@ class _CookPageState extends State<CookPage> {
               if (!mounted) return;
               setState(() {});
             },
-      child: "Cook".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
+      child: _I.cook.autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
     ).expanded();
     final fuelBtn = CardButton(
       elevation: 5,
       onTap: onFuel,
-      child: "Fuel".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
+      child: _I.fuel.autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
     ).expanded();
     return [
       cookBtn,

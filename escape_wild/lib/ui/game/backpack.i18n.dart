@@ -5,6 +5,8 @@ const _n = "ui.backpack";
 class _I {
   _I._();
 
+  static String get title => "$_n.title".tr();
+
   static String massLoad(int cur, int max) => "$_n.mass-load".tr(namedArgs: {
         "cur": I.massOf(cur),
         "max": I.massOf(max),

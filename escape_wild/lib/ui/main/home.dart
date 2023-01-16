@@ -1,8 +1,10 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'game.dart';
 import 'mine.dart';
+part 'home.i18n.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -44,12 +46,12 @@ class _HomepageState extends State<Homepage> {
       },
       items: [
         BottomNavigationBarItem(
-          label: "Game",
+          label: _I.game,
           icon: const Icon(Icons.sports_esports_outlined),
           activeIcon: const Icon(Icons.sports_esports_rounded),
         ),
         BottomNavigationBarItem(
-          label: "Mine",
+          label:_I.mine,
           icon: const Icon(Icons.person_outline_rounded),
           activeIcon: const Icon(Icons.person_rounded),
         ),

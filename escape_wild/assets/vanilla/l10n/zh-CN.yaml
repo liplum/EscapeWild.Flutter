@@ -75,13 +75,13 @@ item:
     name: 浆果
     desc: 想念起了果酱的味道。
   roasted-berry:
-    name: 熟浆果
+    name: 热煨浆果
     desc: 黏糊糊的。
   hand-drill-kit:
     name: 钻木取火
     desc: 比看上去的更要难。
   survival-knife:
-    name: 生存者小刀
+    name: 求生刀
     desc: '插播一则广告：这把小刀品质优良，采用440号不锈钢打磨而成。不要998，不要98，九块就能带回家。'
   old-axe:
     name: 旧斧子

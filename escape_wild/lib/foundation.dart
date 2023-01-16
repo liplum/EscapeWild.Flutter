@@ -23,6 +23,8 @@ export 'package:escape_wild/design/dialog.dart';
 export 'package:escape_wild/design/extension.dart';
 export 'package:escape_wild/utils.dart';
 export 'package:escape_wild/db.dart';
+export 'package:escape_wild/design/top.dart';
+export 'package:escape_wild/design/window.dart';
 
 class Measurement {
   Measurement._();

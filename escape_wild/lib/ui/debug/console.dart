@@ -1,9 +1,15 @@
 import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
+
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+
+part 'console.i18n.dart';
+
+String get debugConsoleTitle => _I.title;
 
 class DebugConsole extends StatefulWidget {
   const DebugConsole({super.key});
@@ -54,7 +60,7 @@ class _DebugConsoleState extends State<DebugConsole> {
 
   List<_Item> buildItems() {
     final res = <_Item>[];
-    res.add(_Item("Item", (context) {
+    res.add(_Item(_I.cat.item, (context) {
       return const _ItemGrid();
     }));
     return res;

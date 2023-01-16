@@ -1,10 +1,14 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/stage_manager.dart';
+import 'package:escape_wild/ui/debug/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:rettulf/build_context/show.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+part 'ingame_menu.i18n.dart';
 
 extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {
@@ -38,7 +42,7 @@ class _IngameMenuState extends State<_IngameMenu> {
   }
 
   Widget buildSaveGameBtn() {
-    return btn("Save", () async {
+    return btn(_I.save, () async {
       final json = player.toJson();
       DB.setGameSave(json);
       await context.showTip(
@@ -51,7 +55,7 @@ class _IngameMenuState extends State<_IngameMenu> {
   }
 
   Widget buildShowDebugConsoleBtn() {
-    return btn("Debug Console", () async {
+    return btn(_I.debugConsole, () async {
       StageManager.showDebugConsole(context);
       await Future.delayed(const Duration(milliseconds: 300));
       context.navigator.pop();

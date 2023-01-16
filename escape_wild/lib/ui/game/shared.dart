@@ -750,7 +750,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
               ),
               centerTitle: true,
               flexibleSpace: FlexibleSpaceBar(
-                title: "Backpack".text(),
+                title: backpackTitle.text(),
               ),
               actions: [
                 if (widget.behavior.showFilterButton)

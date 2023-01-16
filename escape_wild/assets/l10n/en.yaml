@@ -5,24 +5,41 @@ language:
   zh_CN: 简体中文
 ui:
   main:
-    title: Escape Wild
-    new-game: New Game
-    continue: Continue
-  home:
-    # Where to display HUD, action buttons and progress.
-    action: Action
-    backpack: Backpack
-    craft: Craft
-    campfire: Campfire
-  backpack:
-    mass-load: '{cur} / {max}'
-    # The title of discard request
-    discard-request: Discard?
-    # Ask before player is going to discard something in backpack.
-    discard-confirm: "Confirm to discard {}?"
-    # Display when backpack is empty
-    empty-tip: Your backpack is empty.
-
+    home:
+      game: Game
+      # A bottom navigation about user themselves.
+      mine: Mine
+    main:
+      title: Escape Wild
+      new-game: New Game
+      continue: Continue
+  game:
+    home:
+      # Where to display HUD, action buttons and progress.
+      action: Action
+      backpack: Backpack
+      craft: Craft
+      campfire: Campfire
+    backpack:
+      title: Backpack
+      mass-load: '{cur} / {max}'
+      # The title of discard request
+      discard-request: Discard?
+      # Ask before player is going to discard something in backpack.
+      discard-confirm: "Confirm to discard {}?"
+      # Display when backpack is empty
+      empty-tip: Your backpack is empty.
+    ingame-menu:
+      save: Save
+    campfire:
+      start-fire: Start Fire
+      # verb: supply campfire with fuel
+      fuel: Fuel
+  debug:
+    debug-console:
+      title: Debug Console
+      cat:
+        item: Item
 physical-quantity:
   mass: Mass
   length: Length

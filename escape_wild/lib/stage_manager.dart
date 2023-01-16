@@ -12,7 +12,7 @@ class StageManager {
     return showWindow(
       context: ctx,
       key: _debugConsoleKey,
-      title: "Debug Console",
+      title: debugConsoleTitle,
       builder: (_) => const DebugConsole(),
     );
   }

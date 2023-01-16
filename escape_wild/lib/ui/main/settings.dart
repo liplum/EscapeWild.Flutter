@@ -83,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
           size: iconSize,
         ),
         title: "Measurement".text(),
-        //subtitle: "language.$curLocale".tr().text(),
+        subtitle: "Unit of physical quality".text(),
         to: (_) => const MeasurementSelectorPage(
           quality2Selected: Measurement.get,
         ),
