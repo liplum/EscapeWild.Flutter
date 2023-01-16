@@ -45,8 +45,9 @@ class Backpack with ChangeNotifier implements JConvertibleProtocol {
       return ItemStack.empty;
     }
     if (massOfPart >= actualMass) {
+      final part = item.clone();
       removeStack(item);
-      return item;
+      return part;
     } else {
       final part = item.split(massOfPart);
       if (part.isNotEmpty) {
