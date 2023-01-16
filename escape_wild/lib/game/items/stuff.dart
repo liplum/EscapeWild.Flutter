@@ -11,14 +11,14 @@ class Stuff {
   static late final Item strawRope;
 
   // materials
-  static late final Item stone, sand, sharpStone;
+  static late final Item stone, sharpStone, sand, charcoal, cloth;
 
   // container
   static late final Item can, battleBottle, plasticBottle, woodenBowl;
 
   static void registerAll() {
     Contents.items.addAll([
-      sticks = Item.mergeable("sticks", mass: 100).asFuel(heatValue: 10.0).tagged(["wooden", "sticks"]),
+      sticks = Item.mergeable("sticks", mass: 100).asFuel(heatValue: 10.0).tagged(["wooden"]),
       cutGrass = Item.mergeable("cut-grass", mass: 200).asFuel(heatValue: 80.0).tagged(["straw", "flammable-floc"]),
       log = Item.mergeable("log", mass: 500).asFuel(heatValue: 200.0).tagged(["wooden", "log"]),
       flower = Item.mergeable("dandelion", mass: 10),
@@ -26,15 +26,17 @@ class Stuff {
       //It is said that dandelion boiled with water can relieve some constipation
       // Ember will reduce durability over time.
       ember = Item.mergeable("ember", mass: 5).asFuel(heatValue: 20.0).hasDurability(max: 100),
-      tinder = Item.mergeable("tinder", mass: 5).asFuel(heatValue: 15.0).tagged(["tinder"]),
+      tinder = Item.mergeable("tinder", mass: 5).asFuel(heatValue: 15.0).tagged([]),
       //Put the semi-wet moss or grass into the wooden tube rolled by the bark,
       // and Mars can carry it
     ]);
     // material
     Contents.items.addAll([
-      sand = Item.mergeable("sand", mass: 100).tagged(["sand"]),
-      stone = Item.mergeable("stone", mass: 200).tagged(["stone"]),
+      sand = Item.mergeable("sand", mass: 100).tagged([]),
+      stone = Item.mergeable("stone", mass: 200).tagged([]),
       sharpStone = Item.mergeable("sharp-stone", mass: 200).tagged(["stone"]),
+      cloth = Item.mergeable("cloth", mass: 50).asFuel(heatValue: 20).tagged([]),
+      charcoal = Item.mergeable("charcoal", mass: 100).asFuel(heatValue: 200).tagged(["coal"])
     ]);
     // craft
     Contents.items.addAll([

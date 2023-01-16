@@ -23,6 +23,9 @@ extension NamedItemGetterX on String {
   ItemGetter<T> getAsItem<T extends Item>() => NamedItemGetter.create<T>(this);
 }
 
+/// # Item
+/// Item has a default tag, that's the [name].
+///
 /// ## When [mergeable] is false
 /// It means the item is unmergeable, and [mass] is for one ItemStack.
 /// ### Example
@@ -56,24 +59,33 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   /// How much can this container hold.
   ContainerCompProtocol? containerComp;
 
+  void _addSelfNameTag() {
+    tags.add(name);
+  }
+
   Item(
     this.name, {
     required this.mergeable,
     required this.mass,
   }) {
     assert(mergeable != isContainer, "`mergeable` and `isContainer` are conflict.");
+    _addSelfNameTag();
   }
 
   Item.unmergeable(
     this.name, {
     required this.mass,
   })  : mergeable = false,
-        assert(mass > 0);
+        assert(mass > 0) {
+    _addSelfNameTag();
+  }
 
   Item.mergeable(
     this.name, {
     required this.mass,
-  }) : mergeable = true;
+  }) : mergeable = true {
+    _addSelfNameTag();
+  }
 
   Item.container(
     this.name, {
@@ -82,6 +94,7 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
     int? capacity,
     bool? mergeablity,
   }) : mergeable = false {
+    _addSelfNameTag();
     final comp = ContainerComp(
       acceptTags: acceptTags,
       capacity: capacity,

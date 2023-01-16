@@ -113,11 +113,7 @@ class StringMassEntry {
 }
 
 @JsonSerializable(createToJson: false)
-class MixCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
-  /// Item names.
-  @JsonKey()
-  final List<StringMassEntry> names;
-
+class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
   /// Item tags.
   @JsonKey()
   final List<StringMassEntry> tags;
@@ -135,21 +131,14 @@ class MixCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   List<ItemMatcher> inputSlots = [];
   final int? outputMass;
 
-  MixCraftRecipe(
+  TagCraftRecipe(
     super.name,
     super.cat, {
-    this.names = const [],
     this.tags = const [],
     super.craftType,
     this.outputMass,
     required this.output,
   }) {
-    for (final name in names) {
-      inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.name == name.str,
-        exact: (item) => item.meta.name == name.str ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
-      ));
-    }
     for (final tag in tags) {
       inputSlots.add(ItemMatcher(
         typeOnly: (item) => item.hasTag(tag.str),
@@ -165,7 +154,7 @@ class MixCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   @override
   Item get outputItem => output();
 
-  factory MixCraftRecipe.fromJson(Map<String, dynamic> json) => _$MixCraftRecipeFromJson(json);
+  factory TagCraftRecipe.fromJson(Map<String, dynamic> json) => _$TagCraftRecipeFromJson(json);
   static const type = "MixCraftRecipe";
 
   @override
@@ -179,11 +168,6 @@ class MixCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   @override
   void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
     var i = 0;
-    for (final name in names) {
-      final input = inputs[i];
-      consume(input, name.mass);
-      i++;
-    }
     for (final tag in tags) {
       final input = inputs[i];
       consume(input, tag.mass);

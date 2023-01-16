@@ -18,14 +18,10 @@ Map<String, dynamic> _$StringMassEntryToJson(StringMassEntry instance) =>
       'mass': instance.mass,
     };
 
-MixCraftRecipe _$MixCraftRecipeFromJson(Map<String, dynamic> json) =>
-    MixCraftRecipe(
+TagCraftRecipe _$TagCraftRecipeFromJson(Map<String, dynamic> json) =>
+    TagCraftRecipe(
       json['name'] as String,
       CraftRecipeCat.named(json['cat'] as String),
-      names: (json['names'] as List<dynamic>?)
-              ?.map((e) => StringMassEntry.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
       tags: (json['tags'] as List<dynamic>?)
               ?.map((e) => StringMassEntry.fromJson(e as Map<String, dynamic>))
               .toList() ??
