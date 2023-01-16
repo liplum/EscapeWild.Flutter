@@ -83,6 +83,7 @@ class SubFrigidZoneRouteGenerator extends RouteGeneratorProtocol {
     return res;
   }
 }
+
 List<SubFrigidZonePlace> _placesFromJson(dynamic json) => deserializeList<SubFrigidZonePlace>(json);
 
 @JsonSerializable()
@@ -98,8 +99,8 @@ class SubFrigidZoneRoute extends RouteProtocol {
 
   int get placeCount => places.length;
 
-  double routeProgress = 0.0;//勾股定理一下
-  double getRouteProgress() => routeProgress;//
+  double routeProgress = 0.0; //勾股定理一下
+  double getRouteProgress() => routeProgress; //
 
   void add(SubFrigidZonePlace place) {
     places.add(place);
@@ -133,13 +134,13 @@ class SubFrigidZoneRoute extends RouteProtocol {
   getRestoreIdOf(covariant PlaceProtocol place) {
     return places.indexOfAny(place);
   }
+
   //返回具体地点也需要2维图来
 
   @override
   PlaceProtocol restoreById(restoreId) {
     return places[(restoreId as int).clamp(0, places.length - 1)];
   }
-  //不太理解这个
 
   static const String type = "SubFrigidZoneRoute";
 
@@ -162,7 +163,7 @@ class SubFrigidZonePlace extends PlaceProtocol with PlaceActionDelegateMixin {
   @JsonKey()
   int exploreCount = 0;
 
-  static const type = "SubFrigidZone";
+  static const type = "SubFrigidZoneRoute.SubFrigidZonePlace";
 
   @override
   String get typeName => type;
@@ -178,30 +179,37 @@ class SubFrigidZonePlace extends PlaceProtocol with PlaceActionDelegateMixin {
   }
 }
 
+@JsonSerializable()
 class IceSheet extends SubFrigidZonePlace {
   IceSheet(super.name);
 }
 
+@JsonSerializable()
 class Snowfield extends SubFrigidZonePlace {
   Snowfield(super.name);
 }
 
+@JsonSerializable()
 class Rivers extends SubFrigidZonePlace {
   Rivers(super.name);
 }
 
+@JsonSerializable()
 class ConiferousForest extends SubFrigidZonePlace {
   ConiferousForest(super.name);
 }
 
+@JsonSerializable()
 class BrownBearNest extends SubFrigidZonePlace {
   BrownBearNest(super.name);
 }
 
+@JsonSerializable()
 class Tundra extends SubFrigidZonePlace {
   Tundra(super.name);
 }
 
+@JsonSerializable()
 class Swamp extends SubFrigidZonePlace {
   Swamp(super.name);
 }
