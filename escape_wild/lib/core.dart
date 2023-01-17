@@ -11,6 +11,7 @@ export 'package:escape_wild/core/craft.dart';
 export 'package:escape_wild/core/i18n.dart';
 export 'package:escape_wild/core/hardness.dart';
 export 'package:escape_wild/core/item.dart';
+export 'package:escape_wild/core/item_comp.dart';
 export 'package:escape_wild/core/explore.dart';
 export 'package:escape_wild/core/mod.dart';
 export 'package:escape_wild/core/recipe.dart';

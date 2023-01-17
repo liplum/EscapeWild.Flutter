@@ -40,7 +40,7 @@ class Clock extends MinuteProtocol {
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
 
-  factory Clock.fromJsom(int minutes) => Clock(minutes: minutes);
+  factory Clock.fromJson(int minutes) => Clock(minutes: minutes);
 }
 
 @JsonSerializable()
@@ -51,12 +51,12 @@ class TS extends MinuteProtocol {
 
   const TS.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
 
-  static const jsonKey = JsonKey(fromJson: TS.fromJsom);
+  static const jsonKey = JsonKey(fromJson: TS.fromJson);
 
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
 
-  factory TS.fromJsom(int minutes) => TS(minutes: minutes);
+  factory TS.fromJson(int minutes) => TS(minutes: minutes);
 }
 
 extension IntX on int {

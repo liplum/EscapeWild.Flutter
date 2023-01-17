@@ -1,6 +1,4 @@
-import 'package:escape_wild/core/content.dart';
-import 'package:escape_wild/core/ecs.dart';
-import 'package:escape_wild/core/item.dart';
+import 'package:escape_wild/core.dart';
 
 class Stuff {
   Stuff._();
@@ -11,7 +9,7 @@ class Stuff {
   static late final Item strawRope;
 
   // materials
-  static late final Item stone, sharpStone, sand, charcoal, cloth;
+  static late final Item stone, sharpStone, flint, sand, charcoal, cloth;
 
   // container
   static late final Item can, battleBottle, plasticBottle, woodenBowl;
@@ -35,7 +33,8 @@ class Stuff {
       sand = Item.mergeable("sand", mass: 100).tagged([]),
       stone = Item.mergeable("stone", mass: 200).tagged([]),
       sharpStone = Item.mergeable("sharp-stone", mass: 200).tagged(["stone"]),
-      cloth = Item.mergeable("cloth", mass: 50).asFuel(heatValue: 20).tagged([]),
+      flint = Item.mergeable("flint", mass: 200).tagged([]),
+      cloth = Item.mergeable("cloth", mass: 50).asFuel(heatValue: 20).tagged(["flammable-floc"]),
       charcoal = Item.mergeable("charcoal", mass: 100).asFuel(heatValue: 200).tagged(["coal"])
     ]);
     // craft

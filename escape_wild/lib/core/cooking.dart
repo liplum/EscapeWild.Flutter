@@ -324,7 +324,7 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
 
   static const tsJsonKey = JsonKey(fromJson: tsFromJson, toJson: tsToJson, includeIfNull: false);
 
-  static TS tsFromJson(dynamic json) => json == null ? TS.zero : TS.fromJsom((json as num).toInt());
+  static TS tsFromJson(dynamic json) => json == null ? TS.zero : TS.fromJson((json as num).toInt());
 
   static dynamic tsToJson(TS ts) => ts == TS.zero ? null : ts;
 }

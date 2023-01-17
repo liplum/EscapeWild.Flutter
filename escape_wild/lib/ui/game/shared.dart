@@ -243,9 +243,10 @@ class ItemStackCell extends StatelessWidget {
     if (durabilityComp != null) {
       final ratio = durabilityComp.durabilityRatio(stack);
       return [
-        Opacity(opacity: theme.$progressBarOpacity, child: AttrProgress(value: ratio))
+        AttrProgress(value: ratio)
+            .opacity(theme.$progressBarOpacity)
             .align(
-              at: const Alignment(1.0, -0.86),
+              at: const Alignment(1.0, -0.86)
             )
             .padH(5),
         tile,

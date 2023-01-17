@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:noitcelloc/noitcelloc.dart';
@@ -334,10 +335,30 @@ class ItemDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return [
-      ListTile(
-        title: stack.displayName().text(style: context.textTheme.titleLarge),
+      buildTop(context),
+      buildBottom(context),
+    ].column().inCard(elevation: 4);
+  }
+
+  Widget buildTop(BuildContext ctx) {
+    return Container(
+      color: Color.lerp(
+        ctx.theme.cardColor,
+        ctx.colorScheme.secondary,
+        ctx.isLightMode ? 0.2 : 0.15,
+      ),
+      child: ListTile(
+        title: stack.displayName().text(style: ctx.textTheme.titleLarge),
         subtitle: stack.meta.l10nDescription().text(),
       ),
-    ].column().inCard(elevation: 4);
+    ).clipRRect(borderRadius: ctx.cardBorderRadiusTop);
+  }
+
+  Widget buildBottom(BuildContext ctx) {
+    return ListTile(
+      title: "AAA".text(),
+      subtitle: "AAA".text(),
+      isThreeLine: true,
+    );
   }
 }

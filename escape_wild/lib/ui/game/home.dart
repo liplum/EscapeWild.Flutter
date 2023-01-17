@@ -40,7 +40,10 @@ class _HomePageState extends State<Homepage> {
         autofocus: true,
         onKeyEvent: onKeyEvent,
         child: Scaffold(
-          body: buildBody(),
+          body: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: buildBody(),
+          ),
           bottomNavigationBar: buildBottom(),
         ),
       ),

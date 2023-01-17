@@ -146,11 +146,8 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
       itemBuilder: (ctx, i) {
         return DynamicMatchingCell(
           matcher: inputSlots[i],
-          onNotInBackpack: (item) => ItemCell(item).inCard(elevation: 0.5),
-          onInBackpack: (item) => ItemStackCell(
-            item,
-            theme: const ItemStackCellTheme(pad: EdgeInsets.symmetric(vertical: 4, horizontal: 8)),
-          ).inCard(elevation: 5),
+          onNotInBackpack: (item) => ItemCell(item).inCard(elevation: 0.6),
+          onInBackpack: (item) => ItemCell(item.meta).inCard(elevation: 5),
         );
       },
     );
