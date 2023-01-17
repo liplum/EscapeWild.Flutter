@@ -325,6 +325,10 @@ class _CookPageState extends State<CookPage> {
       slot: slot,
       //onTapUnsatisfied: selectFood,
       //onTapSatisfied: selectFood,
+      unsatisfiedTheme: NullItemCellTheme(
+        placeholder: "Ingredient",
+        nameOpacity: 0.4,
+      ),
     ).sized(w: 150, h: 80).center();
     return cell;
   }
@@ -333,6 +337,10 @@ class _CookPageState extends State<CookPage> {
     final cell = ItemStackReqCell(
       slot: slot,
       //onTapUnsatisfied: selectFood,
+      unsatisfiedTheme: NullItemCellTheme(
+        placeholder: "Output",
+        nameOpacity: 0.4,
+      ),
       onTapSatisfied: () {
         if (slot.isNotEmpty) {
           final stack = slot.stack;

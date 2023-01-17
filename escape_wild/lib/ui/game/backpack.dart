@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'shared.dart';
 
 part 'backpack.i18n.dart';
+
 String get backpackTitle => _I.title;
 
 class BackpackPage extends StatefulWidget {
@@ -27,10 +28,10 @@ Widget buildEmptyBackpack() {
 class _BackpackPageState extends State<BackpackPage> {
   ItemStack _selected = ItemStack.empty;
 
-  ItemStack get $selected => _selected;
+  ItemStack get selected => _selected;
   static int lastSelectedIndex = 0;
 
-  set $selected(ItemStack v) {
+  set selected(ItemStack v) {
     _selected = v;
     lastSelectedIndex = player.backpack.indexOfStack(v);
   }
@@ -42,14 +43,14 @@ class _BackpackPageState extends State<BackpackPage> {
       updateDefaultSelection();
     });
     if (lastSelectedIndex >= 0) {
-      $selected = player.backpack[lastSelectedIndex];
+      selected = player.backpack[lastSelectedIndex];
     }
     updateDefaultSelection();
   }
 
   void updateDefaultSelection() {
-    if ($selected.isEmpty && player.backpack.isNotEmpty) {
-      $selected = player.backpack.firstOrEmpty;
+    if (selected.isEmpty && player.backpack.isNotEmpty) {
+      selected = player.backpack.firstOrEmpty;
       if (!mounted) return;
       setState(() {});
     }
@@ -94,9 +95,9 @@ class _BackpackPageState extends State<BackpackPage> {
       return buildEmptyBackpack();
     } else {
       return [
-        buildDetailArea($selected).flexible(flex: 2),
+        ItemDetails(stack: selected).flexible(flex: 2),
         buildItems(player.backpack).flexible(flex: 5),
-        buildButtonArea($selected).flexible(flex: 1),
+        buildButtonArea(selected).flexible(flex: 1),
       ].column(maa: MainAxisAlignment.spaceBetween);
     }
   }
@@ -108,8 +109,8 @@ class _BackpackPageState extends State<BackpackPage> {
     } else {
       return [
         [
-          buildDetailArea($selected).flexible(flex: 4),
-          buildButtonArea($selected).flexible(flex: 2),
+          ItemDetails(stack: selected).flexible(flex: 4),
+          buildButtonArea(selected).flexible(flex: 2),
         ].column(maa: MainAxisAlignment.spaceBetween).expanded(),
         buildItems(player.backpack).expanded(),
       ].row();
@@ -127,52 +128,14 @@ class _BackpackPageState extends State<BackpackPage> {
     );
   }
 
-  Widget buildDetailArea(ItemStack? item) {
-    if (item == null) {
-      // never reached.
-      return "?".text();
-    }
-    return [
-      ListTile(
-        title: item.displayName().text(style: context.textTheme.titleLarge),
-        subtitle: item.meta.l10nDescription().text(),
-      ),
-    ].column().inCard(elevation: 4);
-  }
-
-  void removeItem(ItemStack item) {
-    runAndTrackCurrentSelected(item, () {
+  Future<void> removeItem(ItemStack item) async {
+    await runWithTrackCurrentSelected(item, () async {
       player.backpack.removeStack(item);
     });
   }
 
-  void runAndTrackCurrentSelected(ItemStack item, Function() between) {
-    if (item == $selected) {
-      var index = player.backpack.indexOfStack(item);
-      var isLast = false;
-      if (index == player.backpack.itemCount - 1) {
-        isLast = true;
-      }
-      between();
-      if (isLast && item.isEmpty) {
-        // If current item is the last one and empty after running [between()], go to previous one.
-        index--;
-      }
-      final itemCount = player.backpack.itemCount;
-      if (itemCount > 0) {
-        // If the index is not changed, it should be the next one.
-        index = (index % itemCount).clamp(0, itemCount - 1);
-        $selected = player.backpack[index];
-      } else {
-        $selected = ItemStack.empty;
-      }
-    } else {
-      between();
-    }
-  }
-
-  Future<void> runAndTrackCurrentSelectedAsync(ItemStack item, Future Function() between) async {
-    if (item == $selected) {
+  Future<void> runWithTrackCurrentSelected(ItemStack item, Future Function() between) async {
+    if (item == selected) {
       var index = player.backpack.indexOfStack(item);
       var isLast = false;
       if (index == player.backpack.itemCount - 1) {
@@ -187,20 +150,16 @@ class _BackpackPageState extends State<BackpackPage> {
       if (itemCount > 0) {
         // If the index is not changed, it should be the next one.
         index = (index % itemCount).clamp(0, itemCount - 1);
-        $selected = player.backpack[index];
+        selected = player.backpack[index];
       } else {
-        $selected = ItemStack.empty;
+        selected = ItemStack.empty;
       }
     } else {
-      between();
+      await between();
     }
   }
 
-  Widget buildButtonArea(ItemStack? item) {
-    if (item == null) {
-      // never reached.
-      return "?".text();
-    }
+  Widget buildButtonArea(ItemStack item) {
     Widget btn(String text, {VoidCallback? onTap, Color? color}) {
       final canAct = player.canPlayerAct() && onTap != null;
       return CardButton(
@@ -259,7 +218,7 @@ class _BackpackPageState extends State<BackpackPage> {
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
         if (selectedMassOrPart > 0) {
-          runAndTrackCurrentSelected(item, () {
+          await runWithTrackCurrentSelected(item, () async {
             // discard the part.
             final _ = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
           });
@@ -274,7 +233,7 @@ class _BackpackPageState extends State<BackpackPage> {
         highlight: true,
       );
       if (confirmed == true) {
-        removeItem(item);
+        await removeItem(item);
       }
     }
   }
@@ -309,7 +268,7 @@ class _BackpackPageState extends State<BackpackPage> {
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
         if (selectedMassOrPart > 0) {
-          await runAndTrackCurrentSelectedAsync(item, () async {
+          await runWithTrackCurrentSelected(item, () async {
             final part = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
             for (final usableComp in usableComps) {
               await usableComp.onUse(part);
@@ -335,19 +294,19 @@ class _BackpackPageState extends State<BackpackPage> {
         for (final usableComp in usableComps) {
           await usableComp.onUse(item);
         }
-        removeItem(item);
+        await removeItem(item);
       }
     }
   }
 
   Widget buildItem(ItemStack item) {
-    final isSelected = $selected == item;
+    final isSelected = selected == item;
     return CardButton(
       elevation: isSelected ? 20 : 0.8,
       onTap: () {
-        if ($selected != item) {
+        if (selected != item) {
           setState(() {
-            $selected = item;
+            selected = item;
           });
         }
       },
@@ -367,4 +326,23 @@ UseType _matchBestUseType(Iterable<UsableComp> comps) {
     }
   }
   return type ?? UseType.use;
+}
+
+class ItemDetails extends StatelessWidget {
+  final ItemStack stack;
+
+  const ItemDetails({
+    super.key,
+    required this.stack,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return [
+      ListTile(
+        title: stack.displayName().text(style: context.textTheme.titleLarge),
+        subtitle: stack.meta.l10nDescription().text(),
+      ),
+    ].column().inCard(elevation: 4);
+  }
 }

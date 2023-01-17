@@ -125,43 +125,51 @@ class ItemCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = AutoSizeText(
+    return AutoSizeText(
       item.l10nName(),
       maxLines: 2,
       style: theme.nameStyle ?? context.textTheme.titleLarge,
       textAlign: TextAlign.center,
-    ).opacityOrNot(theme.$nameOpacity);
-    return ListTile(
-      title: title,
-      dense: true,
-    ).center();
+    ).opacity(theme.$nameOpacity).center();
   }
 }
 
 class NullItemCellTheme extends ItemCellTheme {
-  final String placeholder;
+  /// To show a placeholder on the center
+  final String? placeholder;
 
   const NullItemCellTheme({
-    required this.placeholder,
+    this.placeholder,
     super.nameOpacity = 1,
     super.nameStyle,
   });
 }
 
 class NullItemCell extends StatelessWidget {
-  final ItemCellTheme theme;
+  final NullItemCellTheme theme;
 
   const NullItemCell({
     super.key,
-    this.theme = const ItemCellTheme(),
+    this.theme = const NullItemCellTheme(),
   });
 
   @override
   Widget build(BuildContext context) {
-    return const ListTile(
-      title: SizedBox(),
-      dense: true,
-    );
+    final placeholder = theme.placeholder;
+    if(placeholder != null){
+     return buildPlaceholder(context, placeholder);
+    }else{
+      return const SizedBox();
+    }
+  }
+
+  Widget buildPlaceholder(BuildContext ctx, String placeholder) {
+    return AutoSizeText(
+      placeholder,
+      maxLines: 2,
+      style: theme.nameStyle ?? ctx.textTheme.titleLarge,
+      textAlign: TextAlign.center,
+    ).opacity(theme.$nameOpacity).center();
   }
 }
 
@@ -229,7 +237,7 @@ class ItemStackCell extends StatelessWidget {
       subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
       dense: true,
       contentPadding: !theme.$showMass ? null : theme.pad,
-    ).opacityOrNot(theme.$nameOpacity).center();
+    ).opacity(theme.$nameOpacity).center();
     if (!theme.$showProgressBar || theme.$progressBarOpacity <= 0) return tile;
     final durabilityComp = DurabilityComp.of(stack);
     if (durabilityComp != null) {
@@ -660,7 +668,8 @@ class ItemStackReqCell extends StatelessWidget {
   final ItemStackSlot slot;
   final VoidCallback? onTapSatisfied;
   final VoidCallback? onTapUnsatisfied;
-  final ItemStackCellTheme onSatisfy;
+  final ItemStackCellTheme satisfiedTheme;
+  final NullItemCellTheme unsatisfiedTheme;
   static const opacityOnMissing = 0.5;
 
   const ItemStackReqCell({
@@ -668,7 +677,8 @@ class ItemStackReqCell extends StatelessWidget {
     required this.slot,
     this.onTapSatisfied,
     this.onTapUnsatisfied,
-    this.onSatisfy = const ItemStackCellTheme(),
+    this.satisfiedTheme = const ItemStackCellTheme(),
+    this.unsatisfiedTheme = const NullItemCellTheme(),
   });
 
   @override
@@ -683,10 +693,12 @@ class ItemStackReqCell extends StatelessWidget {
       onTap: !satisfyCondition ? onTapUnsatisfied : onTapSatisfied,
       shape: !satisfyCondition ? context.outlinedCardBorder() : null,
       child: !satisfyCondition
-          ? const NullItemCell()
+          ? NullItemCell(
+              theme: unsatisfiedTheme,
+            )
           : ItemStackCell(
               slot.stack,
-              theme: onSatisfy,
+              theme: satisfiedTheme,
             ),
     );
   }
@@ -696,7 +708,7 @@ class ItemStackReqAutoMatchCell extends StatelessWidget {
   final ItemStackSlot slot;
   final VoidCallback? onTapSatisfied;
   final VoidCallback? onTapUnsatisfied;
-  final ItemStackCellTheme onSatisfy;
+  final ItemStackCellTheme satisfiedTheme;
   final ItemCellTheme onNotInBackpack;
   final ItemStackCellTheme onInBackpack;
   static const opacityOnMissing = 0.5;
@@ -706,7 +718,7 @@ class ItemStackReqAutoMatchCell extends StatelessWidget {
     required this.slot,
     this.onTapSatisfied,
     this.onTapUnsatisfied,
-    this.onSatisfy = const ItemStackCellTheme(),
+    this.satisfiedTheme = const ItemStackCellTheme(),
     this.onNotInBackpack = const ItemCellTheme(),
     this.onInBackpack = const ItemStackCellTheme(),
   });
@@ -725,7 +737,7 @@ class ItemStackReqAutoMatchCell extends StatelessWidget {
       child: satisfyCondition
           ? ItemStackCell(
               slot.stack,
-              theme: onSatisfy,
+              theme: satisfiedTheme,
             )
           : DynamicMatchingCell(
               matcher: slot.matcher,

@@ -9,5 +9,7 @@ class _I {
 
   static String get cook => "$_n.cook".tr();
 
+  static String get stop => "$_n.stop".tr();
+
   static String get fuel => "$_n.fuel".tr();
 }

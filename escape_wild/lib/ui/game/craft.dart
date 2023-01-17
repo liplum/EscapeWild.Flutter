@@ -1,5 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +82,7 @@ class _CraftPageState extends State<CraftPage> {
 
   Widget buildRecipes(List<CraftRecipeProtocol> recipes) {
     return MasonryGridView.extent(
-      maxCrossAxisExtent: 350,
+      maxCrossAxisExtent: 280,
       physics: const RangeMaintainingScrollPhysics(),
       itemCount: recipes.length,
       itemBuilder: (ctx, i) {
@@ -112,30 +111,29 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
   @override
   Widget build(BuildContext context) {
     return [
-      buildOutputItem(),
+      buildOutputItemBtn(),
       buildInputGrid(),
     ].column().inCard();
   }
 
-  Widget buildOutputItem() {
+  Widget buildOutputItemBtn() {
     final canAct = player.canPlayerAct();
     final output = recipe.outputItem;
-    return ItemCell(output)
-        .inkWell(
-          borderRadius: context.cardBorderRadius,
-          onTap: !canAct
-              ? null
-              : () async {
-                  await showCupertinoModalBottomSheet(
-                    context: context,
-                    enableDrag: false,
-                    builder: (_) => CraftingSheet(
-                      recipe: recipe,
-                    ),
-                  );
-                },
-        )
-        .inCard(elevation: canAct ? 12 : 0);
+    return CardButton(
+      elevation: canAct ? 12 : 0,
+      onTap: !canAct
+          ? null
+          : () async {
+              await showCupertinoModalBottomSheet(
+                context: context,
+                enableDrag: false,
+                builder: (_) => CraftingSheet(
+                  recipe: recipe,
+                ),
+              );
+            },
+      child: ItemCell(output).aspectRatio(aspectRatio: 5),
+    );
   }
 
   Widget buildInputGrid() {
