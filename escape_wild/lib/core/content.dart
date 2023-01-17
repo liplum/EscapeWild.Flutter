@@ -6,6 +6,7 @@ class Contents {
   static final items = ItemContents();
   static final mods = ModContents();
   static final craftRecipes = CraftRecipeContents();
+  static final foodRecipes = FoodRecipeContents();
   static final hardness = HardnessContents();
 
   static Item getItemMetaByName(String name) {

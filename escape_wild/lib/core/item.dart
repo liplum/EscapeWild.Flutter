@@ -602,7 +602,7 @@ extension ItemStackListX on List<ItemStack> {
     }
   }
 
-  bool removeStack(ItemStack stack){
+  bool removeStack(ItemStack stack) {
     return remove(stack);
   }
 
@@ -631,9 +631,14 @@ class ItemMatcher {
     required this.exact,
   });
 
-  static ItemMatcher hasTag(List<String> tags) => ItemMatcher(
+  static ItemMatcher hasTags(List<String> tags) => ItemMatcher(
         typeOnly: (item) => item.hasTags(tags),
         exact: (item) => item.meta.hasTags(tags) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
+      );
+
+  static ItemMatcher hasAnyTag(List<String> tags) => ItemMatcher(
+        typeOnly: (item) => item.hasAnyTag(tags),
+        exact: (item) => item.meta.hasAnyTag(tags) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
       );
 
   static ItemMatcher hasComp(List<Type> compTypes) => ItemMatcher(
@@ -1014,92 +1019,6 @@ extension ModifyAttrCompX on Item {
       UseType.drink,
       modifiers,
       afterUsedItem: afterUsed,
-    );
-    comp.validateItemConfig(this);
-    addComp(comp);
-    return this;
-  }
-}
-
-@JsonEnum()
-enum CookType {
-  cook,
-  boil,
-  roast;
-}
-
-/// Player can cook the CookableItem in campfire.
-/// It will be transformed to another item.
-@JsonSerializable(createToJson: false)
-class CookableComp extends ItemComp {
-  @JsonKey()
-  final CookType cookType;
-  @JsonKey()
-  final double fuelCost;
-  @JsonKey(fromJson: NamedItemGetter.create)
-  final ItemGetter cookedOutput;
-
-  const CookableComp(
-    this.cookType,
-    this.fuelCost,
-    this.cookedOutput,
-  );
-
-  double getActualFuelCost(ItemStack raw) {
-    if (raw.meta.mergeable) {
-      return raw.massMultiplier * fuelCost;
-    } else {
-      return fuelCost;
-    }
-  }
-
-  double getUnitFuelCostPerMass(ItemStack raw) {
-    return fuelCost / raw.meta.mass;
-  }
-
-  int getMaxCookablePart(ItemStack raw, double totalFuel) {
-    if (raw.meta.mergeable) {
-      return totalFuel ~/ (fuelCost / raw.meta.mass);
-    } else {
-      return totalFuel >= fuelCost ? raw.stackMass : 0;
-    }
-  }
-
-  ItemStack cook(ItemStack raw) {
-    final cooked = cookedOutput();
-    return cooked.create()..mass = (raw.massMultiplier * cooked.mass).toInt();
-  }
-
-  @override
-  void validateItemConfig(Item item) {
-    if (item.hasComp(CookableComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $CookableComp.",
-        item,
-      );
-    }
-  }
-
-  static CookableComp? of(ItemStack stack) => stack.meta.getFirstComp<CookableComp>();
-
-  static const type = "Cookable";
-
-  @override
-  String get typeName => type;
-
-  factory CookableComp.fromJson(Map<String, dynamic> json) => _$CookableCompFromJson(json);
-}
-
-extension CookableCompX on Item {
-  Item asCookable(
-    CookType cookType, {
-    required double fuelCost,
-    required ItemGetter output,
-  }) {
-    final comp = CookableComp(
-      cookType,
-      fuelCost,
-      output,
     );
     comp.validateItemConfig(this);
     addComp(comp);

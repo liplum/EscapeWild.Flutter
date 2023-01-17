@@ -100,6 +100,13 @@ extension TagsMixinX<T extends TagsMixin> on T {
   bool hasTag(String tag) => tags.contains(tag);
 
   bool hasTags(Iterable<String> tags) => this.tags.containsAll(tags);
+
+  bool hasAnyTag(Iterable<String> tags) {
+    for (final tag in tags) {
+      if (this.tags.contains(tag)) return true;
+    }
+    return false;
+  }
 }
 
 abstract class Comp implements JConvertibleProtocol {

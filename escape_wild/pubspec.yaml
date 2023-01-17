@@ -65,6 +65,7 @@ dependencies:
   modal_bottom_sheet: ^2.1.2
   path_provider: ^2.0.11
   animations: ^2.0.7
+  flutter_staggered_grid_view: ^0.6.2
 
 dev_dependencies:
   flutter_test:

@@ -5,7 +5,7 @@ abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
 
   const MinuteProtocol({required this.minutes});
 
-  const MinuteProtocol.hm({required int hour, required int minute}) : minutes = hour * 60 + minute % 60;
+  const MinuteProtocol.hm({int hour = 0, int minute = 0}) : minutes = hour * 60 + minute % 60;
 
   @override
   String toString() {
@@ -22,7 +22,7 @@ class Clock extends MinuteProtocol {
 
   const Clock({required super.minutes});
 
-  const Clock.hm({required int hour, required int minute}) : super.hm(hour: hour, minute: minute);
+  const Clock.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
 
   Clock operator +(TS delta) => Clock(minutes: minutes + delta.minutes);
 
@@ -38,7 +38,7 @@ class TS extends MinuteProtocol {
 
   const TS({required super.minutes});
 
-  const TS.hm({required int hour, required int minute}) : super.hm(hour: hour, minute: minute);
+  const TS.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
 
   static const jsonKey = JsonKey(fromJson: TS.fromJsom);
 

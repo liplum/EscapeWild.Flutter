@@ -31,8 +31,14 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        theme: bakeTheme(context, ThemeData.light()),
-        darkTheme: bakeTheme(context, ThemeData.dark()),
+        theme: bakeTheme(context, ThemeData(
+          brightness: Brightness.light,
+          primarySwatch: Colors.yellow,
+        )),
+        darkTheme: bakeTheme(context, ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.green,
+        )),
         home: const AppWrapper(),
       ),
     );

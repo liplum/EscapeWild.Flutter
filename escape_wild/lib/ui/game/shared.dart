@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
@@ -12,10 +13,20 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'backpack.dart';
 import 'hud.dart';
 
-const itemCellGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
+const itemCellGridDelegatePortrait = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 180,
   childAspectRatio: 1.5,
 );
+const itemCellGridDelegateLandscape = SliverGridDelegateWithMaxCrossAxisExtent(
+  maxCrossAxisExtent: 180,
+  childAspectRatio: 1.8,
+);
+
+extension ItemCellGridBuildContextX on BuildContext {
+  SliverGridDelegateWithMaxCrossAxisExtent get itemCellGridDelegate =>
+      isPortrait ? itemCellGridDelegatePortrait : itemCellGridDelegateLandscape;
+}
+
 const itemCellSmallGridDelegate = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 160,
   childAspectRatio: 2,
@@ -128,22 +139,12 @@ class ItemCell extends StatelessWidget {
 }
 
 class NullItemCell extends StatelessWidget {
-  final ItemCellTheme theme;
-
-  const NullItemCell({
-    super.key,
-    this.theme = const ItemCellTheme(),
-  });
+  const NullItemCell({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // never reached.
-    return ListTile(
-      title: AutoSizeText(
-        "?",
-        style: theme.nameStyle ?? context.textTheme.titleLarge,
-        textAlign: TextAlign.center,
-      ).opacityOrNot(theme.$nameOpacity),
+    return const ListTile(
+      title: SizedBox(),
       dense: true,
     );
   }
@@ -483,6 +484,7 @@ enum DynamicMatchingBehavior {
 
 class DynamicMatchingCell extends StatefulWidget {
   final ItemMatcher matcher;
+  final bool random;
   final DynamicMatchingBehavior behavior;
   final Widget Function(Item item) onNotInBackpack;
   final Widget Function(ItemStack stack) onInBackpack;
@@ -493,6 +495,7 @@ class DynamicMatchingCell extends StatefulWidget {
     this.behavior = DynamicMatchingBehavior.both,
     required this.onNotInBackpack,
     required this.onInBackpack,
+    this.random = true,
   });
 
   @override
@@ -524,7 +527,11 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
     final behavior = widget.behavior;
     allMatched = behavior.includingBackpack ? player.backpack.matchExactItems(matcher) : const [];
     if (allMatched.isNotEmpty) {
-      curIndex = curIndex % allMatched.length;
+      if (widget.random) {
+        curIndex = Rand.i(0, allMatched.length);
+      } else {
+        curIndex = curIndex % allMatched.length;
+      }
       active = true;
     } else {
       // If player don't have any of them, or backpack is excluded, try to browser all items.
@@ -532,7 +539,11 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       assert(
           allMatched.isNotEmpty || !behavior.includingRegistry, "ItemMatcher should match at least one of all items.");
       if (allMatched.isNotEmpty) {
-        curIndex = curIndex % allMatched.length;
+        if (widget.random) {
+          curIndex = Rand.i(0, allMatched.length);
+        } else {
+          curIndex = curIndex % allMatched.length;
+        }
       }
       active = false;
     }
@@ -620,6 +631,7 @@ class ItemStackReqSlot with ChangeNotifier {
   void notifyChange() {
     notifyListeners();
   }
+
   /// Call this manually if [stack]'s state was changed outside.
   /// - for example, [stack.stackMass] was changed.
   void updateMatching() {
@@ -634,11 +646,47 @@ class ItemStackReqCell extends StatelessWidget {
   final VoidCallback? onTapSatisfied;
   final VoidCallback? onTapUnsatisfied;
   final ItemStackCellTheme onSatisfy;
+  static const opacityOnMissing = 0.5;
+
+  const ItemStackReqCell({
+    super.key,
+    required this.slot,
+    this.onTapSatisfied,
+    this.onTapUnsatisfied,
+    this.onSatisfy = const ItemStackCellTheme(),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return slot << (_, __) => buildBody(context);
+  }
+
+  Widget buildBody(BuildContext context) {
+    final satisfyCondition = slot.isNotEmpty;
+    return CardButton(
+      elevation: satisfyCondition ? 4 : 0,
+      onTap: !satisfyCondition ? onTapUnsatisfied : onTapSatisfied,
+      shape: !satisfyCondition ? context.outlinedCardBorder() : null,
+      child: !satisfyCondition
+          ? const NullItemCell()
+          : ItemStackCell(
+              slot.stack,
+              theme: onSatisfy,
+            ),
+    );
+  }
+}
+
+class ItemStackReqAutoMatchCell extends StatelessWidget {
+  final ItemStackReqSlot slot;
+  final VoidCallback? onTapSatisfied;
+  final VoidCallback? onTapUnsatisfied;
+  final ItemStackCellTheme onSatisfy;
   final ItemCellTheme onNotInBackpack;
   final ItemStackCellTheme onInBackpack;
   static const opacityOnMissing = 0.5;
 
-  const ItemStackReqCell({
+  const ItemStackReqAutoMatchCell({
     super.key,
     required this.slot,
     this.onTapSatisfied,
@@ -654,24 +702,11 @@ class ItemStackReqCell extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
-    ShapeBorder? shape;
     final satisfyCondition = slot.isNotEmpty;
-    if (!satisfyCondition) {
-      shape = RoundedRectangleBorder(
-        side: BorderSide(
-          color: context.isDarkMode ? context.colorScheme.outline : context.colorScheme.secondary,
-        ),
-        borderRadius: context.cardBorderRadius ?? BorderRadius.zero,
-      );
-    }
     return CardButton(
       elevation: satisfyCondition ? 4 : 0,
-      onTap: !satisfyCondition
-          ? onTapUnsatisfied
-          : () {
-              onTapSatisfied?.call();
-            },
-      shape: shape,
+      onTap: !satisfyCondition ? onTapUnsatisfied : onTapSatisfied,
+      shape: !satisfyCondition ? context.outlinedCardBorder() : null,
       child: satisfyCondition
           ? ItemStackCell(
               slot.stack,
@@ -748,15 +783,15 @@ class _BackpackSheetState extends State<BackpackSheet> {
           physics: const RangeMaintainingScrollPhysics(),
           slivers: [
             SliverAppBar(
-              expandedHeight: 60.0,
+              expandedHeight: 50.0,
               leading: IconButton(
                 icon: const Icon(Icons.close_rounded),
                 onPressed: () {
                   context.navigator.pop();
                 },
               ),
-              centerTitle: true,
               flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
                 title: backpackTitle.text(),
               ),
               actions: [
@@ -790,7 +825,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
       length += unaccepted.length;
     }
     return SliverGrid(
-      gridDelegate: itemCellGridDelegate,
+      gridDelegate: context.itemCellGridDelegate,
       delegate: SliverChildBuilderDelegate(
         childCount: length,
         (ctx, i) {
@@ -819,7 +854,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
 }
 
 extension BackpackBuildContextX on BuildContext {
-  Future<T?> showMatchBackpack<T>({
+  Future<T?> showBackpackSheet<T>({
     required ItemMatcher matcher,
     ValueChanged<ItemStack>? onSelect,
     BackpackFilterDisplayBehavior behavior = BackpackFilterDisplayBehavior.toggleable,
@@ -831,11 +866,10 @@ extension BackpackBuildContextX on BuildContext {
         matcher: matcher,
         onSelect: onSelect,
         behavior: behavior,
-      ).constrained(maxH: mediaQuery.size.height * 0.5),
+      ).constrained(maxH: max(mediaQuery.size.height * 0.5, 380)),
     );
   }
 }
-
 
 class DurationStepper extends StatefulWidget {
   final ValueNotifier<TS> $duration;
@@ -905,10 +939,10 @@ class _DurationStepperState extends State<DurationStepper> {
   }
 
   Widget buildStepperBtn(
-      IconData icon, {
-        required bool Function() canStep,
-        required void Function() onStep,
-      }) {
+    IconData icon, {
+    required bool Function() canStep,
+    required void Function() onStep,
+  }) {
     return GestureDetector(
         onLongPressStart: (_) async {
           isPressing = true;
@@ -927,19 +961,15 @@ class _DurationStepperState extends State<DurationStepper> {
           onTap: !canStep()
               ? null
               : () {
-            onStep();
-          },
+                  onStep();
+                },
           child: buildIcon(icon),
         ));
   }
 
   Widget buildIcon(IconData icon) {
-    const iconSize = 36.0;
-    const scale = 3.0;
-    return Transform.scale(
-      scale: scale,
-      child: Icon(icon, size: iconSize).padAll(5),
-    );
+    const iconSize = 48.0;
+    return Icon(icon, size: iconSize);
   }
 
   @override

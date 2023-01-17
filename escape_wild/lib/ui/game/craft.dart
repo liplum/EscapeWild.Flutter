@@ -3,6 +3,7 @@ import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -88,11 +89,8 @@ class _CraftPageState extends State<CraftPage> {
   }
 
   Widget buildRecipesLandscape(List<CraftRecipeProtocol> recipes) {
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 350,
-        childAspectRatio: 1.5,
-      ),
+    return MasonryGridView.extent(
+      maxCrossAxisExtent: 350,
       physics: const RangeMaintainingScrollPhysics(),
       itemCount: recipes.length,
       itemBuilder: (ctx, i) {
@@ -280,7 +278,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
               GridView.builder(
                 itemCount: itemStackReqSlots.length,
                 physics: const RangeMaintainingScrollPhysics(),
-                gridDelegate: itemCellGridDelegate,
+                gridDelegate: itemCellGridDelegatePortrait,
                 itemBuilder: (ctx, i) {
                   return buildInputSlot(itemStackReqSlots[i]);
                 },
@@ -289,7 +287,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   Widget buildInputSlot(ItemStackReqSlot slot) {
-    return ItemStackReqCell(
+    return ItemStackReqAutoMatchCell(
       slot: slot,
       onTapSatisfied: () {
         goBackToAccepted(slot);
@@ -312,7 +310,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
     return GridView.builder(
       itemCount: accepted.length + unaccepted.length,
       physics: const RangeMaintainingScrollPhysics(),
-      gridDelegate: itemCellGridDelegate,
+      gridDelegate: itemCellGridDelegatePortrait,
       itemBuilder: (ctx, i) {
         if (i < accepted.length) {
           return buildItem(accepted[i], accepted: true);

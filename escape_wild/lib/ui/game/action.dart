@@ -68,7 +68,7 @@ class _ActionPageState extends State<ActionPage> {
         min: actionTsStep,
         max: maxActionDuration,
         step: actionTsStep,
-      ).flexible(flex: 2),
+      ).flexible(flex: context.isPortrait ? 2 : 3),
     ].column();
   }
 
@@ -87,6 +87,7 @@ class _ActionPageState extends State<ActionPage> {
     return Hud(
       attrs: attr,
       textStyle: context.textTheme.headlineMedium,
+      minHeight: 14,
     ).padAll(12).inCard(elevation: 2).sized(h: 240);
   }
 
@@ -94,7 +95,6 @@ class _ActionPageState extends State<ActionPage> {
     return AttrProgress(value: v).padAll(10);
   }
 }
-
 
 class ActionButtonArea extends StatefulWidget {
   const ActionButtonArea({super.key});

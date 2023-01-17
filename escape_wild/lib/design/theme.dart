@@ -1,3 +1,4 @@
+import 'package:escape_wild/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -19,6 +20,21 @@ extension ThemeBuildContextX on BuildContext {
       return theme.primaryColor;
     } else {
       return Color.lerp(theme.colorScheme.onPrimary, Colors.white, 0.6)!;
+    }
+  }
+
+  RoundedRectangleBorder outlinedCardBorder() => RoundedRectangleBorder(
+        side: BorderSide(
+          color: isDarkMode ? colorScheme.outline : colorScheme.secondary,
+        ),
+        borderRadius: cardBorderRadius ?? BorderRadius.zero,
+      );
+
+  Color fixColorBrightness(Color color) {
+    if (isDarkMode) {
+      return color.darken(0.1);
+    } else {
+      return color.lighten(0.2);
     }
   }
 }

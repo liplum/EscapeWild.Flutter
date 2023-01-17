@@ -7,16 +7,13 @@ part 'cooking.g.dart';
 
 abstract class FoodRecipeProtocol with Moddable {
   /// The max cooking slot.
-  static const maxSlot = 4;
+  static const maxIngredient = 3;
+  static const maxSlot = maxIngredient * 2;
 
   @override
   final String name;
 
   FoodRecipeProtocol(this.name);
-
-  /// It's used to pre-check if this recipe is matched.
-  /// Or for building UI.
-  int get slotRequired;
 
   /// ## Constrains
   /// - [inputs] is in no order.
@@ -46,9 +43,6 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
   @TS.jsonKey
   final TS cookingTime;
 
-  @override
-  int get slotRequired => ingredients.length;
-
   FoodRecipe(
     super.name, {
     required this.ingredients,
@@ -57,13 +51,15 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
     this.outputMass,
   }) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
+    assert(ingredients.length <= FoodRecipeProtocol.maxIngredient,
+        "Ingredients of $registerName is > ${FoodRecipeProtocol.maxIngredient}.");
   }
 
   factory FoodRecipe.fromJson(Map<String, dynamic> json) => _$FoodRecipeFromJson(json);
 
   @override
   bool match(List<ItemStack> inputs) {
-    if (inputs.length != slotRequired) return false;
+    if (inputs.length != ingredients.length) return false;
     // Container is not allowed.
     if (inputs.any((input) => input.meta.isContainer)) return false;
     final rest = Set.of(inputs);
@@ -91,7 +87,7 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
   bool updateCooking(List<ItemStack> slots, TS totalTimePassed) {
     // It must reach the [cookingTime]
     if (totalTimePassed < cookingTime) return false;
-    if (slots.length != slotRequired) return false;
+    if (slots.length != ingredients.length) return false;
     // Cooked!
     final rest = Set.of(slots);
     for (final ingredient in ingredients) {

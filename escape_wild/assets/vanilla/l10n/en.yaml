@@ -197,6 +197,9 @@ item:
   water-filter:
     name: Water Filter
     desc: ...
+  bear-meat:
+    name: Bear Meat
+    desc: ...
 route:
   subtropics:
     plain:

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
@@ -23,13 +25,13 @@ class _CampfirePageState extends State<CampfirePage> {
     final loc = player.location;
     if (loc is CampfirePlaceProtocol) {
       final $fireState = (loc as CampfirePlaceProtocol).$fireState;
+      final mainBody = $fireState <<
+          (ctx, state, _) => AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: buildBody($fireState),
+              );
       return Scaffold(
-        body: ($fireState <<
-                (ctx, state, _) => AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: buildBody($fireState),
-                    ))
-            .padAll(5),
+        body: mainBody.padAll(5),
       );
     } else {
       return LeavingBlank(icon: Icons.close_rounded, desc: "Here doesn't allow fire.");
@@ -89,7 +91,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
   Widget buildPortrait() {
     return [
-      const CampfireImage(),
+      const StaticCampfireImage(),
       buildFireStarterCell(),
       buildStartFireButton(),
     ].column(maa: MainAxisAlignment.spaceEvenly).center();
@@ -97,7 +99,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
   Widget buildLandscape() {
     return [
-      const CampfireImage().expanded(),
+      const StaticCampfireImage().expanded(),
       [
         buildFireStarterCell(),
         buildStartFireButton(),
@@ -111,7 +113,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
   }
 
   Widget buildFireStarterCell() {
-    Widget cell = ItemStackReqCell(
+    Widget cell = ItemStackReqAutoMatchCell(
       slot: fireStarterSlot,
       onTapSatisfied: onSelectFireStarter,
       onTapUnsatisfied: onSelectFireStarter,
@@ -124,7 +126,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
   }
 
   Future<void> onSelectFireStarter() async {
-    await context.showMatchBackpack(
+    await context.showBackpackSheet(
       matcher: fireStarterSlot.matcher,
       onSelect: (selected) {
         if (!mounted) return;
@@ -185,9 +187,8 @@ class CookPage extends StatefulWidget {
 }
 
 class _CookPageState extends State<CookPage> {
-  var $isCooking = ValueNotifier(false);
-  final cookSlot = ItemStackReqSlot(ItemMatcher.hasComp(const [CookableComp]));
-  static int lastSelectedIndex = -1;
+  final List<ItemStackReqSlot> cookSlots =
+      List.generate(FoodRecipeProtocol.maxSlot, (i) => ItemStackReqSlot(ItemMatcher.hasAnyTag(["cookable", "cooker"])));
 
   FireState get fireState => widget.$fireState.value;
 
@@ -198,53 +199,71 @@ class _CookPageState extends State<CookPage> {
   set fireFuel(double v) => fireState = fireState.copyWith(fuel: v);
 
   @override
-  void initState() {
-    super.initState();
-    if (lastSelectedIndex >= 0) {
-      final lastSelected = player.backpack[lastSelectedIndex];
-      if (cookSlot.matcher.exact(lastSelected).isMatched) {
-        setState(() {
-          cookSlot.stack = lastSelected;
-        });
-      }
-    }
-    cookSlot.addListener(() {
-      final newStack = cookSlot.stack;
-      lastSelectedIndex = player.backpack.indexOfStack(newStack);
-    });
+  Widget build(BuildContext context) {
+    return context.isPortrait ? buildBodyPortrait() : buildBodyLandscape();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildBodyPortrait() {
+    return Scaffold(
+      appBar: AppBar(
+        title: "Campfire".text(),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+      ),
+      body: [
+        buildFoodGrid().flexible(flex: 2),
+        buildCampfire().flexible(flex: 4),
+        buildButtons().flexible(flex: 1),
+      ].column(),
+    );
+  }
+
+  Widget buildBodyLandscape() {
+    return [
+      buildFoodGrid().flexible(flex: 4),
+      [
+        LayoutBuilder(builder: (_, box) => buildCampfire().constrained(maxH: box.maxWidth * 0.5)),
+        buildButtons(),
+      ].column(maa: MainAxisAlignment.center).flexible(flex: 4),
+    ].row();
+  }
+
+  Widget buildCampfire() {
     return [
       buildBackground(),
-      buildBody(),
       widget.$fireState << (_, state, __) => buildFuelState(state),
-      buildFoodGrid(),
     ].stack();
   }
 
   Widget buildBackground() {
-    return AnimatedCampfireImage(
-      notCookingColor: context.themeColor,
-      cookingColor: R.flameColor,
-      $isCooking: $isCooking,
-    ).center().opacity(0.35);
+    return AnimatedBuilder(
+      animation: widget.$fireState,
+      builder: (ctx, _) => DynamicCampfireImage(
+        color: Color.lerp(context.themeColor, R.flameColor, fireState.fuel / FireState.maxVisualFuel)!,
+      ),
+    ).center().opacity(0.45);
   }
 
   Widget buildFoodGrid() {
-//return GridView(gridDelegate: itemCellGridDelegate,)
-    return buildFoodSlot();
+    final cells = <Widget>[];
+    for (final slot in cookSlots) {
+      final cell = ItemStackReqCell(
+        slot: slot,
+        //onTapUnsatisfied: selectFood,
+        //onTapSatisfied: selectFood,
+      ).constrained(maxW: 180);
+      cells.add(cell);
+    }
+    final Widget grid = GridView(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: context.itemCellGridDelegate,
+      children: cells,
+    );
+    return grid.center();
   }
 
-  Widget buildFoodSlot() {
-    return ItemStackReqCell(
-      slot: cookSlot,
-      onTapUnsatisfied: selectFood,
-      onTapSatisfied: selectFood,
-    ).aspectRatio(aspectRatio: 1.5).constrained(maxW: 160).align(at: const Alignment(0.0, -0.55));
-  }
-
+/*
   Future<void> selectFood() async {
     final selected = await context.showMatchBackpack<ItemStack>(
       matcher: cookSlot.matcher,
@@ -257,33 +276,12 @@ class _CookPageState extends State<CookPage> {
     setState(() {
       cookSlot.toggle(selected);
     });
-  }
+  }*/
 
-  Widget buildBody() {
-    final canCook = cookSlot.isNotEmpty && fireFuel > 0;
+  Widget buildButtons() {
     final cookBtn = CardButton(
-      elevation: canCook ? 5 : null,
-      onTap: !canCook
-          ? null
-          : () async {
-              final raw = cookSlot.stack;
-              final cookComp = CookableComp.of(raw);
-              if (cookComp == null) return;
-              final maxCookablePart = cookComp.getMaxCookablePart(raw, fireFuel);
-              if (maxCookablePart <= 0) return;
-              final partToCook = player.backpack.splitItemInBackpack(raw, maxCookablePart);
-              $isCooking.value = true;
-              await Future.delayed(const Duration(milliseconds: 500));
-              fireFuel -= cookComp.getActualFuelCost(partToCook);
-              await Future.delayed(const Duration(milliseconds: 500));
-              $isCooking.value = false;
-              final result = cookComp.cook(partToCook);
-              player.backpack.addItemOrMerge(result);
-              cookSlot.resetIfEmpty();
-              if (!mounted) return;
-              setState(() {});
-            },
-      child: _I.cook.autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
+      elevation: 5,
+      child: "Add".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
     ).expanded();
     final fuelBtn = CardButton(
       elevation: 5,
@@ -297,7 +295,7 @@ class _CookPageState extends State<CookPage> {
   }
 
   Future<void> onFuel() async {
-    final selected = await context.showMatchBackpack<ItemStack>(
+    final selected = await context.showBackpackSheet<ItemStack>(
       matcher: ItemMatcher.hasComp(const [FuelComp]),
       onSelect: (selected) async {
         context.navigator.pop(selected);
@@ -313,7 +311,7 @@ class _CookPageState extends State<CookPage> {
   Widget buildFuelState(FireState state) {
     return LayoutBuilder(
       builder: (_, box) {
-        final length = box.maxHeight * 0.4;
+        final length = box.maxHeight * 0.6;
         final halfP = state.fuel / FireState.maxVisualFuel / 2;
         final left = buildFuelProgress(halfP, length);
         final right = buildFuelProgress(halfP, length);
@@ -331,22 +329,24 @@ class _CookPageState extends State<CookPage> {
       child: AttrProgress(
         value: progress,
         minHeight: 16,
-        color: R.fuelYellowColor,
+        color: context.fixColorBrightness(R.fuelYellowColor),
       ).constrained(maxW: length),
-    );
+    ).padH(12);
   }
 
   @override
   void dispose() {
-    cookSlot.dispose();
+    for (final cookSlot in cookSlots) {
+      cookSlot.dispose();
+    }
     super.dispose();
   }
 }
 
-class CampfireImage extends StatelessWidget {
+class StaticCampfireImage extends StatelessWidget {
   final Color? color;
 
-  const CampfireImage({
+  const StaticCampfireImage({
     super.key,
     this.color,
   });
@@ -362,63 +362,54 @@ class CampfireImage extends StatelessWidget {
   }
 }
 
-class AnimatedCampfireImage extends StatefulWidget {
-  final Color notCookingColor;
-  final Color cookingColor;
-  final ValueNotifier<bool> $isCooking;
+class DynamicCampfireImage extends ImplicitlyAnimatedWidget {
+  final Color color;
 
-  const AnimatedCampfireImage({
+  const DynamicCampfireImage({
     super.key,
-    required this.notCookingColor,
-    required this.cookingColor,
-    required this.$isCooking,
+    super.duration = const Duration(milliseconds: 1200),
+    required this.color,
+    super.curve = Curves.fastLinearToSlowEaseIn,
   });
 
   @override
-  State<AnimatedCampfireImage> createState() => _AnimatedCampfireImageState();
+  ImplicitlyAnimatedWidgetState<DynamicCampfireImage> createState() => _DynamicCampfireImageState();
 }
 
-class _AnimatedCampfireImageState extends State<AnimatedCampfireImage> with SingleTickerProviderStateMixin {
-  late AnimationController _animationCtrl;
-  late Animation _burningAnimation;
-  bool? lastCookingState;
+class _DynamicCampfireImageState extends AnimatedWidgetBaseState<DynamicCampfireImage> {
+  late ColorTween $color;
 
   @override
   void initState() {
+    $color = ColorTween(
+      begin: widget.color,
+      end: widget.color,
+    );
     super.initState();
-    _animationCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    _burningAnimation = ColorTween(begin: widget.notCookingColor, end: widget.cookingColor).animate(_animationCtrl);
-    widget.$isCooking.addListener(onCookingStateChange);
-  }
-
-  void onCookingStateChange() {
-    final newState = widget.$isCooking.value;
-    if (newState != lastCookingState) {
-      if (newState) {
-        // start cooking
-        _animationCtrl.forward();
-      } else {
-        // end cooking
-        _animationCtrl.reverse();
-      }
-      lastCookingState = newState;
+    if ($color.begin != $color.end) {
+      controller.forward();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _burningAnimation,
-      builder: (ctx, _) => CampfireImage(
-        color: _burningAnimation.value,
-      ),
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
+      child: buildBar(),
+    );
+  }
+
+  Widget buildBar() {
+    return StaticCampfireImage(
+      color: $color.animate(animation).value,
     );
   }
 
   @override
-  void dispose() {
-    widget.$isCooking.removeListener(onCookingStateChange);
-    _animationCtrl.dispose();
-    super.dispose();
+  void forEachTween(TweenVisitor<dynamic> visitor) {
+    $color = visitor($color, widget.color, (dynamic value) {
+      assert(false);
+      throw StateError('Constructor will never be called because null is never provided as current tween.');
+    }) as ColorTween;
   }
 }

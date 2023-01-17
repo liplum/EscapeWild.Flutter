@@ -50,13 +50,3 @@ class CraftRecipes {
     ]);
   }
 }
-
-extension _DSL on int {
-  TagMassEntry g(dynamic tags) {
-    if (tags is List) {
-      return TagMassEntry(tags.map((tag) => tag.toString()).toList(), this);
-    } else {
-      return TagMassEntry([tags.toString()], this);
-    }
-  }
-}

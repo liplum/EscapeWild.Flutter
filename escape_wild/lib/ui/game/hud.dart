@@ -1,4 +1,5 @@
 import 'package:escape_wild/core/attribute.dart';
+import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
@@ -6,37 +7,28 @@ import 'package:rettulf/rettulf.dart';
 
 import 'shared.dart';
 
-abstract class HudWidgetProtocol extends StatefulWidget {
+class Hud extends StatefulWidget {
+  final AttrModel attrs;
   final TextStyle? textStyle;
   final double? opacity;
+  final double? minHeight;
 
-  const HudWidgetProtocol({
+  const Hud({
     super.key,
+    required this.attrs,
     this.textStyle,
     this.opacity,
+    this.minHeight,
   });
-}
 
-extension HudX on HudWidgetProtocol {
+  @override
+  State<Hud> createState() => _HudState();
+
   Widget mini() {
     return ListTile(
       subtitle: this,
     ).scrolled(physics: const NeverScrollableScrollPhysics()).padAll(5);
   }
-}
-
-class Hud extends HudWidgetProtocol {
-  final AttrModel attrs;
-
-  const Hud({
-    super.key,
-    required this.attrs,
-    super.textStyle,
-    super.opacity,
-  });
-
-  @override
-  State<Hud> createState() => _HudState();
 }
 
 class _HudState extends State<Hud> {
@@ -65,9 +57,11 @@ class _HudState extends State<Hud> {
   }
 
   Widget buildBar(double value, Color color) {
+    color = context.fixColorBrightness(color);
     final opacity = widget.opacity;
     return AttrProgress(
       value: value,
+      minHeight: widget.minHeight,
       color: opacity != null ? color.withOpacity(opacity) : color,
     ).center().padOnly(l: 12);
   }

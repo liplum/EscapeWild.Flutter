@@ -7,6 +7,7 @@ import 'package:escape_wild/game/items/medicine.dart';
 import 'package:escape_wild/game/items/stuff.dart';
 import 'package:escape_wild/game/items/tools.dart';
 import 'package:escape_wild/game/recipes/craft.dart';
+import 'package:escape_wild/game/recipes/food.dart';
 import 'package:escape_wild/db.dart';
 import 'package:escape_wild/game/register.dart' as game_register;
 import 'package:escape_wild/core/register.dart' as core_register;
@@ -14,6 +15,7 @@ import 'package:jconverter/jconverter.dart';
 
 export 'package:escape_wild/game/items/foods.dart';
 export 'package:escape_wild/game/recipes/craft.dart';
+export 'package:escape_wild/game/recipes/food.dart';
 export 'package:escape_wild/game/items/medicine.dart';
 export 'package:escape_wild/game/items/stuff.dart';
 export 'package:escape_wild/game/items/tools.dart';
@@ -105,6 +107,7 @@ void loadVanilla() {
   Stuff.registerAll();
   Tools.registerAll();
   CraftRecipes.registerAll();
+  FoodRecipes.registerAll();
 }
 
 void registerConverter() {

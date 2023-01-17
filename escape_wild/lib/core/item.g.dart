@@ -79,18 +79,6 @@ const _$UseTypeEnumMap = {
   UseType.equip: 'equip',
 };
 
-CookableComp _$CookableCompFromJson(Map<String, dynamic> json) => CookableComp(
-      $enumDecode(_$CookTypeEnumMap, json['cookType']),
-      (json['fuelCost'] as num).toDouble(),
-      NamedItemGetter.create(json['cookedOutput'] as String),
-    );
-
-const _$CookTypeEnumMap = {
-  CookType.cook: 'cook',
-  CookType.boil: 'boil',
-  CookType.roast: 'roast',
-};
-
 FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
       (json['heatValue'] as num).toDouble(),
     );

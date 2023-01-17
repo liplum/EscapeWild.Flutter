@@ -119,7 +119,7 @@ class _BackpackPageState extends State<BackpackPage> {
     return GridView.builder(
       itemCount: backpack.itemCount,
       physics: const RangeMaintainingScrollPhysics(),
-      gridDelegate: itemCellGridDelegate,
+      gridDelegate: itemCellGridDelegatePortrait,
       itemBuilder: (ctx, i) {
         return buildItem(backpack[i]);
       },
