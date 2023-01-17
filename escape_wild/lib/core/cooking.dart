@@ -5,7 +5,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'cooking.g.dart';
 
-abstract class FoodRecipeProtocol with Moddable {
+abstract class CookRecipeProtocol with Moddable {
   /// The max cooking slot.
   static const maxIngredient = 3;
   static const maxSlot = maxIngredient * 2;
@@ -13,7 +13,7 @@ abstract class FoodRecipeProtocol with Moddable {
   @override
   final String name;
 
-  FoodRecipeProtocol(this.name);
+  CookRecipeProtocol(this.name);
 
   /// ## Constrains
   /// - [inputs] is in no order.
@@ -34,7 +34,7 @@ abstract class FoodRecipeProtocol with Moddable {
 ///
 /// [Item.container] is not allowed.
 @JsonSerializable(createToJson: false)
-class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
+class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
   @JsonKey()
   final List<TagMassEntry> ingredients;
   @itemGetterJsonKey
@@ -51,8 +51,8 @@ class FoodRecipe extends FoodRecipeProtocol implements JConvertibleProtocol {
     this.outputMass,
   }) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
-    assert(ingredients.length <= FoodRecipeProtocol.maxIngredient,
-        "Ingredients of $registerName is > ${FoodRecipeProtocol.maxIngredient}.");
+    assert(ingredients.length <= CookRecipeProtocol.maxIngredient,
+        "Ingredients of $registerName is > ${CookRecipeProtocol.maxIngredient}.");
   }
 
   factory FoodRecipe.fromJson(Map<String, dynamic> json) => _$FoodRecipeFromJson(json);

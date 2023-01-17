@@ -42,6 +42,13 @@ class _CraftPageState extends State<CraftPage> {
   Widget build(BuildContext context) {
     final isPortrait = context.isPortrait;
     return Scaffold(
+      appBar: !isPortrait
+          ? null
+          : AppBar(
+              title: "Craft".text(),
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+            ),
       body: [
         buildCatView(context).flexible(flex: isPortrait ? 4 : 3),
         const VerticalDivider(thickness: 1),

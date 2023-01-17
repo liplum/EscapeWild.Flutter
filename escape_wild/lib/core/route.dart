@@ -113,7 +113,7 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
   Future<void> performOthers(UAction action) async {}
 }
 
-abstract class CampfirePlaceProtocol {
+abstract class CampfireHolderProtocol {
   @JsonKey(ignore: true)
   ValueNotifier<FireState> get $fireState;
 
@@ -132,7 +132,7 @@ abstract class CampfirePlaceProtocol {
   static dynamic onCampfireToJson(List<ItemStack> list) => list.isEmpty ? null : list;
 }
 
-mixin CampfirePlaceMixin implements CampfirePlaceProtocol {
+mixin CampfirePlaceMixin implements CampfireHolderProtocol {
   @JsonKey()
   FireState get fireState => $fireState.value;
 

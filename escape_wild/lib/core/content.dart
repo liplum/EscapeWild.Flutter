@@ -120,15 +120,15 @@ extension ItemPoolContentsX on ItemPoolContents {
 }
 
 class FoodRecipeContents {
-  Map<String, FoodRecipeProtocol> name2FoodRecipe = {};
+  Map<String, CookRecipeProtocol> name2FoodRecipe = {};
 }
 
 extension FoodRecipeContentsX on FoodRecipeContents {
-  FoodRecipeProtocol? operator [](String name) => name2FoodRecipe[name];
+  CookRecipeProtocol? operator [](String name) => name2FoodRecipe[name];
 
-  void operator <<(FoodRecipeProtocol recipe) => name2FoodRecipe[recipe.registerName] = recipe;
+  void operator <<(CookRecipeProtocol recipe) => name2FoodRecipe[recipe.registerName] = recipe;
 
-  void addAll(Iterable<FoodRecipeProtocol> recipes) {
+  void addAll(Iterable<CookRecipeProtocol> recipes) {
     for (final recipe in recipes) {
       this << recipe;
     }

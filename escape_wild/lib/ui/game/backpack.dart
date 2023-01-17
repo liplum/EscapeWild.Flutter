@@ -82,6 +82,7 @@ class _BackpackPageState extends State<BackpackPage> {
         title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
         centerTitle: true,
         toolbarHeight: 40,
+        backgroundColor: Colors.transparent,
       ),
       body: buildLandscapeBody().safeArea().padAll(5),
     );

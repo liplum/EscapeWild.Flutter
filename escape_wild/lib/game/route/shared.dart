@@ -52,6 +52,7 @@ FireState burningFuel(
   if (curFuel <= cost) {
     final costOverflow = cost - curFuel;
     resFuel = 0;
+    resEmber += curFuel;
     resEmber -= costOverflow * 2;
   } else {
     resFuel -= cost;

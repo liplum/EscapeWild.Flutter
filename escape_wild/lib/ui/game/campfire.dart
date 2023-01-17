@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
@@ -8,6 +9,7 @@ import 'package:escape_wild/r.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 
 part 'campfire.i18n.dart';
@@ -23,24 +25,26 @@ class _CampfirePageState extends State<CampfirePage> {
   @override
   Widget build(BuildContext context) {
     final loc = player.location;
-    if (loc is CampfirePlaceProtocol) {
-      final $fireState = (loc as CampfirePlaceProtocol).$fireState;
+    if (loc is CampfireHolderProtocol) {
+      final holder = loc as CampfireHolderProtocol;
+      final $fireState = holder.$fireState;
       final mainBody = $fireState <<
           (ctx, state, _) => AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: buildBody($fireState),
+                child: buildBody($fireState, holder),
               );
-      return Scaffold(
-        body: mainBody.padAll(5),
-      );
+      return mainBody;
     } else {
       return LeavingBlank(icon: Icons.close_rounded, desc: "Here doesn't allow fire.");
     }
   }
 
-  Widget buildBody(ValueNotifier<FireState> $fireState) {
+  Widget buildBody(ValueNotifier<FireState> $fireState, CampfireHolderProtocol holder) {
     if ($fireState.value.active) {
-      return CookPage($fireState: $fireState);
+      return CookPage(
+        $fireState: $fireState,
+        campfireHolder: holder,
+      );
     } else {
       return FireStartingPage($fireState: $fireState);
     }
@@ -86,7 +90,8 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? buildPortrait() : buildLandscape();
+    final body = context.isPortrait ? buildPortrait() : buildLandscape();
+    return body.padAll(5);
   }
 
   Widget buildPortrait() {
@@ -176,10 +181,12 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
 class CookPage extends StatefulWidget {
   final ValueNotifier<FireState> $fireState;
+  final CampfireHolderProtocol campfireHolder;
 
   const CookPage({
     super.key,
     required this.$fireState,
+    required this.campfireHolder,
   });
 
   @override
@@ -187,8 +194,9 @@ class CookPage extends StatefulWidget {
 }
 
 class _CookPageState extends State<CookPage> {
-  final List<ItemStackReqSlot> cookSlots =
-      List.generate(FoodRecipeProtocol.maxSlot, (i) => ItemStackReqSlot(ItemMatcher.hasAnyTag(["cookable", "cooker"])));
+  final cookMatcher = ItemMatcher.hasAnyTag(["cookable", "cooker"]);
+  late final List<ItemStackReqSlot> cookSlots =
+      List.generate(CookRecipeProtocol.maxSlot, (i) => ItemStackReqSlot(cookMatcher));
 
   FireState get fireState => widget.$fireState.value;
 
@@ -197,6 +205,24 @@ class _CookPageState extends State<CookPage> {
   double get fireFuel => fireState.fuel;
 
   set fireFuel(double v) => fireState = fireState.copyWith(fuel: v);
+
+  @override
+  void initState() {
+    super.initState();
+    readCookSlots();
+  }
+
+  void writeCookSlots() {
+    final cur = cookSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList(growable: false);
+    widget.campfireHolder.onCampfire = cur;
+  }
+
+  void readCookSlots() {
+    final items = widget.campfireHolder.onCampfire;
+    for (var i = 0; i < min(items.length, items.length); i++) {
+      cookSlots[i].stack = items[i];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +240,7 @@ class _CookPageState extends State<CookPage> {
         buildFoodGrid().flexible(flex: 2),
         buildCampfire().flexible(flex: 4),
         buildButtons().flexible(flex: 1),
-      ].column(),
+      ].column(maa: MainAxisAlignment.spaceBetween).padAll(5),
     );
   }
 
@@ -254,33 +280,57 @@ class _CookPageState extends State<CookPage> {
       ).constrained(maxW: 180);
       cells.add(cell);
     }
-    final Widget grid = GridView(
+    return GridView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: context.itemCellGridDelegate,
       children: cells,
     );
-    return grid.center();
   }
 
-/*
-  Future<void> selectFood() async {
-    final selected = await context.showMatchBackpack<ItemStack>(
-      matcher: cookSlot.matcher,
+  final $selectedMass = ValueNotifier(0);
+
+  Future<void> onAdd() async {
+    await context.showBackpackSheet<ItemStack>(
+      matcher: cookMatcher,
       onSelect: (selected) async {
+        $selectedMass.value = selected.stackMass;
+        final confirmed = await context.showAnyRequest(
+          title: selected.displayName(),
+          make: (_) => ItemStackMassSelector(
+            template: selected,
+            $selectedMass: $selectedMass,
+          ),
+          yes: "Add",
+          no: I.cancel,
+          highlight: true,
+        );
+        if (confirmed != true) return;
+        final selectedMassOrPart = $selectedMass.value;
+        if (selectedMassOrPart <= 0) return;
         context.navigator.pop(selected);
+        final slot = findAvailableSlot();
+        if (slot == null) return;
+        final part = player.backpack.splitItemInBackpack(selected, selectedMassOrPart);
+        slot.stack = part;
+        writeCookSlots();
       },
     );
-    if (selected == null) return;
-    if (!mounted) return;
-    setState(() {
-      cookSlot.toggle(selected);
-    });
-  }*/
+  }
+
+  ItemStackReqSlot? findAvailableSlot() {
+    for (var i = 0; i < min(cookSlots.length, CookRecipeProtocol.maxIngredient); i++) {
+      final slot = cookSlots[i];
+      if (slot.isEmpty) return slot;
+    }
+    return null;
+  }
 
   Widget buildButtons() {
+    final canAdd = cookSlots.count((slot) => slot.isNotEmpty) < CookRecipeProtocol.maxIngredient;
     final cookBtn = CardButton(
-      elevation: 5,
+      onTap: canAdd ? onAdd : null,
+      elevation: canAdd ? 5 : 0,
       child: "Add".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
     ).expanded();
     final fuelBtn = CardButton(
