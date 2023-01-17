@@ -107,8 +107,8 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   /// It will remove the [stack] in backpack, and won't change [stack]'s state.
   bool removeStack(ItemStack stack) {
     if (stack.isEmpty) return true;
-    stack.mass = 0;
     final removedMass = stack.stackMass;
+    stack.mass = 0;
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
       mass -= removedMass;
