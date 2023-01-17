@@ -201,6 +201,12 @@ item:
   bear-meat:
     name: Bear Meat
     desc: ...
+  cloth:
+    name: Cloth
+    desc: ...
+  charcoal:
+    name: Charcoal
+    desc: ...
 route:
   subtropics:
     plain:

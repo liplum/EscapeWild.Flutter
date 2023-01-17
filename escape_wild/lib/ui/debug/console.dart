@@ -5,6 +5,9 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_highlight/flutter_highlight.dart';
+import 'package:flutter_highlight/themes/dark.dart';
+import 'package:flutter_highlight/themes/github.dart';
 import 'package:rettulf/rettulf.dart';
 
 part 'console.i18n.dart';
@@ -69,12 +72,32 @@ class _DebugConsoleState extends State<DebugConsole> {
       return const _ItemGrid();
     }));
     res.add(_Item("Save", (context) {
-      return player.toJson(indent: 2).text(style: context.textTheme.bodySmall).scrolled();
+      return const JsonGameSave();
     }));
     res.add(_Item("Cheat", (context) {
       return const CheatOptions();
     }));
     return res;
+  }
+}
+
+class JsonGameSave extends StatelessWidget {
+  static final dartTheme = {
+    ...darkTheme,
+    "number": const TextStyle(color: Colors.blue),
+  };
+
+  const JsonGameSave({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final json = player.toJson(indent: 2);
+    return HighlightView(
+      json,
+      language: 'json',
+      theme: context.isLightMode ? githubTheme : dartTheme,
+      textStyle: context.textTheme.bodySmall,
+    ).scrolled();
   }
 }
 

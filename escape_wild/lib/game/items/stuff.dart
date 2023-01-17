@@ -21,7 +21,7 @@ class Stuff {
       sticks = Item.mergeable("sticks", mass: 100).asFuel(heatValue: 10.0).tagged(["wooden"]),
       cutGrass = Item.mergeable("cut-grass", mass: 200).asFuel(heatValue: 80.0).tagged(["straw", "flammable-floc"]),
       log = Item.mergeable("log", mass: 500).asFuel(heatValue: 200.0).tagged(["wooden", "log"]),
-      flower = Item.mergeable("dandelion", mass: 10),
+      flower = Item.mergeable("flower", mass: 10),
       pineNeedle = Item.mergeable("pine-needle", mass: 50).asFuel(heatValue: 10.0).tagged(["flammable-floc"]),
       //It is said that dandelion boiled with water can relieve some constipation
       // Ember will reduce durability over time.

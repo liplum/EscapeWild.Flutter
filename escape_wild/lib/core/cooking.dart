@@ -236,6 +236,8 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
     return true;
   }
 
+  factory TransformCookRecipe.fromJson(Map<String, dynamic> json) => _$TransformCookRecipeFromJson(json);
+
   static const type = "TransformCookRecipe";
 
   @override
@@ -272,7 +274,7 @@ abstract class CampfireHolderProtocol {
 }
 
 mixin CampfireCookingMixin implements CampfireHolderProtocol {
-  @JsonKey(fromJson: TS.fromJsom)
+  @tsJsonKey
   TS cookingTime = TS.zero;
   @override
   late final $onCampfire = ValueNotifier<List<ItemStack>>([])
@@ -319,4 +321,10 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
       }
     }
   }
+
+  static const tsJsonKey = JsonKey(fromJson: tsFromJson, toJson: tsToJson, includeIfNull: false);
+
+  static TS tsFromJson(dynamic json) => json == null ? TS.zero : TS.fromJsom((json as num).toInt());
+
+  static dynamic tsToJson(TS ts) => ts == TS.zero ? null : ts;
 }

@@ -17,3 +17,12 @@ TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) =>
           .toList(),
       cookingTime: TS.fromJsom(json['cookingTime'] as int),
     )..mod = Moddable.modId2ModFunc(json['mod'] as String);
+
+TransformCookRecipe _$TransformCookRecipeFromJson(Map<String, dynamic> json) =>
+    TransformCookRecipe(
+      json['name'] as String,
+      ingredient: (json['ingredient'] as List<dynamic>).map((e) => e as String),
+      dish: NamedItemGetter.create(json['dish'] as String),
+      speed: (json['speed'] as num).toDouble(),
+      ratio: (json['ratio'] as num?)?.toDouble() ?? 1.0,
+    )..mod = Moddable.modId2ModFunc(json['mod'] as String);

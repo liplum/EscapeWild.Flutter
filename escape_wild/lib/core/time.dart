@@ -13,7 +13,18 @@ abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
     return hour > 0 ? "$hour:${minutePart.toString().padRight(2)}" : minutePart.toString().padRight(2);
   }
 
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MinuteProtocol) return false;
+    if (runtimeType != other.runtimeType) return false;
+    return minutes == other.minutes;
+  }
+
   int toJson() => minutes;
+
+  @override
+  int get hashCode => minutes.hashCode;
 }
 
 @JsonSerializable()

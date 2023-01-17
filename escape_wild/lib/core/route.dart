@@ -136,7 +136,7 @@ mixin CampfirePlaceMixin implements CampfireHolderProtocol {
   @override
   final $fireState = ValueNotifier<FireState>(FireState.off);
 
-  @JsonKey()
+  @fireStateJsonKey
   FireState get fireState => $fireState.value;
 
   set fireState(FireState v) => $fireState.value = v;
@@ -148,4 +148,11 @@ mixin CampfirePlaceMixin implements CampfireHolderProtocol {
       this.fireState = burningFuel(fireState, cost);
     }
   }
+
+  static const fireStateJsonKey =
+      JsonKey(fromJson: fireStateFromJson, toJson: fireStateStackToJson, includeIfNull: false);
+
+  static FireState fireStateFromJson(dynamic json) => json == null ? FireState.off : FireState.fromJson(json);
+
+  static dynamic fireStateStackToJson(FireState fire) => fire.isOff ? null : fire;
 }

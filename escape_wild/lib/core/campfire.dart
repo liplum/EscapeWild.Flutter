@@ -19,6 +19,7 @@ class FireState {
         fuel = max(0, fuel);
 
   bool get active => fuel > 0 || ember > 0;
+  bool get isOff => fuel <= 0 && ember <= 0;
 
   factory FireState.fromJson(Map<String, dynamic> json) => _$FireStateFromJson(json);
 
