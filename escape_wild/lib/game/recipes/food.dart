@@ -10,14 +10,14 @@ class FoodRecipes {
         "raw-fish-to-cooked",
         ingredient: ["raw", "fish"],
         dish: () => Foods.cookedFish,
-        speed: 180 / 30,
+        speed: 500 / 30,
         ratio: 0.65,
       ),
       TransformCookRecipe(
         "raw-rabbit-to-cooked",
         ingredient: ["raw", "rabbit"],
         dish: () => Foods.cookedRabbit,
-        speed: 200 / 30,
+        speed: 500 / 30,
         ratio: 0.7,
       )
     ]);

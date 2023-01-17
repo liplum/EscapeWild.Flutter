@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/main/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: non_constant_identifier_names
 final AppKey = GlobalKey<NavigatorState>();
@@ -31,14 +32,18 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        theme: bakeTheme(context, ThemeData(
-          brightness: Brightness.light,
-          primarySwatch: Colors.yellow,
-        )),
-        darkTheme: bakeTheme(context, ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.green,
-        )),
+        theme: bakeTheme(
+            context,
+            ThemeData(
+              brightness: Brightness.light,
+              primarySwatch: Colors.yellow,
+            )),
+        darkTheme: bakeTheme(
+            context,
+            ThemeData(
+              brightness: Brightness.dark,
+              primarySwatch: Colors.green,
+            )),
         home: const AppWrapper(),
       ),
     );
@@ -88,6 +93,20 @@ class _AppWrapperState extends State<AppWrapper> {
         onLocaleChange();
       }
     }
-    return const Homepage();
+    return wrapWithScreenUtil(
+      const Homepage(),
+    );
+  }
+
+  Widget wrapWithScreenUtil(Widget body) {
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      child: body,
+      builder: (context, child) {
+        return body;
+      },
+    );
   }
 }

@@ -36,7 +36,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   LevelProtocol level = LevelProtocol.empty;
 
   Future<void> onPass(TS delta) async {
-    assert( !_isExecutingOnPass, "[onPass] can't be called recursively.");
+    assert( !_isExecutingOnPass, "[onPass] can't be nested-called.");
     if (_isExecutingOnPass) return;
     _isExecutingOnPass = true;
     // update multiple times.

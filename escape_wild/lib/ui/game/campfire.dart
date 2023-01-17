@@ -9,6 +9,7 @@ import 'package:escape_wild/r.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
@@ -98,9 +99,11 @@ class _FireStartingPageState extends State<FireStartingPage> {
   Widget buildPortrait() {
     return [
       const StaticCampfireImage(),
+      SizedBox(height: 30.h),
       buildFireStarterCell(),
+      SizedBox(height: 30.h),
       buildStartFireButton(),
-    ].column(maa: MainAxisAlignment.spaceEvenly).center();
+    ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().center();
   }
 
   Widget buildLandscape() {
@@ -146,9 +149,10 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
   Widget buildStartFireButton() {
     final maybeFireStarter = fireStarterSlot.stack;
+    final active = player.canPlayerAct() && maybeFireStarter.isNotEmpty;
     return CardButton(
-      elevation: maybeFireStarter.isNotEmpty ? 12 : 0.5,
-      onTap: maybeFireStarter.isEmpty
+      elevation: active ? 12 : 0.5,
+      onTap: !active
           ? null
           : () async {
               await onStartFire(maybeFireStarter);

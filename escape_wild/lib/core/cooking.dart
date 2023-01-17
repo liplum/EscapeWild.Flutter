@@ -202,6 +202,7 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   }) {
     assert(ingredient.isNotEmpty, "Input tags of $registerName is empty.");
   }
+
   @override
   bool match(List<ItemStack> inputs) {
     if (inputs.length != 1) return false;
@@ -297,8 +298,9 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
 
   @mustCallSuper
   Future<void> onCookingPass(TS delta) async {
+    final fire = $fireState.value;
     // only cooking when fireState is active
-    if (!$fireState.value.active) return;
+    if (!fire.active || fire.fuel <= 0) return;
     if (onCampfire.isEmpty) return;
     this.recipe ??= _match(onCampfire);
     final recipe = this.recipe;

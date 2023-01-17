@@ -138,8 +138,23 @@ class ItemCell extends StatelessWidget {
   }
 }
 
+class NullItemCellTheme extends ItemCellTheme {
+  final String placeholder;
+
+  const NullItemCellTheme({
+    required this.placeholder,
+    super.nameOpacity = 1,
+    super.nameStyle,
+  });
+}
+
 class NullItemCell extends StatelessWidget {
-  const NullItemCell({super.key});
+  final ItemCellTheme theme;
+
+  const NullItemCell({
+    super.key,
+    this.theme = const ItemCellTheme(),
+  });
 
   @override
   Widget build(BuildContext context) {

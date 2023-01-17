@@ -18,7 +18,52 @@ class ActionPage extends StatefulWidget {
 class _ActionPageState extends State<ActionPage> {
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? buildPortrait() : buildLandscape();
+    return context.isPortrait ? buildPortrait2() : buildLandscape();
+  }
+
+  Widget buildPortrait2() {
+    return Scaffold(
+      body: CustomScrollView(
+        physics: const RangeMaintainingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            snap: false,
+            floating: false,
+            flexibleSpace: FlexibleSpaceBar(
+              title: player.$location <<
+                  (ctx, l, __) => "${l?.displayName()}".text(
+                        style: ctx.textTheme.headlineMedium,
+                      ),
+              centerTitle: true,
+            ),
+            actions: buildAppBarActions(),
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate([
+            player.$attrs << (ctx, attr, __) => buildHud(attr).padFromLTRB(5, 5, 5, 0),
+            player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
+          ])),
+          const SliverPadding(
+            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+            sliver: ActionButtonArea(sliver: true),
+          ),
+          SliverToBoxAdapter(child: buildStepper().padFromLTRB(5, 0, 5, 5)),
+        ],
+      ),
+    );
+  }
+
+  Widget buildStepper() {
+    if (!player.canPlayerAct()) {
+      return const SizedBox();
+    }
+    return DurationStepper(
+      $duration: player.$overallActionDuration,
+      min: actionTsStep,
+      max: maxActionDuration,
+      step: actionTsStep,
+    );
   }
 
   Widget buildPortrait() {
@@ -62,7 +107,7 @@ class _ActionPageState extends State<ActionPage> {
 
   Widget buildActionButtonArea() {
     return [
-      const ActionButtonArea().flexible(flex: 12),
+      const ActionButtonArea(sliver: false).flexible(flex: 12),
       DurationStepper(
         $duration: player.$overallActionDuration,
         min: actionTsStep,
@@ -97,7 +142,12 @@ class _ActionPageState extends State<ActionPage> {
 }
 
 class ActionButtonArea extends StatefulWidget {
-  const ActionButtonArea({super.key});
+  final bool sliver;
+
+  const ActionButtonArea({
+    super.key,
+    required this.sliver,
+  });
 
   @override
   State<ActionButtonArea> createState() => _ActionButtonAreaState();
@@ -108,16 +158,29 @@ class _ActionButtonAreaState extends State<ActionButtonArea> {
   Widget build(BuildContext context) {
     final actions = player.getAvailableActions();
     if (actions.length == 1) {
-      return buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center();
+      final singleBtn = buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center();
+      if (widget.sliver) {
+        return SliverToBoxAdapter(
+          child: singleBtn,
+        );
+      } else {
+        return singleBtn;
+      }
     } else {
-      return GridView(
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+      if (widget.sliver) {
+        return SliverGrid.extent(
           maxCrossAxisExtent: 256,
           childAspectRatio: 3,
-        ),
-        children: buildActions(actions),
-      );
+          children: buildActions(actions),
+        );
+      } else {
+        return GridView.extent(
+          physics: const RangeMaintainingScrollPhysics(),
+          maxCrossAxisExtent: 256,
+          childAspectRatio: 3,
+          children: buildActions(actions),
+        );
+      }
     }
   }
 
