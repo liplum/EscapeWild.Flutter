@@ -53,8 +53,8 @@ class _ActionPageState extends State<ActionPage> {
         ),
         body: [
           player.$journeyProgress << (ctx, p, _) => buildJourneyProgress(p),
-          (player.$attrs << (ctx, attr, __) => buildHud(attr)).expanded(),
-        ].column(maa: MainAxisAlignment.center),
+          (player.$attrs << (ctx, attr, __) => buildHud(attr)),
+        ].column(maa: MainAxisAlignment.start),
       ).expanded(),
       buildActionButtonArea().expanded(),
     ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
