@@ -20,7 +20,7 @@ abstract class LevelProtocol implements JConvertibleProtocol {
 
   Future<void> performAction(UAction action);
 
-  Future<void> onPass(TS delta);
+  Future<void> onPassTime(Ts delta);
 
   PlaceProtocol restoreLastLocation(locationRestoreId);
 
@@ -50,7 +50,7 @@ class _EmptyLevel extends LevelProtocol {
   }
 
   @override
-  Future<void> onPass(TS delta) async {}
+  Future<void> onPassTime(Ts delta) async {}
 
   @override
   String get typeName => "EmptyLevel";

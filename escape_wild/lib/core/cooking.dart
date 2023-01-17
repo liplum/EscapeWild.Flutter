@@ -34,8 +34,8 @@ abstract class CookRecipeProtocol with Moddable {
   bool updateCooking(
     @Backpack.untracked List<ItemStack> inputs,
     @Backpack.untracked List<ItemStack> outputs,
-    TS totalTimePassed,
-    TS delta,
+    Ts totalTimePassed,
+    Ts delta,
   );
 
   static String? getNameOrNull(CookRecipeProtocol? recipe) => recipe?.name;
@@ -51,8 +51,8 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
   final List<TagMassEntry> ingredients;
   @JsonKey()
   final List<LazyItemStack> dishes;
-  @TS.jsonKey
-  final TS cookingTime;
+  @Ts.jsonKey
+  final Ts cookingTime;
 
   TimedCookRecipe(
     super.name, {
@@ -98,8 +98,8 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
   bool updateCooking(
     List<ItemStack> inputs,
     List<ItemStack> outputs,
-    TS totalTimePassed,
-    TS delta,
+    Ts totalTimePassed,
+    Ts delta,
   ) {
     // It must reach the [cookingTime]
     if (totalTimePassed < cookingTime) return false;
@@ -152,8 +152,8 @@ class ContainerCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   bool updateCooking(
     List<ItemStack> inputs,
     List<ItemStack> outputs,
-    TS totalTimePassed,
-    TS delta,
+    Ts totalTimePassed,
+    Ts delta,
   ) {
     throw UnimplementedError();
   }
@@ -216,8 +216,8 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   bool updateCooking(
     List<ItemStack> inputs,
     List<ItemStack> outputs,
-    TS totalTimePassed,
-    TS delta,
+    Ts totalTimePassed,
+    Ts delta,
   ) {
     if (inputs.length != 1) return false;
     final input = inputs.first;
@@ -274,12 +274,12 @@ abstract class CampfireHolderProtocol {
 }
 
 mixin CampfireCookingMixin implements CampfireHolderProtocol {
-  @tsJsonKey
-  TS cookingTime = TS.zero;
+  @JsonKey(fromJson: tsFromJson, toJson: tsToJson, includeIfNull: false)
+  Ts cookingTime = Ts.zero;
   @override
   late final $onCampfire = ValueNotifier<List<ItemStack>>([])
     ..addListener(() {
-      cookingTime = TS.zero;
+      cookingTime = Ts.zero;
       recipe = null;
     });
   @override
@@ -298,16 +298,29 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
   @CookRecipeProtocol.jsonKey
   CookRecipeProtocol? recipe;
 
+  @override
+  final $fireState = ValueNotifier<FireState>(FireState.off);
+
+  @JsonKey(fromJson: fireStateFromJson, toJson: fireStateStackToJson, includeIfNull: false)
+  FireState get fireState => $fireState.value;
+
+  set fireState(FireState v) => $fireState.value = v;
+
+  double get fuelCostPerMinute;
+
   @mustCallSuper
-  Future<void> onCookingPass(TS delta) async {
-    final fire = $fireState.value;
-    // only cooking when fireState is active
-    if (!fire.active || fire.fuel <= 0) return;
+  Future<void> onCampfirePass(Ts delta) async {
+    if (fireState.active) {
+      final cost = delta.minutes * fuelCostPerMinute;
+      fireState = _burningFuel(fireState, cost);
+    }
+    // only cooking when fire has fuel.
+    if (fireState.fuel <= 0) return;
     if (onCampfire.isEmpty) return;
     this.recipe ??= _match(onCampfire);
     final recipe = this.recipe;
     if (recipe == null) {
-      cookingTime = TS.zero;
+      cookingTime = Ts.zero;
     } else {
       cookingTime += delta;
       final changed = recipe.updateCooking(onCampfire, offCampfire, cookingTime, delta);
@@ -317,14 +330,43 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
         onCampfire = List.of(onCampfire);
         offCampfire = List.of(offCampfire);
         this.recipe = null;
-        cookingTime = TS.zero;
+        cookingTime = Ts.zero;
       }
     }
   }
 
-  static const tsJsonKey = JsonKey(fromJson: tsFromJson, toJson: tsToJson, includeIfNull: false);
+  Future<void> onFirePass(double fuelCostSpeed, Ts delta) async {
+    final fireState = this.fireState;
+    if (fireState.active) {
+      final cost = delta / actionTsStep * fuelCostSpeed;
+      this.fireState = _burningFuel(fireState, cost);
+    }
+  }
 
-  static TS tsFromJson(dynamic json) => json == null ? TS.zero : TS.fromJson((json as num).toInt());
+  static Ts tsFromJson(dynamic json) => json == null ? Ts.zero : Ts.fromJson((json as num).toInt());
 
-  static dynamic tsToJson(TS ts) => ts == TS.zero ? null : ts;
+  static dynamic tsToJson(Ts ts) => ts == Ts.zero ? null : ts;
+
+  static FireState fireStateFromJson(dynamic json) => json == null ? FireState.off : FireState.fromJson(json);
+
+  static dynamic fireStateStackToJson(FireState fire) => fire.isOff ? null : fire;
+}
+
+FireState _burningFuel(
+  FireState former,
+  double cost,
+) {
+  final curFuel = former.fuel;
+  var resFuel = curFuel;
+  var resEmber = former.ember;
+  if (curFuel <= cost) {
+    final costOverflow = cost - curFuel;
+    resFuel = 0;
+    resEmber += curFuel;
+    resEmber -= costOverflow * 2;
+  } else {
+    resFuel -= cost;
+    resEmber += cost;
+  }
+  return FireState(ember: resEmber, fuel: resFuel);
 }

@@ -11,7 +11,7 @@ abstract class RouteProtocol with Moddable implements JConvertibleProtocol, Rest
 
   PlaceProtocol get initialPlace;
 
-  Future<void> onPass(TS delta);
+  Future<void> onPassTime(Ts delta);
 
   void onRestored() {}
 
@@ -113,46 +113,3 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
   Future<void> performOthers(UAction action) async {}
 }
 
-FireState burningFuel(
-  FireState former,
-  double cost,
-) {
-  final curFuel = former.fuel;
-  var resFuel = curFuel;
-  var resEmber = former.ember;
-  if (curFuel <= cost) {
-    final costOverflow = cost - curFuel;
-    resFuel = 0;
-    resEmber += curFuel;
-    resEmber -= costOverflow * 2;
-  } else {
-    resFuel -= cost;
-    resEmber += cost;
-  }
-  return FireState(ember: resEmber, fuel: resFuel);
-}
-
-mixin CampfirePlaceMixin implements CampfireHolderProtocol {
-  @override
-  final $fireState = ValueNotifier<FireState>(FireState.off);
-
-  @fireStateJsonKey
-  FireState get fireState => $fireState.value;
-
-  set fireState(FireState v) => $fireState.value = v;
-
-  Future<void> onFirePass(double fuelCostSpeed, TS delta) async {
-    final fireState = this.fireState;
-    if (fireState.active) {
-      final cost = delta / actionTsStep * fuelCostSpeed;
-      this.fireState = burningFuel(fireState, cost);
-    }
-  }
-
-  static const fireStateJsonKey =
-      JsonKey(fromJson: fireStateFromJson, toJson: fireStateStackToJson, includeIfNull: false);
-
-  static FireState fireStateFromJson(dynamic json) => json == null ? FireState.off : FireState.fromJson(json);
-
-  static dynamic fireStateStackToJson(FireState fire) => fire.isOff ? null : fire;
-}

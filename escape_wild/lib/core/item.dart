@@ -350,7 +350,7 @@ abstract class ItemComp extends Comp {
   /// - Implementation mustn't change [ItemStack.mass].
   void onSplit(ItemStack from, ItemStack to) {}
 
-  Future<void> onPass(ItemStack stack, TS delta) async {}
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {}
 }
 
 class EmptyComp extends ItemComp {
@@ -455,9 +455,9 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
     return part;
   }
 
-  Future<void> onPass(TS delta) async {
+  Future<void> onPassTime(Ts delta) async {
     for (final comp in meta.iterateComps()) {
-      await comp.onPass(this, delta);
+      await comp.onPassTime(this, delta);
     }
   }
 

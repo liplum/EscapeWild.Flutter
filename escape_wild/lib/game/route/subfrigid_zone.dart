@@ -194,7 +194,7 @@ class SubFrigidZoneRoute extends RouteProtocol {
   String get typeName => type;
 
   @override
-  Future<void> onPass(TS delta) async {
+  Future<void> onPassTime(Ts delta) async {
 
   }
 }

@@ -45,12 +45,12 @@ FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
 WetComp _$WetCompFromJson(Map<String, dynamic> json) => WetComp(
       dryTime: json['dryTime'] == null
           ? WetComp.defaultDryTime
-          : TS.fromJson(json['dryTime'] as int),
+          : Ts.fromJson(json['dryTime'] as int),
     );
 
 FreshnessComp _$FreshnessCompFromJson(Map<String, dynamic> json) =>
     FreshnessComp(
-      expire: TS.fromJson(json['expire'] as int),
+      expire: Ts.fromJson(json['expire'] as int),
     );
 
 FireStarterComp _$FireStarterCompFromJson(Map<String, dynamic> json) =>

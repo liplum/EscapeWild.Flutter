@@ -397,27 +397,29 @@ class _CookPageState extends State<CookPage> {
   }
 
   Widget buildButtons() {
+    Widget btn(String text, {required double elevation, VoidCallback? onTap}) {
+      return CardButton(
+        elevation: elevation,
+        onTap: onTap,
+        child: text
+            .autoSizeText(
+              maxLines: 1,
+              style: context.textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            )
+            .padAll(10),
+      ).expanded();
+    }
+
     final canAdd = ingredientsSlots.count((slot) => slot.isNotEmpty) < CookRecipeProtocol.maxIngredient;
-    final waitBtn = CardButton(
-      elevation: 5,
-      child: "Wait".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
-      onTap: () {
-        player.onPass(const TS(minutes: 5));
-      },
-    ).expanded();
-    final cookBtn = CardButton(
-      onTap: canAdd ? onAdd : null,
-      elevation: canAdd ? 5 : 0,
-      child: "Add".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
-    ).expanded();
-    final fuelBtn = CardButton(
-      elevation: 5,
-      onTap: onFuel,
-      child: _I.fuel.autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
-    ).expanded();
+    final waitBtn = btn("Wait", elevation: 5, onTap: () {
+      player.onPassTime(const Ts(minutes: 5));
+    });
+    //final cookBtn = btn("Open", elevation: 5, onTap: canAdd ? onAdd : null);
+    final fuelBtn = btn(_I.fuel, elevation: 5, onTap: onFuel);
     return [
       waitBtn,
-      cookBtn,
+      //cookBtn,
       fuelBtn,
     ].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
   }

@@ -900,10 +900,10 @@ extension BackpackBuildContextX on BuildContext {
 }
 
 class DurationStepper extends StatefulWidget {
-  final ValueNotifier<TS> $duration;
-  final TS min;
-  final TS max;
-  final TS step;
+  final ValueNotifier<Ts> $duration;
+  final Ts min;
+  final Ts max;
+  final Ts step;
 
   const DurationStepper({
     super.key,
@@ -920,24 +920,24 @@ class DurationStepper extends StatefulWidget {
 class _DurationStepperState extends State<DurationStepper> {
   var isPressing = false;
 
-  ValueNotifier<TS> get $duration => widget.$duration;
+  ValueNotifier<Ts> get $duration => widget.$duration;
 
-  TS get duration => widget.$duration.value;
+  Ts get duration => widget.$duration.value;
 
-  set duration(TS ts) => widget.$duration.value = ts;
+  set duration(Ts ts) => widget.$duration.value = ts;
 
-  TS get min => widget.min;
+  Ts get min => widget.min;
 
-  TS get max => widget.max;
+  Ts get max => widget.max;
 
-  TS get step => widget.step;
+  Ts get step => widget.step;
 
   @override
   Widget build(BuildContext context) {
     return $duration >> (ctx, ts) => buildBody(ts);
   }
 
-  Widget buildBody(TS ts) {
+  Widget buildBody(Ts ts) {
     return [
       buildStepper(isLeft: true).flexible(flex: 1),
       I

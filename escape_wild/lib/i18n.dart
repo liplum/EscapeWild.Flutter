@@ -35,7 +35,7 @@ class I {
         "min": minute,
       });
 
-  static String ts(TS ts) {
+  static String ts(Ts ts) {
     final hour = ts.hourPart;
     if (hour <= 0) {
       return timeMinuteOf(ts.minutes.toString());

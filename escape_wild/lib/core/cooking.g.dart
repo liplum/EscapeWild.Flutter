@@ -15,7 +15,7 @@ TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) =>
       dishes: (json['dishes'] as List<dynamic>)
           .map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>))
           .toList(),
-      cookingTime: TS.fromJson(json['cookingTime'] as int),
+      cookingTime: Ts.fromJson(json['cookingTime'] as int),
     )..mod = Moddable.modId2ModFunc(json['mod'] as String);
 
 TransformCookRecipe _$TransformCookRecipeFromJson(Map<String, dynamic> json) =>

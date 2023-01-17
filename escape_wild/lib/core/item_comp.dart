@@ -376,8 +376,8 @@ extension FuelCompX on Item {
 class WetComp extends ItemComp {
   static const _wetK = "Wet.wet";
   static const defaultWet = 0.0;
-  static const defaultDryTime = TS(minutes: 30);
-  final TS dryTime;
+  static const defaultDryTime = Ts(minutes: 30);
+  final Ts dryTime;
 
   const WetComp({
     this.dryTime = WetComp.defaultDryTime,
@@ -399,7 +399,7 @@ class WetComp extends ItemComp {
   }
 
   @override
-  Future<void> onPass(ItemStack stack, TS delta) async {
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
     final lost = delta / dryTime;
     final wet = getWet(stack);
     setWet(stack, wet - lost);
@@ -430,7 +430,7 @@ class WetComp extends ItemComp {
 
 extension WetCompX on Item {
   Item hasWet({
-    TS dryTime = WetComp.defaultDryTime,
+    Ts dryTime = WetComp.defaultDryTime,
   }) {
     final comp = WetComp(
       dryTime: dryTime,
@@ -444,7 +444,7 @@ extension WetCompX on Item {
 @JsonSerializable(createToJson: false)
 class FreshnessComp extends ItemComp {
   static const _freshnessK = "Freshness.freshness";
-  final TS expire;
+  final Ts expire;
 
   const FreshnessComp({
     required this.expire,
@@ -466,7 +466,7 @@ class FreshnessComp extends ItemComp {
   }
 
   @override
-  Future<void> onPass(ItemStack stack, TS delta) async {
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
     final lost = delta / expire;
     final freshness = getFreshness(stack);
     setFreshness(stack, freshness - lost);
@@ -492,7 +492,7 @@ class FreshnessComp extends ItemComp {
 
 extension FreshnessCompX on Item {
   Item hasFreshness({
-    required TS expire,
+    required Ts expire,
   }) {
     final comp = FreshnessComp(expire: expire);
     comp.validateItemConfig(this);

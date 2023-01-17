@@ -35,7 +35,7 @@ class Clock extends MinuteProtocol {
 
   const Clock.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
 
-  Clock operator +(TS delta) => Clock(minutes: minutes + delta.minutes);
+  Clock operator +(Ts delta) => Clock(minutes: minutes + delta.minutes);
 
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
@@ -44,23 +44,23 @@ class Clock extends MinuteProtocol {
 }
 
 @JsonSerializable()
-class TS extends MinuteProtocol {
-  static const zero = TS(minutes: 0);
+class Ts extends MinuteProtocol {
+  static const zero = Ts(minutes: 0);
 
-  const TS({required super.minutes});
+  const Ts({required super.minutes});
 
-  const TS.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
+  const Ts.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
 
-  static const jsonKey = JsonKey(fromJson: TS.fromJson);
+  static const jsonKey = JsonKey(fromJson: Ts.fromJson);
 
   @override
   int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
 
-  factory TS.fromJson(int minutes) => TS(minutes: minutes);
+  factory Ts.fromJson(int minutes) => Ts(minutes: minutes);
 }
 
 extension IntX on int {
-  TS ts() => TS(minutes: this);
+  Ts ts() => Ts(minutes: this);
 }
 
 extension MinutesProtocolX<T extends MinuteProtocol> on T {
@@ -81,18 +81,18 @@ extension MinutesProtocolX<T extends MinuteProtocol> on T {
   bool operator <=(T other) => minutes <= other.minutes;
 }
 
-extension TSX on TS {
-  TS operator +(TS b) => TS(minutes: minutes + b.minutes);
+extension TSX on Ts {
+  Ts operator +(Ts b) => Ts(minutes: minutes + b.minutes);
 
-  TS operator -(TS b) => TS(minutes: minutes - b.minutes);
+  Ts operator -(Ts b) => Ts(minutes: minutes - b.minutes);
 
-  TS operator *(num factor) => TS(minutes: (minutes * factor.toDouble()).toInt());
+  Ts operator *(num factor) => Ts(minutes: (minutes * factor.toDouble()).toInt());
 
-  TS operator ~/(num factor) => TS(minutes: minutes ~/ factor.toDouble());
+  Ts operator ~/(num factor) => Ts(minutes: minutes ~/ factor.toDouble());
 }
 
 extension TSNumX on num {
-  TS operator *(TS ts) => TS(minutes: (toDouble() * ts.minutes).toInt());
+  Ts operator *(Ts ts) => Ts(minutes: (toDouble() * ts.minutes).toInt());
 }
 
 extension TSDoubleX on double {}

@@ -13,8 +13,8 @@ const polymorphismSave = Object();
 /// It will be evaluated at runtime, no need to serialization.
 const noSave = Object();
 
-const actionTsStep = TS(minutes: 5);
-const maxActionDuration = TS.hm(hour: 2, minute: 0);
+const actionTsStep = Ts(minutes: 5);
+const maxActionDuration = Ts.hm(hour: 2, minute: 0);
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
@@ -30,19 +30,19 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $maxMassLoad = ValueNotifier(10000);
   final $actionTimes = ValueNotifier(0);
   static const startClock = Clock.hm(hour: 7, minute: 0);
-  final $time = ValueNotifier(TS.zero);
-  final $overallActionDuration = ValueNotifier(const TS(minutes: 30));
+  final $time = ValueNotifier(Ts.zero);
+  final $overallActionDuration = ValueNotifier(const Ts(minutes: 30));
   var _isExecutingOnPass = false;
   LevelProtocol level = LevelProtocol.empty;
 
-  Future<void> onPass(TS delta) async {
+  Future<void> onPassTime(Ts delta) async {
     assert( !_isExecutingOnPass, "[onPass] can't be nested-called.");
     if (_isExecutingOnPass) return;
     _isExecutingOnPass = true;
     // update multiple times.
     final updateTimes = (delta / actionTsStep).toInt();
     for (var i = 0; i < updateTimes; i++) {
-      await level.onPass(actionTsStep);
+      await level.onPassTime(actionTsStep);
     }
     _isExecutingOnPass = false;
   }
@@ -176,13 +176,13 @@ extension PlayerX on Player {
 
   set isWin(bool v) => $isWin.value = v;
 
-  TS get overallActionDuration => $overallActionDuration.value;
+  Ts get overallActionDuration => $overallActionDuration.value;
 
-  set overallActionDuration(TS v) => $overallActionDuration.value = v;
+  set overallActionDuration(Ts v) => $overallActionDuration.value = v;
 
-  TS get time => $time.value;
+  Ts get time => $time.value;
 
-  set time(TS v) => $time.value = v;
+  set time(Ts v) => $time.value = v;
 
   int get actionTimes => $actionTimes.value;
 

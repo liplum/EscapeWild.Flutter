@@ -10,7 +10,7 @@ import 'shared.dart';
 
 part 'subtropics.g.dart';
 
-TS get per => actionTsStep;
+Ts get per => actionTsStep;
 
 final moveWithEnergy = PlaceAction(UAction.move, () => player.energy > 0.0);
 final exploreWithEnergy = PlaceAction(UAction.explore, () => player.energy > 0.0);
@@ -84,16 +84,16 @@ class SubtropicsLevel extends LevelProtocol {
   static const waterPer5 = -0.008;
 
   @override
-  Future<void> onPass(TS delta) async {
+  Future<void> onPassTime(Ts delta) async {
     player.time += delta;
     final d = delta / per;
     player.modifyX(Attr.health, d * hpPer5);
     player.modifyX(Attr.food, d * foodPer5);
     player.modifyX(Attr.water, d * waterPer5);
     for (final stack in player.backpack.toList()) {
-      await stack.onPass(delta);
+      await stack.onPassTime(delta);
     }
-    await route?.onPass(delta);
+    await route?.onPassTime(delta);
   }
 
   factory SubtropicsLevel.fromJson(Map<String, dynamic> json) => _$SubtropicsLevelFromJson(json);
@@ -220,9 +220,9 @@ class SubtropicsRoute extends RouteProtocol {
   bool get canMoveBackward => 0 < routeProgress.toInt();
 
   @override
-  Future<void> onPass(TS delta) async {
+  Future<void> onPassTime(Ts delta) async {
     for (final place in places) {
-      await place.onPass(delta);
+      await place.onPassTime(delta);
     }
   }
 
@@ -277,7 +277,7 @@ class SubtropicsRoute extends RouteProtocol {
 }
 
 @JsonSerializable()
-class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, CampfireCookingMixin, CampfirePlaceMixin {
+class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, CampfireCookingMixin {
   /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(ignore: true)
@@ -300,11 +300,11 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   static const hunt = 0.8;
 
   /// It means how much fuel will be cost after [per].
-  double get fuelCostSpeed => 10;
+  @override
+  double get fuelCostPerMinute => 2;
 
-  Future<void> onPass(TS delta) async {
-    await onFirePass(fuelCostSpeed, delta);
-    await onCookingPass(delta);
+  Future<void> onPassTime(Ts delta) async {
+    await super.onCampfirePass(delta);
   }
 
   @mustCallSuper
@@ -326,7 +326,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
 
   @override
   Future<void> performMove(UAction action) async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.05);
     player.modifyX(Attr.water, -0.05);
     player.modifyX(Attr.energy, -0.05);
@@ -366,7 +366,7 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   @override
   Future<void> performShelter(UAction action) async {
     // TODO: A dedicate duration
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     if (player.food > 0.0 && player.water > 0.0) {
@@ -400,7 +400,7 @@ class PlainPlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.02);
     player.modifyX(Attr.water, -0.02);
     player.modifyX(Attr.energy, -0.08);
@@ -449,7 +449,7 @@ class ForestPlace extends SubtropicsPlace {
   }
 
   Future<void> performCutDownTree() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     final tool = player.backpack.findBesToolOfType(ToolType.axe);
     if (tool == null) return;
     final comp = tool.comp;
@@ -477,7 +477,7 @@ class ForestPlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
@@ -525,7 +525,7 @@ class RiversidePlace extends SubtropicsPlace {
 
   @override
   Future<void> performFish() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     final tool = player.backpack.findBesToolOfType(ToolType.fishing);
     if (tool == null) return;
     final comp = tool.comp;
@@ -549,7 +549,7 @@ class RiversidePlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.025);
     player.modifyX(Attr.energy, -0.10);
@@ -594,7 +594,7 @@ class CavePlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
@@ -629,7 +629,7 @@ class HutPlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPass(player.overallActionDuration);
+    await player.onPassTime(player.overallActionDuration);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.08);

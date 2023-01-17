@@ -163,6 +163,7 @@ class _BackpackPageState extends State<BackpackPage> {
         elevation: canAct ? 5 : 0,
         child: text
             .autoSizeText(
+              maxLines: 1,
               style: context.textTheme.headlineSmall?.copyWith(
                 color: color,
               ),
