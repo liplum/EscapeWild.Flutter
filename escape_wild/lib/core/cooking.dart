@@ -9,7 +9,6 @@ part 'cooking.g.dart';
 abstract class CookRecipeProtocol with Moddable {
   /// The max cooking slot.
   static const maxIngredient = 3;
-  static const maxSlot = maxIngredient * 2;
 
   @override
   final String name;
@@ -26,10 +25,12 @@ abstract class CookRecipeProtocol with Moddable {
   /// - [slots] is in no order.
   /// - [slots] is already matched.
   /// - [slots] is [Backpack.untracked].
-  /// - return whether cooking is finished.
-  bool updateCooking(@Backpack.untracked List<ItemStack> slots, TS totalTimePassed);
+  /// - return a new list of output slots.
+  @Backpack.untracked
+  List<ItemStack> updateCooking(@Backpack.untracked List<ItemStack> slots, TS totalTimePassed);
 
-  static String getName(CookRecipeProtocol recipe) => recipe.name;
+  static String? getNameOrNull(CookRecipeProtocol? recipe) => recipe?.name;
+  static const jsonKey = JsonKey(fromJson: Contents.getCookRecipesByName, toJson: getNameOrNull, includeIfNull: false);
 }
 
 /// - [FoodRecipe] will output the food as long as [cookingTime] is reached.
@@ -40,22 +41,21 @@ abstract class CookRecipeProtocol with Moddable {
 class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
   @JsonKey()
   final List<TagMassEntry> ingredients;
-  @itemGetterJsonKey
-  final ItemGetter output;
-  final int? outputMass;
+  @JsonKey()
+  final List<LazyItemStack> outputs;
   @TS.jsonKey
   final TS cookingTime;
 
   FoodRecipe(
     super.name, {
     required this.ingredients,
-    required this.output,
+    required this.outputs,
     required this.cookingTime,
-    this.outputMass,
   }) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
     assert(ingredients.length <= CookRecipeProtocol.maxIngredient,
         "Ingredients of $registerName is > ${CookRecipeProtocol.maxIngredient}.");
+    assert(outputs.isNotEmpty, "Outputs of $registerName is empty.");
   }
 
   factory FoodRecipe.fromJson(Map<String, dynamic> json) => _$FoodRecipeFromJson(json);
@@ -87,16 +87,16 @@ class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
   }
 
   @override
-  bool updateCooking(List<ItemStack> slots, TS totalTimePassed) {
+  List<ItemStack> updateCooking(List<ItemStack> slots, TS totalTimePassed) {
     // It must reach the [cookingTime]
-    if (totalTimePassed < cookingTime) return false;
-    if (slots.length != ingredients.length) return false;
+    if (totalTimePassed < cookingTime) return const [];
+    if (slots.length != ingredients.length) return const [];
     // Cooked!
     final rest = Set.of(slots);
     for (final ingredient in ingredients) {
       final matched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
       assert(matched != null, "$slots should match $registerName in $updateCooking");
-      if (matched == null) return false;
+      if (matched == null) return const [];
       rest.remove(matched);
       if (matched.meta.mergeable) {
         matched.mass = matched.stackMass - (ingredient.mass ?? 0);
@@ -105,8 +105,13 @@ class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
       }
     }
     slots.cleanEmptyStack();
-    slots.add(output().create(mass: outputMass));
-    return true;
+    final res = <ItemStack>[];
+    for (final output in outputs) {
+      final item = output.item();
+      final mass = output.mass;
+      res.add(item.create(mass: mass));
+    }
+    return res;
   }
 
   static const type = "FoodRecipe";
@@ -137,7 +142,7 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
   @override
   @CampfireHolderProtocol.onCampfireJsonKey
   List<ItemStack> get onCampfire => _onCampfire;
-  @JsonKey(fromJson: Contents.getCookRecipesByName, toJson: CookRecipeProtocol.getName)
+  @CookRecipeProtocol.jsonKey
   CookRecipeProtocol? recipe;
 
   @override

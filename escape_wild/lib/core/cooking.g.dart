@@ -11,7 +11,8 @@ FoodRecipe _$FoodRecipeFromJson(Map<String, dynamic> json) => FoodRecipe(
       ingredients: (json['ingredients'] as List<dynamic>)
           .map((e) => TagMassEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
-      output: NamedItemGetter.create(json['output'] as String),
+      outputs: (json['outputs'] as List<dynamic>)
+          .map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>))
+          .toList(),
       cookingTime: TS.fromJsom(json['cookingTime'] as int),
-      outputMass: json['outputMass'] as int?,
     )..mod = Moddable.modId2ModFunc(json['mod'] as String);

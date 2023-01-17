@@ -10,3 +10,9 @@ TagMassEntry _$TagMassEntryFromJson(Map<String, dynamic> json) => TagMassEntry(
       (json['tags'] as List<dynamic>).map((e) => e as String),
       json['mass'] as int?,
     );
+
+LazyItemStack _$LazyItemStackFromJson(Map<String, dynamic> json) =>
+    LazyItemStack(
+      NamedItemGetter.create(json['item'] as String),
+      json['mass'] as int?,
+    );

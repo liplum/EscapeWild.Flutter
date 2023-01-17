@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/recipe.dart';
 import 'package:escape_wild/foundation.dart';
 
 class FoodRecipes {
@@ -9,10 +10,11 @@ class FoodRecipes {
       FoodRecipe(
         "raw-fish-to-cooked",
         ingredients: [
-          150.g(["fish", "raw"]),
+          150.tag(["fish", "raw"]),
         ],
-        output: () => Foods.cookedFish,
-        outputMass: 100,
+        outputs: [
+          100.stack(() => Foods.cookedFish),
+        ],
         cookingTime: const TS.hm(hour: 1, minute: 0),
       )
     ]);

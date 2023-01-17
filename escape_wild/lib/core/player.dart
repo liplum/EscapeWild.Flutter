@@ -39,7 +39,11 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     assert(!_isExecutingOnPass, "[onPass] can't be called recursively.");
     if (_isExecutingOnPass) return;
     _isExecutingOnPass = true;
-    await level.onPass(delta);
+    // update multiple times.
+    final updateTimes = (delta / actionTsStep).toInt();
+    for (var i = 0; i < updateTimes; i++) {
+      await level.onPass(actionTsStep);
+    }
     _isExecutingOnPass = false;
   }
 

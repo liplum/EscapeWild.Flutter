@@ -196,7 +196,7 @@ class CookPage extends StatefulWidget {
 class _CookPageState extends State<CookPage> {
   final cookMatcher = ItemMatcher.hasAnyTag(["cookable", "cooker"]);
   late final List<ItemStackReqSlot> cookSlots =
-      List.generate(CookRecipeProtocol.maxSlot, (i) => ItemStackReqSlot(cookMatcher));
+      List.generate(CookRecipeProtocol.maxIngredient * 2, (i) => ItemStackReqSlot(cookMatcher));
 
   FireState get fireState => widget.$fireState.value;
 
