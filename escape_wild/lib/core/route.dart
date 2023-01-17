@@ -113,26 +113,6 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
   Future<void> performOthers(UAction action) async {}
 }
 
-abstract class CampfireHolderProtocol {
-  @JsonKey(ignore: true)
-  ValueNotifier<FireState> get $fireState;
-
-  @JsonKey(ignore: true)
-  ValueNotifier<List<ItemStack>> get $onCampfire;
-
-  @JsonKey(ignore: true)
-  ValueNotifier<List<ItemStack>> get $offCampfire;
-
-  static const campfireStackJsonKey =
-      JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false);
-
-  static List<ItemStack> campfireStackFromJson(dynamic json) => json == null
-      ? []
-      : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
-
-  static dynamic campfireStackToJson(List<ItemStack> list) => list.isEmpty ? null : list;
-}
-
 FireState burningFuel(
   FireState former,
   double cost,

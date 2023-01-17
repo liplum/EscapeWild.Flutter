@@ -7,12 +7,12 @@ class FoodRecipes {
 
   static void registerAll() {
     Contents.cookRecipes.addAll([
-      FoodRecipe(
+      TimedFoodRecipe(
         "raw-fish-to-cooked",
         ingredients: [
           150.tag(["fish", "raw"]),
         ],
-        outputs: [
+        dishes: [
           100.stack(() => Foods.cookedFish),
         ],
         cookingTime: const TS.hm(hour: 1, minute: 0),

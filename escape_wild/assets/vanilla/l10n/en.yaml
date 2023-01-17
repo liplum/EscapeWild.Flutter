@@ -26,7 +26,8 @@ action:
     trap: With Trap
     gun: With Gun
   # Go fishing
-  fish: Fish
+  fish:
+    name: Fish
   # When player win the game
   escape-wild:
     name: Escape Wild

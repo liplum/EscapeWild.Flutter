@@ -197,7 +197,7 @@ class CookPage extends StatefulWidget {
 class _CookPageState extends State<CookPage> {
   final cookMatcher = ItemMatcher.hasAnyTag(["cookable", "cooker"]);
   late final ingredientsSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(cookMatcher));
-  late final outputSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(ItemMatcher.any));
+  late final dishesSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(ItemMatcher.any));
 
   FireState get fireState => widget.$fireState.value;
 
@@ -238,8 +238,8 @@ class _CookPageState extends State<CookPage> {
 
   void onOffCampfireChange() {
     final items = holder.$offCampfire.value;
-    for (var i = 0; i < min(outputSlots.length, items.length); i++) {
-      outputSlots[i].stack = items[i];
+    for (var i = 0; i < min(dishesSlots.length, items.length); i++) {
+      dishesSlots[i].stack = items[i];
     }
     setState(() {});
   }
@@ -294,21 +294,11 @@ class _CookPageState extends State<CookPage> {
     final cells = <Widget>[];
     // ingredients
     for (final slot in ingredientsSlots) {
-      final cell = ItemStackReqCell(
-        slot: slot,
-        //onTapUnsatisfied: selectFood,
-        //onTapSatisfied: selectFood,
-      ).sized(w: 150, h: 80).center();
-      cells.add(cell);
+      cells.add(buildIngredientSlot(slot));
     }
     // outputs
-    for (final slot in outputSlots) {
-      final cell = ItemStackReqCell(
-        slot: slot,
-        //onTapUnsatisfied: selectFood,
-        //onTapSatisfied: selectFood,
-      ).sized(w: 150, h: 80).center();
-      cells.add(cell);
+    for (final slot in dishesSlots) {
+      cells.add(buildDishesSlot(slot));
     }
     return LayoutGrid(
       gridFit: GridFit.expand,
@@ -316,6 +306,31 @@ class _CookPageState extends State<CookPage> {
       rowSizes: [1.fr, 1.fr],
       children: cells,
     );
+  }
+
+  Widget buildIngredientSlot(ItemStackSlot slot) {
+    final cell = ItemStackReqCell(
+      slot: slot,
+      //onTapUnsatisfied: selectFood,
+      //onTapSatisfied: selectFood,
+    ).sized(w: 150, h: 80).center();
+    return cell;
+  }
+
+  Widget buildDishesSlot(ItemStackSlot slot) {
+    final cell = ItemStackReqCell(
+      slot: slot,
+      //onTapUnsatisfied: selectFood,
+      onTapSatisfied: () {
+        if (slot.isNotEmpty) {
+          final stack = slot.stack;
+          player.backpack.addItemOrMerge(stack);
+          holder.$offCampfire.value = List.of(holder.$offCampfire.value)..remove(stack);
+          slot.reset();
+        }
+      },
+    ).sized(w: 150, h: 80).center();
+    return cell;
   }
 
   final $selectedMass = ValueNotifier(0);

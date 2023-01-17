@@ -39,32 +39,31 @@ abstract class CookRecipeProtocol with Moddable {
   static const jsonKey = JsonKey(fromJson: Contents.getCookRecipesByName, toJson: getNameOrNull, includeIfNull: false);
 }
 
-/// - [FoodRecipe] will output the food as long as [cookingTime] is reached.
-/// - [FoodRecipe] can only output one item.
+/// - [dishes] will be created as long as [cookingTime] is reached.
 ///
 /// [Item.container] is not allowed.
 @JsonSerializable(createToJson: false)
-class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
+class TimedFoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
   @JsonKey()
   final List<TagMassEntry> ingredients;
   @JsonKey()
-  final List<LazyItemStack> outputs;
+  final List<LazyItemStack> dishes;
   @TS.jsonKey
   final TS cookingTime;
 
-  FoodRecipe(
+  TimedFoodRecipe(
     super.name, {
     required this.ingredients,
-    required this.outputs,
+    required this.dishes,
     required this.cookingTime,
   }) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
     assert(ingredients.length <= CookRecipeProtocol.maxIngredient,
         "Ingredients of $registerName is > ${CookRecipeProtocol.maxIngredient}.");
-    assert(outputs.isNotEmpty, "Outputs of $registerName is empty.");
+    assert(dishes.isNotEmpty, "Outputs of $registerName is empty.");
   }
 
-  factory FoodRecipe.fromJson(Map<String, dynamic> json) => _$FoodRecipeFromJson(json);
+  factory TimedFoodRecipe.fromJson(Map<String, dynamic> json) => _$TimedFoodRecipeFromJson(json);
 
   @override
   bool match(List<ItemStack> inputs) {
@@ -111,16 +110,16 @@ class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
       }
     }
     inputs.cleanEmptyStack();
-    for (final output in this.outputs) {
-      final item = output.item();
-      final mass = output.mass;
+    for (final dish in dishes) {
+      final item = dish.item();
+      final mass = dish.mass;
       final created = item.create(mass: mass);
       outputs.addItemOrMerge(created);
     }
     return true;
   }
 
-  static const type = "FoodRecipe";
+  static const type = "ExclusiveFoodRecipe";
 
   @override
   String get typeName => type;
@@ -138,6 +137,25 @@ class CookRecipeFinder {
     }
     return null;
   }
+}
+
+abstract class CampfireHolderProtocol {
+  @JsonKey(ignore: true)
+  ValueNotifier<FireState> get $fireState;
+
+  @JsonKey(ignore: true)
+  ValueNotifier<List<ItemStack>> get $onCampfire;
+
+  @JsonKey(ignore: true)
+  ValueNotifier<List<ItemStack>> get $offCampfire;
+
+  static const campfireStackJsonKey =
+      JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false);
+
+  static List<ItemStack> campfireStackFromJson(dynamic json) =>
+      json == null ? [] : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
+
+  static dynamic campfireStackToJson(List<ItemStack> list) => list.isEmpty ? null : list;
 }
 
 mixin CampfireCookingMixin implements CampfireHolderProtocol {
@@ -177,6 +195,8 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
       cookingTime += delta;
       final changed = recipe.updateCooking(onCampfire, offCampfire, cookingTime);
       if (changed) {
+        // [ValueNotifier] compare the former and new value with ==,
+        // so to re-create an list object is required.
         onCampfire = List.of(onCampfire);
         offCampfire = List.of(offCampfire);
         this.recipe = null;

@@ -6,12 +6,13 @@ part of 'cooking.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FoodRecipe _$FoodRecipeFromJson(Map<String, dynamic> json) => FoodRecipe(
+TimedFoodRecipe _$TimedFoodRecipeFromJson(Map<String, dynamic> json) =>
+    TimedFoodRecipe(
       json['name'] as String,
       ingredients: (json['ingredients'] as List<dynamic>)
           .map((e) => TagMassEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
-      outputs: (json['outputs'] as List<dynamic>)
+      dishes: (json['dishes'] as List<dynamic>)
           .map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>))
           .toList(),
       cookingTime: TS.fromJsom(json['cookingTime'] as int),
