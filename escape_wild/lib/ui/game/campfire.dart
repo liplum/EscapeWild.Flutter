@@ -8,6 +8,7 @@ import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
@@ -64,7 +65,7 @@ class FireStartingPage extends StatefulWidget {
 }
 
 class _FireStartingPageState extends State<FireStartingPage> {
-  final fireStarterSlot = ItemStackReqSlot(ItemMatcher.hasComp([FireStarterComp]));
+  final fireStarterSlot = ItemStackSlot(ItemMatcher.hasComp([FireStarterComp]));
   static int lastSelectedIndex = -1;
 
   FireState get fireState => widget.$fireState.value;
@@ -195,8 +196,8 @@ class CookPage extends StatefulWidget {
 
 class _CookPageState extends State<CookPage> {
   final cookMatcher = ItemMatcher.hasAnyTag(["cookable", "cooker"]);
-  late final List<ItemStackReqSlot> cookSlots =
-      List.generate(CookRecipeProtocol.maxIngredient * 2, (i) => ItemStackReqSlot(cookMatcher));
+  late final ingredientsSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(cookMatcher));
+  late final outputSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(ItemMatcher.any));
 
   FireState get fireState => widget.$fireState.value;
 
@@ -206,22 +207,41 @@ class _CookPageState extends State<CookPage> {
 
   set fireFuel(double v) => fireState = fireState.copyWith(fuel: v);
 
+  CampfireHolderProtocol get holder => widget.campfireHolder;
+
   @override
   void initState() {
     super.initState();
-    readCookSlots();
+    holder.$onCampfire.addListener(onOnCampfireChange);
+    holder.$offCampfire.addListener(onOffCampfireChange);
+    onOnCampfireChange();
+    onOffCampfireChange();
   }
 
-  void writeCookSlots() {
-    final cur = cookSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
-    widget.campfireHolder.onCampfire = cur;
-  }
-
-  void readCookSlots() {
-    final items = widget.campfireHolder.onCampfire;
-    for (var i = 0; i < min(items.length, items.length); i++) {
-      cookSlots[i].stack = items[i];
+  @override
+  void dispose() {
+    for (final cookSlot in ingredientsSlots) {
+      cookSlot.dispose();
     }
+    holder.$onCampfire.removeListener(onOnCampfireChange);
+    holder.$offCampfire.removeListener(onOffCampfireChange);
+    super.dispose();
+  }
+
+  void onOnCampfireChange() {
+    final items = holder.$onCampfire.value;
+    for (var i = 0; i < min(ingredientsSlots.length, items.length); i++) {
+      ingredientsSlots[i].stack = items[i];
+    }
+    setState(() {});
+  }
+
+  void onOffCampfireChange() {
+    final items = holder.$offCampfire.value;
+    for (var i = 0; i < min(outputSlots.length, items.length); i++) {
+      outputSlots[i].stack = items[i];
+    }
+    setState(() {});
   }
 
   @override
@@ -246,12 +266,12 @@ class _CookPageState extends State<CookPage> {
 
   Widget buildBodyLandscape() {
     return [
-      buildFoodGrid().flexible(flex: 4),
+      buildFoodGrid().expanded(),
       [
         LayoutBuilder(builder: (_, box) => buildCampfire().constrained(maxH: box.maxWidth * 0.5)),
         buildButtons(),
-      ].column(maa: MainAxisAlignment.center).flexible(flex: 4),
-    ].row();
+      ].column(maa: MainAxisAlignment.center).scrolled().expanded(),
+    ].row(mas: MainAxisSize.min);
   }
 
   Widget buildCampfire() {
@@ -272,18 +292,28 @@ class _CookPageState extends State<CookPage> {
 
   Widget buildFoodGrid() {
     final cells = <Widget>[];
-    for (final slot in cookSlots) {
+    // ingredients
+    for (final slot in ingredientsSlots) {
       final cell = ItemStackReqCell(
         slot: slot,
         //onTapUnsatisfied: selectFood,
         //onTapSatisfied: selectFood,
-      ).constrained(maxW: 180);
+      ).sized(w: 150, h: 80).center();
       cells.add(cell);
     }
-    return GridView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: context.itemCellGridDelegate,
+    // outputs
+    for (final slot in outputSlots) {
+      final cell = ItemStackReqCell(
+        slot: slot,
+        //onTapUnsatisfied: selectFood,
+        //onTapSatisfied: selectFood,
+      ).sized(w: 150, h: 80).center();
+      cells.add(cell);
+    }
+    return LayoutGrid(
+      gridFit: GridFit.expand,
+      columnSizes: List.generate(CookRecipeProtocol.maxIngredient, (index) => 1.fr),
+      rowSizes: [1.fr, 1.fr],
       children: cells,
     );
   }
@@ -309,25 +339,37 @@ class _CookPageState extends State<CookPage> {
         final selectedMassOrPart = $selectedMass.value;
         if (selectedMassOrPart <= 0) return;
         context.navigator.pop(selected);
-        final slot = findAvailableSlot();
+        final slot = findFirstAvailableIngredientSlotFor(selected);
         if (slot == null) return;
         final part = player.backpack.splitItemInBackpack(selected, selectedMassOrPart);
-        slot.stack = part;
-        writeCookSlots();
+        if (slot.isEmpty) {
+          slot.stack = part;
+        } else {
+          part.mergeTo(slot.stack);
+        }
+        final cur = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
+        holder.$onCampfire.value = cur;
       },
     );
   }
 
-  ItemStackReqSlot? findAvailableSlot() {
-    for (var i = 0; i < min(cookSlots.length, CookRecipeProtocol.maxIngredient); i++) {
-      final slot = cookSlots[i];
+  ItemStackSlot? findFirstAvailableIngredientSlotFor(ItemStack stack) {
+    for (final slot in ingredientsSlots) {
       if (slot.isEmpty) return slot;
+      if (slot.stack.canMergeTo(stack)) return slot;
     }
     return null;
   }
 
   Widget buildButtons() {
-    final canAdd = cookSlots.count((slot) => slot.isNotEmpty) < CookRecipeProtocol.maxIngredient;
+    final canAdd = ingredientsSlots.count((slot) => slot.isNotEmpty) < CookRecipeProtocol.maxIngredient;
+    final waitBtn = CardButton(
+      elevation: 5,
+      child: "Wait".autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
+      onTap: () {
+        player.onPass(const TS(minutes: 5));
+      },
+    ).expanded();
     final cookBtn = CardButton(
       onTap: canAdd ? onAdd : null,
       elevation: canAdd ? 5 : 0,
@@ -339,6 +381,7 @@ class _CookPageState extends State<CookPage> {
       child: _I.fuel.autoSizeText(style: context.textTheme.headlineSmall, textAlign: TextAlign.center).padAll(10),
     ).expanded();
     return [
+      waitBtn,
       cookBtn,
       fuelBtn,
     ].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
@@ -382,14 +425,6 @@ class _CookPageState extends State<CookPage> {
         color: context.fixColorBrightness(R.fuelYellowColor),
       ).constrained(maxW: length),
     ).padH(12);
-  }
-
-  @override
-  void dispose() {
-    for (final cookSlot in cookSlots) {
-      cookSlot.dispose();
-    }
-    super.dispose();
   }
 }
 

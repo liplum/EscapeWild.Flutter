@@ -18,16 +18,22 @@ abstract class CookRecipeProtocol with Moddable {
   /// ## Constrains
   /// - [inputs] is in no order.
   /// - [inputs.length] equals to [slotRequired].
-  /// - [slots] is [Backpack.untracked].
+  /// - [inputs] is [Backpack.untracked].
   bool match(@Backpack.untracked List<ItemStack> inputs);
 
   /// ## Constrains
-  /// - [slots] is in no order.
-  /// - [slots] is already matched.
-  /// - [slots] is [Backpack.untracked].
-  /// - return a new list of output slots.
+  /// - [inputs] is in no order.
+  /// - [inputs] is already matched.
+  /// - [inputs] is [Backpack.untracked].
+  /// - [outputs] is in no order.
+  /// - [outputs] is [Backpack.untracked].
+  /// - return whether [inputs] or [outputs] was changed.
   @Backpack.untracked
-  List<ItemStack> updateCooking(@Backpack.untracked List<ItemStack> slots, TS totalTimePassed);
+  bool updateCooking(
+    @Backpack.untracked List<ItemStack> inputs,
+    @Backpack.untracked List<ItemStack> outputs,
+    TS totalTimePassed,
+  );
 
   static String? getNameOrNull(CookRecipeProtocol? recipe) => recipe?.name;
   static const jsonKey = JsonKey(fromJson: Contents.getCookRecipesByName, toJson: getNameOrNull, includeIfNull: false);
@@ -87,31 +93,31 @@ class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
   }
 
   @override
-  List<ItemStack> updateCooking(List<ItemStack> slots, TS totalTimePassed) {
+  bool updateCooking(List<ItemStack> inputs, List<ItemStack> outputs, TS totalTimePassed) {
     // It must reach the [cookingTime]
-    if (totalTimePassed < cookingTime) return const [];
-    if (slots.length != ingredients.length) return const [];
+    if (totalTimePassed < cookingTime) return false;
+    if (inputs.length != ingredients.length) return false;
     // Cooked!
-    final rest = Set.of(slots);
+    final rest = Set.of(inputs);
     for (final ingredient in ingredients) {
       final matched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
-      assert(matched != null, "$slots should match $registerName in $updateCooking");
-      if (matched == null) return const [];
+      assert(matched != null, "$inputs should match $registerName in $updateCooking");
+      if (matched == null) return false;
       rest.remove(matched);
       if (matched.meta.mergeable) {
         matched.mass = matched.stackMass - (ingredient.mass ?? 0);
       } else {
-        slots.removeStack(matched);
+        inputs.removeStack(matched);
       }
     }
-    slots.cleanEmptyStack();
-    final res = <ItemStack>[];
-    for (final output in outputs) {
+    inputs.cleanEmptyStack();
+    for (final output in this.outputs) {
       final item = output.item();
       final mass = output.mass;
-      res.add(item.create(mass: mass));
+      final created = item.create(mass: mass);
+      outputs.addItemOrMerge(created);
     }
-    return res;
+    return true;
   }
 
   static const type = "FoodRecipe";
@@ -137,19 +143,26 @@ class CookRecipeFinder {
 mixin CampfireCookingMixin implements CampfireHolderProtocol {
   @JsonKey(fromJson: TS.fromJsom)
   TS cookingTime = TS.zero;
-  List<ItemStack> _onCampfire = [];
-
   @override
-  @CampfireHolderProtocol.onCampfireJsonKey
-  List<ItemStack> get onCampfire => _onCampfire;
+  late final $onCampfire = ValueNotifier<List<ItemStack>>([])
+    ..addListener(() {
+      cookingTime = TS.zero;
+    });
+  @override
+  final $offCampfire = ValueNotifier<List<ItemStack>>([]);
+
+  @CampfireHolderProtocol.campfireStackJsonKey
+  List<ItemStack> get onCampfire => $onCampfire.value;
+
+  set onCampfire(List<ItemStack> v) => $onCampfire.value = v;
+
+  @CampfireHolderProtocol.campfireStackJsonKey
+  List<ItemStack> get offCampfire => $offCampfire.value;
+
+  set offCampfire(List<ItemStack> v) => $offCampfire.value = v;
+
   @CookRecipeProtocol.jsonKey
   CookRecipeProtocol? recipe;
-
-  @override
-  set onCampfire(List<ItemStack> v) {
-    _onCampfire = v;
-    cookingTime = TS.zero;
-  }
 
   @mustCallSuper
   Future<void> onCookingPass(TS delta) async {
@@ -162,7 +175,13 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
       cookingTime = TS.zero;
     } else {
       cookingTime += delta;
-      recipe.updateCooking(onCampfire, cookingTime);
+      final changed = recipe.updateCooking(onCampfire, offCampfire, cookingTime);
+      if (changed) {
+        onCampfire = List.of(onCampfire);
+        offCampfire = List.of(offCampfire);
+        this.recipe = null;
+        cookingTime = TS.zero;
+      }
     }
   }
 }

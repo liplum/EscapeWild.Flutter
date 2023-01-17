@@ -88,7 +88,7 @@ class _ActionPageState extends State<ActionPage> {
       attrs: attr,
       textStyle: context.textTheme.headlineMedium,
       minHeight: 14,
-    ).padAll(12).inCard(elevation: 2).sized(h: 240);
+    ).padAll(12).inCard(elevation: 2);
   }
 
   Widget buildJourneyProgress(double v) {

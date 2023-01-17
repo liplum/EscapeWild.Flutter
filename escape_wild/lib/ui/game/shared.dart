@@ -508,6 +508,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   List<dynamic> allMatched = const [];
   var active = false;
   late Timer marqueeTimer;
+
   @override
   void initState() {
     super.initState();
@@ -586,7 +587,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   }
 }
 
-class ItemStackReqSlot with ChangeNotifier {
+class ItemStackSlot with ChangeNotifier {
   var _stack = ItemStack.empty;
 
   ItemStack get stack => _stack;
@@ -611,9 +612,9 @@ class ItemStackReqSlot with ChangeNotifier {
   bool get isNotEmpty => !isEmpty;
   final ItemMatcher matcher;
 
-  ItemStackReqSlot(this.matcher);
+  ItemStackSlot(this.matcher);
 
-  ItemStackReqSlot.match({
+  ItemStackSlot.match({
     required ItemTypeMatcher typeOnly,
     required ItemStackMatcher exact,
   }) : matcher = ItemMatcher(typeOnly: typeOnly, exact: exact);
@@ -641,7 +642,7 @@ class ItemStackReqSlot with ChangeNotifier {
 }
 
 class ItemStackReqCell extends StatelessWidget {
-  final ItemStackReqSlot slot;
+  final ItemStackSlot slot;
   final VoidCallback? onTapSatisfied;
   final VoidCallback? onTapUnsatisfied;
   final ItemStackCellTheme onSatisfy;
@@ -677,7 +678,7 @@ class ItemStackReqCell extends StatelessWidget {
 }
 
 class ItemStackReqAutoMatchCell extends StatelessWidget {
-  final ItemStackReqSlot slot;
+  final ItemStackSlot slot;
   final VoidCallback? onTapSatisfied;
   final VoidCallback? onTapUnsatisfied;
   final ItemStackCellTheme onSatisfy;

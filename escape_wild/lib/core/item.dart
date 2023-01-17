@@ -121,6 +121,9 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
 
   @override
   int get hashCode => name.hashCode;
+
+  @override
+  String toString() => registerName;
 }
 
 extension ItemX on Item {

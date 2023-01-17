@@ -117,19 +117,20 @@ abstract class CampfireHolderProtocol {
   @JsonKey(ignore: true)
   ValueNotifier<FireState> get $fireState;
 
-  /// [onCampfire] is not growable.
-  List<ItemStack> get onCampfire;
+  @JsonKey(ignore: true)
+  ValueNotifier<List<ItemStack>> get $onCampfire;
 
-  set onCampfire(List<ItemStack> stack);
+  @JsonKey(ignore: true)
+  ValueNotifier<List<ItemStack>> get $offCampfire;
 
-  static const onCampfireJsonKey =
-      JsonKey(fromJson: onCampfireFromJson, toJson: onCampfireToJson, includeIfNull: false);
+  static const campfireStackJsonKey =
+      JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false);
 
-  static List<ItemStack> onCampfireFromJson(dynamic json) => json == null
-      ? const []
+  static List<ItemStack> campfireStackFromJson(dynamic json) => json == null
+      ? []
       : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
 
-  static dynamic onCampfireToJson(List<ItemStack> list) => list.isEmpty ? null : list;
+  static dynamic campfireStackToJson(List<ItemStack> list) => list.isEmpty ? null : list;
 }
 
 FireState burningFuel(

@@ -54,7 +54,9 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -71,7 +73,9 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
@@ -86,7 +90,9 @@ PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -103,7 +109,9 @@ Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
@@ -118,7 +126,9 @@ ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -135,7 +145,9 @@ Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
@@ -151,7 +163,9 @@ RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -168,7 +182,9 @@ Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
@@ -183,7 +199,9 @@ CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -200,7 +218,9 @@ Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
@@ -215,7 +235,9 @@ HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -232,7 +254,9 @@ Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;
@@ -247,7 +271,9 @@ VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
           FireState.fromJson(json['fireState'] as Map<String, dynamic>)
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
-          CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
+          CampfireHolderProtocol.campfireStackFromJson(json['onCampfire'])
+      ..offCampfire =
+          CampfireHolderProtocol.campfireStackFromJson(json['offCampfire'])
       ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
@@ -264,7 +290,9 @@ Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
   val['fireState'] = instance.fireState;
   val['cookingTime'] = instance.cookingTime;
   writeNotNull('onCampfire',
-      CampfireHolderProtocol.onCampfireToJson(instance.onCampfire));
+      CampfireHolderProtocol.campfireStackToJson(instance.onCampfire));
+  writeNotNull('offCampfire',
+      CampfireHolderProtocol.campfireStackToJson(instance.offCampfire));
   writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
   val['name'] = instance.name;
   val['ec'] = instance.exploreCount;

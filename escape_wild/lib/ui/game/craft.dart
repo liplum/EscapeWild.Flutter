@@ -173,7 +173,7 @@ class CraftingSheet extends StatefulWidget {
 
 class _CraftingSheetState extends State<CraftingSheet> {
   CraftRecipeProtocol get recipe => widget.recipe;
-  final List<ItemStackReqSlot> itemStackReqSlots = [];
+  final List<ItemStackSlot> itemStackReqSlots = [];
   List<ItemStack> accepted = const [];
   List<ItemStack> unaccepted = const [];
 
@@ -181,7 +181,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
   void initState() {
     super.initState();
     for (final input in recipe.inputSlots) {
-      itemStackReqSlots.add(ItemStackReqSlot(input));
+      itemStackReqSlots.add(ItemStackSlot(input));
     }
     updateBackpackFilter();
   }
@@ -279,7 +279,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
             ].column();
   }
 
-  Widget buildInputSlot(ItemStackReqSlot slot) {
+  Widget buildInputSlot(ItemStackSlot slot) {
     return ItemStackReqAutoMatchCell(
       slot: slot,
       onTapSatisfied: () {
@@ -288,7 +288,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
     );
   }
 
-  void goBackToAccepted(ItemStackReqSlot slot) {
+  void goBackToAccepted(ItemStackSlot slot) {
     if (slot.isNotEmpty) {
       accepted.add(slot.stack);
       slot.reset();
