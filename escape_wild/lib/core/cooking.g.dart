@@ -6,8 +6,8 @@ part of 'cooking.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TimedFoodRecipe _$TimedFoodRecipeFromJson(Map<String, dynamic> json) =>
-    TimedFoodRecipe(
+TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) =>
+    TimedCookRecipe(
       json['name'] as String,
       ingredients: (json['ingredients'] as List<dynamic>)
           .map((e) => TagMassEntry.fromJson(e as Map<String, dynamic>))

@@ -68,8 +68,11 @@ class _DebugConsoleState extends State<DebugConsole> {
     res.add(_Item(_I.cat.item, (context) {
       return const _ItemGrid();
     }));
-    res.add(_Item("save", (context) {
+    res.add(_Item("Save", (context) {
       return player.toJson(indent: 2).text(style: context.textTheme.bodySmall).scrolled();
+    }));
+    res.add(_Item("Cheat", (context) {
+      return const CheatOptions();
     }));
     return res;
   }
@@ -114,5 +117,19 @@ class _ItemGridState extends State<_ItemGrid> {
         ),
       ),
     );
+  }
+}
+
+class CheatOptions extends StatefulWidget {
+  const CheatOptions({super.key});
+
+  @override
+  State<CheatOptions> createState() => _CheatOptionsState();
+}
+
+class _CheatOptionsState extends State<CheatOptions> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
   }
 }

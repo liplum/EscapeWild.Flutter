@@ -230,8 +230,12 @@ class _CookPageState extends State<CookPage> {
 
   void onOnCampfireChange() {
     final items = holder.$onCampfire.value;
-    for (var i = 0; i < min(ingredientsSlots.length, items.length); i++) {
-      ingredientsSlots[i].stack = items[i];
+    for (var i = 0; i < ingredientsSlots.length; i++) {
+      if (0 <= i && i < items.length) {
+        ingredientsSlots[i].stack = items[i];
+      } else {
+        ingredientsSlots[i].reset();
+      }
     }
     setState(() {});
   }
@@ -239,7 +243,11 @@ class _CookPageState extends State<CookPage> {
   void onOffCampfireChange() {
     final items = holder.$offCampfire.value;
     for (var i = 0; i < min(dishesSlots.length, items.length); i++) {
-      dishesSlots[i].stack = items[i];
+      if (0 <= i && i < items.length) {
+        dishesSlots[i].stack = items[i];
+      } else {
+        dishesSlots[i].reset();
+      }
     }
     setState(() {});
   }

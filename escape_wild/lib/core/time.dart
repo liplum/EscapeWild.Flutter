@@ -75,9 +75,13 @@ extension TSX on TS {
 
   TS operator -(TS b) => TS(minutes: minutes - b.minutes);
 
-  TS operator *(double factor) => TS(minutes: (minutes * factor).toInt());
+  TS operator *(num factor) => TS(minutes: (minutes * factor.toDouble()).toInt());
 
-  TS operator ~/(double factor) => TS(minutes: minutes ~/ factor);
+  TS operator ~/(num factor) => TS(minutes: minutes ~/ factor.toDouble());
+}
+
+extension TSNumX on num {
+  TS operator *(TS ts) => TS(minutes: (toDouble() * ts.minutes).toInt());
 }
 
 extension TSDoubleX on double {}

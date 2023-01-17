@@ -1,5 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/recipe.dart';
 import 'package:escape_wild/foundation.dart';
 
 class FoodRecipes {
@@ -7,15 +6,19 @@ class FoodRecipes {
 
   static void registerAll() {
     Contents.cookRecipes.addAll([
-      TimedFoodRecipe(
+      TransformCookRecipe(
         "raw-fish-to-cooked",
-        ingredients: [
-          150.tag(["fish", "raw"]),
-        ],
-        dishes: [
-          100.stack(() => Foods.cookedFish),
-        ],
-        cookingTime: const TS.hm(hour: 1, minute: 0),
+        ingredient: ["raw", "fish"],
+        dish: () => Foods.cookedFish,
+        speed: 180 / 30,
+        ratio: 0.65,
+      ),
+      TransformCookRecipe(
+        "raw-rabbit-to-cooked",
+        ingredient: ["raw", "rabbit"],
+        dish: () => Foods.cookedRabbit,
+        speed: 200 / 30,
+        ratio: 0.7,
       )
     ]);
   }

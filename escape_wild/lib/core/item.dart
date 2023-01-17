@@ -542,6 +542,14 @@ extension ItemStackX on ItemStack {
 }
 
 extension ItemStackListX on List<ItemStack> {
+  ItemStack? findFirstByMeta(Item meta) {
+    for (final item in this) {
+      if (item.meta == meta) {
+        return item;
+      }
+    }
+    return null;
+  }
   ItemStack? findFirstByName(String name) {
     for (final item in this) {
       if (item.meta.name == name) {

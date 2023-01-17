@@ -98,10 +98,10 @@ class Foods {
       rawRabbit = Item.mergeable("raw-rabbit", mass: 500).asEatable([
         Attr.food + 0.45,
         Attr.water + 0.05,
-      ]).tagged(["meat", "raw", "food", "cookable"]),
+      ]).tagged(["meat", "raw", "food", "cookable", "rabbit"]),
       cookedRabbit = Item.mergeable("cooked-rabbit", mass: 500).asEatable([
         Attr.food + 0.68,
-      ]).tagged(["meat", "cooked", "food"]),
+      ]).tagged(["meat", "cooked", "food", "rabbit"]),
       rawFish = Item.mergeable("raw-fish", mass: 500).asEatable([
         Attr.food + 0.35,
         Attr.water + 0.08,
