@@ -4,6 +4,7 @@ import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/game/backpack.dart';
 import 'package:escape_wild/ui/game/campfire.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rettulf/rettulf.dart';
 import 'action.dart';
 import 'craft.dart';
@@ -24,6 +25,7 @@ class _P {
   static const backpack = 1;
   static const craft = 2;
   static const campfire = 3;
+  static const pageCount = 4;
 }
 
 class _HomePageState extends State<Homepage> {
@@ -32,33 +34,40 @@ class _HomePageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      child: Scaffold(
-        body: buildBody(),
-        bottomNavigationBar: buildBottom(),
+      onWillPop: onWillPop,
+      child: KeyboardListener(
+        focusNode: focusNode,
+        autofocus: true,
+        onKeyEvent: onKeyEvent,
+        child: Scaffold(
+          body: buildBody(),
+          bottomNavigationBar: buildBottom(),
+        ),
       ),
-      onWillPop: () async {
-        final selection = await context.show123(
-          title: "Leave?",
-          make: (_) => "Your unsaved game will be lost".text(),
-          primary: "Save&Leave",
-          secondary: "Leave",
-          tertiary: "Cancel",
-          highlight: 2,
-          isDefault: 1,
-        );
-        if (selection == 1) {
-          // save and leave
-          final json = player.toJson();
-          DB.setGameSave(json);
-          return true;
-        } else if (selection == 2) {
-          // directly leave
-          return true;
-        } else {
-          return false;
-        }
-      },
     );
+  }
+
+  Future<bool> onWillPop() async {
+    final selection = await context.show123(
+      title: "Leave?",
+      make: (_) => "Your unsaved game will be lost".text(),
+      primary: "Save&Leave",
+      secondary: "Leave",
+      tertiary: "Cancel",
+      highlight: 2,
+      isDefault: 1,
+    );
+    if (selection == 1) {
+      // save and leave
+      final json = player.toJson();
+      DB.setGameSave(json);
+      return true;
+    } else if (selection == 2) {
+      // directly leave
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Widget buildBottom() {
@@ -98,6 +107,8 @@ class _HomePageState extends State<Homepage> {
     );
   }
 
+  final focusNode = FocusNode();
+
   Widget buildBody() {
     if (curIndex == _P.action) {
       return const ActionPage();
@@ -108,5 +119,25 @@ class _HomePageState extends State<Homepage> {
     } else {
       return const CampfirePage();
     }
+  }
+
+  void onKeyEvent(KeyEvent k) {
+    if (k is KeyDownEvent) {
+      if (k.character == "z") {
+        setState(() {
+          curIndex = (curIndex - 1) % _P.pageCount;
+        });
+      } else if (k.character == "x") {
+        setState(() {
+          curIndex = (curIndex + 1) % _P.pageCount;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 }

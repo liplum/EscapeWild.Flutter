@@ -73,8 +73,8 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildContinueGameBtn() {
-    return DB.$gameSave.listenable() <<
-        (ctx, v, _) {
+    return DB.$gameSave.listenable() >>
+        (ctx, v) {
           final lastSave = DB.getGameSave();
           return buildBtn(
               _I.$continue,

@@ -58,12 +58,7 @@ class _BackpackPageState extends State<BackpackPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: player.backpack,
-      builder: (ctx, _) {
-        return ctx.isPortrait ? buildPortrait() : buildLandscape();
-      },
-    );
+    return player.backpack >> (ctx) => ctx.isPortrait ? buildPortrait() : buildLandscape();
   }
 
   Widget buildPortrait() {
@@ -78,15 +73,23 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Widget buildLandscape() {
-    return Scaffold(
-      appBar: AppBar(
-        title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
-        centerTitle: true,
-        toolbarHeight: 40,
-        backgroundColor: Colors.transparent,
-      ),
-      body: buildLandscapeBody().safeArea().padAll(5),
-    );
+    final backpack = player.backpack;
+    if (backpack.isEmpty) {
+      return buildEmptyBackpack();
+    }
+    return [
+      Scaffold(
+        appBar: AppBar(
+          title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          toolbarHeight: 40,
+          backgroundColor: Colors.transparent,
+        ),
+        body: buildLandscapeBody().safeArea().padAll(5),
+      ).expanded(),
+      buildItems(player.backpack).expanded(),
+    ].row();
   }
 
   Widget buildPortraitBody() {
@@ -103,18 +106,10 @@ class _BackpackPageState extends State<BackpackPage> {
   }
 
   Widget buildLandscapeBody() {
-    final backpack = player.backpack;
-    if (backpack.isEmpty) {
-      return buildEmptyBackpack();
-    } else {
-      return [
-        [
-          ItemDetails(stack: selected).flexible(flex: 4),
-          buildButtonArea(selected).flexible(flex: 2),
-        ].column(maa: MainAxisAlignment.spaceBetween).expanded(),
-        buildItems(player.backpack).expanded(),
-      ].row();
-    }
+    return [
+      ItemDetails(stack: selected).flexible(flex: 4),
+      buildButtonArea(selected).flexible(flex: 2),
+    ].column(maa: MainAxisAlignment.spaceBetween);
   }
 
   Widget buildItems(Backpack backpack) {
@@ -241,8 +236,8 @@ class _BackpackPageState extends State<BackpackPage> {
   final $isShowAttrPreview = ValueNotifier(true);
 
   Widget buildShowAttrPreviewToggle() {
-    return $isShowAttrPreview <<
-        (_, b, __) => Switch(
+    return $isShowAttrPreview >>
+        (_, b) => Switch(
             value: b,
             onChanged: (newV) {
               $isShowAttrPreview.value = newV;

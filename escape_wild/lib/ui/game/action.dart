@@ -28,8 +28,8 @@ class _ActionPageState extends State<ActionPage> {
         snap: false,
         floating: false,
         flexibleSpace: FlexibleSpaceBar(
-          title: player.$location <<
-              (ctx, l, __) => "${l?.displayName()}".text(
+          title: player.$location >>
+              (ctx, l) => "${l?.displayName()}".text(
                     style: ctx.textTheme.headlineMedium,
                   ),
           centerTitle: true,
@@ -73,8 +73,8 @@ class _ActionPageState extends State<ActionPage> {
     return [
       Scaffold(
         appBar: AppBar(
-          title: player.$location <<
-              (ctx, l, __) => "${l?.displayName()}".text(
+          title: player.$location >>
+              (ctx, l) => "${l?.displayName()}".text(
                     style: ctx.textTheme.headlineMedium,
                   ),
           actions: buildAppBarActions(),
@@ -135,8 +135,8 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   Widget buildHud() {
-    return player.$attrs <<
-        (ctx, attr, __) => Hud(
+    return player.$attrs >>
+        (ctx, attr) => Hud(
               attrs: attr,
               textStyle: context.textTheme.headlineMedium,
               minHeight: 14,
@@ -144,7 +144,7 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   Widget buildJourneyProgress() {
-    return player.$journeyProgress << (ctx, p, _) => AttrProgress(value: p).padAll(10);
+    return player.$journeyProgress >> (ctx, p) => AttrProgress(value: p).padAll(10);
   }
 
   List<Widget> buildActions(List<PlaceAction> actions) {

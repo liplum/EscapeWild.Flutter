@@ -156,9 +156,9 @@ class NullItemCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final placeholder = theme.placeholder;
-    if(placeholder != null){
-     return buildPlaceholder(context, placeholder);
-    }else{
+    if (placeholder != null) {
+      return buildPlaceholder(context, placeholder);
+    } else {
       return const SizedBox();
     }
   }
@@ -480,8 +480,8 @@ class UnmergeableItemStackUsePreview extends StatefulWidget {
 class _UnmergeableItemStackUsePreviewState extends State<UnmergeableItemStackUsePreview> {
   @override
   Widget build(BuildContext context) {
-    return widget.$isShowAttrPreview <<
-        (_, isShow, __) {
+    return widget.$isShowAttrPreview >>
+        (_, isShow) {
           final mock = AttributeManager(initial: player.attrs);
           if (isShow) {
             final builder = AttrModifierBuilder();
@@ -683,7 +683,7 @@ class ItemStackReqCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return slot << (_, __) => buildBody(context);
+    return slot >> (_) => buildBody(context);
   }
 
   Widget buildBody(BuildContext context) {
@@ -725,7 +725,7 @@ class ItemStackReqAutoMatchCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return slot << (_, __) => buildBody(context);
+    return slot >> (_) => buildBody(context);
   }
 
   Widget buildBody(BuildContext context) {
@@ -933,7 +933,7 @@ class _DurationStepperState extends State<DurationStepper> {
 
   @override
   Widget build(BuildContext context) {
-    return $duration << (ctx, ts, _) => buildBody(ts);
+    return $duration >> (ctx, ts) => buildBody(ts);
   }
 
   Widget buildBody(TS ts) {

@@ -264,8 +264,8 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   Widget buildTableView() {
-    return player.backpack <<
-        (_, __) => [
+    return player.backpack >>
+        (_) => [
               GridView.builder(
                 itemCount: itemStackReqSlots.length,
                 physics: const RangeMaintainingScrollPhysics(),

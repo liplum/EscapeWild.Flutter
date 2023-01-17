@@ -30,8 +30,8 @@ class _CampfirePageState extends State<CampfirePage> {
     if (loc is CampfireHolderProtocol) {
       final holder = loc as CampfireHolderProtocol;
       final $fireState = holder.$fireState;
-      final mainBody = $fireState <<
-          (ctx, state, _) => AnimatedSwitcher(
+      final mainBody = $fireState >>
+          (ctx, state) => AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
                 child: buildBody($fireState, holder),
               );
@@ -289,7 +289,7 @@ class _CookPageState extends State<CookPage> {
   Widget buildCampfire() {
     return [
       buildBackground(),
-      widget.$fireState << (_, state, __) => buildFuelState(state),
+      widget.$fireState >> (_, state) => buildFuelState(state),
     ].stack();
   }
 
