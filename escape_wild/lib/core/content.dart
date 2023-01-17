@@ -13,8 +13,8 @@ class Contents {
     return items[name] ?? Item.empty;
   }
 
-  static CookRecipeProtocol? getCookRecipesByName(String name) {
-    return cookRecipes[name];
+  static CookRecipeProtocol? getCookRecipesByName(String? name) {
+    return name == null ? null : cookRecipes[name];
   }
 
   static ModProtocol? getModById(String modId) {

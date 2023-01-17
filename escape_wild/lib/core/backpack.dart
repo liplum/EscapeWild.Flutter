@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
@@ -23,7 +24,17 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   @JsonKey()
   List<ItemStack> items = [];
   @JsonKey()
-  int mass = 0;
+  int _mass = 0;
+
+  int get mass => _mass;
+
+  set mass(int m) {
+    _mass = m;
+    if (kDebugMode) {
+      final sum = sumMass();
+      assert(sum == mass, "Sum[$sum] != State[$mass]");
+    }
+  }
 
   Backpack();
 

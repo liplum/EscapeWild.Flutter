@@ -35,7 +35,7 @@ class _CampfirePageState extends State<CampfirePage> {
               );
       return mainBody;
     } else {
-      return LeavingBlank(icon: Icons.close_rounded, desc: "Here doesn't allow fire.");
+      return LeavingBlank(icon: Icons.close_rounded, desc: "I can't start fire here.");
     }
   }
 

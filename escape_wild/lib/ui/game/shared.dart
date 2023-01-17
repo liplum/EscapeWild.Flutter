@@ -508,7 +508,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   List<dynamic> allMatched = const [];
   var active = false;
   late Timer marqueeTimer;
-
+  late final rand = Random(hashCode);
   @override
   void initState() {
     super.initState();
@@ -528,7 +528,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
     allMatched = behavior.includingBackpack ? player.backpack.matchExactItems(matcher) : const [];
     if (allMatched.isNotEmpty) {
       if (widget.random) {
-        curIndex = Rand.i(0, allMatched.length);
+        curIndex = rand.i(0, allMatched.length);
       } else {
         curIndex = curIndex % allMatched.length;
       }
@@ -540,7 +540,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
           allMatched.isNotEmpty || !behavior.includingRegistry, "ItemMatcher should match at least one of all items.");
       if (allMatched.isNotEmpty) {
         if (widget.random) {
-          curIndex = Rand.i(0, allMatched.length);
+          curIndex = rand.i(0, allMatched.length);
         } else {
           curIndex = curIndex % allMatched.length;
         }

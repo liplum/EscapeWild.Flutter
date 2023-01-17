@@ -52,10 +52,7 @@ class _CraftPageState extends State<CraftPage> {
       body: [
         buildCatView(context).flexible(flex: isPortrait ? 4 : 3),
         const VerticalDivider(thickness: 1),
-        if (isPortrait)
-          buildRecipesPortrait(cat2Recipes[selectedCatIndex].value).flexible(flex: 10)
-        else
-          buildRecipesLandscape(cat2Recipes[selectedCatIndex].value).flexible(flex: 12),
+        buildRecipes(cat2Recipes[selectedCatIndex].value).flexible(flex: isPortrait ? 10 : 12),
       ].row().padAll(5),
     );
   }
@@ -84,18 +81,7 @@ class _CraftPageState extends State<CraftPage> {
     );
   }
 
-  Widget buildRecipesPortrait(List<CraftRecipeProtocol> recipes) {
-    return ListView.builder(
-      physics: const RangeMaintainingScrollPhysics(),
-      itemCount: recipes.length,
-      itemBuilder: (ctx, i) {
-        final recipe = recipes[i];
-        return CraftRecipeEntry(recipe);
-      },
-    );
-  }
-
-  Widget buildRecipesLandscape(List<CraftRecipeProtocol> recipes) {
+  Widget buildRecipes(List<CraftRecipeProtocol> recipes) {
     return MasonryGridView.extent(
       maxCrossAxisExtent: 350,
       physics: const RangeMaintainingScrollPhysics(),

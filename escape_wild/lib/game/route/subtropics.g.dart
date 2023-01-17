@@ -55,7 +55,7 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
@@ -87,7 +87,7 @@ PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
@@ -119,7 +119,7 @@ ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
@@ -152,7 +152,7 @@ RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
@@ -184,7 +184,7 @@ CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
@@ -216,7 +216,7 @@ HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
@@ -248,7 +248,7 @@ VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
       ..cookingTime = TS.fromJsom(json['cookingTime'] as int)
       ..onCampfire =
           CampfireHolderProtocol.onCampfireFromJson(json['onCampfire'])
-      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String)
+      ..recipe = Contents.getCookRecipesByName(json['recipe'] as String?)
       ..exploreCount = json['ec'] as int;
 
 Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
