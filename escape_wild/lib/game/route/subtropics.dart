@@ -277,7 +277,7 @@ class SubtropicsRoute extends RouteProtocol {
 }
 
 @JsonSerializable()
-class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, CampfirePlaceMixin {
+class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, CampfireCookingMixin, CampfirePlaceMixin {
   /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(ignore: true)
@@ -302,30 +302,9 @@ class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, Campf
   /// It means how much fuel will be cost after [per].
   double get fuelCostSpeed => 10;
 
-  @override
-  final $fireState = ValueNotifier<FireState>(FireState.off);
-  @JsonKey(fromJson: TS.fromJsom)
-  TS cookingTime = TS.zero;
-  List<ItemStack> _onCampfire = [];
-
-  @override
-  @CampfireHolderProtocol.onCampfireJsonKey
-  List<ItemStack> get onCampfire => _onCampfire;
-
-  @override
-  set onCampfire(List<ItemStack> v) {
-    _onCampfire = v;
-    cookingTime = TS.zero;
-  }
-
-  @mustCallSuper
   Future<void> onPass(TS delta) async {
-    final fireState = this.fireState;
-    if (fireState.active) {
-      final cost = delta / per * fuelCostSpeed;
-      this.fireState = burningFuel(fireState, cost);
-      cookingTime += delta;
-    }
+    await onFirePass(fuelCostSpeed, delta);
+    await onCookingPass(delta);
   }
 
   @mustCallSuper

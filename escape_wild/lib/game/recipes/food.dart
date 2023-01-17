@@ -5,7 +5,7 @@ class FoodRecipes {
   FoodRecipes._();
 
   static void registerAll() {
-    Contents.foodRecipes.addAll([
+    Contents.cookRecipes.addAll([
       FoodRecipe(
         "raw-fish-to-cooked",
         ingredients: [

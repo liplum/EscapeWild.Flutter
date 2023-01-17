@@ -6,11 +6,15 @@ class Contents {
   static final items = ItemContents();
   static final mods = ModContents();
   static final craftRecipes = CraftRecipeContents();
-  static final foodRecipes = FoodRecipeContents();
+  static final cookRecipes = CookRecipeContents();
   static final hardness = HardnessContents();
 
   static Item getItemMetaByName(String name) {
     return items[name] ?? Item.empty;
+  }
+
+  static CookRecipeProtocol? getCookRecipesByName(String name) {
+    return cookRecipes[name];
   }
 
   static ModProtocol? getModById(String modId) {
@@ -119,11 +123,11 @@ extension ItemPoolContentsX on ItemPoolContents {
   }
 }
 
-class FoodRecipeContents {
+class CookRecipeContents {
   Map<String, CookRecipeProtocol> name2FoodRecipe = {};
 }
 
-extension FoodRecipeContentsX on FoodRecipeContents {
+extension FoodRecipeContentsX on CookRecipeContents {
   CookRecipeProtocol? operator [](String name) => name2FoodRecipe[name];
 
   void operator <<(CookRecipeProtocol recipe) => name2FoodRecipe[recipe.registerName] = recipe;

@@ -41,22 +41,3 @@ bool randGain(double probability, List<ItemStack> gain, ItemStack Function() cto
   }
   return any;
 }
-
-FireState burningFuel(
-  FireState former,
-  double cost,
-) {
-  final curFuel = former.fuel;
-  var resFuel = curFuel;
-  var resEmber = former.ember;
-  if (curFuel <= cost) {
-    final costOverflow = cost - curFuel;
-    resFuel = 0;
-    resEmber += curFuel;
-    resEmber -= costOverflow * 2;
-  } else {
-    resFuel -= cost;
-    resEmber += cost;
-  }
-  return FireState(ember: resEmber, fuel: resFuel);
-}

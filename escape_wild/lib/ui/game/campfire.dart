@@ -213,7 +213,7 @@ class _CookPageState extends State<CookPage> {
   }
 
   void writeCookSlots() {
-    final cur = cookSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList(growable: false);
+    final cur = cookSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
     widget.campfireHolder.onCampfire = cur;
   }
 

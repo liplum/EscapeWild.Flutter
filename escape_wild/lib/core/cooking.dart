@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
+import 'package:flutter/widgets.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,6 +28,8 @@ abstract class CookRecipeProtocol with Moddable {
   /// - [slots] is [Backpack.untracked].
   /// - return whether cooking is finished.
   bool updateCooking(@Backpack.untracked List<ItemStack> slots, TS totalTimePassed);
+
+  static String getName(CookRecipeProtocol recipe) => recipe.name;
 }
 
 /// - [FoodRecipe] will output the food as long as [cookingTime] is reached.
@@ -110,4 +113,51 @@ class FoodRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
 
   @override
   String get typeName => type;
+}
+
+class CookRecipeFinder {
+  CookRecipeFinder._();
+
+  static CookRecipeProtocol? match(List<ItemStack> stacks) {
+    if (stacks.isEmpty) return null;
+    for (final recipe in Contents.cookRecipes.name2FoodRecipe.values) {
+      if (recipe.match(stacks)) {
+        return recipe;
+      }
+    }
+    return null;
+  }
+}
+
+mixin CampfireCookingMixin implements CampfireHolderProtocol {
+  @JsonKey(fromJson: TS.fromJsom)
+  TS cookingTime = TS.zero;
+  List<ItemStack> _onCampfire = [];
+
+  @override
+  @CampfireHolderProtocol.onCampfireJsonKey
+  List<ItemStack> get onCampfire => _onCampfire;
+  @JsonKey(fromJson: Contents.getCookRecipesByName, toJson: CookRecipeProtocol.getName)
+  CookRecipeProtocol? recipe;
+
+  @override
+  set onCampfire(List<ItemStack> v) {
+    _onCampfire = v;
+    cookingTime = TS.zero;
+  }
+
+  @mustCallSuper
+  Future<void> onCookingPass(TS delta) async {
+    // only cooking when fireState is active
+    if (!$fireState.value.active) return;
+    if (onCampfire.isEmpty) return;
+    this.recipe ??= CookRecipeFinder.match(onCampfire);
+    final recipe = this.recipe;
+    if (recipe == null) {
+      cookingTime = TS.zero;
+    } else {
+      cookingTime += delta;
+      recipe.updateCooking(onCampfire, cookingTime);
+    }
+  }
 }

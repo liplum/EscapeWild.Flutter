@@ -42,7 +42,7 @@ class AttrProgress extends ImplicitlyAnimatedWidget {
     super.duration = const Duration(milliseconds: 1200),
     required this.value,
     this.color,
-    this.minHeight = 8,
+    this.minHeight,
     super.curve = Curves.fastLinearToSlowEaseIn,
   });
 
@@ -77,7 +77,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
     final progress = $progress.evaluate(animation);
     return LinearProgressIndicator(
       value: progress,
-      minHeight: widget.minHeight,
+      minHeight: widget.minHeight ?? 8,
       color: widget.color,
       backgroundColor: Colors.grey.withOpacity(0.2),
     );
