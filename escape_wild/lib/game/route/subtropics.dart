@@ -277,7 +277,7 @@ class SubtropicsRoute extends RouteProtocol {
 }
 
 @JsonSerializable()
-class SubtropicsPlace extends PlaceProtocol with PlaceActionDelegateMixin, CampfireCookingMixin {
+class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixin, CampfireCookingMixin {
   /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(ignore: true)

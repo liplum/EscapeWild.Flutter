@@ -25,38 +25,33 @@ class CampfirePage extends StatefulWidget {
 class _CampfirePageState extends State<CampfirePage> {
   @override
   Widget build(BuildContext context) {
-    final loc = player.location;
-    if (loc is CampfireHolderProtocol) {
-      final holder = loc as CampfireHolderProtocol;
-      final $fireState = holder.$fireState;
-      final mainBody = $fireState >>
-          (ctx, state) => AnimatedSwitcher(
+    final place = player.location;
+    if (place is CampfirePlaceProtocol) {
+      return place >>
+          (ctx) => AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: buildBody(holder),
+                child: buildBody(place),
               );
-      return mainBody;
     } else {
       return LeavingBlank(icon: Icons.close_rounded, desc: "I can't start fire here.");
     }
   }
 
-  Widget buildBody(CampfireHolderProtocol holder) {
-    if (holder.$fireState.value.active || holder.isCampfireHasAnyStack) {
-      return CookPage(
-        campfireHolder: holder,
-      );
+  Widget buildBody(CampfirePlaceProtocol place) {
+    if (place.fireState.active || place.isCampfireHasAnyStack) {
+      return CookPage(place: place);
     } else {
-      return FireStartingPage($fireState: holder.$fireState);
+      return FireStartingPage(place: place);
     }
   }
 }
 
 class FireStartingPage extends StatefulWidget {
-  final ValueNotifier<FireState> $fireState;
+  final CampfirePlaceProtocol place;
 
   const FireStartingPage({
     super.key,
-    required this.$fireState,
+    required this.place,
   });
 
   @override
@@ -64,9 +59,11 @@ class FireStartingPage extends StatefulWidget {
 }
 
 class _FireStartingPageState extends State<FireStartingPage> {
-  FireState get fireState => widget.$fireState.value;
+  CampfirePlaceProtocol get place => widget.place;
 
-  set fireState(FireState v) => widget.$fireState.value = v;
+  FireState get fireState => widget.place.fireState;
+
+  set fireState(FireState v) => widget.place.fireState = v;
 
   @override
   Widget build(BuildContext context) {
@@ -78,25 +75,25 @@ class _FireStartingPageState extends State<FireStartingPage> {
     return [
       const StaticCampfireImage(),
       SizedBox(height: 30.h),
-      FireStarterArea($fireState: widget.$fireState),
+      FireStarterArea(place: place),
     ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().center();
   }
 
   Widget buildLandscape() {
     return [
       const StaticCampfireImage().expanded(),
-      FireStarterArea($fireState: widget.$fireState).expanded(),
+      FireStarterArea(place: place).expanded(),
     ].row();
   }
 }
 
 class FireStarterArea extends StatefulWidget {
-  final ValueNotifier<FireState> $fireState;
+  final CampfirePlaceProtocol place;
   final Axis direction;
 
   const FireStarterArea({
     super.key,
-    required this.$fireState,
+    required this.place,
     this.direction = Axis.vertical,
   });
 
@@ -108,9 +105,9 @@ class _FireStarterAreaState extends State<FireStarterArea> {
   final fireStarterSlot = ItemStackSlot(ItemMatcher.hasComp([FireStarterComp]));
   static int lastSelectedIndex = -1;
 
-  FireState get fireState => widget.$fireState.value;
+  FireState get fireState => widget.place.fireState;
 
-  set fireState(FireState v) => widget.$fireState.value = v;
+  set fireState(FireState v) => widget.place.fireState = v;
 
   @override
   void initState() {
@@ -135,12 +132,12 @@ class _FireStarterAreaState extends State<FireStarterArea> {
       buildFireStarterCell(),
       buildStartFireButton(),
     ];
-    if(widget.direction == Axis.vertical){
+    if (widget.direction == Axis.vertical) {
       return widgets.column(
         caa: CrossAxisAlignment.center,
         maa: MainAxisAlignment.spaceEvenly,
       );
-    }else{
+    } else {
       return widgets.row(
         caa: CrossAxisAlignment.center,
         maa: MainAxisAlignment.spaceEvenly,
@@ -212,11 +209,11 @@ class _FireStarterAreaState extends State<FireStarterArea> {
 }
 
 class CookPage extends StatefulWidget {
-  final CampfireHolderProtocol campfireHolder;
+  final CampfirePlaceProtocol place;
 
   const CookPage({
     super.key,
-    required this.campfireHolder,
+    required this.place,
   });
 
   @override
@@ -228,13 +225,13 @@ class _CookPageState extends State<CookPage> {
   late final ingredientsSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(cookMatcher));
   late final dishesSlots = List.generate(CookRecipeProtocol.maxIngredient, (i) => ItemStackSlot(ItemMatcher.any));
 
-  CampfireHolderProtocol get holder => widget.campfireHolder;
+  CampfirePlaceProtocol get place => widget.place;
 
-  ValueNotifier<FireState> get $fireState => holder.$fireState;
+  FireState get $fireState => place.fireState;
 
-  FireState get fireState => holder.$fireState.value;
+  FireState get fireState => place.fireState;
 
-  set fireState(FireState v) => holder.$fireState.value = v;
+  set fireState(FireState v) => place.fireState = v;
 
   double get fireFuel => fireState.fuel;
 
@@ -243,8 +240,8 @@ class _CookPageState extends State<CookPage> {
   @override
   void initState() {
     super.initState();
-    holder.$onCampfire.addListener(onOnCampfireChange);
-    holder.$offCampfire.addListener(onOffCampfireChange);
+    place.addListener(onOnCampfireChange);
+    place.addListener(onOffCampfireChange);
     onOnCampfireChange();
     onOffCampfireChange();
   }
@@ -254,13 +251,13 @@ class _CookPageState extends State<CookPage> {
     for (final cookSlot in ingredientsSlots) {
       cookSlot.dispose();
     }
-    holder.$onCampfire.removeListener(onOnCampfireChange);
-    holder.$offCampfire.removeListener(onOffCampfireChange);
+    place.removeListener(onOnCampfireChange);
+    place.removeListener(onOffCampfireChange);
     super.dispose();
   }
 
   void onOnCampfireChange() {
-    final items = holder.$onCampfire.value;
+    final items = place.onCampfire;
     for (var i = 0; i < ingredientsSlots.length; i++) {
       if (0 <= i && i < items.length) {
         ingredientsSlots[i].stack = items[i];
@@ -272,7 +269,7 @@ class _CookPageState extends State<CookPage> {
   }
 
   void onOffCampfireChange() {
-    final items = holder.$offCampfire.value;
+    final items = place.offCampfire;
     for (var i = 0; i < min(dishesSlots.length, items.length); i++) {
       if (0 <= i && i < items.length) {
         dishesSlots[i].stack = items[i];
@@ -316,16 +313,13 @@ class _CookPageState extends State<CookPage> {
   Widget buildCampfire() {
     return [
       buildBackground(),
-      $fireState >> (_, state) => buildFuelState(state),
+      buildFuelState(place.fireState),
     ].stack();
   }
 
   Widget buildBackground() {
-    return AnimatedBuilder(
-      animation: $fireState,
-      builder: (ctx, _) => DynamicCampfireImage(
-        color: Color.lerp(context.themeColor, R.flameColor, fireState.fuel / FireState.maxVisualFuel)!,
-      ),
+    return DynamicCampfireImage(
+      color: Color.lerp(context.themeColor, R.flameColor, fireState.fuel / FireState.maxVisualFuel)!,
     ).center().opacity(0.45);
   }
 
@@ -397,7 +391,7 @@ class _CookPageState extends State<CookPage> {
         }
         // sync with [campfireHolder].
         final cur = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
-        holder.$onCampfire.value = cur;
+        place.onCampfire = cur;
       }),
     );
   }
@@ -427,7 +421,7 @@ class _CookPageState extends State<CookPage> {
         if (slot.isNotEmpty) {
           final stack = slot.stack;
           player.backpack.addItemOrMerge(stack);
-          holder.$offCampfire.value = List.of(holder.$offCampfire.value)..remove(stack);
+          place.offCampfire = List.of(place.offCampfire)..remove(stack);
           slot.reset();
         }
       },
@@ -447,7 +441,7 @@ class _CookPageState extends State<CookPage> {
 
   Widget buildButtons() {
     if (fireState.isOff) {
-      return FireStarterArea($fireState: $fireState,direction: Axis.horizontal);
+      return FireStarterArea(place: place, direction: Axis.horizontal);
     }
     Widget btn(String text, {required double elevation, VoidCallback? onTap}) {
       return CardButton(
@@ -510,7 +504,7 @@ class _CookPageState extends State<CookPage> {
     return RotatedBox(
       quarterTurns: -1,
       child: AttrProgress(
-        value: progress,
+        value: progress.clamp(0, 1),
         minHeight: 16,
         color: context.fixColorBrightness(R.fuelYellowColor),
       ).constrained(maxW: length),

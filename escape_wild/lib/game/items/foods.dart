@@ -113,11 +113,14 @@ class Foods {
       rockSalt = Item.mergeable("rock-salt", mass: 10).asEatable([
         Attr.water - 0.3,
       ]),
-      bearMeat = Item.mergeable("bear-meat", mass: 666).asEatable([Attr.food + 0.1]).tagged(
+      bearMeat = Item.mergeable("bear-meat", mass: 500).asEatable([
+        Attr.food + 0.5,
+        Attr.water + 0.08,
+      ]).tagged(
         ["meat", "raw", "food", "cookable"],
       ),
-      cookedBearMeat = Item.mergeable("cooked-bear-meat", mass: 666).asEatable([
-        Attr.food + 0.4,
+      cookedBearMeat = Item.mergeable("cooked-bear-meat", mass: 500).asEatable([
+        Attr.food + 0.60,
       ]).tagged(["meat", "cooked", "food"]),
     ]);
   }

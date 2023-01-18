@@ -254,53 +254,65 @@ CookRecipeProtocol? _match(List<ItemStack> stacks) {
   return null;
 }
 
-abstract class CampfireHolderProtocol {
-  @JsonKey(ignore: true)
-  ValueNotifier<FireState> get $fireState;
+abstract class CampfirePlaceProtocol extends PlaceProtocol with ChangeNotifier {
+  FireState get fireState;
 
-  @JsonKey(ignore: true)
-  ValueNotifier<List<ItemStack>> get $onCampfire;
+  set fireState(FireState v);
 
-  @JsonKey(ignore: true)
-  ValueNotifier<List<ItemStack>> get $offCampfire;
+  List<ItemStack> get onCampfire;
+
+  set onCampfire(List<ItemStack> v);
+
+  List<ItemStack> get offCampfire;
+
+  set offCampfire(List<ItemStack> v);
 }
 
-extension CampfireHolderProtocolX on CampfireHolderProtocol {
-  bool get isCampfireHasAnyStack => $onCampfire.value.isNotEmpty || $offCampfire.value.isNotEmpty;
+extension CampfireHolderProtocolX on CampfirePlaceProtocol {
+  bool get isCampfireHasAnyStack => onCampfire.isNotEmpty || offCampfire.isNotEmpty;
 }
 
-mixin CampfireCookingMixin implements CampfireHolderProtocol {
+mixin CampfireCookingMixin on CampfirePlaceProtocol {
   @JsonKey(fromJson: tsFromJson, toJson: tsToJson, includeIfNull: false)
   Ts cookingTime = Ts.zero;
+  List<ItemStack> _onCampfire = [];
+
   @override
-  late final $onCampfire = ValueNotifier<List<ItemStack>>([])
-    ..addListener(() {
-      cookingTime = Ts.zero;
-      recipe = null;
-    });
+  @JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false)
+  List<ItemStack> get onCampfire => _onCampfire;
+
   @override
-  final $offCampfire = ValueNotifier<List<ItemStack>>([]);
+  set onCampfire(List<ItemStack> v) {
+    _onCampfire = v;
+    notifyListeners();
+  }
 
-  @campfireStackJsonKey
-  List<ItemStack> get onCampfire => $onCampfire.value;
+  List<ItemStack> _offCampfire = [];
 
-  set onCampfire(List<ItemStack> v) => $onCampfire.value = v;
+  @override
+  @JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false)
+  List<ItemStack> get offCampfire => _offCampfire;
 
-  @campfireStackJsonKey
-  List<ItemStack> get offCampfire => $offCampfire.value;
-
-  set offCampfire(List<ItemStack> v) => $offCampfire.value = v;
+  @override
+  set offCampfire(List<ItemStack> v) {
+    _offCampfire = v;
+    notifyListeners();
+  }
 
   @CookRecipeProtocol.jsonKey
   CookRecipeProtocol? recipe;
 
+  FireState _fireState = FireState.off;
+
   @override
-  final $fireState = ValueNotifier<FireState>(FireState.off);
-
   @JsonKey(fromJson: fireStateFromJson, toJson: fireStateStackToJson, includeIfNull: false)
-  FireState get fireState => $fireState.value;
+  FireState get fireState => _fireState;
 
-  set fireState(FireState v) => $fireState.value = v;
+  @override
+  set fireState(FireState v) {
+    _fireState = v;
+    notifyListeners();
+  }
 
   double get fuelCostPerMinute;
 
@@ -321,10 +333,8 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
       cookingTime += delta;
       final changed = recipe.updateCooking(onCampfire, offCampfire, cookingTime, delta);
       if (changed) {
-        // [ValueNotifier] compare the former and new value with ==,
-        // so to re-create an list object is required.
-        onCampfire = List.of(onCampfire);
-        offCampfire = List.of(offCampfire);
+        onCampfire = onCampfire;
+        offCampfire = offCampfire;
         this.recipe = null;
         cookingTime = Ts.zero;
       }
@@ -338,9 +348,6 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
       this.fireState = _burningFuel(fireState, cost);
     }
   }
-
-  static const campfireStackJsonKey =
-      JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false);
 
   static List<ItemStack> campfireStackFromJson(dynamic json) =>
       json == null ? [] : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();

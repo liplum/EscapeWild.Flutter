@@ -1,7 +1,5 @@
 import 'package:escape_wild/core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:jconverter/jconverter.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
   @override
@@ -112,4 +110,3 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
   /// Called when the [action] is not caught by other delegates
   Future<void> performOthers(UAction action) async {}
 }
-

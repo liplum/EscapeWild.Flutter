@@ -72,7 +72,7 @@ class Tools {
     Contents.items.addAll([
       handDrillKit = Item.unmergeable("hand-drill-kit", mass: 500)
           .hasDurability(max: 200)
-          .asFireStarter(chance: 0.4, cost: 20)
+          .asFireStarter(chance: 0.3, cost: 20)
           .asFuel(heatValue: 200)
           .tagged(["wooden"]),
     ]);
