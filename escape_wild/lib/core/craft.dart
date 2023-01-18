@@ -206,10 +206,10 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
       if (input == null) return ItemStack.empty;
       final inputMass = input.stackMass;
       sumMass += inputMass;
-      sumWet += WetComp.tryGetWet(input) * inputMass;
+      sumWet += WetnessComp.tryGetWetness(input) * inputMass;
     }
     final res = output().create(mass: outputMass);
-    WetComp.trySetWet(res, sumWet / sumMass);
+    WetnessComp.trySetWetness(res, sumWet / sumMass);
     return res;
   }
 

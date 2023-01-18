@@ -192,10 +192,12 @@ class _FireStarterAreaState extends State<FireStarterArea> {
       final started = comp.tryStartFire(fireStarter);
       if (started) {
         fireState = FireState(fuel: FuelComp.tryGetHeatValue(fireStarter));
-      }
-      if (DurabilityComp.tryGetIsBroken(fireStarter)) {
         player.backpack.removeStackInBackpack(fireStarter);
-        fireStarterSlot.reset();
+      } else {
+        if (DurabilityComp.tryGetIsBroken(fireStarter)) {
+          player.backpack.removeStackInBackpack(fireStarter);
+          fireStarterSlot.reset();
+        }
       }
       setState(() {});
     }

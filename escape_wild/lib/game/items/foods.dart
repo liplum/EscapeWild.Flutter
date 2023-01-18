@@ -85,28 +85,28 @@ class Foods {
             Attr.water + 0.06,
           ])
           .hasFreshness(expire: const Ts.from(day: 5))
-          .hasWet()
+          .hasWetness()
           .tagged(["fruit", "food", "cookable", "raw"]),
       roastedBerry = Item.mergeable("roasted-berry", mass: 80)
           .asEatable([
             Attr.food + 0.185,
           ])
           .hasFreshness(expire: const Ts.from(day: 1))
-          .hasWet()
+          .hasWetness()
           .tagged(["food", "cooked"]),
       nuts = Item.mergeable("nuts", mass: 80)
           .asEatable([
             Attr.food + 0.08,
           ])
           .hasFreshness(expire: const Ts.from(day: 64))
-          .hasWet()
+          .hasWetness()
           .tagged(["food", "cookable", "raw"]),
       toastedNuts = Item.mergeable("toasted-nuts", mass: 80)
           .asEatable([
             Attr.food + 0.12,
           ])
           .hasFreshness(expire: const Ts.from(day: 15))
-          .hasWet()
+          .hasWetness()
           .tagged(["food", "cooked"]),
       rawRabbit = Item.mergeable("raw-rabbit", mass: 500)
           .asEatable([
@@ -114,14 +114,14 @@ class Foods {
             Attr.water + 0.05,
           ])
           .hasFreshness(expire: const Ts.from(day: 2, hour: 12))
-          .hasWet()
+          .hasWetness()
           .tagged(["meat", "raw", "food", "cookable", "rabbit"]),
       cookedRabbit = Item.mergeable("cooked-rabbit", mass: 500)
           .asEatable([
             Attr.food + 0.68,
           ])
           .hasFreshness(expire: const Ts.from(day: 3, hour: 12))
-          .hasWet()
+          .hasWetness()
           .tagged(["meat", "cooked", "food", "rabbit"]),
       rawFish = Item.mergeable("raw-fish", mass: 500)
           .asEatable([
@@ -129,14 +129,14 @@ class Foods {
             Attr.water + 0.08,
           ])
           .hasFreshness(expire: const Ts.from(day: 2, hour: 12))
-          .hasWet()
+          .hasWetness()
           .tagged(["fish", "raw", "food", "cookable"]),
       cookedFish = Item.mergeable("cooked-fish", mass: 500)
           .asEatable([
             Attr.food + 0.52,
           ])
           .hasFreshness(expire: const Ts.from(day: 3))
-          .hasWet()
+          .hasWetness()
           .tagged(["fish", "cooked", "food"]),
       //After drinking this, the pain caused by constipation will be slightly reduced
       flowerTea = Item.mergeable("flower-tea", mass: 100).asDrinkable([

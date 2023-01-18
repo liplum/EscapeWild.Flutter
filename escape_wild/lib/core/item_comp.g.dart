@@ -42,9 +42,9 @@ FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
       (json['heatValue'] as num).toDouble(),
     );
 
-WetComp _$WetCompFromJson(Map<String, dynamic> json) => WetComp(
+WetnessComp _$WetnessCompFromJson(Map<String, dynamic> json) => WetnessComp(
       dryTime: json['dryTime'] == null
-          ? WetComp.defaultDryTime
+          ? WetnessComp.defaultDryTime
           : Ts.fromJson(json['dryTime'] as int),
     );
 

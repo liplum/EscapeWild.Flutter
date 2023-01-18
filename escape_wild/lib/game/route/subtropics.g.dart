@@ -50,8 +50,8 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) =>
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -70,9 +70,9 @@ Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',
@@ -87,8 +87,8 @@ PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -107,9 +107,9 @@ Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',
@@ -124,8 +124,8 @@ ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -144,9 +144,9 @@ Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',
@@ -162,8 +162,8 @@ RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) =>
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -182,9 +182,9 @@ Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',
@@ -199,8 +199,8 @@ CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -219,9 +219,9 @@ Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',
@@ -236,8 +236,8 @@ HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -256,9 +256,9 @@ Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',
@@ -273,8 +273,8 @@ VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
       json['name'] as String,
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..exploreCount = json['ec'] as int
       ..cookingTime = CampfireCookingMixin.tsFromJson(json['cookingTime'])
+      ..exploreCount = json['ec'] as int
       ..onCampfire =
           CampfireCookingMixin.campfireStackFromJson(json['onCampfire'])
       ..offCampfire =
@@ -293,9 +293,9 @@ Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
 
   writeNotNull('extra', instance.extra);
   val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
   writeNotNull(
       'cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
+  val['ec'] = instance.exploreCount;
   writeNotNull('onCampfire',
       CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
   writeNotNull('offCampfire',

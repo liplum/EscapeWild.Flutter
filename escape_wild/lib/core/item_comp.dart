@@ -365,11 +365,11 @@ class FuelComp extends ItemComp {
 
   const FuelComp(this.heatValue);
 
-  /// If the [stack] has [WetComp], reduce the [heatValue] based on its wet.
+  /// If the [stack] has [WetnessComp], reduce the [heatValue] based on its wet.
   double getActualHeatValue(ItemStack stack) {
     var res = heatValue * stack.massMultiplier;
     // check wet
-    final wet = WetComp.tryGetWet(stack);
+    final wet = WetnessComp.tryGetWetness(stack);
     res *= 1.0 - wet;
     // check durability
     final ratio = DurabilityComp.tryGetDurabilityRatio(stack);
@@ -402,43 +402,43 @@ extension FuelCompX on Item {
 }
 
 @JsonSerializable(createToJson: false)
-class WetComp extends ItemComp {
-  static const _wetK = "Wet.wet";
-  static const defaultWet = 0.0;
+class WetnessComp extends ItemComp {
+  static const _wetK = "Wet.wetness";
+  static const defaultWetness = 0.0;
   static const defaultDryTime = Ts.from(hour: 12);
   final Ts dryTime;
 
-  const WetComp({
-    this.dryTime = WetComp.defaultDryTime,
+  const WetnessComp({
+    this.dryTime = WetnessComp.defaultDryTime,
   });
 
-  Ratio getWet(ItemStack item) => item[_wetK] ?? defaultWet;
+  Ratio getWetness(ItemStack item) => item[_wetK] ?? defaultWetness;
 
-  void setWet(ItemStack item, Ratio value) => item[_wetK] = value.clamp(0.0, 1.0);
+  void setWetness(ItemStack item, Ratio value) => item[_wetK] = value.clamp(0.0, 1.0);
 
   @override
   void onMerge(ItemStack from, ItemStack to) {
     if (!from.hasIdenticalMeta(to)) return;
     final fromMass = from.stackMass;
     final toMass = to.stackMass;
-    final fromWet = getWet(from) * fromMass;
-    final toWet = getWet(to) * toMass;
+    final fromWet = getWetness(from) * fromMass;
+    final toWet = getWetness(to) * toMass;
     final merged = (fromWet + toWet) / (fromMass + toMass);
-    setWet(to, merged);
+    setWetness(to, merged);
   }
 
   @override
   Future<void> onPassTime(ItemStack stack, Ts delta) async {
     final lost = delta / dryTime;
-    final wet = getWet(stack);
-    setWet(stack, wet - lost);
+    final wet = getWetness(stack);
+    setWetness(stack, wet - lost);
   }
 
   @override
   void validateItemConfig(Item item) {
-    if (item.hasComp(WetComp)) {
+    if (item.hasComp(WetnessComp)) {
       throw ItemCompConflictError(
-        "Only allow one $WetComp.",
+        "Only allow one $WetnessComp.",
         item,
       );
     }
@@ -446,34 +446,47 @@ class WetComp extends ItemComp {
 
   @override
   void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
-    final ratio = getWet(stack);
-    if (ratio >= 0.5) {
+    final ratio = getWetness(stack);
+    if (ratio >= 0.8) {
+      builder <<
+          ItemStackStatus(
+            name: "Soaked",
+            color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
+          );
+    } else if (ratio >= 0.5) {
       builder <<
           ItemStackStatus(
             name: "Wet",
             color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
           );
+    } else if (ratio >= 0.3) {
+      builder <<
+          ItemStackStatus(
+            name: "Soggy",
+            color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
+          );
     }
   }
 
-  static WetComp? of(ItemStack stack) => stack.meta.getFirstComp<WetComp>();
+  static WetnessComp? of(ItemStack stack) => stack.meta.getFirstComp<WetnessComp>();
 
-  static double tryGetWet(ItemStack stack) => of(stack)?.getWet(stack) ?? defaultWet;
+  /// default: [defaultWetness]
+  static double tryGetWetness(ItemStack stack) => of(stack)?.getWetness(stack) ?? defaultWetness;
 
-  static void trySetWet(ItemStack stack, double wet) => of(stack)?.setWet(stack, wet);
-  static const type = "Wet";
+  static void trySetWetness(ItemStack stack, double wet) => of(stack)?.setWetness(stack, wet);
+  static const type = "Wetness";
 
   @override
   String get typeName => type;
 
-  factory WetComp.fromJson(Map<String, dynamic> json) => _$WetCompFromJson(json);
+  factory WetnessComp.fromJson(Map<String, dynamic> json) => _$WetnessCompFromJson(json);
 }
 
-extension WetCompX on Item {
-  Item hasWet({
-    Ts dryTime = WetComp.defaultDryTime,
+extension WetnessCompX on Item {
+  Item hasWetness({
+    Ts dryTime = WetnessComp.defaultDryTime,
   }) {
-    final comp = WetComp(
+    final comp = WetnessComp(
       dryTime: dryTime,
     );
     comp.validateItemConfig(this);
@@ -485,10 +498,19 @@ extension WetCompX on Item {
 @JsonSerializable(createToJson: false)
 class FreshnessComp extends ItemComp {
   static const _freshnessK = "Freshness.freshness";
+
+  /// how much time the item will be completely rotten.
   final Ts expire;
+
+  /// how fast the food going spoiled when it's wet.
+  /// ```dart
+  /// final actualWetRotRatio = wetness * wetRotFactor;
+  /// ```
+  final double wetRotFactor;
 
   const FreshnessComp({
     required this.expire,
+    this.wetRotFactor = 0.6,
   });
 
   Ratio getFreshness(ItemStack item) => item[_freshnessK] ?? 1.0;
@@ -508,7 +530,8 @@ class FreshnessComp extends ItemComp {
 
   @override
   Future<void> onPassTime(ItemStack stack, Ts delta) async {
-    final lost = delta / expire;
+    final wetness = WetnessComp.tryGetWetness(stack);
+    final lost = delta / expire * (1 + wetness * wetRotFactor);
     final freshness = getFreshness(stack);
     setFreshness(stack, freshness - lost);
   }
@@ -586,7 +609,7 @@ class FireStarterComp extends ItemComp {
     rand ??= Rand.backend;
     var chance = this.chance;
     // check wet
-    final wet = WetComp.tryGetWet(stack);
+    final wet = WetnessComp.tryGetWetness(stack);
     chance *= 1.0 - wet;
     final success = rand.one() <= chance;
     final durabilityComp = DurabilityComp.of(stack);
