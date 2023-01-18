@@ -52,12 +52,17 @@ class AttrProgress extends ImplicitlyAnimatedWidget {
 
 class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
   late Tween<double> $progress;
+  late ColorTween? $color;
 
   @override
   void initState() {
     $progress = Tween<double>(
       begin: widget.value,
       end: widget.value,
+    );
+    $color = ColorTween(
+      begin: widget.color,
+      end: widget.color,
     );
     super.initState();
     if ($progress.begin != $progress.end) {
@@ -78,7 +83,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
     return LinearProgressIndicator(
       value: progress,
       minHeight: widget.minHeight ?? 8,
-      color: widget.color,
+      color: $color?.animate(animation).value,
       backgroundColor: Colors.grey.withOpacity(0.2),
     );
   }
@@ -89,6 +94,10 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
       assert(false);
       throw StateError('Constructor will never be called because null is never provided as current tween.');
     }) as Tween<double>;
+    $color = visitor($color, widget.color, (dynamic value) {
+      assert(false);
+      throw StateError('Constructor will never be called because null is never provided as current tween.');
+    }) as ColorTween?;
   }
 }
 
@@ -238,16 +247,33 @@ class ItemStackCell extends StatelessWidget {
       dense: true,
       contentPadding: !theme.$showMass ? null : theme.pad,
     ).opacity(theme.$nameOpacity).center();
-    if (!theme.$showProgressBar || theme.$progressBarOpacity <= 0) return tile;
-    final durabilityComp = DurabilityComp.of(stack);
-    if (durabilityComp != null) {
-      final ratio = durabilityComp.durabilityRatio(stack);
-      return [
-        AttrProgress(value: ratio).opacity(theme.$progressBarOpacity).align(at: const Alignment(1.0, -0.86)).padH(5),
-        tile,
-      ].stack();
-    } else {
+    return decorate(context, tile);
+  }
+
+  Widget decorate(BuildContext ctx, Widget tile) {
+    final inStack = <Widget>[tile];
+    if (theme.$showProgressBar && theme.$progressBarOpacity > 0) {
+      final durabilityComp = DurabilityComp.of(stack);
+      if (durabilityComp != null) {
+        final ratio = durabilityComp.durabilityRatio(stack);
+        final durabilityBar = AttrProgress(
+          value: ratio,
+          color: durabilityComp.progressColor(stack, darkMode: ctx.isDarkMode),
+        ).opacity(theme.$progressBarOpacity).align(at: const Alignment(1.0, -0.86)).padH(5);
+        inStack.add(durabilityBar);
+      }
+    }
+    final freshnessComp = FreshnessComp.of(stack);
+    if (freshnessComp != null) {
+      final color = freshnessComp.progressColor(stack, darkMode: ctx.isDarkMode);
+      inStack.add(Container(
+        color: color.withOpacity(0.15),
+      ).clipRRect(borderRadius: ctx.cardBorderRadius));
+    }
+    if (inStack.length == 1) {
       return tile;
+    } else {
+      return inStack.stack();
     }
   }
 }

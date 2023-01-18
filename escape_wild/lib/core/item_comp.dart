@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/random.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -66,6 +67,19 @@ class DurabilityComp extends ItemComp {
             name: "Durability: Broken",
             color: builder.darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst,
           );
+    }
+  }
+
+  Color progressColor(ItemStack stack, {required bool darkMode}) {
+    final ratio = durabilityRatio(stack);
+    if (ratio >= 0.8) {
+      return darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good;
+    } else if (ratio >= 0.5) {
+      return darkMode ? StatusColorPreset.normalDark : StatusColorPreset.normal;
+    } else if (ratio >= 0.2) {
+      return darkMode ? StatusColorPreset.warningDark : StatusColorPreset.warning;
+    } else {
+      return darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst;
     }
   }
 
@@ -575,6 +589,21 @@ class FreshnessComp extends ItemComp {
           );
     }
   }
+
+  Color progressColor(ItemStack stack, {required bool darkMode}) {
+    final ratio = getFreshness(stack);
+    if (ratio >= 0.7) {
+      return darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good;
+    } else if (ratio >= 0.4) {
+      return darkMode ? StatusColorPreset.normalDark : StatusColorPreset.normal;
+    } else if (ratio >= 0.2) {
+      return darkMode ? StatusColorPreset.warningDark : StatusColorPreset.warning;
+    } else {
+      return darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst;
+    }
+  }
+
+  static FreshnessComp? of(ItemStack stack) => stack.meta.getFirstComp<FreshnessComp>();
 
   static const type = "Freshness";
 
