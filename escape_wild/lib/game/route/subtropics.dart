@@ -86,7 +86,7 @@ class SubtropicsLevel extends LevelProtocol {
 
   @override
   Future<void> onPassTime(Ts delta) async {
-    player.time += delta;
+    player.totalTimePassed += delta;
     final d = delta / per;
     player.modifyX(Attr.health, d * hpPer5);
     player.modifyX(Attr.food, d * foodPer5);

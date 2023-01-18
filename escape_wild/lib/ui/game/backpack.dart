@@ -300,20 +300,21 @@ class _BackpackPageState extends State<BackpackPage> {
   Widget buildItem(ItemStack item) {
     final isSelected = selected == item;
     return AnimatedSlide(
-        offset: isSelected ? const Offset(0.015, -0.04) : Offset.zero,
-        curve: Curves.easeInOutCubic,
-        duration: const Duration(milliseconds: 300),
-        child: CardButton(
-          elevation: isSelected ? 20 : 0.8,
-          onTap: () {
-            if (selected != item) {
-              setState(() {
-                selected = item;
-              });
-            }
-          },
-          child: ItemStackCell(item),
-        ));
+      offset: isSelected ? const Offset(0.015, -0.04) : Offset.zero,
+      curve: Curves.easeInOutCubic,
+      duration: const Duration(milliseconds: 300),
+      child: CardButton(
+        elevation: isSelected ? 20 : 0.8,
+        onTap: () {
+          if (selected != item) {
+            setState(() {
+              selected = item;
+            });
+          }
+        },
+        child: ItemStackCell(item),
+      ),
+    );
   }
 }
 
@@ -376,6 +377,7 @@ class ItemDetails extends StatelessWidget {
       var color = status.color;
       color ??= ctx.colorScheme.primary;
       entries.add(Chip(
+        elevation: 5,
         label: status.name.text(),
         backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
       ));

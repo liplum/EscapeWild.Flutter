@@ -92,7 +92,7 @@ class _ActionPageState extends State<ActionPage> {
 
   Widget buildStepper() {
     return DurationStepper(
-      $duration: player.$overallActionDuration,
+      $cur: player.$overallActionDuration,
       min: actionTsStep,
       max: maxActionDuration,
       step: actionTsStep,

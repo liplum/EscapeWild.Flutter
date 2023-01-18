@@ -138,7 +138,7 @@ class ItemCell extends StatelessWidget {
     return AutoSizeText(
       item.l10nName(),
       maxLines: 2,
-      style: theme.nameStyle ?? context.textTheme.titleLarge,
+      style: theme.nameStyle ?? context.textTheme.titleMedium,
       textAlign: TextAlign.center,
     ).opacity(theme.$nameOpacity).center();
   }
@@ -177,7 +177,7 @@ class NullItemCell extends StatelessWidget {
     return AutoSizeText(
       placeholder,
       maxLines: 2,
-      style: theme.nameStyle ?? ctx.textTheme.titleLarge,
+      style: theme.nameStyle ?? ctx.textTheme.titleMedium,
       textAlign: TextAlign.center,
     ).opacity(theme.$nameOpacity).center();
   }
@@ -241,7 +241,7 @@ class ItemStackCell extends StatelessWidget {
       title: AutoSizeText(
         stack.meta.l10nName(),
         maxLines: 2,
-        style: theme.nameStyle ?? context.textTheme.titleLarge,
+        style: theme.nameStyle ?? context.textTheme.titleMedium,
         textAlign: TextAlign.center,
       ),
       subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
@@ -993,14 +993,14 @@ extension BackpackBuildContextX on BuildContext {
 }
 
 class DurationStepper extends StatefulWidget {
-  final ValueNotifier<Ts> $duration;
+  final ValueNotifier<Ts> $cur;
   final Ts min;
   final Ts max;
   final Ts step;
 
   const DurationStepper({
     super.key,
-    required this.$duration,
+    required this.$cur,
     required this.min,
     required this.max,
     required this.step,
@@ -1013,11 +1013,11 @@ class DurationStepper extends StatefulWidget {
 class _DurationStepperState extends State<DurationStepper> {
   var isPressing = false;
 
-  ValueNotifier<Ts> get $duration => widget.$duration;
+  ValueNotifier<Ts> get $duration => widget.$cur;
 
-  Ts get duration => widget.$duration.value;
+  Ts get cur => widget.$cur.value;
 
-  set duration(Ts ts) => widget.$duration.value = ts;
+  set cur(Ts ts) => widget.$cur.value = ts;
 
   Ts get min => widget.min;
 
@@ -1047,14 +1047,14 @@ class _DurationStepperState extends State<DurationStepper> {
     if (isLeft) {
       return buildStepperBtn(
         Icons.arrow_left_rounded,
-        canStep: () => duration > min,
-        onStep: () => duration -= step,
+        canStep: () => cur > min,
+        onStep: () => cur -= step,
       );
     } else {
       return buildStepperBtn(
         Icons.arrow_right_rounded,
-        canStep: () => duration < max,
-        onStep: () => duration += step,
+        canStep: () => cur < max,
+        onStep: () => cur += step,
       );
     }
   }

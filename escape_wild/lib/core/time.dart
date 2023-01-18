@@ -26,24 +26,6 @@ abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
 }
 
 @JsonSerializable()
-class Clock extends MinuteProtocol {
-  @override
-  final int minutes;
-  static const zero = Clock(minutes: 0);
-
-  const Clock({required this.minutes});
-
-  const Clock.by({int day = 0, int hour = 0, int minute = 0}) : minutes = day * 60 * 60 + hour * 60 + minute % 60;
-
-  Clock operator +(Ts delta) => Clock(minutes: minutes + delta.minutes);
-
-  @override
-  int compareTo(MinuteProtocol other) => minutes.compareTo(other.minutes);
-
-  factory Clock.fromJson(int minutes) => Clock(minutes: minutes);
-}
-
-@JsonSerializable()
 class Ts extends MinuteProtocol {
   @override
   final int minutes;

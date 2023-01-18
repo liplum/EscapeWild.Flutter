@@ -29,14 +29,14 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   @noSave
   final $maxMassLoad = ValueNotifier(10000);
   final $actionTimes = ValueNotifier(0);
-  static const startClock = Clock.by(hour: 7, minute: 0);
-  final $time = ValueNotifier(Ts.zero);
+  static const startClock = Ts.from(hour: 7, minute: 0);
+  final $totalTimePassed = ValueNotifier(Ts.zero);
   final $overallActionDuration = ValueNotifier(const Ts(minutes: 30));
   var _isExecutingOnPass = false;
   LevelProtocol level = LevelProtocol.empty;
 
   Future<void> onPassTime(Ts delta) async {
-    assert(!_isExecutingOnPass, "[onPass] can't be nested-called.");
+    assert(!_isExecutingOnPass, "$onPassTime can't be nested-called.");
     if (_isExecutingOnPass) return;
     _isExecutingOnPass = true;
     // update multiple times.
@@ -51,6 +51,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   Future<void> performAction(UAction action) {
+    assert(!_isExecutingOnPass, "$onPassTime is not ended before $performAction called.");
     if (kDebugMode) {
       _debugValidate();
     }
@@ -116,7 +117,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   Future<void> onGameWin() async {
     await AppCtx.showTip(
       title: "Congratulation!",
-      desc: "You win the game after $actionTimes actions and ${time.hourPart} hours ${time.minutePart} minutes.",
+      desc: "You win the game after $actionTimes actions and ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
       ok: "OK",
       dismissible: false,
     );
@@ -127,7 +128,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     await AppCtx.showTip(
       title: "YOU DIED",
       desc:
-          "Your soul is lost in the wilderness, but you have still tried $actionTimes times and last ${time.hourPart} hours ${time.minutePart} minutes.",
+          "Your soul is lost in the wilderness, but you have still tried $actionTimes times and last ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
       ok: "Alright",
       dismissible: false,
     );
@@ -216,9 +217,9 @@ extension PlayerX on Player {
 
   set overallActionDuration(Ts v) => $overallActionDuration.value = v;
 
-  Ts get time => $time.value;
+  Ts get totalTimePassed => $totalTimePassed.value;
 
-  set time(Ts v) => $time.value = v;
+  set totalTimePassed(Ts v) => $totalTimePassed.value = v;
 
   int get actionTimes => $actionTimes.value;
 

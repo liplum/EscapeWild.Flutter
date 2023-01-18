@@ -37,12 +37,14 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
             ThemeData(
               brightness: Brightness.light,
               primarySwatch: Colors.yellow,
+              useMaterial3: true,
             )),
         darkTheme: bakeTheme(
             context,
             ThemeData(
               brightness: Brightness.dark,
               primarySwatch: Colors.green,
+              useMaterial3: true,
             )),
         home: const AppWrapper(),
       ),
@@ -56,7 +58,6 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
             side: BorderSide(color: Colors.transparent), //the outline color
             borderRadius: BorderRadius.all(Radius.circular(14))),
       ),
-      useMaterial3: true,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.windows: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
