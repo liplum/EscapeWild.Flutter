@@ -75,14 +75,20 @@ class _FireStartingPageState extends State<FireStartingPage> {
     return [
       const StaticCampfireImage(),
       SizedBox(height: 30.h),
-      FireStarterArea(place: place),
+      FireStarterArea(
+        place: place,
+        actionLabel: _I.startFire,
+      ),
     ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().center();
   }
 
   Widget buildLandscape() {
     return [
       const StaticCampfireImage().expanded(),
-      FireStarterArea(place: place).expanded(),
+      FireStarterArea(
+        place: place,
+        actionLabel: _I.startFire,
+      ).expanded(),
     ].row();
   }
 }
@@ -90,11 +96,13 @@ class _FireStartingPageState extends State<FireStartingPage> {
 class FireStarterArea extends StatefulWidget {
   final CampfirePlaceProtocol place;
   final Axis direction;
+  final String actionLabel;
 
   const FireStarterArea({
     super.key,
     required this.place,
     this.direction = Axis.vertical,
+    required this.actionLabel,
   });
 
   @override
@@ -181,7 +189,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
           : () async {
               await onStartFire(maybeFireStarter);
             },
-      child: _I.startFire.text(style: context.textTheme.headlineSmall).center(),
+      child: widget.actionLabel.text(style: context.textTheme.headlineSmall).center(),
     ).sized(w: 180, h: 80);
   }
 
@@ -435,7 +443,11 @@ class _CookPageState extends State<CookPage> {
 
   Widget buildButtons() {
     if (fireState.isOff) {
-      return FireStarterArea(place: place, direction: Axis.horizontal);
+      return FireStarterArea(
+        place: place,
+        direction: Axis.horizontal,
+        actionLabel: _I.restartFire,
+      );
     }
     Widget btn(String text, {required double elevation, VoidCallback? onTap}) {
       return CardButton(

@@ -318,6 +318,13 @@ mixin CampfireCookingMixin on CampfirePlaceProtocol {
 
   @mustCallSuper
   Future<void> onCampfirePass(Ts delta) async {
+    // update items the place holds
+    for (final stack in onCampfire) {
+      await stack.onPassTime(delta);
+    }
+    for (final stack in offCampfire) {
+      await stack.onPassTime(delta);
+    }
     if (fireState.active) {
       final cost = delta.minutes * fuelCostPerMinute;
       fireState = _burningFuel(fireState, cost);

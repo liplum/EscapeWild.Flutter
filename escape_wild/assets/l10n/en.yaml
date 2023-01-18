@@ -33,12 +33,9 @@ ui:
       save: Save
     campfire:
       start-fire: Start Fire
+      restart-fire: Restart Fire
       # verb: supply campfire with fuel
       fuel: Fuel
-      # to start cooking
-      cook: Cook
-      # to stop cooking
-      stop: Stop
   debug:
     debug-console:
       title: Debug Console

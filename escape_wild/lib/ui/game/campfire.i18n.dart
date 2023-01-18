@@ -7,9 +7,7 @@ class _I {
 
   static String get startFire => "$_n.start-fire".tr();
 
-  static String get cook => "$_n.cook".tr();
-
-  static String get stop => "$_n.stop".tr();
+  static String get restartFire => "$_n.restart-fire".tr();
 
   static String get fuel => "$_n.fuel".tr();
 }
