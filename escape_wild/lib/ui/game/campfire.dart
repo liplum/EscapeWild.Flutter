@@ -194,7 +194,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
         fireState = FireState(fuel: FuelComp.tryGetHeatValue(fireStarter));
       }
       if (DurabilityComp.tryGetIsBroken(fireStarter)) {
-        player.backpack.removeStack(fireStarter);
+        player.backpack.removeStackInBackpack(fireStarter);
         fireStarterSlot.reset();
       }
       setState(() {});
@@ -380,7 +380,7 @@ class _CookPageState extends State<CookPage> {
           assert(mass != null, "$selected is mergeable, but selected mass is null");
           ingredient = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
         } else {
-          player.backpack.removeStack(selected);
+          player.backpack.removeStackInBackpack(selected);
           ingredient = selected;
         }
         // the slot should be empty, but there is no guarantee in async context.
@@ -390,8 +390,7 @@ class _CookPageState extends State<CookPage> {
           ingredient.mergeTo(slot.stack);
         }
         // sync with [campfireHolder].
-        final cur = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
-        place.onCampfire = cur;
+        place.onCampfire = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
       }),
     );
   }
@@ -408,6 +407,9 @@ class _CookPageState extends State<CookPage> {
       highlight: true,
     );
     if (confirmed != true) return;
+    player.backpack.addItemOrMerge(stack);
+    slot.reset();
+    place.onCampfire = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
   }
 
   Widget buildDishesSlot(ItemStackSlot slot) {
@@ -427,16 +429,6 @@ class _CookPageState extends State<CookPage> {
       },
     ).sized(w: 150, h: 80).center();
     return cell;
-  }
-
-  final $selectedMass = ValueNotifier(0);
-
-  ItemStackSlot? findFirstAvailableIngredientSlotFor(ItemStack stack) {
-    for (final slot in ingredientsSlots) {
-      if (slot.isEmpty) return slot;
-      if (slot.stack.canMergeTo(stack)) return slot;
-    }
-    return null;
   }
 
   Widget buildButtons() {
@@ -476,7 +468,7 @@ class _CookPageState extends State<CookPage> {
           assert(mass != null, "$selected is mergeable, but selected mass is null");
           fuel = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
         } else {
-          player.backpack.removeStack(selected);
+          player.backpack.removeStackInBackpack(selected);
           fuel = selected;
         }
         final heatValue = FuelComp.tryGetHeatValue(fuel);

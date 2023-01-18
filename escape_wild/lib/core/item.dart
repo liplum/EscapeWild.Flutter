@@ -115,16 +115,13 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! Item || other.runtimeType != runtimeType) return false;
-    return name == other.name;
+    return mod == other.mod && name == other.name;
   }
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => registerName.hashCode;
 
-  @override
-  String toString() => registerName;
-
-  static String getName(Item item) => item.name;
+  static String getName(Item item) => item.registerName;
 }
 
 extension ItemX on Item {

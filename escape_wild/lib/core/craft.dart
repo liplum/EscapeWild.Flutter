@@ -14,8 +14,6 @@ class CraftType with Moddable {
 
   String l10nName() => i18n("craft-type.$name");
 
-  @override
-  String toString() => name;
   static final CraftType craft = CraftType("craft"), repair = CraftType("repair"), process = CraftType("process");
 
   @override

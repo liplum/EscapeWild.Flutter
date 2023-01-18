@@ -67,7 +67,7 @@ class Foods {
       ]).tagged(["water", "drink", "clean-water", "liquid"]),
       boiledWater = Item.mergeable("boiled-water", mass: 200).asDrinkable([
         Attr.water + 0.28,
-      ]).tagged(["water", "drink", "clean-water", "liquid"]),
+      ]).tagged(["water", "drink", "clean-water", "liquid", "cooked"]),
       filteredWater = Item.mergeable("filtered-water", mass: 200).asDrinkable([
         Attr.health - 0.01,
         Attr.water + 0.25,
@@ -82,16 +82,16 @@ class Foods {
       berry = Item.mergeable("berry", mass: 80).asEatable([
         Attr.food + 0.12,
         Attr.water + 0.06,
-      ]).tagged(["fruit", "food", "cookable"]),
+      ]).tagged(["fruit", "food", "cookable", "raw"]),
       roastedBerry = Item.mergeable("roasted-berry", mass: 80).asEatable([
         Attr.food + 0.185,
-      ]).tagged(["food"]),
+      ]).tagged(["food", "cooked"]),
       nuts = Item.mergeable("nuts", mass: 80).asEatable([
         Attr.food + 0.08,
-      ]).tagged(["food", "cookable"]),
+      ]).tagged(["food", "cookable", "raw"]),
       toastedNuts = Item.mergeable("toasted-nuts", mass: 80).asEatable([
         Attr.food + 0.12,
-      ]).tagged(["food"]),
+      ]).tagged(["food", "cooked"]),
       rawRabbit = Item.mergeable("raw-rabbit", mass: 500).asEatable([
         Attr.food + 0.45,
         Attr.water + 0.05,

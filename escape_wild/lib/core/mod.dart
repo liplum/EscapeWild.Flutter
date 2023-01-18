@@ -158,6 +158,9 @@ mixin Moddable implements I18nScopeProtocol {
   static String mod2ModIdFunc(ModProtocol mod) => mod.modId;
 
   static ModProtocol modId2ModFunc(String modId) => Contents.getModById(modId) ?? Vanilla.instance;
+
+  @override
+  String toString() => registerName;
 }
 
 extension ModdableX on Moddable {

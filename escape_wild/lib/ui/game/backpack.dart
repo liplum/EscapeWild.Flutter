@@ -126,7 +126,7 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Future<void> removeItem(ItemStack item) async {
     await runWithTrackCurrentSelected(item, () async {
-      player.backpack.removeStack(item);
+      player.backpack.removeStackInBackpack(item);
     });
   }
 
@@ -199,13 +199,14 @@ class _BackpackPageState extends State<BackpackPage> {
 
   final $selectedMass = ValueNotifier(0);
 
-  Future<void> onDiscard(ItemStack item) async {
-    if (item.meta.mergeable) {
-      $selectedMass.value = item.stackMass;
+  Future<void> onDiscard(ItemStack stack) async {
+    assert(stack.isNotEmpty, "$stack is empty");
+    if (stack.meta.mergeable) {
+      $selectedMass.value = stack.stackMass;
       final confirmed = await context.showAnyRequest(
         title: _I.discardRequest,
         make: (_) => ItemStackMassSelector(
-          template: item,
+          template: stack,
           $selectedMass: $selectedMass,
         ),
         yes: I.discard,
@@ -215,22 +216,22 @@ class _BackpackPageState extends State<BackpackPage> {
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
         if (selectedMassOrPart > 0) {
-          await runWithTrackCurrentSelected(item, () async {
+          await runWithTrackCurrentSelected(stack, () async {
             // discard the part.
-            final _ = player.backpack.splitItemInBackpack(item, selectedMassOrPart);
+            final _ = player.backpack.splitItemInBackpack(stack, selectedMassOrPart);
           });
         }
       }
     } else {
       final confirmed = await context.showRequest(
         title: _I.discardRequest,
-        desc: _I.discardConfirm(item.displayName()),
+        desc: _I.discardConfirm(stack.displayName()),
         yes: I.discard,
         no: I.cancel,
         highlight: true,
       );
       if (confirmed == true) {
-        await removeItem(item);
+        await removeItem(stack);
       }
     }
   }

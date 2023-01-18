@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:escape_wild/core.dart';
@@ -191,13 +192,15 @@ class SubtropicsRouteGenerator implements RouteGeneratorProtocol<SubtropicsRoute
 List<SubtropicsPlace> _placesFromJson(dynamic json) => deserializeList<SubtropicsPlace>(json);
 
 @JsonSerializable()
-class SubtropicsRoute extends RouteProtocol {
+class SubtropicsRoute extends RouteProtocol with IterableMixin<SubtropicsPlace> {
   @override
   @JsonKey()
   final String name;
 
   SubtropicsRoute(this.name);
 
+  @override
+  Iterator<SubtropicsPlace> get iterator => places.iterator;
   @JsonKey(fromJson: _placesFromJson)
   List<SubtropicsPlace> places = [];
 

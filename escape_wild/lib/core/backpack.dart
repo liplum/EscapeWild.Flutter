@@ -59,7 +59,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   /// - If the [massOfPart] is more than or equal to [item.mass],
   ///   the [item] will be removed in backpack, and [item] itself will be returned.
   /// - If the [massOfPart] is less than 0, the [ItemStack.empty] will be returned.
-  ItemStack splitItemInBackpack(ItemStack item, int massOfPart) {
+  ItemStack splitItemInBackpack(@tracked ItemStack item, int massOfPart) {
     assert(item.meta.mergeable, "${item.meta.name} can't split, because it's unmergeable");
     if (!item.meta.mergeable) return ItemStack.empty;
     final actualMass = item.stackMass;
@@ -68,7 +68,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     }
     if (massOfPart >= actualMass) {
       final part = item.clone();
-      removeStack(item);
+      removeStackInBackpack(item);
       return part;
     } else {
       final part = item.split(massOfPart);
@@ -80,11 +80,11 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     }
   }
 
-  void consumeItemInBackpack(ItemStack item, int? mass) {
+  void consumeItemInBackpack(@tracked ItemStack item, int? mass) {
     if (mass != null) {
       splitItemInBackpack(item, mass);
     } else {
-      removeStack(item);
+      removeStackInBackpack(item);
     }
   }
 
@@ -105,7 +105,8 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   }
 
   /// It will remove the [stack] in backpack, and won't change [stack]'s state.
-  bool removeStack(ItemStack stack) {
+  /// - [force] will force this to remove [stack].
+  bool removeStackInBackpack(@tracked ItemStack stack) {
     if (stack.isEmpty) return true;
     final removedMass = stack.stackMass;
     stack.mass = 0;
@@ -117,7 +118,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     return hasRemoved;
   }
 
-  int indexOfStack(ItemStack? stack) {
+  int indexOfStack(@tracked ItemStack? stack) {
     if (stack == null) return -1;
     if (stack.isEmpty) return -1;
     return items.indexOf(stack);
@@ -129,7 +130,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     assert(item.meta.mergeable, "mass of unmergeable can't be changed");
     if (!item.meta.mergeable) return;
     if (newMass <= 0) {
-      removeStack(item);
+      removeStackInBackpack(item);
     } else {
       final delta = item.stackMass - newMass;
       item.mass = newMass;
@@ -146,7 +147,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       }
     }
     for (final removed in toRemoved) {
-      removeStack(removed);
+      removeStackInBackpack(removed);
     }
   }
 

@@ -36,7 +36,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   LevelProtocol level = LevelProtocol.empty;
 
   Future<void> onPassTime(Ts delta) async {
-    assert( !_isExecutingOnPass, "[onPass] can't be nested-called.");
+    assert(!_isExecutingOnPass, "[onPass] can't be nested-called.");
     if (_isExecutingOnPass) return;
     _isExecutingOnPass = true;
     // update multiple times.
@@ -45,10 +45,46 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       await level.onPassTime(actionTsStep);
     }
     _isExecutingOnPass = false;
+    if (kDebugMode) {
+      _debugValidate();
+    }
   }
 
   Future<void> performAction(UAction action) {
+    if (kDebugMode) {
+      _debugValidate();
+    }
     return level.performAction(action);
+  }
+
+  void _debugValidate() {
+    if (kDebugMode) {
+      for (final stack in backpack) {
+        assert(stack.isNotEmpty, "$stack is empty in backpack.");
+        if (!stack.meta.mergeable) {
+          assert(stack.mass == null, "${stack.meta} is unmergeable but $stack has not-null mass.");
+        }
+      }
+      final loc = location;
+      if (loc != null) {
+        final route = loc.route;
+        final locRestoreId = loc.route.getRestoreIdOf(loc);
+        assert(loc.route.restoreById(locRestoreId) == loc);
+        if (route is Iterable<PlaceProtocol>) {
+          for (final place in route as Iterable<PlaceProtocol>) {
+            assert(place.route == route, "${place.route} and $place must be matched.");
+            if (place is CampfirePlaceProtocol) {
+              for (final stack in place.onCampfire) {
+                assert(stack.isNotEmpty, "$place has empty onCampfire stack.");
+              }
+              for (final stack in place.offCampfire) {
+                assert(stack.isNotEmpty, "$place has empty offCampfire stack.");
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
   List<PlaceAction> getAvailableActions() {
@@ -59,7 +95,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   bool damageTool(ItemStack item, ToolComp comp, double damage) {
     comp.damageTool(item, damage);
     if (comp.isBroken(item)) {
-      backpack.removeStack(item);
+      backpack.removeStackInBackpack(item);
       return true;
     }
     return false;
