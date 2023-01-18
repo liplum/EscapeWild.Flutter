@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
@@ -266,8 +267,10 @@ class ItemStackCell extends StatelessWidget {
     final freshnessComp = FreshnessComp.of(stack);
     if (freshnessComp != null) {
       final color = freshnessComp.progressColor(stack, darkMode: ctx.isDarkMode);
-      inStack.add(Container(
+      inStack.add(AnimatedContainer(
         color: color.withOpacity(0.15),
+        duration: const Duration(milliseconds: 1200),
+        curve: Curves.fastLinearToSlowEaseIn,
       ).clipRRect(borderRadius: ctx.cardBorderRadius));
     }
     if (inStack.length == 1) {
@@ -938,7 +941,10 @@ class _BackpackSheetState extends State<BackpackSheet> {
           : () async {
               await onSelectItemStack(stack, delegate);
             },
-      child: ItemStackCell(stack),
+      child: ItemStackCell(
+        stack,
+        theme: ItemStackCellTheme(nameOpacity: accepted ? 1.0 : R.disabledAlpha),
+      ),
     );
   }
 

@@ -20,7 +20,7 @@ class R {
   static String get localStorageDir => isDesktop ? joinPath(appDir, packageName) : appDir;
 
   static String get hiveDir => joinPath(localStorageDir, "hive");
-
+  static const disabledAlpha = 0.4;
   static const healthColor = Color(0xfffc3545);
   static const foodColor = Color(0xfffeaa1a);
   static const waterColor = Color(0xff1ca3ec);

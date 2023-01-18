@@ -299,17 +299,21 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Widget buildItem(ItemStack item) {
     final isSelected = selected == item;
-    return CardButton(
-      elevation: isSelected ? 20 : 0.8,
-      onTap: () {
-        if (selected != item) {
-          setState(() {
-            selected = item;
-          });
-        }
-      },
-      child: ItemStackCell(item),
-    );
+    return AnimatedSlide(
+        offset: isSelected ? const Offset(0.015, -0.04) : Offset.zero,
+        curve: Curves.easeInOutCubic,
+        duration: const Duration(milliseconds: 300),
+        child: CardButton(
+          elevation: isSelected ? 20 : 0.8,
+          onTap: () {
+            if (selected != item) {
+              setState(() {
+                selected = item;
+              });
+            }
+          },
+          child: ItemStackCell(item),
+        ));
   }
 }
 
@@ -373,7 +377,7 @@ class ItemDetails extends StatelessWidget {
       color ??= ctx.colorScheme.primary;
       entries.add(Chip(
         label: status.name.text(),
-        backgroundColor:Color.lerp(color, ctx.colorScheme.primary, 0.2),
+        backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
       ));
     }
     return Wrap(

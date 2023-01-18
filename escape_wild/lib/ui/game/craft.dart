@@ -1,5 +1,6 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/r.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -222,7 +223,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
         ),
         backgroundColor: Colors.transparent,
       ),
-      child: context.isPortrait ? buildPortrait() : buildLandscape(),
+      child: player.backpack >> (_) => context.isPortrait ? buildPortrait() : buildLandscape(),
     );
   }
 
@@ -261,17 +262,16 @@ class _CraftingSheetState extends State<CraftingSheet> {
   }
 
   Widget buildTableView() {
-    return player.backpack >>
-        (_) => [
-              GridView.builder(
-                itemCount: itemStackReqSlots.length,
-                physics: const RangeMaintainingScrollPhysics(),
-                gridDelegate: itemCellGridDelegatePortrait,
-                itemBuilder: (ctx, i) {
-                  return buildInputSlot(itemStackReqSlots[i]);
-                },
-              ).expanded(),
-            ].column();
+    return [
+      GridView.builder(
+        itemCount: itemStackReqSlots.length,
+        physics: const RangeMaintainingScrollPhysics(),
+        gridDelegate: itemCellGridDelegatePortrait,
+        itemBuilder: (ctx, i) {
+          return buildInputSlot(itemStackReqSlots[i]);
+        },
+      ).expanded(),
+    ].column();
   }
 
   Widget buildInputSlot(ItemStackSlot slot) {
@@ -317,7 +317,10 @@ class _CraftingSheetState extends State<CraftingSheet> {
           : () {
               gotoFirstMatchedSlot(item);
             },
-      child: ItemStackCell(item),
+      child: ItemStackCell(
+        item,
+        theme: ItemStackCellTheme(nameOpacity: accepted ? 1.0 : R.disabledAlpha),
+      ),
     );
   }
 
