@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
@@ -348,6 +349,8 @@ abstract class ItemComp extends Comp {
   void onSplit(ItemStack from, ItemStack to) {}
 
   Future<void> onPassTime(ItemStack stack, Ts delta) async {}
+
+  void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {}
 }
 
 class EmptyComp extends ItemComp {
@@ -458,15 +461,21 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
     }
   }
 
-  factory ItemStack.fromJson(Map<String, dynamic> json) => _$ItemStackFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ItemStackToJson(this);
+  void buildStatus(ItemStackStatusBuilder builder) {
+    for (final comp in meta.iterateComps()) {
+      comp.buildStatus(this, builder);
+    }
+  }
 
   ItemStack clone() {
     final cloned = ItemStack(meta, mass: mass);
     cloned.extra = cloneExtra();
     return cloned;
   }
+
+  factory ItemStack.fromJson(Map<String, dynamic> json) => _$ItemStackFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemStackToJson(this);
 
   static const type = "ItemStack";
 
@@ -544,6 +553,52 @@ extension ItemStackX on ItemStack {
   }
 
   bool get isNotEmpty => !isEmpty;
+}
+
+class ItemStackStatus {
+  final String name;
+  final Color? color;
+
+  const ItemStackStatus({
+    required this.name,
+    this.color,
+  });
+}
+
+class ItemStackStatusBuilder {
+  List<ItemStackStatus> statuses = [];
+  final bool darkMode;
+
+  ItemStackStatusBuilder({
+    this.darkMode = false,
+  });
+
+  void add(ItemStackStatus status) {
+    statuses.add(status);
+  }
+
+  List<ItemStackStatus> build() {
+    return statuses;
+  }
+}
+
+class StatusColorPreset {
+  static const good = Color(0XFFAED581),
+      goodDark = Color(0xFF558B2F),
+      normal = Color(0xFFFFEB3B),
+      normalDark = Color(0xFF9e8e00),
+      warning = Color(0xFFFFB74D),
+      warningDark = Color(0xFFE65100),
+      worst = Color(0xFFEF9A9A),
+      worstDark = Color(0xFFC62828);
+  static const wet = Color(0xFF29B6F6), wetDark = Color(0xFF1565C0);
+}
+
+extension ItemStackStatusBuilderX on ItemStackStatusBuilder {
+  ItemStackStatusBuilder operator <<(ItemStackStatus status) {
+    statuses.add(status);
+    return this;
+  }
 }
 
 extension ItemStackListX on List<ItemStack> {

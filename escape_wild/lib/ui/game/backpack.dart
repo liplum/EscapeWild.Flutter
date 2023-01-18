@@ -358,9 +358,26 @@ class ItemDetails extends StatelessWidget {
 
   Widget buildBottom(BuildContext ctx) {
     return ListTile(
-      title: "AAA".text(),
-      subtitle: "AAA".text(),
-      isThreeLine: true,
+      title: buildStatus(ctx),
+      //subtitle: "AAA".text(),
+      //isThreeLine: true,
+    );
+  }
+
+  Widget buildStatus(BuildContext ctx) {
+    final builder = ItemStackStatusBuilder(darkMode: ctx.isDarkMode);
+    stack.buildStatus(builder);
+    final entries = <Widget>[];
+    for (final status in builder.build()) {
+      var color = status.color;
+      color ??= ctx.colorScheme.primary;
+      entries.add(Chip(
+        label: status.name.text(),
+        backgroundColor:Color.lerp(color, ctx.colorScheme.primary, 0.2),
+      ));
+    }
+    return Wrap(
+      children: entries,
     );
   }
 }

@@ -1,11 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
 abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
-  final int minutes;
+  int get minutes;
 
-  const MinuteProtocol({required this.minutes});
-
-  const MinuteProtocol.hm({int hour = 0, int minute = 0}) : minutes = hour * 60 + minute % 60;
+  const MinuteProtocol();
 
   @override
   String toString() {
@@ -29,11 +27,13 @@ abstract class MinuteProtocol implements Comparable<MinuteProtocol> {
 
 @JsonSerializable()
 class Clock extends MinuteProtocol {
+  @override
+  final int minutes;
   static const zero = Clock(minutes: 0);
 
-  const Clock({required super.minutes});
+  const Clock({required this.minutes});
 
-  const Clock.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
+  const Clock.by({int day = 0, int hour = 0, int minute = 0}) : minutes = day * 60 * 60 + hour * 60 + minute % 60;
 
   Clock operator +(Ts delta) => Clock(minutes: minutes + delta.minutes);
 
@@ -45,11 +45,13 @@ class Clock extends MinuteProtocol {
 
 @JsonSerializable()
 class Ts extends MinuteProtocol {
+  @override
+  final int minutes;
   static const zero = Ts(minutes: 0);
 
-  const Ts({required super.minutes});
+  const Ts({required this.minutes});
 
-  const Ts.hm({int hour = 0, int minute = 0}) : super.hm(hour: hour, minute: minute);
+  const Ts.from({int day = 0, int hour = 0, int minute = 0}) : minutes = day * 60 * 60 + (hour % 24) * 60 + minute % 60;
 
   static const jsonKey = JsonKey(fromJson: Ts.fromJson);
 

@@ -14,7 +14,7 @@ const polymorphismSave = Object();
 const noSave = Object();
 
 const actionTsStep = Ts(minutes: 5);
-const maxActionDuration = Ts.hm(hour: 2, minute: 0);
+const maxActionDuration = Ts.from(hour: 2, minute: 0);
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
@@ -29,7 +29,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   @noSave
   final $maxMassLoad = ValueNotifier(10000);
   final $actionTimes = ValueNotifier(0);
-  static const startClock = Clock.hm(hour: 7, minute: 0);
+  static const startClock = Clock.by(hour: 7, minute: 0);
   final $time = ValueNotifier(Ts.zero);
   final $overallActionDuration = ValueNotifier(const Ts(minutes: 30));
   var _isExecutingOnPass = false;

@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/random.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -37,6 +36,36 @@ class DurabilityComp extends ItemComp {
         "Only allow one $DurabilityComp.",
         item,
       );
+    }
+  }
+
+  @override
+  void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
+    final ratio = durabilityRatio(stack);
+    if (ratio >= 0.8) {
+      builder <<
+          ItemStackStatus(
+            name: "Durability: Good",
+            color: builder.darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good,
+          );
+    } else if (ratio >= 0.5) {
+      builder <<
+          ItemStackStatus(
+            name: "Durability: Normal",
+            color: builder.darkMode ? StatusColorPreset.normalDark : StatusColorPreset.normal,
+          );
+    } else if (ratio >= 0.2) {
+      builder <<
+          ItemStackStatus(
+            name: "Durability: Damaged",
+            color: builder.darkMode ? StatusColorPreset.warningDark : StatusColorPreset.warning,
+          );
+    } else {
+      builder <<
+          ItemStackStatus(
+            name: "Durability: Broken",
+            color: builder.darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst,
+          );
     }
   }
 
@@ -376,7 +405,7 @@ extension FuelCompX on Item {
 class WetComp extends ItemComp {
   static const _wetK = "Wet.wet";
   static const defaultWet = 0.0;
-  static const defaultDryTime = Ts(minutes: 30);
+  static const defaultDryTime = Ts.from(hour: 12);
   final Ts dryTime;
 
   const WetComp({
@@ -412,6 +441,18 @@ class WetComp extends ItemComp {
         "Only allow one $WetComp.",
         item,
       );
+    }
+  }
+
+  @override
+  void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
+    final ratio = getWet(stack);
+    if (ratio >= 0.5) {
+      builder <<
+          ItemStackStatus(
+            name: "Wet",
+            color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
+          );
     }
   }
 
@@ -479,6 +520,36 @@ class FreshnessComp extends ItemComp {
         "Only allow one $FreshnessComp.",
         item,
       );
+    }
+  }
+
+  @override
+  void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
+    final ratio = getFreshness(stack);
+    if (ratio >= 0.7) {
+      builder <<
+          ItemStackStatus(
+            name: "Fresh",
+            color: builder.darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good,
+          );
+    } else if (ratio >= 0.4) {
+      builder <<
+          ItemStackStatus(
+            name: "Stale",
+            color: builder.darkMode ? StatusColorPreset.normalDark : StatusColorPreset.normal,
+          );
+    } else if (ratio >= 0.2) {
+      builder <<
+          ItemStackStatus(
+            name: "Spoiled",
+            color: builder.darkMode ? StatusColorPreset.warningDark : StatusColorPreset.warning,
+          );
+    } else {
+      builder <<
+          ItemStackStatus(
+            name: "Rotten",
+            color: builder.darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst,
+          );
     }
   }
 
