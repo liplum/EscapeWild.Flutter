@@ -265,6 +265,10 @@ abstract class CampfireHolderProtocol {
   ValueNotifier<List<ItemStack>> get $offCampfire;
 }
 
+extension CampfireHolderProtocolX on CampfireHolderProtocol {
+  bool get isCampfireHasAnyStack => $onCampfire.value.isNotEmpty || $offCampfire.value.isNotEmpty;
+}
+
 mixin CampfireCookingMixin implements CampfireHolderProtocol {
   @JsonKey(fromJson: tsFromJson, toJson: tsToJson, includeIfNull: false)
   Ts cookingTime = Ts.zero;
@@ -352,6 +356,8 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
   static dynamic fireStateStackToJson(FireState fire) => fire.isOff ? null : fire;
 }
 
+const _emberCostFactor = 5;
+
 FireState _burningFuel(
   FireState former,
   double cost,
@@ -363,7 +369,7 @@ FireState _burningFuel(
     final costOverflow = cost - curFuel;
     resFuel = 0;
     resEmber += curFuel;
-    resEmber -= costOverflow * 2;
+    resEmber -= costOverflow * _emberCostFactor;
   } else {
     resFuel -= cost;
     resEmber += cost;
