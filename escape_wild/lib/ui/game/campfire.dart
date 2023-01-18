@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 
 part 'campfire.i18n.dart';
@@ -137,13 +136,13 @@ class _FireStartingPageState extends State<FireStartingPage> {
   Future<void> onSelectFireStarter() async {
     await context.showBackpackSheet(
       matcher: fireStarterSlot.matcher,
-      onSelect: (selected) {
+      delegate: BackpackSheetItemStack(onSelect: (selected) {
         if (!mounted) return;
         setState(() {
           fireStarterSlot.toggle(selected);
         });
         context.navigator.pop();
-      },
+      }),
     );
   }
 
@@ -323,8 +322,12 @@ class _CookPageState extends State<CookPage> {
   Widget buildIngredientSlot(ItemStackSlot slot) {
     final cell = ItemStackReqCell(
       slot: slot,
-      //onTapUnsatisfied: selectFood,
-      //onTapSatisfied: selectFood,
+      onTapUnsatisfied: () async {
+        await onSetIngredient(slot);
+      },
+      onTapSatisfied: () async {
+        await onTakeOutIngredient(slot);
+      },
       unsatisfiedTheme: NullItemCellTheme(
         placeholder: "Ingredient",
         nameOpacity: 0.4,
@@ -333,10 +336,61 @@ class _CookPageState extends State<CookPage> {
     return cell;
   }
 
+  Future<void> onSetIngredient(ItemStackSlot slot) async {
+    if (slot.isNotEmpty) return;
+    final anyIngredientExisted = ingredientsSlots.any((slot) => slot.isNotEmpty);
+    if (anyIngredientExisted) {
+      final confirmed = await context.showRequest(
+        title: "Add Ingredient?",
+        desc: "Confirm to add ingredient and reset cooking?",
+        yes: I.yes,
+        no: I.no,
+        highlight: true,
+      );
+      if (confirmed != true) return;
+    }
+    if (!mounted) return;
+    await context.showBackpackSheet<ItemStack>(
+      matcher: cookMatcher,
+      delegate: BackpackSheetItemStackWithMass(onSelect: (selected, mass) {
+        final ItemStack ingredient;
+        if (selected.meta.mergeable) {
+          assert(mass != null, "$selected is mergeable, but selected mass is null");
+          ingredient = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
+        } else {
+          player.backpack.removeStack(selected);
+          ingredient = selected;
+        }
+        // the slot should be empty, but there is no guarantee in async context.
+        if (slot.isEmpty) {
+          slot.stack = ingredient;
+        } else {
+          ingredient.mergeTo(slot.stack);
+        }
+        // sync with [campfireHolder].
+        final cur = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
+        holder.$onCampfire.value = cur;
+      }),
+    );
+  }
+
+  Future<void> onTakeOutIngredient(ItemStackSlot slot) async {
+    final stack = slot.stack;
+    if (slot.isEmpty) return;
+    final confirmed = await context.showRequest(
+      title: "Stop Cooking?",
+      desc: "Confirm to take out ${stack.displayName()} and reset cooking?",
+      yes: I.yes,
+      no: I.no,
+      serious: true,
+      highlight: true,
+    );
+    if (confirmed != true) return;
+  }
+
   Widget buildDishesSlot(ItemStackSlot slot) {
     final cell = ItemStackReqCell(
       slot: slot,
-      //onTapUnsatisfied: selectFood,
       unsatisfiedTheme: NullItemCellTheme(
         placeholder: "Output",
         nameOpacity: 0.4,
@@ -354,39 +408,6 @@ class _CookPageState extends State<CookPage> {
   }
 
   final $selectedMass = ValueNotifier(0);
-
-  Future<void> onAdd() async {
-    await context.showBackpackSheet<ItemStack>(
-      matcher: cookMatcher,
-      onSelect: (selected) async {
-        $selectedMass.value = selected.stackMass;
-        final confirmed = await context.showAnyRequest(
-          title: selected.displayName(),
-          make: (_) => ItemStackMassSelector(
-            template: selected,
-            $selectedMass: $selectedMass,
-          ),
-          yes: "Add",
-          no: I.cancel,
-          highlight: true,
-        );
-        if (confirmed != true) return;
-        final selectedMassOrPart = $selectedMass.value;
-        if (selectedMassOrPart <= 0) return;
-        context.navigator.pop(selected);
-        final slot = findFirstAvailableIngredientSlotFor(selected);
-        if (slot == null) return;
-        final part = player.backpack.splitItemInBackpack(selected, selectedMassOrPart);
-        if (slot.isEmpty) {
-          slot.stack = part;
-        } else {
-          part.mergeTo(slot.stack);
-        }
-        final cur = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
-        holder.$onCampfire.value = cur;
-      },
-    );
-  }
 
   ItemStackSlot? findFirstAvailableIngredientSlotFor(ItemStack stack) {
     for (final slot in ingredientsSlots) {
@@ -411,31 +432,32 @@ class _CookPageState extends State<CookPage> {
       ).expanded();
     }
 
-    final canAdd = ingredientsSlots.count((slot) => slot.isNotEmpty) < CookRecipeProtocol.maxIngredient;
     final waitBtn = btn("Wait", elevation: 5, onTap: () {
       player.onPassTime(const Ts(minutes: 5));
     });
-    //final cookBtn = btn("Open", elevation: 5, onTap: canAdd ? onAdd : null);
     final fuelBtn = btn(_I.fuel, elevation: 5, onTap: onFuel);
     return [
       waitBtn,
-      //cookBtn,
       fuelBtn,
     ].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
   }
 
   Future<void> onFuel() async {
-    final selected = await context.showBackpackSheet<ItemStack>(
+    await context.showBackpackSheet<ItemStack>(
       matcher: ItemMatcher.hasComp(const [FuelComp]),
-      onSelect: (selected) async {
-        context.navigator.pop(selected);
-      },
+      delegate: BackpackSheetItemStackWithMass(onSelect: (selected, mass) async {
+        final ItemStack fuel;
+        if (selected.meta.mergeable) {
+          assert(mass != null, "$selected is mergeable, but selected mass is null");
+          fuel = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
+        } else {
+          player.backpack.removeStack(selected);
+          fuel = selected;
+        }
+        final heatValue = FuelComp.tryGetHeatValue(fuel);
+        fireFuel += heatValue;
+      }),
     );
-    if (selected == null) return;
-    if (!mounted) return;
-    final heatValue = FuelComp.tryGetHeatValue(selected);
-    fireFuel += heatValue;
-    player.backpack.removeStack(selected);
   }
 
   Widget buildFuelState(FireState state) {

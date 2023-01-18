@@ -243,12 +243,7 @@ class ItemStackCell extends StatelessWidget {
     if (durabilityComp != null) {
       final ratio = durabilityComp.durabilityRatio(stack);
       return [
-        AttrProgress(value: ratio)
-            .opacity(theme.$progressBarOpacity)
-            .align(
-              at: const Alignment(1.0, -0.86)
-            )
-            .padH(5),
+        AttrProgress(value: ratio).opacity(theme.$progressBarOpacity).align(at: const Alignment(1.0, -0.86)).padH(5),
         tile,
       ].stack();
     } else {
@@ -631,6 +626,12 @@ class ItemStackSlot with ChangeNotifier {
     }
   }
 
+  ItemStackMatchResult checkExact() => matcher.exact(stack);
+
+  bool get isExactMatched => isNotEmpty && checkExact().isMatched;
+
+  bool get isTypeMatched => isNotEmpty && matcher.typeOnly(stack.meta);
+
   bool get isEmpty => stack == ItemStack.empty;
 
   bool get isNotEmpty => !isEmpty;
@@ -688,18 +689,18 @@ class ItemStackReqCell extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
-    final satisfyCondition = slot.isNotEmpty;
+    final satisfyCondition = slot.isExactMatched;
     return CardButton(
       elevation: satisfyCondition ? 4 : 0,
-      onTap: !satisfyCondition ? onTapUnsatisfied : onTapSatisfied,
-      shape: !satisfyCondition ? context.outlinedCardBorder() : null,
-      child: !satisfyCondition
-          ? NullItemCell(
-              theme: unsatisfiedTheme,
-            )
-          : ItemStackCell(
+      onTap: satisfyCondition ? onTapSatisfied : onTapUnsatisfied,
+      shape: satisfyCondition ? null : context.outlinedCardBorder(),
+      child: satisfyCondition
+          ? ItemStackCell(
               slot.stack,
               theme: satisfiedTheme,
+            )
+          : NullItemCell(
+              theme: unsatisfiedTheme,
             ),
     );
   }
@@ -764,15 +765,43 @@ enum BackpackFilterDisplayBehavior {
   bool get showFilterButton => this == toggleable;
 }
 
+abstract class BackpackSheetDelegate {
+  const BackpackSheetDelegate();
+
+  void onSelectItemStack(ItemStack stack, int? massOrPart);
+}
+
+class BackpackSheetItemStack extends BackpackSheetDelegate {
+  final ValueChanged<ItemStack> onSelect;
+
+  const BackpackSheetItemStack({required this.onSelect});
+
+  @override
+  void onSelectItemStack(ItemStack stack, int? massOrPart) {
+    onSelect(stack);
+  }
+}
+
+class BackpackSheetItemStackWithMass extends BackpackSheetDelegate {
+  final void Function(ItemStack stack, int? mass) onSelect;
+
+  const BackpackSheetItemStackWithMass({required this.onSelect});
+
+  @override
+  void onSelectItemStack(ItemStack stack, int? massOrPart) {
+    onSelect(stack, massOrPart);
+  }
+}
+
 class BackpackSheet extends StatefulWidget {
   final ItemMatcher matcher;
-  final ValueChanged<ItemStack>? onSelect;
+  final BackpackSheetDelegate? delegate;
   final BackpackFilterDisplayBehavior behavior;
 
   const BackpackSheet({
     super.key,
     required this.matcher,
-    this.onSelect,
+    this.delegate,
     this.behavior = BackpackFilterDisplayBehavior.toggleable,
   });
 
@@ -794,6 +823,13 @@ class _BackpackSheetState extends State<BackpackSheet> {
   void initState() {
     super.initState();
     updateBackpackFilter();
+    player.backpack.addListener(updateBackpackFilter);
+  }
+
+  @override
+  void dispose() {
+    player.backpack.removeListener(updateBackpackFilter);
+    super.dispose();
   }
 
   void updateBackpackFilter() {
@@ -868,23 +904,48 @@ class _BackpackSheetState extends State<BackpackSheet> {
   }
 
   Widget buildItem(ItemStack stack, {required bool accepted}) {
-    final onSelect = widget.onSelect;
+    final delegate = widget.delegate;
     return CardButton(
       elevation: accepted ? 4 : 0,
-      onTap: !accepted || onSelect == null
+      onTap: !accepted || delegate == null
           ? null
-          : () {
-              onSelect(stack);
+          : () async {
+              await onSelectItemStack(stack, delegate);
             },
       child: ItemStackCell(stack),
     );
+  }
+
+  final $selectedMass = ValueNotifier(0);
+
+  Future<void> onSelectItemStack(ItemStack selected, BackpackSheetDelegate delegate) async {
+    if (delegate is BackpackSheetItemStackWithMass && selected.meta.mergeable) {
+      // if selected is mergeable, show a mass selector.
+      $selectedMass.value = selected.stackMass;
+      final confirmed = await context.showAnyRequest(
+        title: selected.displayName(),
+        make: (_) => ItemStackMassSelector(
+          template: selected,
+          $selectedMass: $selectedMass,
+        ),
+        yes: "Select",
+        no: I.cancel,
+        highlight: true,
+      );
+      if (confirmed != true) return;
+      final massOrPart = $selectedMass.value;
+      if (massOrPart <= 0) return;
+      delegate.onSelectItemStack(selected, massOrPart);
+    } else {
+      delegate.onSelectItemStack(selected, null);
+    }
   }
 }
 
 extension BackpackBuildContextX on BuildContext {
   Future<T?> showBackpackSheet<T>({
     required ItemMatcher matcher,
-    ValueChanged<ItemStack>? onSelect,
+    BackpackSheetDelegate? delegate,
     BackpackFilterDisplayBehavior behavior = BackpackFilterDisplayBehavior.toggleable,
   }) async {
     return await showCupertinoModalBottomSheet<T>(
@@ -892,7 +953,7 @@ extension BackpackBuildContextX on BuildContext {
       enableDrag: false,
       builder: (ctx) => BackpackSheet(
         matcher: matcher,
-        onSelect: onSelect,
+        delegate: delegate,
         behavior: behavior,
       ).constrained(maxH: max(mediaQuery.size.height * 0.5, 380)),
     );

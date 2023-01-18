@@ -263,14 +263,6 @@ abstract class CampfireHolderProtocol {
 
   @JsonKey(ignore: true)
   ValueNotifier<List<ItemStack>> get $offCampfire;
-
-  static const campfireStackJsonKey =
-      JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false);
-
-  static List<ItemStack> campfireStackFromJson(dynamic json) =>
-      json == null ? [] : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
-
-  static dynamic campfireStackToJson(List<ItemStack> list) => list.isEmpty ? null : list;
 }
 
 mixin CampfireCookingMixin implements CampfireHolderProtocol {
@@ -285,12 +277,12 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
   @override
   final $offCampfire = ValueNotifier<List<ItemStack>>([]);
 
-  @CampfireHolderProtocol.campfireStackJsonKey
+  @campfireStackJsonKey
   List<ItemStack> get onCampfire => $onCampfire.value;
 
   set onCampfire(List<ItemStack> v) => $onCampfire.value = v;
 
-  @CampfireHolderProtocol.campfireStackJsonKey
+  @campfireStackJsonKey
   List<ItemStack> get offCampfire => $offCampfire.value;
 
   set offCampfire(List<ItemStack> v) => $offCampfire.value = v;
@@ -342,6 +334,14 @@ mixin CampfireCookingMixin implements CampfireHolderProtocol {
       this.fireState = _burningFuel(fireState, cost);
     }
   }
+
+  static const campfireStackJsonKey =
+      JsonKey(fromJson: campfireStackFromJson, toJson: campfireStackToJson, includeIfNull: false);
+
+  static List<ItemStack> campfireStackFromJson(dynamic json) =>
+      json == null ? [] : (json as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
+
+  static dynamic campfireStackToJson(List<ItemStack> list) => list.isEmpty ? null : list;
 
   static Ts tsFromJson(dynamic json) => json == null ? Ts.zero : Ts.fromJson((json as num).toInt());
 
