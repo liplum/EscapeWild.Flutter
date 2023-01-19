@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/generated/icons.dart';
 import 'package:escape_wild/ui/game/backpack.dart';
 import 'package:escape_wild/ui/game/campfire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rettulf/rettulf.dart';
 import 'action.dart';
+import 'camp.dart';
 import 'craft.dart';
 
 part 'home.i18n.dart';
@@ -102,9 +104,9 @@ class _HomePageState extends State<Homepage> {
           activeIcon: const Icon(Icons.build),
         ),
         BottomNavigationBarItem(
-          label: _I.campfire,
-          icon: const Icon(Icons.local_fire_department_outlined),
-          activeIcon: const Icon(Icons.local_fire_department),
+          label: "Shelter",
+          icon: const Icon(IconsX.camping_outlined),
+          activeIcon: const Icon(IconsX.camping),
         ),
       ],
     );
@@ -120,7 +122,7 @@ class _HomePageState extends State<Homepage> {
     } else if (curIndex == _P.craft) {
       return const CraftPage();
     } else {
-      return const CampfirePage();
+      return const CampPage();
     }
   }
 

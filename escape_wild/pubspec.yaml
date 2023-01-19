@@ -74,7 +74,10 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.3.3
   json_serializable: ^6.5.4
-
+  icon_font_generator:
+    git:
+      url: https://github.com/Gaurav192/icon_font_generator.git
+      ref: file_path_fix
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -99,8 +102,12 @@ flutter:
     - assets/vanilla/
     - assets/vanilla/l10n/
     - assets/img/
-  # Offline fonts for whoever can't fetch `Roboto` font from network.
   fonts:
+    # Offline fonts for whoever can't fetch `Roboto` font from network.
     - family: Roboto
       fonts:
         - asset: google_fonts/Roboto-Regular.ttf
+    # run it to generate icon from *.svg: `dart run icon_font_generator --from=icons --class-name=IconsX --out-font=assets//icons.ttf --out-flutter=lib//generated//icons.dart`.
+    - family: IconsX
+      fonts:
+        - asset: assets/icons.ttf

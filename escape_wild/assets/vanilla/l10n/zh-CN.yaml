@@ -4,12 +4,16 @@ attribute:
   water: 水分
   energy: 体力
 action:
-  move: 前进
-  explore: 探索
-  rest: 休息
+  move:
+    name: 前进
+  explore:
+    name: 探索
   hunt: 捕猎
   cut-down-tree: 砍树
-  fish: 捕鱼
+  fish:
+    name: 捕鱼
+  shelter:
+    rest: 休息
 use-type:
   use: 使用
   eat: 食用

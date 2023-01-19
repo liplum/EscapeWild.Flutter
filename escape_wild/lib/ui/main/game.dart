@@ -64,9 +64,6 @@ class _GamePageState extends State<GamePage> {
       );
       return;
     }
-    while (context.navigator.canPop()) {
-      context.navigator.pop();
-    }
     context.navigator.push(MaterialPageRoute(
       builder: (_) => const Homepage(),
     ));

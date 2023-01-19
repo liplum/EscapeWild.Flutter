@@ -377,7 +377,7 @@ class ItemDetails extends StatelessWidget {
       var color = status.color;
       color ??= ctx.colorScheme.primary;
       entries.add(Chip(
-        elevation: 5,
+        elevation: 2,
         label: status.name.text(),
         backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
       ));

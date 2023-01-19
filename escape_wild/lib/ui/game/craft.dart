@@ -202,36 +202,35 @@ class _CraftingSheetState extends State<CraftingSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        leading: CupertinoButton(
-          padding: EdgeInsets.zero,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
           onPressed: () {
             context.navigator.pop();
           },
-          child: I.cancel.text(),
         ),
-        middle: recipe.outputItem.l10nName().text(style: context.textTheme.titleLarge),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          onPressed: !isSatisfyAllConditions
-              ? null
-              : () {
-                  onCraft();
-                },
-          child: recipe.craftType.l10nName().text(),
-        ),
+        title: recipe.outputItem.l10nName().text(style: context.textTheme.titleLarge),
+        centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: !isSatisfyAllConditions ? null : onCraft,
+            child: recipe.craftType.l10nName().text(
+                  style: TextStyle(fontSize: context.textTheme.titleMedium?.fontSize),
+                ),
+          )
+        ],
         backgroundColor: Colors.transparent,
       ),
-      child: player.backpack >> (_) => context.isPortrait ? buildPortrait() : buildLandscape(),
+      body: player.backpack >> (_) => context.isPortrait ? buildPortrait() : buildLandscape(),
     );
   }
 
   Widget buildPortrait() {
     return [
-      buildTableView().expanded(),
-      const Divider(thickness: 2, indent: 10, endIndent: 10, height: 1),
-      buildBackpackView().expanded(),
+      buildTableView().flexible(flex: 3),
+      const Divider(thickness: 2, height: 1),
+      buildBackpackView().flexible(flex: 6),
     ].column().padAll(5);
   }
 

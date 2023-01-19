@@ -296,40 +296,30 @@ class _CookPageState extends State<CookPage> {
   }
 
   Widget buildBodyPortrait() {
-    return Scaffold(
-      appBar: AppBar(
-        title: "Campfire".text(),
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-      ),
-      body: [
-        buildFoodGrid().flexible(flex: 2),
-        buildCampfire().flexible(flex: 4),
-        buildButtons().flexible(flex: 1),
-      ].column(maa: MainAxisAlignment.spaceBetween).padAll(5),
-    );
+    return [
+      buildFoodGrid().flexible(flex: 2),
+      [
+        buildCampfireImage(),
+        buildFuelState(place.fireState),
+      ].column(maa: MainAxisAlignment.spaceEvenly).flexible(flex: 4),
+      buildButtons().flexible(flex: 1),
+    ].column(maa: MainAxisAlignment.spaceBetween).padAll(5);
   }
 
   Widget buildBodyLandscape() {
     return [
       buildFoodGrid().expanded(),
       [
-        LayoutBuilder(builder: (_, box) => buildCampfire().constrained(maxH: box.maxWidth * 0.5)),
-        buildButtons(),
-      ].column(maa: MainAxisAlignment.center).scrolled().expanded(),
+        buildCampfireImage().flexible(flex: 3),
+        buildFuelState(place.fireState),
+        buildButtons().flexible(flex: 1),
+      ].column(mas: MainAxisSize.min, maa: MainAxisAlignment.center).expanded(),
     ].row(mas: MainAxisSize.min);
   }
 
-  Widget buildCampfire() {
-    return [
-      buildBackground(),
-      buildFuelState(place.fireState),
-    ].stack();
-  }
-
-  Widget buildBackground() {
+  Widget buildCampfireImage() {
     return DynamicCampfireImage(
-      color: Color.lerp(context.themeColor, R.flameColor, fireState.fuel / FireState.maxVisualFuel)!,
+      color: Color.lerp(context.themeColor, R.flameColor, (fireState.fuel / FireState.maxVisualFuel).clamp(0, 1))!,
     ).center().opacity(0.45);
   }
 
@@ -494,27 +484,19 @@ class _CookPageState extends State<CookPage> {
   Widget buildFuelState(FireState state) {
     return LayoutBuilder(
       builder: (_, box) {
-        final length = box.maxHeight * 0.6;
-        final halfP = state.fuel / FireState.maxVisualFuel / 2;
-        final left = buildFuelProgress(halfP, length);
-        final right = buildFuelProgress(halfP, length);
-        return [
-          left,
-          right,
-        ].row(maa: MainAxisAlignment.spaceBetween);
+        final length = box.maxWidth * 0.6;
+        final halfP = state.fuel / FireState.maxVisualFuel;
+        return buildFuelProgress(halfP, length);
       },
     ).center();
   }
 
   Widget buildFuelProgress(Ratio progress, double length) {
-    return RotatedBox(
-      quarterTurns: -1,
-      child: AttrProgress(
-        value: progress.clamp(0, 1),
-        minHeight: 16,
-        color: context.fixColorBrightness(R.fuelYellowColor),
-      ).constrained(maxW: length),
-    ).padH(12);
+    return AttrProgress(
+      value: progress.clamp(0, 1),
+      minHeight: 16,
+      color: context.fixColorBrightness(R.fuelYellowColor),
+    ).constrained(maxW: length).padH(12);
   }
 }
 
@@ -528,12 +510,14 @@ class StaticCampfireImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SvgPicture.asset(
-      "assets/img/campfire.svg",
-      //color: context.themeColor,
-      color: color ?? context.themeColor,
-      placeholderBuilder: (_) => const Placeholder(),
-    ).constrained(maxW: 200, maxH: 200);
+    return LayoutBuilder(builder: (_, box) {
+      return SvgPicture.asset(
+        "assets/img/campfire.svg",
+        //color: context.themeColor,
+        color: color ?? context.themeColor,
+        placeholderBuilder: (_) => const Placeholder(),
+      ).constrained(maxW: box.maxWidth, maxH: min(180, box.maxHeight * 0.8));
+    });
   }
 }
 

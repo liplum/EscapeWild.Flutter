@@ -6,7 +6,7 @@ attribute:
 action:
   # Move forward
   move:
-    name: Move
+    name: Move # no direction specified
     left: Left
     right: Right
     up: Up

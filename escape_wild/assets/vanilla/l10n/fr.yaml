@@ -4,23 +4,28 @@ attribute:
   water: Eau
   energy: Énergie
 action:
-  move: Se déplacer
-  explore: Explorer
-  rest: Se reposer
-  hunt: Chasser
+  move:
+    name: Se déplacer
+  explore:
+    name: Explorer
+  hunt:
+    name: Chasser
   cut-down-tree: Abattre
-  fish: Pêcher
+  fish:
+    name: Pêcher
+  shelter:
+    rest: Se reposer
 use-type:
   use: Utiliser
   eat: Manger
   drink: Boire
   equip: Équipper
   craft-recipe-cat:
-  tool: Outil
-  food: Alimentation
-  fire: Feu
-  refine: Affiner
-  medical: Medical
+    tool: Outil
+    food: Alimentation
+    fire: Feu
+    refine: Affiner
+    medical: Medical
 craft-type:
   craft: Fabriquer
   repair: Réparer
