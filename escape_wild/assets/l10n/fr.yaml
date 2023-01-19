@@ -19,7 +19,6 @@ ui:
       action: Action
       backpack: Sac à dos
       craft: Fabriquer
-      campfire: Feu de camp
     backpack:
       title: Sac à dos
       mass-load: '{cur} / {max}'

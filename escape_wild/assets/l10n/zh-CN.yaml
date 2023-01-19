@@ -1,8 +1,9 @@
 ui:
   main:
-    title: 逃离荒野
-    new-game: 新的游戏
-    continue: 继续游戏
+    game:
+      title: 逃离荒野
+      new-game: 新的游戏
+      continue: 继续游戏
   game:
     home:
       action: 行动

@@ -89,7 +89,7 @@ class _GamePageState extends State<GamePage> {
       child: text
           .autoSizeText(
             maxLines: 1,
-            style: TextStyle(fontSize: 28),
+            style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize),
           )
           .padAll(5),
     ).padAll(5).constrained(minH: 60);

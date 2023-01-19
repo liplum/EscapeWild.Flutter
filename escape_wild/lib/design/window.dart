@@ -1,9 +1,8 @@
+import 'package:escape_wild/design/theme.dart';
+
 import 'top.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
-
-const _kWindowAspectRatio = 4 / 3;
 
 TopEntry showWindow({
   Key? key,
@@ -27,15 +26,32 @@ void closeWindowByKey(Key key, {BuildContext? context}) {
   entry?.closeWindow();
 }
 
+const double kWidthFactorPortrait = 0.8;
+const double kHeightFactorPortrait = 0.6;
+const double kWidthFactorLandscape = 0.6;
+const double kHeightFactorLandscape = 0.75;
+
 class Window extends StatefulWidget {
   final String title;
 
-  /// If you know width:
-  ///   height = width * [aspectRatio]
+  /// Default is 40.
+  final double? titleHeight;
+
+  /// The window size.
   ///
-  /// If you know height:
-  ///   width = height / [aspectRatio]
-  final double aspectRatio;
+  /// Default is [MediaQueryData.size]
+  final Size? windowSize;
+
+  /// The width factor of [windowSize].
+  /// - When [MediaQueryData.orientation] is [Orientation.portrait], the default is [kWidthFactorPortrait].
+  /// - Otherwise, the default is [kWidthFactorLandscape].
+  final double? widthFactor;
+
+  /// The height factor of [windowSize].
+  ///
+  /// - When [MediaQueryData.orientation] is [Orientation.portrait], the default is [kHeightFactorPortrait].
+  /// - Otherwise, the default is [kHeightFactorLandscape].
+  final double? heightFactor;
   final CloseableProtocol? closeable;
   final WidgetBuilder builder;
   final Duration fadeDuration;
@@ -45,8 +61,11 @@ class Window extends StatefulWidget {
     required this.title,
     this.closeable,
     required this.builder,
-    this.aspectRatio = _kWindowAspectRatio,
+    this.windowSize,
+    this.widthFactor,
+    this.heightFactor,
     this.fadeDuration = const Duration(milliseconds: 200),
+    this.titleHeight,
   });
 
   @override
@@ -57,16 +76,10 @@ class _WindowState extends State<Window> {
   var _x = 0.0;
   var _y = 0.0;
   final _mainBodyKey = GlobalKey();
-  static var scaleDelta = 0.0;
-  static const scaleRange = 150;
-
-  static double get scaleDeltaProgress => clampDouble(scaleDelta / scaleRange, 0.0, 1.0);
-
-  static set scaleDeltaProgress(double newV) => scaleDelta = newV * scaleRange;
-  var isResizing = false;
 
   // Hide the first frame to avoid position flash
   var opacity = 0.0;
+  Orientation? lastOrientation;
 
   @override
   void initState() {
@@ -88,18 +101,20 @@ class _WindowState extends State<Window> {
     });
   }
 
-  Size calcuBestSize(BuildContext ctx) {
+  Size calcuWindowSize(BuildContext ctx) {
+    final size = widget.windowSize;
+    if (size != null) return size;
     final full = ctx.mediaQuery.size;
     if (ctx.isPortrait) {
-      // on Portrait mode, the preview window is based on width.
-      final width = full.width * 0.8;
-      final height = width / widget.aspectRatio + scaleDelta;
-      return Size(width, height);
+      return Size(
+        full.width * (widget.widthFactor ?? kWidthFactorPortrait),
+        full.height * (widget.heightFactor ?? kHeightFactorPortrait),
+      );
     } else {
-      // on Landscape mode, the preview window is based on height.
-      final height = full.height * 0.8 + scaleDelta;
-      final width = height * widget.aspectRatio;
-      return Size(width, height);
+      return Size(
+        full.width * (widget.widthFactor ?? kWidthFactorLandscape),
+        full.height * (widget.heightFactor ?? kHeightFactorLandscape),
+      );
     }
   }
 
@@ -119,75 +134,33 @@ class _WindowState extends State<Window> {
     );
   }
 
+  Future<void> onCloseWindow() async {
+    setState(() {
+      opacity = 0.0;
+    });
+    await Future.delayed(widget.fadeDuration);
+    widget.closeable?.closeWindow();
+  }
+
+  void onWindowMove(PointerMoveEvent e) {
+    setState(() {
+      _x += e.delta.dx;
+      _y += e.delta.dy;
+    });
+  }
+
   Widget buildWindowContent(BuildContext ctx) {
-    final windowSize = calcuBestSize(ctx);
-    Widget content = [
-      Listener(
-        child: buildWindowHead(ctx),
-        onPointerMove: (d) {
-          if (!isResizing) {
-            setState(() {
-              _x += d.delta.dx;
-              _y += d.delta.dy;
-            });
-          }
-        },
-      ).sized(w: windowSize.width),
-      widget.builder(ctx).sizedIn(windowSize),
-    ].column();
-    content = content.inCard(elevation: 0);
-    return content;
-  }
-
-  Widget buildTitle(BuildContext ctx) {
-    final Widget res;
-    if (isResizing) {
-      res = Slider(
-        value: scaleDeltaProgress,
-        onChanged: (newV) {
-          setState(() {
-            scaleDeltaProgress = newV;
-          });
-        },
-      );
-    } else {
-      final style = ctx.textTheme.titleMedium;
-      res = [
-        widget.title
-            .text(style: style, textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 1)
-            .padSymmetric(h: 10, v: 10)
-            .align(at: Alignment.center),
-      ].stack().inCard(elevation: 2);
-    }
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.fastLinearToSlowEaseIn,
-      child: res,
-    );
-  }
-
-  Widget buildWindowHead(BuildContext ctx) {
-    final closeable = widget.closeable;
-    return [
-      IconButton(
-        onPressed: () {
-          setState(() {
-            isResizing = !isResizing;
-          });
-        },
-        icon: const Icon(Icons.open_in_full_rounded),
-      ),
-      buildTitle(ctx).expanded(),
-      if (closeable != null)
-        IconButton(
-            onPressed: () async {
-              setState(() {
-                opacity = 0.0;
-              });
-              await Future.delayed(widget.fadeDuration);
-              closeable.closeWindow();
-            },
-            icon: const Icon(Icons.close)),
-    ].row();
+    final windowSize = calcuWindowSize(ctx);
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: onCloseWindow,
+        ),
+        title: widget.title.text(),
+        centerTitle: true,
+      ).listener(onPointerMove: onWindowMove).preferredSize(Size.fromHeight(widget.titleHeight ?? 40)),
+      body: widget.builder(ctx),
+    ).sizedIn(windowSize).clipRRect(borderRadius: ctx.cardBorderRadius);
   }
 }
