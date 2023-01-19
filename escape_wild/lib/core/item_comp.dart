@@ -44,28 +44,29 @@ class DurabilityComp extends ItemComp {
   @override
   void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
     final ratio = durabilityRatio(stack);
+    final percent = (ratio * 100).toInt();
     if (ratio >= 0.8) {
       builder <<
           ItemStackStatus(
-            name: "Durability: Good",
+            name: "Durability: $percent%",
             color: builder.darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good,
           );
     } else if (ratio >= 0.5) {
       builder <<
           ItemStackStatus(
-            name: "Durability: Normal",
+            name: "Durability: $percent%",
             color: builder.darkMode ? StatusColorPreset.normalDark : StatusColorPreset.normal,
           );
     } else if (ratio >= 0.2) {
       builder <<
           ItemStackStatus(
-            name: "Durability: Damaged",
+            name: "Durability: $percent%",
             color: builder.darkMode ? StatusColorPreset.warningDark : StatusColorPreset.warning,
           );
     } else {
       builder <<
           ItemStackStatus(
-            name: "Durability: Broken",
+            name: "Durability: $percent%",
             color: builder.darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst,
           );
     }

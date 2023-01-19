@@ -3,6 +3,8 @@ import 'package:escape_wild/ui/game/campfire.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
+import 'shelter.dart';
+
 class CampPage extends StatefulWidget {
   const CampPage({super.key});
 
@@ -17,9 +19,8 @@ class _CampPageState extends State<CampPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(initialIndex: lastIndex, length: 2, vsync: this);
     _tabController.addListener(onTabSwitch);
-    _tabController.animateTo(lastIndex);
   }
 
   @override
@@ -54,10 +55,9 @@ class _CampPageState extends State<CampPage> with TickerProviderStateMixin {
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: const RangeMaintainingScrollPhysics(),
         children: [
-          Center(
-            child: Text("It's cloudy here"),
-          ),
+          const ShelterPage(),
           const CampfirePage(),
         ],
       ),

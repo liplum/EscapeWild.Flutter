@@ -104,7 +104,7 @@ class _HomePageState extends State<Homepage> {
           activeIcon: const Icon(Icons.build),
         ),
         BottomNavigationBarItem(
-          label: "Shelter",
+          label: "Camp",
           icon: const Icon(IconsX.camping_outlined),
           activeIcon: const Icon(IconsX.camping),
         ),
