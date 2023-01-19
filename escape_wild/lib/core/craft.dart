@@ -113,7 +113,7 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   TagCraftRecipe(
     super.name,
     super.cat, {
-    this.ingredients = const [],
+    required this.ingredients,
     super.craftType,
     this.outputMass,
     required this.output,

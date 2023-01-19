@@ -23,6 +23,24 @@ abstract class CookRecipeProtocol with Moddable {
   /// - [inputs] is [Backpack.untracked].
   bool match(@Backpack.untracked List<ItemStack> inputs);
 
+  /// Called as long as this is matched.
+  /// ## Constrains
+  /// - [inputs] is in no order.
+  /// - [inputs] is already matched.
+  /// - [inputs] is [Backpack.untracked].
+  /// - [outputs] is in no order.
+  /// - [outputs] is [Backpack.untracked].
+  /// - return whether [inputs] or [outputs] was changed.
+  /// ## Use cases
+  /// - Instant cooking: such as igniting a torch.
+  @Backpack.untracked
+  bool onMatch(
+    @Backpack.untracked List<ItemStack> inputs,
+    @Backpack.untracked List<ItemStack> outputs,
+  ) {
+    return false;
+  }
+
   /// ## Constrains
   /// - [inputs] is in no order.
   /// - [inputs] is already matched.
@@ -36,7 +54,9 @@ abstract class CookRecipeProtocol with Moddable {
     @Backpack.untracked List<ItemStack> outputs,
     Ts totalTimePassed,
     Ts delta,
-  );
+  ) {
+    return false;
+  }
 
   static String? getNameOrNull(CookRecipeProtocol? recipe) => recipe?.name;
   static const jsonKey = JsonKey(fromJson: Contents.getCookRecipesByName, toJson: getNameOrNull, includeIfNull: false);
@@ -244,6 +264,30 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   String get typeName => type;
 }
 
+/// [InstantCookRecipe] will consume input and output instantly when this is matched.
+///
+/// It doesn't allow [Item.container].
+/// TODO: Finish this.
+@JsonSerializable(createToJson: false)
+class InstantCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
+  InstantCookRecipe(super.name);
+
+  @override
+  bool match(List<ItemStack> inputs) {
+    throw UnimplementedError();
+  }
+
+  @override
+  bool onMatch(List<ItemStack> inputs, List<ItemStack> outputs) {
+    return false;
+  }
+
+  static const type = "InstantCookRecipe";
+
+  @override
+  String get typeName => type;
+}
+
 CookRecipeProtocol? _match(List<ItemStack> stacks) {
   if (stacks.isEmpty) return null;
   for (final recipe in Contents.cookRecipes.name2FoodRecipe.values) {
@@ -266,6 +310,8 @@ abstract class CampfirePlaceProtocol extends PlaceProtocol with ChangeNotifier {
   List<ItemStack> get offCampfire;
 
   set offCampfire(List<ItemStack> v);
+
+  void onResetCooking();
 }
 
 extension CampfireHolderProtocolX on CampfirePlaceProtocol {
@@ -316,7 +362,21 @@ mixin CampfireCookingMixin on CampfirePlaceProtocol {
 
   double get fuelCostPerMinute;
 
-  @mustCallSuper
+  /// Call this after changing [onCampfire].
+  @override
+  void onResetCooking() {
+    cookingTime = Ts.zero;
+    final matched = _match(onCampfire);
+    recipe = matched;
+    if (matched != null) {
+      // for instant cooking
+      final changed = matched.onMatch(onCampfire, offCampfire);
+      if (changed) {
+        notifyListeners();
+      }
+    }
+  }
+
   Future<void> onCampfirePass(Ts delta) async {
     // update items the place holds
     for (final stack in onCampfire) {
@@ -332,18 +392,16 @@ mixin CampfireCookingMixin on CampfirePlaceProtocol {
     // only cooking when fire has fuel.
     if (fireState.fuel <= 0) return;
     if (onCampfire.isEmpty) return;
-    this.recipe ??= _match(onCampfire);
-    final recipe = this.recipe;
+    final recipe = this.recipe ??= _match(onCampfire);
     if (recipe == null) {
       cookingTime = Ts.zero;
     } else {
       cookingTime += delta;
       final changed = recipe.updateCooking(onCampfire, offCampfire, cookingTime, delta);
       if (changed) {
-        onCampfire = onCampfire;
-        offCampfire = offCampfire;
         this.recipe = null;
         cookingTime = Ts.zero;
+        notifyListeners();
       }
     }
   }

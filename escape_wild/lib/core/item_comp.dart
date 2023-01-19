@@ -157,6 +157,9 @@ class ToolType with Moddable {
   /// Use to fish
   static final ToolType fishing = ToolType("fishing");
 
+  /// Use to light
+  static final ToolType lighting = ToolType("lighting");
+
   String l10nName() => i18n("tool-type.$name");
 
   @override

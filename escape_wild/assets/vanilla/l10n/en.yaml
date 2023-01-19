@@ -52,6 +52,7 @@ tool-type:
   trap: Trap
   gun: Gun
   fishing: Fishing
+  lighting: Lighting
 craft-recipe-cat:
   # Such as axe and trap.
   tool: Tool
@@ -216,6 +217,15 @@ item:
   charcoal:
     name: Charcoal
     desc: ...
+  unlit-torch:
+    name: Unlit Torch
+    desc: Ignite.
+  lit-torch:
+    name: Lit Torch
+    desc: Once the fire burns, it cannot be stopped.
+  fat:
+    name: Fat
+    desc: It's the most efficient form of energy storage.
 route:
   subtropics:
     plain:

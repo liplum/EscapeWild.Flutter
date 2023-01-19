@@ -40,6 +40,15 @@ class CraftRecipes {
         ],
         output: () => Tools.stoneAxe,
       ),
+      TagCraftRecipe(
+        "torch",
+        CraftRecipeCat.fire,
+        ingredients: [
+          1000.tag("log"),
+          500.tag("torch-head"),
+        ],
+        output: () => Tools.unlitTorch,
+      ),
 /*      TagCraftRecipe("water-filter", CraftRecipeCat.survival,
           tags: [
             20.g("plastic-bottle"),

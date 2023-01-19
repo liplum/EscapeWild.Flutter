@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';

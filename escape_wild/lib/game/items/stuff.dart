@@ -34,8 +34,8 @@ class Stuff {
       stone = Item.mergeable("stone", mass: 200).tagged([]),
       sharpStone = Item.mergeable("sharp-stone", mass: 200).tagged(["stone"]),
       flint = Item.mergeable("flint", mass: 200).tagged([]),
-      cloth = Item.mergeable("cloth", mass: 50).asFuel(heatValue: 20).tagged(["flammable-floc"]),
-      charcoal = Item.mergeable("charcoal", mass: 100).asFuel(heatValue: 200).tagged(["coal"])
+      cloth = Item.mergeable("cloth", mass: 50).asFuel(heatValue: 20).tagged(["flammable-floc", "torch-head"]),
+      charcoal = Item.mergeable("charcoal", mass: 100).asFuel(heatValue: 200).tagged(["coal", "torch-head"])
     ]);
     // craft
     Contents.items.addAll([

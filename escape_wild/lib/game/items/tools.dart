@@ -85,10 +85,12 @@ class Tools {
     ]);
     // light
     Contents.items.addAll([
-      unlitTorch = Item.unmergeable("unlit-torch", mass: 1500),
+      // cook to ignite it.
+      unlitTorch = Item.unmergeable("unlit-torch", mass: 1500).tagged(["cookable"]),
       litTorch = Item.unmergeable("lit-torch", mass: 1500)
-          .hasDurability(max: 1000)
-          .continuousModifyDurability(deltaPerMinute: 30, wetFactor: 3),
+          .asTool(type: ToolType.lighting, attr: ToolAttr.normal)
+          .hasDurability(max: 1000) // it can last 2 hours
+          .continuousModifyDurability(deltaPerMinute: 8, wetFactor: 10),
     ]);
   }
 }

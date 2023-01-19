@@ -353,7 +353,7 @@ class _CookPageState extends State<CookPage> {
       },
       unsatisfiedTheme: NullItemCellTheme(
         placeholder: "Ingredient",
-        nameOpacity: R.disabledAlpha,
+        opacity: R.disabledAlpha,
       ),
     ).sized(w: 150, h: 80).center();
     return cell;
@@ -390,8 +390,9 @@ class _CookPageState extends State<CookPage> {
         } else {
           ingredient.mergeTo(slot.stack);
         }
-        // sync with [campfireHolder].
+        // sync
         place.onCampfire = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
+        place.onResetCooking();
       }),
     );
   }
@@ -410,7 +411,9 @@ class _CookPageState extends State<CookPage> {
     if (confirmed != true) return;
     player.backpack.addItemOrMerge(stack);
     slot.reset();
+    // sync
     place.onCampfire = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
+    place.onResetCooking();
   }
 
   Widget buildDishesSlot(ItemStackSlot slot) {
@@ -418,7 +421,7 @@ class _CookPageState extends State<CookPage> {
       slot: slot,
       unsatisfiedTheme: NullItemCellTheme(
         placeholder: "Output",
-        nameOpacity: R.disabledAlpha,
+        opacity: R.disabledAlpha,
       ),
       onTapSatisfied: () {
         if (slot.isNotEmpty) {

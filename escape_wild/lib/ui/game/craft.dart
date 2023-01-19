@@ -321,7 +321,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
             },
       child: ItemStackCell(
         item,
-        theme: ItemStackCellTheme(nameOpacity: accepted ? 1.0 : R.disabledAlpha),
+        theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha),
       ),
     );
   }

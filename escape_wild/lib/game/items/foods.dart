@@ -7,7 +7,7 @@ class Foods {
 
   // energy food
   static late final Item energyBar, energyDrink;
-  static late final Item bugMeat, moss;
+  static late final Item bugMeat, moss, fat;
 
   // rabbit
   static late final Item rawRabbit, cookedRabbit;
@@ -48,6 +48,9 @@ class Foods {
       bearExcrement = Item.mergeable("bear-excrement", mass: 666).asEatable([
         Attr.food + 0.06,
       ]),
+      fat = Item.mergeable("fat", mass: 100).asEatable([
+        Attr.food + 0.5,
+      ]).tagged(["torch-head"]),
     ]);
     // water
     Contents.items.addAll([
