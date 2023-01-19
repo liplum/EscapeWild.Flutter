@@ -373,6 +373,14 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: Item.getName)
   final Item meta;
 
+  /// [trackId] is used for backpack tracking and locating this item.
+  /// - When backpack starts to track this item, [trackId] is not null.
+  /// - When backpack loses track, [trackId] should be null.
+  ///
+  /// see [Backpack.tracked]
+  @JsonKey(name: "id", includeIfNull: true)
+  int? trackId;
+
   @JsonKey(includeIfNull: false)
   int? mass;
 

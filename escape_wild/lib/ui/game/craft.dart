@@ -1,7 +1,6 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';

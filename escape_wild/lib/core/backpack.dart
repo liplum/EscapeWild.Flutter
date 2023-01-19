@@ -23,18 +23,14 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   static const untracked = Object();
   @JsonKey()
   List<ItemStack> items = [];
+
+  /// It's used to generate a unique [ItemStack.trackId].
+  ///
+  /// [ItemStack.trackId] is used to locate item in backpack without a real reference.
   @JsonKey()
-  int _mass = 0;
-
-  int get mass => _mass;
-
-  set mass(int m) {
-    _mass = m;
-    if (kDebugMode) {
-      final sum = sumMass();
-      assert(sum == mass, "Sum[$sum] != State[$mass]");
-    }
-  }
+  int lastTrackId = 0;
+  @JsonKey(name: "mass")
+  int mass = 0;
 
   Backpack();
 
@@ -113,15 +109,25 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
       mass -= removedMass;
+      stack.trackId = null;
       notifyListeners();
     }
     return hasRemoved;
   }
 
+  /// Return [-1] if [stack] is not in this.
   int indexOfStack(@tracked ItemStack? stack) {
     if (stack == null) return -1;
     if (stack.isEmpty) return -1;
-    return items.indexOf(stack);
+    final index = items.indexOf(stack);
+    if (kDebugMode) {
+      if (index >= 0) {
+        assert(stack.trackId != null, "$stack is in $this but doesn't have trackId[${stack.trackId}].");
+      } else {
+        assert(stack.trackId == null, "$stack isn't in $this but has trackId[${stack.trackId}]");
+      }
+    }
+    return index;
   }
 
   /// It will directly change the mass of item and track [Backpack.mass] without calling [ItemComp.onSplit],
@@ -202,6 +208,7 @@ extension BackpackX on Backpack {
 
   /// return whether [addition] is added or merged.
   bool _addItemOrMerge(ItemStack addition) {
+    assert(addition.trackId == null, "$addition already has a trackId before being added.");
     if (addition.isEmpty) return false;
     final additionMass = addition.stackMass;
     if (addition.meta.mergeable) {
@@ -209,9 +216,11 @@ extension BackpackX on Backpack {
       if (existed != null) {
         addition.mergeTo(existed);
       } else {
+        addition.trackId = lastTrackId++;
         items.add(addition);
       }
     } else {
+      addition.trackId = lastTrackId++;
       items.add(addition);
     }
     mass += additionMass;
@@ -224,6 +233,10 @@ extension BackpackX on Backpack {
       sum += item.stackMass;
     }
     return sum;
+  }
+
+  ItemStack? findStackByTrackId(int trackId) {
+    return items.firstWhereOrNull((stack) => stack.trackId == trackId);
   }
 
   ItemStack? get firstOrNull => items.firstOrNull;

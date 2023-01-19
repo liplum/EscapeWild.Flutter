@@ -60,11 +60,14 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   void _debugValidate() {
     if (kDebugMode) {
+      final backpackSumMass = backpack.sumMass();
+      assert(backpack.mass == backpack.sumMass(), "Sum[$backpackSumMass] != State[${backpack.mass}]");
       for (final stack in backpack) {
         assert(stack.isNotEmpty, "$stack is empty in backpack.");
         if (!stack.meta.mergeable) {
           assert(stack.mass == null, "${stack.meta} is unmergeable but $stack has not-null mass.");
         }
+        assert(stack.trackId != null, "$stack in backpack has a null trackId");
       }
       final loc = location;
       if (loc != null) {
@@ -76,10 +79,12 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
             assert(place.route == route, "${place.route} and $place must be matched.");
             if (place is CampfirePlaceProtocol) {
               for (final stack in place.onCampfire) {
-                assert(stack.isNotEmpty, "$place has empty onCampfire stack.");
+                assert(stack.isNotEmpty, "$place has empty onCampfire stack, $stack");
+                assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
               }
               for (final stack in place.offCampfire) {
-                assert(stack.isNotEmpty, "$place has empty offCampfire stack.");
+                assert(stack.isNotEmpty, "$place has empty offCampfire stack, $stack.");
+                assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
               }
             }
           }
@@ -117,7 +122,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   Future<void> onGameWin() async {
     await AppCtx.showTip(
       title: "Congratulation!",
-      desc: "You win the game after $actionTimes actions and ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
+      desc:
+          "You win the game after $actionTimes actions and ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
       ok: "OK",
       dismissible: false,
     );

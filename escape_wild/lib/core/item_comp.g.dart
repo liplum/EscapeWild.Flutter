@@ -51,6 +51,7 @@ WetnessComp _$WetnessCompFromJson(Map<String, dynamic> json) => WetnessComp(
 FreshnessComp _$FreshnessCompFromJson(Map<String, dynamic> json) =>
     FreshnessComp(
       expire: Ts.fromJson(json['expire'] as int),
+      wetRotFactor: (json['wetRotFactor'] as num?)?.toDouble() ?? 0.6,
     );
 
 FireStarterComp _$FireStarterCompFromJson(Map<String, dynamic> json) =>

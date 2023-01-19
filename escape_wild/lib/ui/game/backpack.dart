@@ -397,6 +397,7 @@ class ItemDetails extends StatelessWidget {
       color ??= ctx.colorScheme.primary;
       entries.add(Chip(
         elevation: 2,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
         label: status.name.text(),
         backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
       ));
