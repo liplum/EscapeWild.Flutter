@@ -1,27 +1,109 @@
+# Don't translate "language" section. It's used to display when player is selecting a language.
+language:
+  en: English
+  fr: Français
+  zh_CN: 简体中文
 ui:
   main:
-    title: Escape Wild
-    new-game: Nouvelle Partie
-    continue: Continuer
-  home:
-    action: Action
-    backpack: Sac à dos
-    craft: Fabriquer
-    campfire: Feu de camp
-  backpack:
-    mass-load: '{cur} / {max}'
-    discard-request: Jeter ?
-    discard-confirm: "Confirmer pour jeter {} ?"
-    empty-tip: Votre sac à dos est vide.
+    home:
+      game: Jeu
+      # A bottom navigation about user themselves.
+      mine: Moi
+    game:
+      title: Escape Wild
+      new-game: Nouvelle Partie
+      continue: Continuer
+  game:
+    home:
+      # Where to display HUD, action buttons and progress.
+      action: Action
+      backpack: Sac à dos
+      craft: Fabriquer
+      campfire: Feu de camp
+    backpack:
+      title: Sac à dos
+      mass-load: '{cur} / {max}'
+      # The title of discard request
+      discard-request: Jeter ?
+      # Ask before player is going to discard something in backpack.
+      discard-confirm: "Confirmer pour jeter {} ?"
+      # Display when backpack is empty
+      empty-tip: Votre sac à dos est vide.
+    ingame-menu:
+      save: Sauvegarder
+    campfire:
+      start-fire: Démarrer le Feu
+      restart-fire: Redémarrer le Feu
+      # verb: supply campfire with fuel
+      fuel: Carburant
+  debug:
+    debug-console:
+      title: Console de Débug
+      cat:
+        item: Objet
+  settings:
+    language:
+      title: Langue
+    measurement:
+      title: Mesure
+time:
+  hour: '{} h'
+  minute: '{} min.'
+  hm: '{hour} h {min} min.'
+physical-quantity:
+  mass: Masse
+  length: Longueur
+  temperature: Température
+# The unit of measurement system. 
+unit:
+  mass:
+    gram:
+      name: Gramme (g)
+      unit: g
+      format: '{} g'
+    kilogram:
+      name: Kilogramme (kg)
+      unit: kg
+      format: '{} kg'
+    pound:
+      name: Livre (lb)
+      unit: lbs
+      format: '{} lbs'
+    ounce:
+      name: Once (oz)
+      unit: oz
+      format: '{} oz'
+  temperature:
+    celsius:
+      name: Celsius(°C)
+      unit: '°C'
+      format: '{} °C'
+    fahrenheit:
+      name: Fahrenheit(°F)
+      unit: '°F'
+      format: '{} °F'
+# unit: gram
+item:
+  mass-with-unit: '{}g'
+# To express knowing.
 ok: OK
+# To approve.
 yes: Oui
+# To refuse.
 no: Non
-done: Done
+# When finished a job.
+done: Terminé
+# To cancel or delay.
 not-now: Pas maintenant
 cancel: Annuler
+# To express acceptable but not good.
 alright: D'accord
+# Discard something.
 discard: Jeter
 action:
+  # When player gets items
   got-items: Vous avez obtenu {}.
+  # When player gets nothing
   got-nothing: Vous n'avez rien eu.
+  # When a tool is broken
   tool-broken: "{} est complètement cassé, il ne peut plus fonctionner"
