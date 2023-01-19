@@ -160,6 +160,12 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void validate() {
     removeEmptyOrBrokenStacks();
     mass = sumMass();
+    notifyListeners();
+  }
+
+  /// manually call [notifyListeners] if some state was changed outside.
+  void notifyChange() {
+    notifyListeners();
   }
 
   static const type = "Backpack";
@@ -268,35 +274,20 @@ extension BackpackX on Backpack {
 extension BackpackItemFinderX on Backpack {
   Iterable<ItemCompPair<ToolComp>> findToolsOfType(ToolType toolType) sync* {
     for (final item in items) {
-      final asTool = item.meta.getFirstComp<ToolComp>();
-      if (asTool != null && asTool.toolType == toolType) {
-        yield ItemCompPair(item, asTool);
+      for (final asTool in item.meta.getCompsOf<ToolComp>()) {
+        if (asTool.toolType == toolType) {
+          yield ItemCompPair(item, asTool);
+        }
       }
     }
   }
 
-  Iterable<ItemCompPair<ToolComp>> findToolsOfTypes(List<ToolType> toolTypes) sync* {
+  bool hasAnyToolOfAnyTypeIn(List<ToolType> toolTypes) {
     for (final item in items) {
-      final asTool = item.meta.getFirstComp<ToolComp>();
-      if (asTool != null && toolTypes.contains(asTool.toolType)) {
-        yield ItemCompPair(item, asTool);
-      }
-    }
-  }
-
-  ItemCompPair<ToolComp>? findBesToolOfType(ToolType toolType) {
-    return findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
-  }
-
-  ItemCompPair<ToolComp>? findBesToolOfTypes(List<ToolType> toolTypes) {
-    return findToolsOfTypes(toolTypes).maxOfOrNull((p) => p.comp.attr);
-  }
-
-  bool hasAnyToolOfTypes(List<ToolType> toolTypes) {
-    for (final item in items) {
-      final asTool = item.meta.getFirstComp<ToolComp>();
-      if (asTool != null && toolTypes.contains(asTool.toolType)) {
-        return true;
+      for (final asTool in item.meta.getCompsOf<ToolComp>()) {
+        if (toolTypes.contains(asTool.toolType)) {
+          return true;
+        }
       }
     }
     return false;
@@ -304,9 +295,10 @@ extension BackpackItemFinderX on Backpack {
 
   bool hasAnyToolOfType(ToolType toolType) {
     for (final item in items) {
-      final asTool = item.meta.getFirstComp<ToolComp>();
-      if (asTool != null && asTool.toolType == toolType) {
-        return true;
+      for (final asTool in item.meta.getCompsOf<ToolComp>()) {
+        if (asTool.toolType == toolType) {
+          return true;
+        }
       }
     }
     return false;

@@ -6,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'item_comp.g.dart';
 
+/// An [Item] can have at most one [DurabilityComp].
 @JsonSerializable(createToJson: false)
 class DurabilityComp extends ItemComp {
   static const _durabilityK = "Durability.durability";
@@ -107,7 +108,7 @@ extension DurabilityCompX on Item {
     required double max,
   }) {
     final comp = DurabilityComp(max);
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
@@ -149,26 +150,30 @@ class ToolAttr implements Comparable<ToolAttr> {
   int get hashCode => efficiency.hashCode;
 }
 
-class ToolType {
+class ToolType with Moddable {
+  @override
   final String name;
 
-  const ToolType(this.name);
+  ToolType(this.name);
 
-  factory ToolType.named(String name) => ToolType(name);
+  factory ToolType.fromJson(String name) => ToolType(name);
 
-  static const ToolType cutting = ToolType("cutting");
+  String toJson() => name;
+  static final ToolType cutting = ToolType("cutting");
 
   /// Use to cut down tree
-  static const ToolType axe = ToolType("axe");
+  static final ToolType axe = ToolType("axe");
 
   /// Use to hunt
-  static const ToolType trap = ToolType("trap");
+  static final ToolType trap = ToolType("trap");
 
   /// Use to hunt
-  static const ToolType gun = ToolType("gun");
+  static final ToolType gun = ToolType("gun");
 
   /// Use to fish
-  static const ToolType fishing = ToolType("fishing");
+  static final ToolType fishing = ToolType("fishing");
+
+  String l10nName() => i18n("tool-type.$name");
 
   @override
   bool operator ==(Object other) {
@@ -181,11 +186,12 @@ class ToolType {
   int get hashCode => name.hashCode;
 }
 
+/// An [Item] can have at most one [ToolComp] for each different [ToolType].
 @JsonSerializable(createToJson: false)
 class ToolComp extends ItemComp {
   @JsonKey(fromJson: ToolAttr.fromJson)
   final ToolAttr attr;
-  @JsonKey(fromJson: ToolType.named)
+  @JsonKey(fromJson: ToolType.fromJson)
   final ToolType toolType;
 
   const ToolComp({
@@ -214,7 +220,20 @@ class ToolComp extends ItemComp {
         mergeableShouldBe: false,
       );
     }
+    for (final comp in item.getCompsOf<ToolComp>()) {
+      if (comp.toolType == toolType) {
+        throw ItemCompConflictError("$ToolComp already exists for $toolType.", item);
+      }
+    }
   }
+
+  static Iterable<ToolComp> of(ItemStack stack) sync* {
+    for (final comp in stack.meta.getCompsOf<ToolComp>()) {
+      yield comp;
+    }
+  }
+
+  static ToolComp? ofType(ItemStack stack, ToolType toolType) => stack.meta.getFirstComp<ToolComp>();
 
   factory ToolComp.fromJson(Map<String, dynamic> json) => _$ToolCompFromJson(json);
   static const type = "Tool";
@@ -232,7 +251,7 @@ extension ToolCompX on Item {
       attr: attr,
       toolType: type,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
@@ -248,6 +267,7 @@ enum UseType {
   String l10nName() => I18n["use-type.$name"];
 }
 
+/// An [Item] can have multiple [UsableComp].
 abstract class UsableComp extends ItemComp {
   @JsonKey()
   final UseType useType;
@@ -324,7 +344,7 @@ extension ModifyAttrCompX on Item {
       modifiers,
       afterUsedItem: afterUsed,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
@@ -338,7 +358,7 @@ extension ModifyAttrCompX on Item {
       modifiers,
       afterUsedItem: afterUsedItem,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
@@ -352,7 +372,7 @@ extension ModifyAttrCompX on Item {
       modifiers,
       afterUsedItem: afterUsedItem,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
@@ -366,12 +386,13 @@ extension ModifyAttrCompX on Item {
       modifiers,
       afterUsedItem: afterUsed,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 }
 
+/// An [Item] can have at most one [FuelComp].
 @JsonSerializable(createToJson: false)
 class FuelComp extends ItemComp {
   @JsonKey()
@@ -409,12 +430,13 @@ extension FuelCompX on Item {
     final comp = FuelComp(
       heatValue,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 }
 
+/// An [Item] can have at most one [WetnessComp].
 @JsonSerializable(createToJson: false)
 class WetnessComp extends ItemComp {
   static const _wetK = "Wet.wetness";
@@ -503,12 +525,13 @@ extension WetnessCompX on Item {
     final comp = WetnessComp(
       dryTime: dryTime,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 }
 
+/// An [Item] can have at most one [FreshnessComp].
 @JsonSerializable(createToJson: false)
 class FreshnessComp extends ItemComp {
   static const _freshnessK = "Freshness.freshness";
@@ -527,9 +550,9 @@ class FreshnessComp extends ItemComp {
     this.wetRotFactor = 0.6,
   });
 
-  Ratio getFreshness(ItemStack item) => item[_freshnessK] ?? 1.0;
+  Ratio getFreshness(ItemStack stack) => stack[_freshnessK] ?? 1.0;
 
-  void setFreshness(ItemStack item, Ratio value) => item[_freshnessK] = value.clamp(0.0, 1.0);
+  void setFreshness(ItemStack stack, Ratio value) => stack[_freshnessK] = value.clamp(0.0, 1.0);
 
   @override
   void onMerge(ItemStack from, ItemStack to) {
@@ -618,12 +641,13 @@ extension FreshnessCompX on Item {
     required Ts expire,
   }) {
     final comp = FreshnessComp(expire: expire);
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 }
 
+/// An [Item] can have at most one [FireStarterComp].
 @JsonSerializable(createToJson: false)
 class FireStarterComp extends ItemComp {
   final Ratio chance;
@@ -685,7 +709,7 @@ extension FireStarterCompX on Item {
       chance: chance,
       cost: cost,
     );
-    comp.validateItemConfig(this);
+    comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }

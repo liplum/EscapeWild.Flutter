@@ -5,6 +5,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/game/route/subtropics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 
 final player = Player();
@@ -32,6 +33,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   static const startClock = Ts.from(hour: 7, minute: 0);
   final $totalTimePassed = ValueNotifier(Ts.zero);
   final $overallActionDuration = ValueNotifier(const Ts(minutes: 30));
+
+  /// The preference item for each [ToolType].
+  /// - If player doesn't select a preferred tool, the tool with highest [ToolAttr] will be selected as default.
+  Map<ToolType, int> toolType2TrackIdPref = {};
   var _isExecutingOnPass = false;
   LevelProtocol level = LevelProtocol.empty;
 
@@ -56,41 +61,6 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       _debugValidate();
     }
     return level.performAction(action);
-  }
-
-  void _debugValidate() {
-    if (kDebugMode) {
-      final backpackSumMass = backpack.sumMass();
-      assert(backpack.mass == backpack.sumMass(), "Sum[$backpackSumMass] != State[${backpack.mass}]");
-      for (final stack in backpack) {
-        assert(stack.isNotEmpty, "$stack is empty in backpack.");
-        if (!stack.meta.mergeable) {
-          assert(stack.mass == null, "${stack.meta} is unmergeable but $stack has not-null mass.");
-        }
-        assert(stack.trackId != null, "$stack in backpack has a null trackId");
-      }
-      final loc = location;
-      if (loc != null) {
-        final route = loc.route;
-        final locRestoreId = loc.route.getRestoreIdOf(loc);
-        assert(loc.route.restoreById(locRestoreId) == loc);
-        if (route is Iterable<PlaceProtocol>) {
-          for (final place in route as Iterable<PlaceProtocol>) {
-            assert(place.route == route, "${place.route} and $place must be matched.");
-            if (place is CampfirePlaceProtocol) {
-              for (final stack in place.onCampfire) {
-                assert(stack.isNotEmpty, "$place has empty onCampfire stack, $stack");
-                assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
-              }
-              for (final stack in place.offCampfire) {
-                assert(stack.isNotEmpty, "$place has empty offCampfire stack, $stack.");
-                assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
-              }
-            }
-          }
-        }
-      }
-    }
   }
 
   List<PlaceAction> getAvailableActions() {
@@ -158,6 +128,62 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     level.onGenerateRoute();
   }
 
+  bool setToolPref(ToolType toolType, ItemStack stack) {
+    final trackId = stack.trackId;
+    assert(trackId != null, "$stack is in backpack but has no trackId.");
+    if (trackId == null) return false;
+    toolType2TrackIdPref[toolType] = trackId;
+    notifyListeners();
+    return true;
+  }
+
+  void clearToolPref(ToolType toolType) {
+    if (toolType2TrackIdPref.remove(toolType) != null) {
+      notifyListeners();
+    }
+  }
+
+  void _debugValidate() {
+    if (kDebugMode) {
+      {
+        // check backpack
+        final backpackSumMass = backpack.sumMass();
+        assert(backpack.mass == backpack.sumMass(), "Sum[$backpackSumMass] != State[${backpack.mass}]");
+        for (final stack in backpack) {
+          assert(stack.isNotEmpty, "$stack is empty in backpack.");
+          if (!stack.meta.mergeable) {
+            assert(stack.mass == null, "${stack.meta} is unmergeable but $stack has not-null mass.");
+          }
+          assert(stack.trackId != null, "$stack in backpack has a null trackId");
+        }
+      }
+      {
+        // check route
+        final loc = location;
+        if (loc != null) {
+          final route = loc.route;
+          final locRestoreId = loc.route.getRestoreIdOf(loc);
+          assert(loc.route.restoreById(locRestoreId) == loc);
+          if (route is Iterable<PlaceProtocol>) {
+            for (final place in route as Iterable<PlaceProtocol>) {
+              assert(place.route == route, "${place.route} and $place must be matched.");
+              if (place is CampfirePlaceProtocol) {
+                for (final stack in place.onCampfire) {
+                  assert(stack.isNotEmpty, "$place has empty onCampfire stack, $stack");
+                  assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
+                }
+                for (final stack in place.offCampfire) {
+                  assert(stack.isNotEmpty, "$place has empty offCampfire stack, $stack.");
+                  assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   void loadFromJson(String json) {
     loadFromJsonObj(jsonDecode(json));
   }
@@ -172,6 +198,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       final level = Cvt.fromJsonObj<LevelProtocol>(json["level"]);
       final locationRestoreId = json["locationRestoreId"];
       final lastLocation = level!.restoreLastLocation(locationRestoreId);
+      final toolTypePref = <ToolType, int>{};
+      for (final p in (json["toolTypePref"] as Map<String, dynamic>).entries) {
+        toolTypePref[ToolType(p.key)] = (p.value as num).toInt();
+      }
       level.onRestore();
       // set fields
       this.attrs = attrs;
@@ -180,7 +210,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       this.actionTimes = actionTimes;
       this.level = level;
       this.journeyProgress = journeyProgress;
-      location = lastLocation;
+      // ignore: unnecessary_this
+      this.toolType2TrackIdPref = toolTypePref;
+      // ignore: unnecessary_this
+      this.location = lastLocation;
     } catch (e, stacktrace) {
       if (kDebugMode) {
         print(e);
@@ -201,6 +234,13 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       "level": Cvt.toJsonObj(level),
       "locationRestoreId": level.getLocationRestoreId(location!),
     };
+    {
+      final map = <String, int>{};
+      for (final p in toolType2TrackIdPref.entries) {
+        map[p.key.name] = p.value;
+      }
+      json["toolTypePref"] = map;
+    }
     return json;
   }
 
@@ -250,6 +290,51 @@ extension PlayerX on Player {
       delta = level.hardness.attrBounceFix(delta);
     }
     modify(attr, delta);
+  }
+
+  ItemStack? getToolPref(ToolType toolType) {
+    final trackId = toolType2TrackIdPref[toolType];
+    if (trackId == null) return null;
+    final stack = backpack.findStackByTrackId(trackId);
+    // remove pref if trackId is no longer valid.
+    if (stack == null) {
+      toolType2TrackIdPref.remove(toolType);
+      return null;
+    }
+    return stack;
+  }
+
+  bool isToolPref(ItemStack stack, ToolType toolType) {
+    assert(stack.trackId != null, "$stack has a null trackId");
+    assert(() {
+      for (final comp in stack.meta.getCompsOf<ToolComp>()) {
+        if (comp.toolType == toolType) {
+          return true;
+        }
+      }
+      return false;
+    }(), "$stack is not a tool[$toolType].");
+    return getToolPref(toolType) == stack;
+  }
+
+  bool isToolPrefOrDefault(ItemStack stack, ToolType toolType) {
+    if (toolType2TrackIdPref.containsKey(toolType)) {
+      return isToolPref(stack, toolType);
+    } else {
+      final best = backpack.findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
+      return best?.stack == stack;
+    }
+  }
+
+  ItemCompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
+    final pref = getToolPref(toolType);
+    if (pref != null) {
+      final comp = ToolComp.ofType(pref, toolType);
+      if (comp != null) {
+        return ItemCompPair<ToolComp>(pref, comp);
+      }
+    }
+    return backpack.findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
   }
 }
 

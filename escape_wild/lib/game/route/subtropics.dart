@@ -19,7 +19,7 @@ final huntWithTool = PlaceAction(
   UAction.hunt,
   () =>
       player.energy > 0.0 &&
-      player.backpack.hasAnyToolOfTypes([
+      player.backpack.hasAnyToolOfAnyTypeIn([
         ToolType.trap,
         ToolType.gun,
       ]),
@@ -345,7 +345,13 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
 
   @override
   Future<void> performHunt(UAction action) async {
-    final tool = player.backpack.findBesToolOfTypes([ToolType.trap, ToolType.gun]);
+    // TODO: A dedicate hunting UI.
+    final trapTool = player.findBestToolOfType(ToolType.trap);
+    final gunTool = player.findBestToolOfType(ToolType.gun);
+    final tool = [
+      if (trapTool != null) trapTool,
+      if (gunTool != null) gunTool,
+    ].maxOfOrNull((tool) => tool.comp.attr);
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;
@@ -358,11 +364,11 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
     if (any) {
-      isToolBroken = player.damageTool(tool.item, comp, 30.0);
+      isToolBroken = player.damageTool(tool.stack, comp, 30.0);
     }
     await showGain(UAction.hunt, gain);
     if (isToolBroken) {
-      await showToolBroken(UAction.hunt, tool.item);
+      await showToolBroken(UAction.hunt, tool.stack);
     }
   }
 
@@ -453,7 +459,7 @@ class ForestPlace extends SubtropicsPlace {
 
   Future<void> performCutDownTree() async {
     await player.onPassTime(player.overallActionDuration);
-    final tool = player.backpack.findBesToolOfType(ToolType.axe);
+    final tool = player.findBestToolOfType(ToolType.axe);
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;
@@ -471,9 +477,9 @@ class ForestPlace extends SubtropicsPlace {
     randGain(nuts, gain, () => Foods.nuts.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
-    isToolBroken = player.damageTool(tool.item, comp, dmg * 30.0);
+    isToolBroken = player.damageTool(tool.stack, comp, dmg * 30.0);
     if (isToolBroken) {
-      await showToolBroken(UAction.gatherGetWood, tool.item);
+      await showToolBroken(UAction.gatherGetWood, tool.stack);
     }
     await showGain(UAction.gatherGetWood, gain);
   }
@@ -529,7 +535,7 @@ class RiversidePlace extends SubtropicsPlace {
   @override
   Future<void> performFish() async {
     await player.onPassTime(player.overallActionDuration);
-    final tool = player.backpack.findBesToolOfType(ToolType.fishing);
+    final tool = player.findBestToolOfType(ToolType.fishing);
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;
@@ -542,11 +548,11 @@ class RiversidePlace extends SubtropicsPlace {
     player.backpack.addItemsOrMergeAll(gain);
     var isToolBroken = false;
     if (any) {
-      isToolBroken = player.damageTool(tool.item, comp, 30.0);
+      isToolBroken = player.damageTool(tool.stack, comp, 30.0);
     }
     await showGain(UAction.fish, gain);
     if (isToolBroken) {
-      await showToolBroken(UAction.fish, tool.item);
+      await showToolBroken(UAction.fish, tool.stack);
     }
   }
 

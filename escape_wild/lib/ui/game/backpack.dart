@@ -3,6 +3,7 @@ import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -350,13 +351,20 @@ UseType _matchBestUseType(Iterable<UsableComp> comps) {
   return type ?? UseType.use;
 }
 
-class ItemDetails extends StatelessWidget {
+class ItemDetails extends StatefulWidget {
   final ItemStack stack;
 
   const ItemDetails({
     super.key,
     required this.stack,
   });
+
+  @override
+  State<ItemDetails> createState() => _ItemDetailsState();
+}
+
+class _ItemDetailsState extends State<ItemDetails> {
+  ItemStack get stack => widget.stack;
 
   @override
   Widget build(BuildContext context) {
@@ -392,6 +400,24 @@ class ItemDetails extends StatelessWidget {
     final builder = ItemStackStatusBuilder(darkMode: ctx.isDarkMode);
     stack.buildStatus(builder);
     final entries = <Widget>[];
+    for (final toolComp in stack.meta.getCompsOf<ToolComp>()) {
+      final isToolPref = player.isToolPrefOrDefault(stack, toolComp.toolType);
+      entries.add(ChoiceChip(
+        selected: isToolPref,
+        elevation: 2,
+        selectedColor: context.fixColorBrightness(context.colorScheme.primary),
+        onSelected: (newIsPref) {
+          if (newIsPref == isToolPref) return;
+          if (newIsPref) {
+            player.setToolPref(toolComp.toolType, stack);
+          } else {
+            player.clearToolPref(toolComp.toolType);
+          }
+          setState(() {});
+        },
+        label: toolComp.toolType.l10nName().text(),
+      ));
+    }
     for (final status in builder.build()) {
       var color = status.color;
       color ??= ctx.colorScheme.primary;
@@ -403,6 +429,7 @@ class ItemDetails extends StatelessWidget {
       ));
     }
     return Wrap(
+      spacing: 5.w,
       children: entries,
     );
   }

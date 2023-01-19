@@ -46,6 +46,12 @@ use-type:
   eat: Eat
   drink: Drink
   equip: Equip
+tool-type:
+  cutting: Cutting
+  axe: Axe
+  trap: Trap
+  gun: Gun
+  fishing: Fishing
 craft-recipe-cat:
   # Such as axe and trap.
   tool: Tool

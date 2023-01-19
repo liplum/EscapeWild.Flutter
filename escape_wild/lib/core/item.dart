@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:escape_wild/core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -353,6 +354,15 @@ abstract class ItemComp extends Comp {
   void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {}
 }
 
+extension ItemCompDebugX on ItemComp {
+  /// validate item if debug mode
+  void validateItemConfigIfDebug(Item item) {
+    if (kDebugMode) {
+      validateItemConfig(item);
+    }
+  }
+}
+
 class EmptyComp extends ItemComp {
   static const type = "Empty";
 
@@ -361,10 +371,10 @@ class EmptyComp extends ItemComp {
 }
 
 class ItemCompPair<T extends Comp> {
-  final ItemStack item;
+  final ItemStack stack;
   final T comp;
 
-  const ItemCompPair(this.item, this.comp);
+  const ItemCompPair(this.stack, this.comp);
 }
 
 @JsonSerializable()

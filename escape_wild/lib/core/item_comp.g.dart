@@ -19,7 +19,7 @@ ToolComp _$ToolCompFromJson(Map<String, dynamic> json) => ToolComp(
       attr: json['attr'] == null
           ? ToolAttr.normal
           : ToolAttr.fromJson(json['attr'] as Map<String, dynamic>),
-      toolType: ToolType.named(json['toolType'] as String),
+      toolType: ToolType.fromJson(json['toolType'] as String),
     );
 
 ModifyAttrComp _$ModifyAttrCompFromJson(Map<String, dynamic> json) =>
