@@ -202,6 +202,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
         fireState = FireState(fuel: FuelComp.tryGetHeatValue(fireStarter));
         player.backpack.removeStackInBackpack(fireStarter);
       } else {
+        // TODO: check this in Player class.
         if (DurabilityComp.tryGetIsBroken(fireStarter)) {
           player.backpack.removeStackInBackpack(fireStarter);
           fireStarterSlot.reset();

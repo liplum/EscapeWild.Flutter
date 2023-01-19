@@ -82,17 +82,12 @@ unit:
       name: Fahrenheit(°F)
       unit: '°F'
       format: '{} °F'
-# unit: gram
-item:
-  mass-with-unit: '{}g'
 # To express knowing.
 ok: OK
 # To approve.
 yes: Yes
 # To refuse.
 no: No
-# When finished a job.
-done: Done
 # To cancel or delay.
 not-now: Not Now
 cancel: Cancel

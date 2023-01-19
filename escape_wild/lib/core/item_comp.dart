@@ -45,35 +45,12 @@ class DurabilityComp extends ItemComp {
   void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
     final ratio = durabilityRatio(stack);
     final percent = (ratio * 100).toInt();
-    if (ratio >= 0.8) {
-      builder <<
-          ItemStackStatus(
-            name: "Durability: $percent%",
-            color: builder.darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good,
-          );
-    } else if (ratio >= 0.5) {
-      builder <<
-          ItemStackStatus(
-            name: "Durability: $percent%",
-            color: builder.darkMode ? StatusColorPreset.normalDark : StatusColorPreset.normal,
-          );
-    } else if (ratio >= 0.2) {
-      builder <<
-          ItemStackStatus(
-            name: "Durability: $percent%",
-            color: builder.darkMode ? StatusColorPreset.warningDark : StatusColorPreset.warning,
-          );
-    } else {
-      builder <<
-          ItemStackStatus(
-            name: "Durability: $percent%",
-            color: builder.darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst,
-          );
-    }
+    final label = " $percent% Durability";
+    final color = _progressColor(ratio, darkMode: builder.darkMode);
+    builder << ItemStackStatus(name: label, color: color);
   }
 
-  Color progressColor(ItemStack stack, {required bool darkMode}) {
-    final ratio = durabilityRatio(stack);
+  Color _progressColor(Ratio ratio, {required bool darkMode}) {
     if (ratio >= 0.8) {
       return darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good;
     } else if (ratio >= 0.5) {
@@ -83,6 +60,11 @@ class DurabilityComp extends ItemComp {
     } else {
       return darkMode ? StatusColorPreset.worstDark : StatusColorPreset.worst;
     }
+  }
+
+  Color progressColor(ItemStack stack, {required bool darkMode}) {
+    final ratio = durabilityRatio(stack);
+    return _progressColor(ratio, darkMode: darkMode);
   }
 
   static DurabilityComp? of(ItemStack stack) => stack.meta.getFirstComp<DurabilityComp>();
