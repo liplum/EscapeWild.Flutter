@@ -66,17 +66,21 @@ class _CraftPageState extends State<CraftPage> {
         final isSelected = selectedCatIndex == i;
         final cat = cat2Recipes[i].key;
         final style = ctx.isPortrait ? ctx.textTheme.titleMedium : ctx.textTheme.titleLarge;
-        return ListTile(
-          title: cat.l10nName().autoSizeText(maxLines: 1, style: style, textAlign: TextAlign.center),
-          selected: isSelected,
-          dense: true,
-        ).inCard(elevation: isSelected ? 10 : null).onTap(() {
-          if (selectedCatIndex != i) {
-            setState(() {
-              selectedCatIndex = i;
-            });
-          }
-        });
+        return CardButton(
+          elevation: isSelected ? 10 : 0,
+          child: ListTile(
+            title: cat.l10nName().autoSizeText(maxLines: 1, style: style, textAlign: TextAlign.center),
+            selected: isSelected,
+            dense: true,
+          ),
+          onTap: () {
+            if (selectedCatIndex != i) {
+              setState(() {
+                selectedCatIndex = i;
+              });
+            }
+          },
+        );
       },
     );
   }

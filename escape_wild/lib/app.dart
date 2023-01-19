@@ -58,6 +58,7 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
             side: BorderSide(color: Colors.transparent), //the outline color
             borderRadius: BorderRadius.all(Radius.circular(14))),
       ),
+      splashFactory: InkSparkle.splashFactory,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
         TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
         TargetPlatform.windows: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),

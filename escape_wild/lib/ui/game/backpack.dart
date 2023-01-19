@@ -1,6 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
@@ -27,26 +28,31 @@ Widget buildEmptyBackpack() {
 }
 
 class _BackpackPageState extends State<BackpackPage> {
-  ItemStack _selected = ItemStack.empty;
+  int selectedIndex = 0;
 
-  ItemStack get selected => _selected;
+  ItemStack get selected => player.backpack[selectedIndex];
+
   static int lastSelectedIndex = 0;
 
   set selected(ItemStack v) {
-    _selected = v;
-    lastSelectedIndex = player.backpack.indexOfStack(v);
+    selectedIndex = player.backpack.indexOfStack(v);
+    lastSelectedIndex = selectedIndex;
   }
 
   @override
   void initState() {
     super.initState();
-    player.backpack.addListener(() {
-      updateDefaultSelection();
-    });
+    player.backpack.addListener(updateDefaultSelection);
     if (lastSelectedIndex >= 0) {
       selected = player.backpack[lastSelectedIndex];
     }
     updateDefaultSelection();
+  }
+
+  @override
+  void dispose() {
+    player.backpack.removeListener(updateDefaultSelection);
+    super.dispose();
   }
 
   void updateDefaultSelection() {
@@ -59,7 +65,20 @@ class _BackpackPageState extends State<BackpackPage> {
 
   @override
   Widget build(BuildContext context) {
-    return player.backpack >> (ctx) => ctx.isPortrait ? buildPortrait() : buildLandscape();
+    return Listener(
+      onPointerSignal: (pointerSignal) {
+        if (pointerSignal is PointerScrollEvent) {
+          onPointerScroll(pointerSignal);
+        }
+      },
+      child: player.backpack >> (ctx) => ctx.isPortrait ? buildPortrait() : buildLandscape(),
+    );
+  }
+
+  void onPointerScroll(PointerScrollEvent e) {
+    setState(() {
+      selectedIndex = (selectedIndex + 1) % player.backpack.itemCount;
+    });
   }
 
   Widget buildPortrait() {

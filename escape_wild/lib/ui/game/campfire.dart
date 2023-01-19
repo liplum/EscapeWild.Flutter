@@ -301,7 +301,7 @@ class _CookPageState extends State<CookPage> {
       [
         buildCampfireImage(),
         buildFuelState(place.fireState),
-      ].column(maa: MainAxisAlignment.spaceEvenly).flexible(flex: 4),
+      ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().flexible(flex: 4),
       buildButtons().flexible(flex: 1),
     ].column(maa: MainAxisAlignment.spaceBetween).padAll(5);
   }
