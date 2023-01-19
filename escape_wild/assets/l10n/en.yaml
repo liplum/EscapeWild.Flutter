@@ -19,7 +19,7 @@ ui:
       action: Action
       backpack: Backpack
       craft: Craft
-      campfire: Campfire
+      camp: Camp
     backpack:
       title: Backpack
       mass-load: '{cur} / {max}'
@@ -31,11 +31,15 @@ ui:
       empty-tip: Your backpack is empty.
     ingame-menu:
       save: Save
-    campfire:
-      start-fire: Start Fire
-      restart-fire: Restart Fire
-      # verb: supply campfire with fuel
-      fuel: Fuel
+    camp:
+      shelter:
+        title: Shelter
+      campfire:
+        title: Campfire
+        start-fire: Start Fire
+        restart-fire: Restart Fire
+        # verb: supply campfire with fuel
+        fuel: Fuel
   debug:
     debug-console:
       title: Debug Console

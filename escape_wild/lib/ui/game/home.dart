@@ -3,7 +3,6 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/generated/icons.dart';
 import 'package:escape_wild/ui/game/backpack.dart';
-import 'package:escape_wild/ui/game/campfire.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rettulf/rettulf.dart';
@@ -26,7 +25,7 @@ class _P {
   static const action = 0;
   static const backpack = 1;
   static const craft = 2;
-  static const campfire = 3;
+  static const camp = 3;
   static const pageCount = 4;
 }
 
@@ -104,7 +103,7 @@ class _HomePageState extends State<Homepage> {
           activeIcon: const Icon(Icons.build),
         ),
         BottomNavigationBarItem(
-          label: "Camp",
+          label: _I.camp,
           icon: const Icon(IconsX.camping_outlined),
           activeIcon: const Icon(IconsX.camping),
         ),

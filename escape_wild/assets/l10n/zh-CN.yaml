@@ -3,16 +3,20 @@ ui:
     title: 逃离荒野
     new-game: 新的游戏
     continue: 继续游戏
-  home:
-    action: 行动
-    backpack: 背包
-    craft: 合成
-    campfire: 营火
-  backpack:
-    mass-load: '{cur} / {max}'
-    discard-request: 是否丢弃？
-    discard-confirm: "确定要丢弃 {} 吗？"
-    empty-tip: 背包空荡荡的
+  game:
+    home:
+      action: 行动
+      backpack: 背包
+      craft: 合成
+      camp: 营地
+    backpack:
+      mass-load: '{cur} / {max}'
+      discard-request: 是否丢弃？
+      discard-confirm: "确定要丢弃 {} 吗？"
+      empty-tip: 背包空荡荡的
+    camp:
+      campfire:
+        title: 篝火
 ok: 好的
 yes: 是
 no: 否

@@ -11,5 +11,5 @@ class _I {
 
   static String get craft => "$_n.craft".tr();
 
-  static String get campfire => "$_n.campfire".tr();
+  static String get camp => "$_n.camp".tr();
 }

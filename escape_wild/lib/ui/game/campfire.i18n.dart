@@ -1,6 +1,6 @@
 part of 'campfire.dart';
 
-const _n = "ui.game.campfire";
+const _n = "ui.game.camp.campfire";
 
 class _I {
   _I._();

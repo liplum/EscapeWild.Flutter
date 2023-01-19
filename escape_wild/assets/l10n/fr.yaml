@@ -31,11 +31,13 @@ ui:
       empty-tip: Votre sac à dos est vide.
     ingame-menu:
       save: Sauvegarder
-    campfire:
-      start-fire: Démarrer le Feu
-      restart-fire: Redémarrer le Feu
-      # verb: supply campfire with fuel
-      fuel: Carburant
+    camp:
+      campfire:
+        title: Feu de camp
+        start-fire: Démarrer le Feu
+        restart-fire: Redémarrer le Feu
+        # verb: supply campfire with fuel
+        fuel: Carburant
   debug:
     debug-console:
       title: Console de Débug
