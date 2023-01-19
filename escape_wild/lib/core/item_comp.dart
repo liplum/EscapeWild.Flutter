@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/random.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:quiver/core.dart';
 
 part 'item_comp.g.dart';
 
@@ -210,13 +211,16 @@ class ToolComp extends ItemComp {
     }
   }
 
-  static Iterable<ToolComp> of(ItemStack stack) sync* {
-    for (final comp in stack.meta.getCompsOf<ToolComp>()) {
-      yield comp;
-    }
-  }
+  static Iterable<ToolComp> of(ItemStack stack) => stack.meta.getCompsOf<ToolComp>();
 
-  static ToolComp? ofType(ItemStack stack, ToolType toolType) => stack.meta.getFirstComp<ToolComp>();
+  static ToolComp? ofType(ItemStack stack, ToolType toolType) {
+    for (final comp in stack.meta.getCompsOf<ToolComp>()) {
+      if (comp.toolType == toolType) {
+        return comp;
+      }
+    }
+    return null;
+  }
 
   factory ToolComp.fromJson(Map<String, dynamic> json) => _$ToolCompFromJson(json);
   static const type = "Tool";
@@ -252,28 +256,27 @@ enum UseType {
 
 /// An [Item] can have multiple [UsableComp].
 abstract class UsableComp extends ItemComp {
+  /// The [compType] of subclass should be the same as [UsableComp].
+  @override
+  Type get compType => UsableComp;
   @JsonKey()
   final UseType useType;
 
   const UsableComp(this.useType);
 
-  bool canUse() => true;
+  /// Whether player can use [stack].
+  bool canUse(ItemStack stack) => true;
 
-  Future<void> onUse(ItemStack item) async {}
+  /// When [stack] is used.
+  Future<void> onUse(ItemStack stack) async {}
 
-  bool get displayPreview => true;
-  static const type = "Usable";
-
-  @override
-  String get typeName => type;
+  static Iterable<UsableComp> of(ItemStack stack) => stack.meta.getCompsOf<UsableComp>();
 }
 
 @JsonSerializable(createToJson: false)
 class ModifyAttrComp extends UsableComp {
-  @override
-  Type get compType => UsableComp;
   @JsonKey()
-  final List<AttrModifier> modifiers;
+  final Iterable<AttrModifier> modifiers;
   @itemGetterJsonKey
   final ItemGetter? afterUsedItem;
 
@@ -283,7 +286,7 @@ class ModifyAttrComp extends UsableComp {
     this.afterUsedItem,
   });
 
-  factory ModifyAttrComp.fromJson(Map<String, dynamic> json) => _$ModifyAttrCompFromJson(json);
+  bool get displayPreview => true;
 
   void buildAttrModification(ItemStack item, AttrModifierBuilder builder) {
     if (item.meta.mergeable) {
@@ -298,9 +301,9 @@ class ModifyAttrComp extends UsableComp {
   }
 
   @override
-  Future<void> onUse(ItemStack item) async {
+  Future<void> onUse(ItemStack stack) async {
     var builder = AttrModifierBuilder();
-    buildAttrModification(item, builder);
+    buildAttrModification(stack, builder);
     builder.performModification(player);
     final afterUsedItem = this.afterUsedItem;
     if (afterUsedItem != null) {
@@ -309,6 +312,8 @@ class ModifyAttrComp extends UsableComp {
       player.backpack.addItemOrMerge(entry);
     }
   }
+
+  factory ModifyAttrComp.fromJson(Map<String, dynamic> json) => _$ModifyAttrCompFromJson(json);
 
   static const type = "AttrModify";
 
@@ -431,9 +436,9 @@ class WetnessComp extends ItemComp {
     this.dryTime = WetnessComp.defaultDryTime,
   });
 
-  Ratio getWetness(ItemStack item) => item[_wetK] ?? defaultWetness;
+  Ratio getWetness(ItemStack stack) => stack[_wetK] ?? defaultWetness;
 
-  void setWetness(ItemStack item, Ratio value) => item[_wetK] = value.clamp(0.0, 1.0);
+  void setWetness(ItemStack stack, Ratio value) => stack[_wetK] = value.clamp(0.0, 1.0);
 
   @override
   void onMerge(ItemStack from, ItemStack to) {
@@ -520,17 +525,20 @@ class FreshnessComp extends ItemComp {
   static const _freshnessK = "Freshness.freshness";
 
   /// how much time the item will be completely rotten.
+  @JsonKey()
   final Ts expire;
 
   /// how fast the food going spoiled when it's wet.
   /// ```dart
-  /// final actualWetRotRatio = wetness * wetRotFactor;
+  /// final actualWetRatio = wetness * wetFactor;
   /// ```
-  final double wetRotFactor;
+  @JsonKey()
+  final double wetFactor;
+  static const defaultWetFactor = 0.6;
 
   const FreshnessComp({
     required this.expire,
-    this.wetRotFactor = 0.6,
+    this.wetFactor = FreshnessComp.defaultWetFactor,
   });
 
   Ratio getFreshness(ItemStack stack) => stack[_freshnessK] ?? 1.0;
@@ -551,7 +559,7 @@ class FreshnessComp extends ItemComp {
   @override
   Future<void> onPassTime(ItemStack stack, Ts delta) async {
     final wetness = WetnessComp.tryGetWetness(stack);
-    final lost = delta / expire * (1 + wetness * wetRotFactor);
+    final lost = delta / expire * (1 + wetness * wetFactor);
     final freshness = getFreshness(stack);
     setFreshness(stack, freshness - lost);
   }
@@ -691,6 +699,358 @@ extension FireStarterCompX on Item {
     final comp = FireStarterComp(
       chance: chance,
       cost: cost,
+    );
+    comp.validateItemConfigIfDebug(this);
+    addComp(comp);
+    return this;
+  }
+}
+
+@JsonEnum()
+enum ItemProp {
+  mass,
+  wetness,
+  durability,
+  freshness;
+}
+
+extension ItemPropX on ItemProp {
+  ItemPropModifier operator +(double deltaPerMinute) => ItemPropModifier(this, deltaPerMinute);
+
+  ItemPropModifier operator -(double deltaPerMinute) => ItemPropModifier(this, -deltaPerMinute);
+}
+
+@JsonSerializable(createToJson: false)
+class ItemPropModifier {
+  @JsonKey()
+  final ItemProp prop;
+  @JsonKey()
+  final double deltaPerMinute;
+
+  const ItemPropModifier(this.prop, this.deltaPerMinute);
+
+  /// ## Supported format:
+  /// - original json object:
+  /// ```json
+  /// {
+  ///   "attr":"durability",
+  ///   "deltaPerMinute": -1.5
+  /// }
+  /// ```
+  /// - String literal:
+  /// ```json
+  /// "durability/-1.5"
+  /// ```
+  factory ItemPropModifier.fromJson(dynamic json) {
+    if (json is Map<String, dynamic>) {
+      return _$ItemPropModifierFromJson(json);
+    } else {
+      final literal = json.toString();
+      final ItemProp prop;
+      final double deltaPerMinute;
+      final attrNDelta = literal.split("/");
+      prop = $enumDecode(_$ItemPropEnumMap, attrNDelta[0]);
+      deltaPerMinute = num.parse(attrNDelta[1]).toDouble();
+      return ItemPropModifier(prop, deltaPerMinute);
+    }
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! ItemPropModifier || other.runtimeType != runtimeType) return false;
+    return prop == other.prop && deltaPerMinute == other.deltaPerMinute;
+  }
+
+  @override
+  int get hashCode => hash2(prop, deltaPerMinute);
+}
+
+extension ItemPropModifierX on ItemPropModifier {
+  ItemPropModifier operator +(double deltaPerMinute) => ItemPropModifier(prop, this.deltaPerMinute + deltaPerMinute);
+
+  ItemPropModifier operator -(double deltaPerMinute) => ItemPropModifier(prop, this.deltaPerMinute + deltaPerMinute);
+
+  ItemPropModifier operator *(double factor) => ItemPropModifier(prop, deltaPerMinute * factor);
+
+  ItemPropModifier operator /(double factor) => ItemPropModifier(prop, deltaPerMinute / factor);
+}
+
+@JsonSerializable(createToJson: false)
+class ContinuousModifyItemPropComp extends ItemComp {
+  @JsonKey()
+  final Iterable<ItemPropModifier> modifiers;
+
+  const ContinuousModifyItemPropComp(this.modifiers);
+
+  @override
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
+    for (final modifier in modifiers) {
+      performModifier(stack, delta, modifier.prop, modifier.deltaPerMinute);
+    }
+  }
+
+  void performModifier(ItemStack stack, Ts timePassed, ItemProp prop, double deltaPerMinute) {
+    switch (prop) {
+      case ItemProp.mass:
+        ContinuousModifyMassComp.modify(stack, timePassed, deltaPerMinute);
+        break;
+      case ItemProp.wetness:
+        ContinuousModifyWetnessComp.modify(stack, timePassed, deltaPerMinute);
+        break;
+      case ItemProp.durability:
+        ContinuousModifyDurabilityComp.modify(stack, timePassed, deltaPerMinute);
+        break;
+      case ItemProp.freshness:
+        ContinuousModifyFreshnessComp.modify(stack, timePassed, deltaPerMinute);
+        break;
+    }
+  }
+
+  @override
+  void validateItemConfig(Item item) {
+    if (item.mergeable && modifiers.any((m) => m.prop == ItemProp.mass)) {
+      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.registerName}.", item);
+    }
+  }
+
+  static Iterable<ContinuousModifyItemPropComp> of(ItemStack stack) =>
+      stack.meta.getCompsOf<ContinuousModifyItemPropComp>();
+
+  factory ContinuousModifyItemPropComp.fromJson(Map<String, dynamic> json) =>
+      _$ContinuousModifyItemPropCompFromJson(json);
+  static const type = "ContinuousModifyItemProp";
+
+  @override
+  String get typeName => type;
+}
+
+@JsonSerializable(createToJson: false)
+class ContinuousModifyMassComp extends ItemComp {
+  @JsonKey()
+  final double deltaPerMinute;
+
+  const ContinuousModifyMassComp({
+    required this.deltaPerMinute,
+  });
+
+  @override
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
+    modify(stack, delta, deltaPerMinute);
+  }
+
+  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute) {
+    final totalDelta = deltaPerMinute * timePassed.minutes;
+    if (stack.meta.mergeable) {
+      stack.mass = stack.stackMass + totalDelta.toInt();
+      if (stack.isEmpty) {
+        player.backpack.removeStackInBackpack(stack);
+      }
+    }
+  }
+
+  @override
+  void validateItemConfig(Item item) {
+    if (item.mergeable) {
+      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.registerName}.", item);
+    }
+  }
+
+  static Iterable<ContinuousModifyMassComp> of(ItemStack stack) => stack.meta.getCompsOf<ContinuousModifyMassComp>();
+
+  factory ContinuousModifyMassComp.fromJson(Map<String, dynamic> json) => _$ContinuousModifyMassCompFromJson(json);
+  static const type = "ContinuousModifyMass";
+
+  @override
+  String get typeName => type;
+}
+
+@JsonSerializable(createToJson: false)
+class ContinuousModifyWetnessComp extends ItemComp {
+  @JsonKey()
+  final double deltaPerMinute;
+
+  const ContinuousModifyWetnessComp({
+    required this.deltaPerMinute,
+  });
+
+  @override
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
+    modify(stack, delta, deltaPerMinute);
+  }
+
+  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute) {
+    final totalDelta = deltaPerMinute * timePassed.minutes;
+    final comp = WetnessComp.of(stack);
+    if (comp != null) {
+      final wet = comp.getWetness(stack);
+      comp.setWetness(stack, wet + totalDelta);
+    }
+  }
+
+  @override
+  void validateItemConfig(Item item) {
+    if (item.mergeable) {
+      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.registerName}.", item);
+    }
+  }
+
+  factory ContinuousModifyWetnessComp.fromJson(Map<String, dynamic> json) =>
+      _$ContinuousModifyWetnessCompFromJson(json);
+
+  static Iterable<ContinuousModifyWetnessComp> of(ItemStack stack) =>
+      stack.meta.getCompsOf<ContinuousModifyWetnessComp>();
+  static const type = "ContinuousModifyWetness";
+
+  @override
+  String get typeName => type;
+}
+
+@JsonSerializable(createToJson: false)
+class ContinuousModifyDurabilityComp extends ItemComp {
+  @JsonKey()
+  final double deltaPerMinute;
+
+  /// How fast the item loses durability when it's wet.
+  /// ```dart
+  /// final actualWetRatio = wetness * wetFactor;
+  /// ```
+  /// ## Use cases
+  /// To reduce the durability of a torch based on its wetness.
+  ///
+  /// see [FreshnessComp.wetFactor]
+  @JsonKey()
+  final double wetFactor;
+  static const defaultWetFactor = 0.0;
+
+  const ContinuousModifyDurabilityComp({
+    required this.deltaPerMinute,
+    this.wetFactor = ContinuousModifyDurabilityComp.defaultWetFactor,
+  });
+
+  @override
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
+    modify(stack, delta, deltaPerMinute, wetFactor: wetFactor);
+  }
+
+  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute, {double wetFactor = 0.0}) {
+    var totalDelta = deltaPerMinute * timePassed.minutes;
+    final comp = DurabilityComp.of(stack);
+    if (comp != null) {
+      final durability = comp.getDurability(stack);
+      final wetness = WetnessComp.tryGetWetness(stack);
+      totalDelta *= 1 + wetness * wetFactor;
+      comp.setDurability(stack, durability + totalDelta);
+      if (comp.isBroken(stack)) {
+        player.backpack.removeStackInBackpack(stack);
+      }
+    }
+  }
+
+  factory ContinuousModifyDurabilityComp.fromJson(Map<String, dynamic> json) =>
+      _$ContinuousModifyDurabilityCompFromJson(json);
+
+  static Iterable<ContinuousModifyDurabilityComp> of(ItemStack stack) =>
+      stack.meta.getCompsOf<ContinuousModifyDurabilityComp>();
+  static const type = "ContinuousModifyDurability";
+
+  @override
+  String get typeName => type;
+}
+
+@JsonSerializable(createToJson: false)
+class ContinuousModifyFreshnessComp extends ItemComp {
+  @JsonKey()
+  final double deltaPerMinute;
+
+  /// see [FreshnessComp.wetFactor]
+  @JsonKey()
+  final double wetFactor;
+
+  const ContinuousModifyFreshnessComp({
+    required this.deltaPerMinute,
+    this.wetFactor = FreshnessComp.defaultWetFactor,
+  });
+
+  @override
+  Future<void> onPassTime(ItemStack stack, Ts delta) async {
+    modify(stack, delta, deltaPerMinute, wetFactor: wetFactor);
+  }
+
+  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute, {double wetFactor = 0.0}) {
+    var totalDelta = deltaPerMinute * timePassed.minutes;
+    final comp = FreshnessComp.of(stack);
+    if (comp != null) {
+      final freshness = comp.getFreshness(stack);
+      final wetness = WetnessComp.tryGetWetness(stack);
+      totalDelta *= 1 + wetness * wetFactor;
+      comp.setFreshness(stack, freshness + totalDelta);
+    }
+  }
+
+  factory ContinuousModifyFreshnessComp.fromJson(Map<String, dynamic> json) =>
+      _$ContinuousModifyFreshnessCompFromJson(json);
+
+  static Iterable<ContinuousModifyFreshnessComp> of(ItemStack stack) =>
+      stack.meta.getCompsOf<ContinuousModifyFreshnessComp>();
+  static const type = "ContinuousModifyFreshness";
+
+  @override
+  String get typeName => type;
+}
+
+extension ContinuousModifyItemPropCompX on Item {
+  Item continuousModify(
+    Iterable<ItemPropModifier> modifiers,
+  ) {
+    final comp = ContinuousModifyItemPropComp(modifiers);
+    comp.validateItemConfigIfDebug(this);
+    addComp(comp);
+    return this;
+  }
+
+  Item continuousModifyMass({
+    required double deltaPerMinute,
+  }) {
+    final comp = ContinuousModifyMassComp(
+      deltaPerMinute: deltaPerMinute,
+    );
+    comp.validateItemConfigIfDebug(this);
+    addComp(comp);
+    return this;
+  }
+
+  Item continuousModifyWetness({
+    required double deltaPerMinute,
+  }) {
+    final comp = ContinuousModifyWetnessComp(
+      deltaPerMinute: deltaPerMinute,
+    );
+    comp.validateItemConfigIfDebug(this);
+    addComp(comp);
+    return this;
+  }
+
+  Item continuousModifyFreshness({
+    required double deltaPerMinute,
+    double wetFactor = FreshnessComp.defaultWetFactor,
+  }) {
+    final comp = ContinuousModifyFreshnessComp(
+      deltaPerMinute: deltaPerMinute,
+      wetFactor: wetFactor,
+    );
+    comp.validateItemConfigIfDebug(this);
+    addComp(comp);
+    return this;
+  }
+
+  Item continuousModifyDurability({
+    required double deltaPerMinute,
+    double wetFactor = ContinuousModifyDurabilityComp.defaultWetFactor,
+  }) {
+    final comp = ContinuousModifyDurabilityComp(
+      deltaPerMinute: deltaPerMinute,
+      wetFactor: wetFactor,
     );
     comp.validateItemConfigIfDebug(this);
     addComp(comp);

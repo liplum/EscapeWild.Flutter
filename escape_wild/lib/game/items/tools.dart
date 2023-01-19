@@ -19,6 +19,9 @@ class Tools {
   // cooker
   static late final Item woodenBowl;
 
+  //light
+  static late final Item unlitTorch, litTorch;
+
   static void registerAll() {
     // cutting
     Contents.items.addAll([
@@ -78,7 +81,14 @@ class Tools {
     ]);
     // survival tool
     Contents.items.addAll([
-      waterFilter = Item.unmergeable("water-filter", mass: 500).hasDurability(max: 50),
+      waterFilter = Item.unmergeable("water-filter", mass: 3000).hasDurability(max: 50),
+    ]);
+    // light
+    Contents.items.addAll([
+      unlitTorch = Item.unmergeable("unlit-torch", mass: 1500),
+      litTorch = Item.unmergeable("lit-torch", mass: 1500)
+          .hasDurability(max: 1000)
+          .continuousModifyDurability(deltaPerMinute: 30, wetFactor: 3),
     ]);
   }
 }

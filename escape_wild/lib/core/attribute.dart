@@ -3,6 +3,7 @@ import 'package:escape_wild/core.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:quiver/core.dart';
 
 part 'attribute.g.dart';
 
@@ -225,10 +226,35 @@ class AttrModifier {
   final Attr attr;
   @JsonKey()
   final double delta;
+  static const jsonKey = JsonKey(fromJson: AttrModifier.fromJson);
 
   const AttrModifier(this.attr, this.delta);
 
-  factory AttrModifier.fromJson(Map<String, dynamic> json) => _$AttrModifierFromJson(json);
+  /// ## Supported format:
+  /// - original json object:
+  /// ```json
+  /// {
+  ///   "attr":"health",
+  ///   "delta": -0.1
+  /// }
+  /// ```
+  /// - String literal:
+  /// ```json
+  /// "health/-0.1"
+  /// ```
+  factory AttrModifier.fromJson(dynamic json) {
+    if (json is Map<String, dynamic>) {
+      return _$AttrModifierFromJson(json);
+    } else {
+      final literal = json.toString();
+      final Attr attr;
+      final double delta;
+      final attrNDelta = literal.split("/");
+      attr = $enumDecode(_$AttrEnumMap, attrNDelta[0]);
+      delta = num.parse(attrNDelta[1]).toDouble();
+      return AttrModifier(attr, delta);
+    }
+  }
 
   AttrModifier copyWith({
     Attr? attr,
@@ -238,6 +264,16 @@ class AttrModifier {
         attr ?? this.attr,
         delta ?? this.delta,
       );
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AttrModifier || other.runtimeType != runtimeType) return false;
+    return attr == other.attr && delta == other.delta;
+  }
+
+  @override
+  int get hashCode => hash2(attr, delta);
 }
 
 extension AttrModifierX on AttrModifier {

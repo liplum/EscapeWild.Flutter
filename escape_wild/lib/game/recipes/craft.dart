@@ -6,17 +6,17 @@ class CraftRecipes {
 
   static void registerAll() {
     Contents.craftRecipes.addAll([
-      MergeWetCraftRecipe(
+      TagCraftRecipe(
         "tinder",
         CraftRecipeCat.fire,
-        inputTags: [50.tag("flammable-floc")],
-        outputMass: 30,
+        ingredients: [50.tag("flammable-floc")],
         output: () => Stuff.tinder,
+        outputMass: 30,
       ),
-      MergeWetCraftRecipe(
+      TagCraftRecipe(
         "hand-drill-kit",
         CraftRecipeCat.fire,
-        inputTags: [
+        ingredients: [
           50.tag("tinder"),
           50.tag("sticks"),
           200.tag("log"),

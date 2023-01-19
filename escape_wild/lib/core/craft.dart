@@ -91,15 +91,13 @@ abstract class CraftRecipeProtocol with Moddable {
   void onConsume(@Backpack.tracked List<ItemStack> inputs, ItemStackConsumeReceiver consume);
 }
 
+/// It will merge [WetnessComp].
 @JsonSerializable(createToJson: false)
 class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol {
   @JsonKey()
   final List<TagMassEntry> ingredients;
   @JsonKey(fromJson: NamedItemGetter.create)
   final ItemGetter output;
-  @override
-  @JsonKey(ignore: true)
-  List<ItemMatcher> toolSlots = [];
 
   /// The order of inputs should be
   /// - [names]
@@ -107,6 +105,9 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   @override
   @JsonKey(ignore: true)
   List<ItemMatcher> inputSlots = [];
+  @override
+  @JsonKey(ignore: true)
+  List<ItemMatcher> toolSlots = [];
   final int? outputMass;
 
   TagCraftRecipe(
@@ -135,72 +136,9 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
 
   @override
   ItemStack onCraft(List<ItemStack> inputs) {
-    return output().create();
-  }
-
-  @override
-  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
-    var i = 0;
-    for (final tag in ingredients) {
-      final input = inputs[i];
-      consume(input, tag.mass);
-      i++;
-    }
-  }
-
-  factory TagCraftRecipe.fromJson(Map<String, dynamic> json) => _$TagCraftRecipeFromJson(json);
-
-  static const type = "MixCraftRecipe";
-
-  @override
-  String get typeName => type;
-}
-
-@JsonSerializable(createToJson: false)
-class MergeWetCraftRecipe extends CraftRecipeProtocol {
-  @JsonKey()
-  final List<TagMassEntry> inputTags;
-  @JsonKey()
-  final int? outputMass;
-  @itemGetterJsonKey
-  final ItemGetter output;
-
-  @override
-  @JsonKey(ignore: true)
-  List<ItemMatcher> inputSlots = [];
-
-  @override
-  @JsonKey(ignore: true)
-  List<ItemMatcher> toolSlots = [];
-
-  MergeWetCraftRecipe(
-    super.name,
-    super.cat, {
-    super.craftType,
-    required this.inputTags,
-    this.outputMass,
-    required this.output,
-  }) {
-    for (final input in inputTags) {
-      inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.hasTags(input.tags),
-        exact: (item) {
-          if (!item.meta.hasTags(input.tags)) return ItemStackMatchResult.typeUnmatched;
-          if (item.stackMass < (outputMass ?? item.meta.mass)) return ItemStackMatchResult.massUnmatched;
-          return ItemStackMatchResult.matched;
-        },
-      ));
-    }
-  }
-
-  @override
-  Item get outputItem => output();
-
-  @override
-  ItemStack onCraft(List<ItemStack> inputs) {
     var sumMass = 0;
     var sumWet = 0.0;
-    for (final tag in inputTags) {
+    for (final tag in ingredients) {
       final input = inputs.findFirstByTags(tag.tags);
       assert(input != null, "$tag not found in $inputs");
       if (input == null) return ItemStack.empty;
@@ -215,13 +153,18 @@ class MergeWetCraftRecipe extends CraftRecipeProtocol {
 
   @override
   void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume) {
-    for (final tag in inputTags) {
-      final input = inputs.findFirstByTags(tag.tags);
-      assert(input != null, "$tag not found in $inputs");
-      if (input == null) continue;
+    var i = 0;
+    for (final tag in ingredients) {
+      final input = inputs[i];
       consume(input, tag.mass);
+      i++;
     }
   }
 
-  factory MergeWetCraftRecipe.fromJson(Map<String, dynamic> json) => _$MergeWetCraftRecipeFromJson(json);
+  factory TagCraftRecipe.fromJson(Map<String, dynamic> json) => _$TagCraftRecipeFromJson(json);
+
+  static const type = "TagCraftRecipe";
+
+  @override
+  String get typeName => type;
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
-import 'package:escape_wild/game/route/subtropics.dart';
+import 'package:escape_wild/game/routes/subtropics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';

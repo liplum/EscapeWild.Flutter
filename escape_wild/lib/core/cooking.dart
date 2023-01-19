@@ -51,7 +51,7 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
   final List<TagMassEntry> ingredients;
   @JsonKey()
   final List<LazyItemStack> dishes;
-  @Ts.jsonKey
+  @JsonKey()
   final Ts cookingTime;
 
   TimedCookRecipe(

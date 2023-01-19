@@ -189,7 +189,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
           : () async {
               await onStartFire(maybeFireStarter);
             },
-      child: widget.actionLabel.text(style: context.textTheme.headlineSmall).center(),
+      child: widget.actionLabel.autoSizeText(maxLines: 1, style: context.textTheme.headlineSmall).padAll(5).center(),
     ).sized(w: 180, h: 80);
   }
 

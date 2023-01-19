@@ -10,7 +10,7 @@ TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) =>
     TimedCookRecipe(
       json['name'] as String,
       ingredients: (json['ingredients'] as List<dynamic>)
-          .map((e) => TagMassEntry.fromJson(e as Map<String, dynamic>))
+          .map((e) => TagMassEntry.fromJson(e))
           .toList(),
       dishes: (json['dishes'] as List<dynamic>)
           .map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>))

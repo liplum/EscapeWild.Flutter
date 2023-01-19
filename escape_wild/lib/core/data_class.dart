@@ -1,7 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'recipe.g.dart';
+part 'data_class.g.dart';
 
 @JsonSerializable(createToJson: false)
 class TagMassEntry {
@@ -12,7 +12,29 @@ class TagMassEntry {
 
   const TagMassEntry(this.tags, this.mass);
 
-  factory TagMassEntry.fromJson(Map<String, dynamic> json) => _$TagMassEntryFromJson(json);
+  /// ## Supported format:
+  /// - original json object:
+  /// ```json
+  /// {
+  ///   "tags":["raw","meat"],
+  ///   "mass": 200
+  /// }
+  /// ```
+  /// - String literal:
+  /// ```json
+  /// "raw,meat/200"
+  /// ```
+  factory TagMassEntry.fromJson(dynamic json) {
+    if (json is Map<String, dynamic>) {
+      return _$TagMassEntryFromJson(json);
+    } else {
+      final literal = json.toString();
+      final tagsNMass = literal.split('/');
+      final tags = tagsNMass[0].split(',');
+      final mass = tagsNMass.length > 1 ? num.parse(tagsNMass[1]).toInt() : null;
+      return TagMassEntry(tags, mass);
+    }
+  }
 
   @override
   String toString() {

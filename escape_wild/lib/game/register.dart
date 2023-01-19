@@ -1,4 +1,4 @@
-import 'package:escape_wild/game/route/subtropics.dart' as s;
+import 'package:escape_wild/game/routes/subtropics.dart' as s;
 import 'package:jconverter/jconverter.dart';
 
 void registerTypes(JConverter cvt) {
