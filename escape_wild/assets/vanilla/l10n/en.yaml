@@ -219,7 +219,7 @@ item:
     desc: ...
   unlit-torch:
     name: Unlit Torch
-    desc: Ignite.
+    desc: Ignite it, for this night.
   lit-torch:
     name: Lit Torch
     desc: Once the fire burns, it cannot be stopped.

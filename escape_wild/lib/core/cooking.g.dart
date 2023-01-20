@@ -18,11 +18,32 @@ TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) =>
       cookingTime: Ts.fromJson(json['cookingTime'] as int),
     )..mod = Moddable.modId2ModFunc(json['mod'] as String);
 
-TransformCookRecipe _$TransformCookRecipeFromJson(Map<String, dynamic> json) =>
-    TransformCookRecipe(
+ContinuousCookRecipe _$ContinuousCookRecipeFromJson(
+        Map<String, dynamic> json) =>
+    ContinuousCookRecipe(
       json['name'] as String,
       ingredient: (json['ingredient'] as List<dynamic>).map((e) => e as String),
       dish: NamedItemGetter.create(json['dish'] as String),
       speed: (json['speed'] as num).toDouble(),
       ratio: (json['ratio'] as num?)?.toDouble() ?? 1.0,
     )..mod = Moddable.modId2ModFunc(json['mod'] as String);
+
+InstantConvertCookRecipe _$ConvertCookRecipeFromJson(Map<String, dynamic> json) =>
+    InstantConvertCookRecipe(
+      json['name'] as String,
+      input: NamedItemGetter.create(json['input'] as String),
+      output: NamedItemGetter.create(json['output'] as String),
+      keptProps: (json['keptProps'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$ItemPropEnumMap, e))
+              .toSet() ??
+          InstantConvertCookRecipe.kKeptProps,
+      inputMass: json['inputMass'] as int?,
+      outputMass: json['outputMass'] as int?,
+    )..mod = Moddable.modId2ModFunc(json['mod'] as String);
+
+const _$ItemPropEnumMap = {
+  ItemProp.mass: 'mass',
+  ItemProp.wetness: 'wetness',
+  ItemProp.durability: 'durability',
+  ItemProp.freshness: 'freshness',
+};

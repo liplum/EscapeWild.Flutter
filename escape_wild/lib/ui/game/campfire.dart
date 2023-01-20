@@ -381,7 +381,7 @@ class _CookPageState extends State<CookPage> {
           assert(mass != null, "$selected is mergeable, but selected mass is null");
           ingredient = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
         } else {
-          player.backpack.removeStackInBackpack(selected);
+          player.backpack.handOverStackInBackpack(selected);
           ingredient = selected;
         }
         // the slot should be empty, but there is no guarantee in async context.

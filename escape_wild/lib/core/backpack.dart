@@ -114,6 +114,18 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     return hasRemoved;
   }
 
+  /// Untrack [stack].
+  /// - [stack.trackId] will be set to null.
+  bool handOverStackInBackpack(@tracked ItemStack stack) {
+    if (stack.isEmpty) return true;
+    final hasRemoved = items.remove(stack);
+    if (hasRemoved) {
+      stack.trackId = null;
+      notifyListeners();
+    }
+    return hasRemoved;
+  }
+
   /// Return [-1] if [stack] is not in this.
   int indexOfStack(@tracked ItemStack? stack) {
     if (stack == null) return -1;

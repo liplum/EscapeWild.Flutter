@@ -111,7 +111,7 @@ void loadVanilla() {
 }
 
 void registerConverter() {
-  Cvt.logger = JConverterLogger(onError: (m, e, s) => print("$m,$e,$s"));
+  Cvt.logger = JConverterLogger(onError: (m, e, s) => debugPrint("$m,$e,$s"));
   core_register.registerTypes(Cvt);
   game_register.registerTypes(Cvt);
 }

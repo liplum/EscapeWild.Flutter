@@ -184,12 +184,12 @@ class ContainerCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   String get typeName => type;
 }
 
-/// [TransformCookRecipe] will continuously transform a certain [Item] that meets [ingredient] into [dish] by a certain ratio.
+/// [ContinuousCookRecipe] will continuously convert a certain [Item] that meets [ingredient] into [dish] by a certain ratio.
 /// - [ingredient] only matches one whose [Item.mergeable] is true.
 ///
 /// It doesn't allow [Item.container].
 @JsonSerializable(createToJson: false)
-class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
+class ContinuousCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
   @JsonKey()
   final Iterable<String> ingredient;
   @itemGetterJsonKey
@@ -213,7 +213,7 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   /// The default is 1.0
   final double ratio;
 
-  TransformCookRecipe(
+  ContinuousCookRecipe(
     super.name, {
     required this.ingredient,
     required this.dish,
@@ -256,7 +256,7 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
     return true;
   }
 
-  factory TransformCookRecipe.fromJson(Map<String, dynamic> json) => _$TransformCookRecipeFromJson(json);
+  factory ContinuousCookRecipe.fromJson(Map<String, dynamic> json) => _$ContinuousCookRecipeFromJson(json);
 
   static const type = "TransformCookRecipe";
 
@@ -264,25 +264,112 @@ class TransformCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   String get typeName => type;
 }
 
-/// [InstantCookRecipe] will consume input and output instantly when this is matched.
+/// [InstantConvertCookRecipe] will transform an [Item] to another one instantly.
 ///
 /// It doesn't allow [Item.container].
-/// TODO: Finish this.
 @JsonSerializable(createToJson: false)
-class InstantCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
-  InstantCookRecipe(super.name);
+class InstantConvertCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol {
+  /// the item as input
+  @itemGetterJsonKey
+  final ItemGetter input;
+
+  /// If [input] is mergeable, cooking will consume [inputMass] amount of [input].
+  final int? inputMass;
+
+  /// the item as output
+  @itemGetterJsonKey
+  final ItemGetter output;
+
+  /// If [output] is mergeable, cooking will create [outputMass] amount of [output].
+  final int? outputMass;
+  static const Set<ItemProp> kKeptProps = {
+    ItemProp.mass,
+    ItemProp.wetness,
+    ItemProp.durability,
+    ItemProp.freshness,
+  };
+  @JsonKey()
+  final Set<ItemProp> keptProps;
+
+  InstantConvertCookRecipe(
+    super.name, {
+    required this.input,
+    required this.output,
+    this.keptProps = InstantConvertCookRecipe.kKeptProps,
+    this.inputMass,
+    this.outputMass,
+  });
 
   @override
   bool match(List<ItemStack> inputs) {
-    throw UnimplementedError();
+    if (inputs.length != 1) return false;
+    final meta = inputs.first.meta;
+    if (meta.isContainer) return false;
+    return meta == input();
   }
 
   @override
   bool onMatch(List<ItemStack> inputs, List<ItemStack> outputs) {
-    return false;
+    if (inputs.length != 1) return false;
+    final input = inputs.first;
+    if (input.meta != this.input()) return false;
+    // handle input
+    int? outputMass = this.outputMass;
+    if (input.meta.mergeable) {
+      int? inputMass = this.inputMass;
+      assert(inputMass != null, "${input.meta} is mergeable but [inputMass] is not specified.");
+      if (inputMass == null) {
+        // if [inputMass] is empty, clear the input.
+        inputs.clear();
+      } else {
+        input.mass = input.stackMass - inputMass;
+        if (keptProps.contains(ItemProp.mass)) {
+          // when [ItemProp.mass] is kept
+          inputMass = input.stackMass;
+        }
+      }
+    } else {
+      inputs.clear();
+    }
+    // handle output
+    final outputStack = output().create(mass: outputMass);
+    _bakeOutput(input, outputStack);
+    outputs.addItemOrMerge(outputStack);
+    return true;
   }
 
-  static const type = "InstantCookRecipe";
+  void _bakeOutput(ItemStack input, ItemStack output) {
+    for (final prop in keptProps) {
+      switch (prop) {
+        case ItemProp.wetness:
+          final inputComp = WetnessComp.of(input);
+          final outputComp = WetnessComp.of(output);
+          if (inputComp != null && outputComp != null) {
+            outputComp.setWetness(output, inputComp.getWetness(input));
+          }
+          break;
+        case ItemProp.durability:
+          final inputComp = DurabilityComp.of(input);
+          final outputComp = DurabilityComp.of(output);
+          if (inputComp != null && outputComp != null) {
+            outputComp.setDurability(output, inputComp.getDurability(input));
+          }
+          break;
+        case ItemProp.freshness:
+          final inputComp = FreshnessComp.of(input);
+          final outputComp = FreshnessComp.of(output);
+          if (inputComp != null && outputComp != null) {
+            outputComp.setFreshness(output, inputComp.getFreshness(input));
+          }
+          break;
+        default:
+      }
+    }
+  }
+
+  factory InstantConvertCookRecipe.fromJson(Map<String, dynamic> json) => _$ConvertCookRecipeFromJson(json);
+
+  static const type = "InstantConvertCookRecipe";
 
   @override
   String get typeName => type;
