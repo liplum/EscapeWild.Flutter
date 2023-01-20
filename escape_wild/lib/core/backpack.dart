@@ -103,12 +103,15 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   /// - [force] will force this to remove [stack].
   bool removeStackInBackpack(@tracked ItemStack stack) {
     if (stack.isEmpty) return true;
-    final removedMass = stack.stackMass;
-    stack.mass = 0;
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
-      mass -= removedMass;
+      player.onStartUntrackStack(stack);
+      mass -= stack.stackMass;
+      if (stack.meta.mergeable) {
+        stack.mass = 0;
+      }
       stack.trackId = null;
+      player.onEndUntrackStack(stack);
       notifyListeners();
     }
     return hasRemoved;
@@ -232,15 +235,21 @@ extension BackpackX on Backpack {
       final existed = getItemByIdenticalMeta(addition);
       if (existed != null) {
         addition.mergeTo(existed);
+        mass += additionMass;
       } else {
-        addition.trackId = lastTrackId++;
         items.add(addition);
+        player.onStartTrackStack(addition);
+        addition.trackId = lastTrackId++;
+        mass += additionMass;
+        player.onEndTrackStack(addition);
       }
     } else {
-      addition.trackId = lastTrackId++;
       items.add(addition);
+      player.onStartTrackStack(addition);
+      addition.trackId = lastTrackId++;
+      mass += additionMass;
+      player.onEndTrackStack(addition);
     }
-    mass += additionMass;
     return true;
   }
 

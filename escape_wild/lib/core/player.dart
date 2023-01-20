@@ -67,6 +67,70 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     return level.getAvailableActions();
   }
 
+  /// When [stack] starts to be tracked, at this point:
+  /// - [backpack.mass] has not increased.
+  /// - [stack.trackId] has not been allocated.
+  /// - [stack] is already added to [backpack.items].
+  ///
+  /// If [stack] is merged to existed one, this won't be called.
+  void onStartTrackStack(ItemStack stack) {
+    final trackId = stack.trackId;
+    assert(trackId == null, "TrackId of $stack should be null in $onStartTrackStack.");
+  }
+
+  /// When [stack] ends to be tracked, at this point:
+  /// - [backpack.mass] was increased by [stack.stackMass].
+  /// - [stack.trackId] was allocated.
+  /// - [stack] is in [backpack.items].
+  ///
+  /// If [stack] is merged to existed one, this won't be called.
+  void onEndTrackStack(ItemStack stack) {
+    final trackId = stack.trackId;
+    assert(trackId != null, "TrackId of $stack should be not-null in $onEndTrackStack.");
+    if (trackId == null) return;
+    var anyChange = false;
+    for (final toolComp in ToolComp.of(stack)) {
+      final toolType = toolComp.toolType;
+      if (!toolType2TrackIdPref.containsKey(toolType)) {
+        toolType2TrackIdPref[toolType] = trackId;
+        anyChange = true;
+      }
+    }
+    if (anyChange) {
+      notifyListeners();
+    }
+  }
+
+  /// When [stack] starts to be untracked, at this point:
+  /// - [backpack.mass] has not decreased.
+  /// - [stack.trackId] has not been set to null.
+  /// - [stack] is already removed in [backpack.items].
+  void onStartUntrackStack(ItemStack stack) {
+    final trackId = stack.trackId;
+    assert(trackId != null, "TrackId of $stack should be not-null in $onStartUntrackStack.");
+    if (trackId == null) return;
+    var anyChange = false;
+    for (final toolComp in ToolComp.of(stack)) {
+      final toolType = toolComp.toolType;
+      if (toolType2TrackIdPref.containsValue(trackId)) {
+        toolType2TrackIdPref.remove(toolType);
+        anyChange = true;
+      }
+    }
+    if (anyChange) {
+      notifyListeners();
+    }
+  }
+
+  /// When [stack] ends to be untracked, at this point:
+  /// - [backpack.mass] was decreased by [stack.stackMass].
+  /// - [stack.trackId] was set to null.
+  /// - [stack] is not in [backpack.items].
+  void onEndUntrackStack(ItemStack stack) {
+    final trackId = stack.trackId;
+    assert(trackId == null, "TrackId of $stack should be null in $onEndUntrackStack.");
+  }
+
   /// return whether the tool is broken and removed.
   bool damageTool(ItemStack item, ToolComp comp, double damage) {
     comp.damageTool(item, damage);
@@ -140,6 +204,36 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   void clearToolPref(ToolType toolType) {
     if (toolType2TrackIdPref.remove(toolType) != null) {
       notifyListeners();
+    }
+  }
+
+  ItemStack? getToolPref(ToolType toolType) {
+    final trackId = toolType2TrackIdPref[toolType];
+    if (trackId == null) return null;
+    final stack = backpack.findStackByTrackId(trackId);
+    assert(stack != null, "$toolType is in $toolType2TrackIdPref but untracked.");
+    return stack;
+  }
+
+  bool isToolPref(ItemStack stack, ToolType toolType) {
+    assert(stack.trackId != null, "$stack has a null trackId");
+    assert(() {
+      for (final comp in stack.meta.getCompsOf<ToolComp>()) {
+        if (comp.toolType == toolType) {
+          return true;
+        }
+      }
+      return false;
+    }(), "$stack is not a tool[$toolType].");
+    return getToolPref(toolType) == stack;
+  }
+
+  bool isToolPrefOrDefault(ItemStack stack, ToolType toolType) {
+    if (toolType2TrackIdPref.containsKey(toolType)) {
+      return isToolPref(stack, toolType);
+    } else {
+      final best = backpack.findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
+      return best?.stack == stack;
     }
   }
 
@@ -290,40 +384,6 @@ extension PlayerX on Player {
       delta = level.hardness.attrBounceFix(delta);
     }
     modify(attr, delta);
-  }
-
-  ItemStack? getToolPref(ToolType toolType) {
-    final trackId = toolType2TrackIdPref[toolType];
-    if (trackId == null) return null;
-    final stack = backpack.findStackByTrackId(trackId);
-    // remove pref if trackId is no longer valid.
-    if (stack == null) {
-      toolType2TrackIdPref.remove(toolType);
-      return null;
-    }
-    return stack;
-  }
-
-  bool isToolPref(ItemStack stack, ToolType toolType) {
-    assert(stack.trackId != null, "$stack has a null trackId");
-    assert(() {
-      for (final comp in stack.meta.getCompsOf<ToolComp>()) {
-        if (comp.toolType == toolType) {
-          return true;
-        }
-      }
-      return false;
-    }(), "$stack is not a tool[$toolType].");
-    return getToolPref(toolType) == stack;
-  }
-
-  bool isToolPrefOrDefault(ItemStack stack, ToolType toolType) {
-    if (toolType2TrackIdPref.containsKey(toolType)) {
-      return isToolPref(stack, toolType);
-    } else {
-      final best = backpack.findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
-      return best?.stack == stack;
-    }
   }
 
   ItemCompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
