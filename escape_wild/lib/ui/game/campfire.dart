@@ -199,8 +199,14 @@ class _FireStarterAreaState extends State<FireStarterArea> {
     if (comp != null) {
       final started = comp.tryStartFire(fireStarter);
       if (started) {
-        fireState = FireState(fuel: FuelComp.tryGetHeatValue(fireStarter));
-        player.backpack.removeStackInBackpack(fireStarter);
+        if (comp.consumeSelfAfterBurning) {
+          final heatValue = FuelComp.tryGetActualHeatValue(fireStarter);
+          fireState = FireState(fuel: heatValue, ember: heatValue <= 0 ? 1 : 0);
+          player.backpack.removeStackInBackpack(fireStarter);
+        } else {
+          fireState = FireState(ember: 1);
+        }
+        fireStarterSlot.reset();
       } else {
         // TODO: check this in Player class.
         if (DurabilityComp.tryGetIsBroken(fireStarter)) {
@@ -479,7 +485,7 @@ class _CookPageState extends State<CookPage> {
           player.backpack.removeStackInBackpack(selected);
           fuel = selected;
         }
-        final heatValue = FuelComp.tryGetHeatValue(fuel);
+        final heatValue = FuelComp.tryGetActualHeatValue(fuel);
         fireFuel += heatValue;
       }),
     );

@@ -90,7 +90,8 @@ class Tools {
       litTorch = Item.unmergeable("lit-torch", mass: 1500)
           .asTool(type: ToolType.lighting, attr: ToolAttr.normal)
           .hasDurability(max: 1000) // it can last 2 hours
-          .continuousModifyDurability(deltaPerMinute: 8, wetFactor: 10),
+          .continuousModifyDurability(deltaPerMinute: 8, wetFactor: 10)
+          .asFireStarter(chance: 1.0, cost: 0, consumeSelfAfterBurning: false),
     ]);
   }
 }

@@ -11,15 +11,26 @@ part 'item_comp.g.dart';
 @JsonSerializable(createToJson: false)
 class DurabilityComp extends ItemComp {
   static const _durabilityK = "Durability.durability";
+
+  /// the maximum durability
+  /// If no durability is initialized, [max] will be considered as default.
+  @JsonKey()
   final double max;
 
-  const DurabilityComp(this.max);
+  /// Whether the durability of [ItemStack] can exceed maximum.
+  @JsonKey()
+  final bool allowExceed;
+
+  const DurabilityComp({
+    required this.max,
+    this.allowExceed = false,
+  });
 
   double getDurability(ItemStack stack) => stack[_durabilityK] ?? max;
 
   bool isBroken(ItemStack stack) => getDurability(stack) <= 0.0;
 
-  void setDurability(ItemStack stack, double value) => stack[_durabilityK] = value;
+  void setDurability(ItemStack stack, double value) => stack[_durabilityK] = allowExceed ? value : value.clamp(0, max);
 
   Ratio durabilityRatio(ItemStack stack) {
     if (max < 0.0) return 1;
@@ -90,8 +101,12 @@ class DurabilityComp extends ItemComp {
 extension DurabilityCompX on Item {
   Item hasDurability({
     required double max,
+    bool allowExceed = false,
   }) {
-    final comp = DurabilityComp(max);
+    final comp = DurabilityComp(
+      max: max,
+      allowExceed: allowExceed,
+    );
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
@@ -405,7 +420,7 @@ class FuelComp extends ItemComp {
 
   static FuelComp? of(ItemStack stack) => stack.meta.getFirstComp<FuelComp>();
 
-  static double tryGetHeatValue(ItemStack stack) => of(stack)?.getActualHeatValue(stack) ?? 0.0;
+  static double tryGetActualHeatValue(ItemStack stack) => of(stack)?.getActualHeatValue(stack) ?? 0.0;
   static const type = "Fuel";
 
   @override
@@ -647,9 +662,14 @@ class FireStarterComp extends ItemComp {
   final Ratio chance;
   final double cost;
 
+  /// Whether to consume this fire starter after fire is burning.
+  /// If so, campfire will gain [FuelComp.getActualHeatValue] amount of fuel.
+  final bool consumeSelfAfterBurning;
+
   const FireStarterComp({
     required this.chance,
     required this.cost,
+    this.consumeSelfAfterBurning = true,
   });
 
   bool tryStartFire(ItemStack stack, [Random? rand]) {
@@ -698,10 +718,12 @@ extension FireStarterCompX on Item {
   Item asFireStarter({
     required Ratio chance,
     required double cost,
+    bool consumeSelfAfterBurning = true,
   }) {
     final comp = FireStarterComp(
       chance: chance,
       cost: cost,
+      consumeSelfAfterBurning: consumeSelfAfterBurning,
     );
     comp.validateItemConfigIfDebug(this);
     addComp(comp);

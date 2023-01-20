@@ -8,7 +8,8 @@ part of 'item_comp.dart';
 
 DurabilityComp _$DurabilityCompFromJson(Map<String, dynamic> json) =>
     DurabilityComp(
-      (json['max'] as num).toDouble(),
+      max: (json['max'] as num).toDouble(),
+      allowExceed: json['allowExceed'] as bool? ?? false,
     );
 
 ToolAttr _$ToolAttrFromJson(Map<String, dynamic> json) => ToolAttr(
@@ -57,6 +58,7 @@ FireStarterComp _$FireStarterCompFromJson(Map<String, dynamic> json) =>
     FireStarterComp(
       chance: (json['chance'] as num).toDouble(),
       cost: (json['cost'] as num).toDouble(),
+      consumeSelfAfterBurning: json['consumeSelfAfterBurning'] as bool? ?? true,
     );
 
 ItemPropModifier _$ItemPropModifierFromJson(Map<String, dynamic> json) =>

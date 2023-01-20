@@ -367,7 +367,7 @@ class InstantConvertCookRecipe extends CookRecipeProtocol implements JConvertibl
     }
   }
 
-  factory InstantConvertCookRecipe.fromJson(Map<String, dynamic> json) => _$ConvertCookRecipeFromJson(json);
+  factory InstantConvertCookRecipe.fromJson(Map<String, dynamic> json) => _$InstantConvertCookRecipeFromJson(json);
 
   static const type = "InstantConvertCookRecipe";
 

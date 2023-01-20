@@ -28,7 +28,8 @@ ContinuousCookRecipe _$ContinuousCookRecipeFromJson(
       ratio: (json['ratio'] as num?)?.toDouble() ?? 1.0,
     )..mod = Moddable.modId2ModFunc(json['mod'] as String);
 
-InstantConvertCookRecipe _$ConvertCookRecipeFromJson(Map<String, dynamic> json) =>
+InstantConvertCookRecipe _$InstantConvertCookRecipeFromJson(
+        Map<String, dynamic> json) =>
     InstantConvertCookRecipe(
       json['name'] as String,
       input: NamedItemGetter.create(json['input'] as String),
