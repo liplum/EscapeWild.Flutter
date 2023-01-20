@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = escape_wild
+PRODUCT_NAME = Escape Wild
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = net.liplum.escapeWildFlutter
+PRODUCT_BUNDLE_IDENTIFIER = net.liplum.EscapeWildFlutter
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 net.liplum. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 Liplum. All rights reserved.
