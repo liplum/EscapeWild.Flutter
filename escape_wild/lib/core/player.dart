@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
@@ -30,7 +31,8 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   @noSave
   final $maxMassLoad = ValueNotifier(10000);
   final $actionTimes = ValueNotifier(0);
-  static const startClock = Ts.from(hour: 7, minute: 0);
+  final $envColor = ValueNotifier(const Color(0x00000000));
+  Ts startClock = const Ts.from(hour: 7, minute: 0);
   final $totalTimePassed = ValueNotifier(Ts.zero);
   final $overallActionDuration = ValueNotifier(const Ts(minutes: 30));
 

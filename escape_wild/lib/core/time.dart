@@ -18,8 +18,21 @@ class Ts implements Comparable<Ts> {
 
   @override
   String toString() {
+    final s = StringBuffer();
+    final day = dayPart;
+    if (day > 0) {
+      s.write(day);
+      s.write(" day ");
+    }
     final hour = hourPart;
-    return hour > 0 ? "$hour:${minutePart.toString().padRight(2)}" : minutePart.toString().padRight(2);
+    if (hour > 0) {
+      s.write(hour);
+      s.write(" hour ");
+    }
+    final min = minutePart;
+    s.write(min);
+    s.write(" min");
+    return s.toString();
   }
 
   @override
@@ -39,7 +52,9 @@ extension IntX on int {
 }
 
 extension TsX on Ts {
-  int get hourPart => minutes ~/ 60;
+  int get dayPart => minutes ~/ 1440; // 60 * 24 = 1440
+
+  int get hourPart => minutes ~/ 60 % 24;
 
   int get minutePart => minutes % 60;
 
@@ -64,8 +79,6 @@ extension TsX on Ts {
   Ts operator ~/(num factor) => Ts(minutes: minutes ~/ factor.toDouble());
 }
 
-extension TSNumX on num {
+extension TsNumX on num {
   Ts operator *(Ts ts) => Ts(minutes: (toDouble() * ts.minutes).toInt());
 }
-
-extension TSDoubleX on double {}

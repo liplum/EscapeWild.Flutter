@@ -40,15 +40,43 @@ class _HomePageState extends State<Homepage> {
         focusNode: focusNode,
         autofocus: true,
         onKeyEvent: onKeyEvent,
-        child: Scaffold(
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: buildBody(),
-          ),
-          bottomNavigationBar: buildBottom(),
+        child: [
+          buildMain(),
+          buildEnvColorCover(),
+        ].stack(),
+      ),
+    );
+  }
+
+  Widget buildMain() {
+    return Scaffold(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: buildBody(),
+      ),
+      bottomNavigationBar: buildBottom(),
+    );
+  }
+
+  Widget buildEnvColorCover() {
+    return IgnorePointer(
+      child: LayoutBuilder(
+        builder: (ctx, box) => buildEnvColorBox().sized(
+          w: box.maxWidth,
+          h: box.maxHeight,
         ),
       ),
     );
+  }
+
+  Widget buildEnvColorBox() {
+    return player.$envColor >>
+        (ctx, c) {
+          return AnimatedContainer(
+            color: c,
+            duration: const Duration(milliseconds: 100),
+          );
+        };
   }
 
   Future<bool> onWillPop() async {
@@ -144,4 +172,25 @@ class _HomePageState extends State<Homepage> {
     focusNode.dispose();
     super.dispose();
   }
+}
+
+List<double> brightnessAdjustMatrix({required double value}) {
+  if (value <= 0) {
+    value *= 255;
+  } else {
+    value *= 100;
+  }
+
+  if (value == 0) {
+    return [
+      1, 0, 0, 0, 0, //
+      0, 1, 0, 0, 0, //
+      0, 0, 1, 0, 0, //
+      0, 0, 0, 1, 0, //
+    ];
+  }
+
+  return List<double>.from(<double>[1, 0, 0, 0, value, 0, 1, 0, 0, value, 0, 0, 1, 0, value, 0, 0, 0, 1, 0])
+      .map((i) => i.toDouble())
+      .toList();
 }
