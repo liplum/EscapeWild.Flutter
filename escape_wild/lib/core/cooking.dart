@@ -496,7 +496,7 @@ mixin CampfireCookingMixin on CampfirePlaceProtocol {
   Future<void> onFirePass(double fuelCostSpeed, Ts delta) async {
     final fireState = this.fireState;
     if (fireState.active) {
-      final cost = delta / actionTsStep * fuelCostSpeed;
+      final cost = delta / actionStepTime * fuelCostSpeed;
       this.fireState = _burningFuel(fireState, cost);
     }
   }

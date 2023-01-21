@@ -11,7 +11,7 @@ import 'shared.dart';
 
 part 'subtropics.g.dart';
 
-Ts get per => actionTsStep;
+Ts get per => actionStepTime;
 
 final moveWithEnergy = PlaceAction(UAction.move, () => player.energy > 0.0);
 final exploreWithEnergy = PlaceAction(UAction.explore, () => player.energy > 0.0);

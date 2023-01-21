@@ -15,8 +15,9 @@ const polymorphismSave = Object();
 /// It will be evaluated at runtime, no need to serialization.
 const noSave = Object();
 
-const actionTsStep = Ts(minutes: 5);
-const maxActionDuration = Ts.from(hour: 2, minute: 0);
+const actionStepTime = Ts(minutes: 5);
+const actionMinTime = Ts.from(minute: 5);
+const actionMaxTime = Ts.from(hour: 2);
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   final $attrs = ValueNotifier(const AttrModel());
@@ -47,9 +48,9 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     if (_isExecutingOnPass) return;
     _isExecutingOnPass = true;
     // update multiple times.
-    final updateTimes = (delta / actionTsStep).toInt();
+    final updateTimes = (delta / actionStepTime).toInt();
     for (var i = 0; i < updateTimes; i++) {
-      await level.onPassTime(actionTsStep);
+      await level.onPassTime(actionStepTime);
     }
     _isExecutingOnPass = false;
     if (kDebugMode) {
@@ -187,6 +188,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     actionTimes = 0;
     attrs = AttrModel.full;
     backpack.clear();
+    totalTimePassed = Ts.zero;
     journeyProgress = 0;
     // Create level.
     final level = SubtropicsLevel();
@@ -288,7 +290,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     try {
       // deserialize first to avoid unstable state when an exception is thrown.
       final attrs = AttrModel.fromJson(json["attrs"]);
-      final backpack = Cvt.fromJsonObj<Backpack>(json["backpack"]);
+      final backpack = Cvt.fromJsonObj<Backpack>(json["backpack"])!;
       final actionTimes = (json["actionTimes"] as num).toInt();
       final journeyProgress = (json["journeyProgress"] as num).toDouble();
       final level = Cvt.fromJsonObj<LevelProtocol>(json["level"]);
@@ -301,7 +303,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       level.onRestore();
       // set fields
       this.attrs = attrs;
-      this.backpack.loadFrom(backpack!);
+      this.backpack.loadFrom(backpack);
       this.backpack.validate();
       this.actionTimes = actionTimes;
       this.level = level;

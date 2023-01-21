@@ -5,38 +5,40 @@ import 'package:flutter/material.dart';
 /*
 Future<Ts>  */
 
-class ActionTsSelector extends StatefulWidget {
-  final Ts initial;
-  final Ts min;
-  final Ts max;
-  final Ts step;
+class MoveSheet extends StatefulWidget {
+  final Ts initialDuration;
+  final ValueChanged<Ts> onMoved;
 
-  const ActionTsSelector({
+  const MoveSheet({
     super.key,
-    required this.initial,
-    required this.min,
-    required this.max,
-    required this.step,
+    required this.initialDuration,
+    required this.onMoved,
   });
 
   @override
-  State<ActionTsSelector> createState() => _ActionTsSelectorState();
+  State<MoveSheet> createState() => _MoveSheetState();
 }
 
-class _ActionTsSelectorState extends State<ActionTsSelector> {
-  late final $cur = ValueNotifier(widget.initial);
+class _MoveSheetState extends State<MoveSheet> {
+  late final $cur = ValueNotifier(widget.initialDuration);
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: buildBody(),
+    );
+  }
+
+  Widget buildBody() {
+    return buildStepper();
   }
 
   Widget buildStepper() {
     return DurationStepper(
       $cur: $cur,
-      min: actionTsStep,
-      max: maxActionDuration,
-      step: actionTsStep,
+      min: actionMinTime,
+      max: actionMaxTime,
+      step: actionStepTime,
     );
   }
 }
