@@ -1,18 +1,28 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-/*
-Future<Ts>  */
+extension MoveSheetBuildContextX on BuildContext {
+  Future<void> showMoveSheet({ValueChanged<Ts>? onMoved}) async {
+    return await showCupertinoModalBottomSheet(
+        context: this,
+        enableDrag: false,
+        builder: (ctx) => MoveSheet(
+              initialDuration: Ts.zero,
+              onMoved: onMoved,
+            ));
+  }
+}
 
 class MoveSheet extends StatefulWidget {
   final Ts initialDuration;
-  final ValueChanged<Ts> onMoved;
+  final ValueChanged<Ts>? onMoved;
 
   const MoveSheet({
     super.key,
     required this.initialDuration,
-    required this.onMoved,
+    this.onMoved,
   });
 
   @override

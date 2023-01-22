@@ -256,7 +256,7 @@ class ItemStackCell extends StatelessWidget {
     if (theme.$showProgressBar && theme.$progressBarOpacity > 0) {
       final durabilityComp = DurabilityComp.of(stack);
       if (durabilityComp != null) {
-        final ratio = durabilityComp.durabilityRatio(stack);
+        final ratio = durabilityComp.getDurabilityRatio(stack);
         final durabilityBar = AttrProgress(
           value: ratio,
           color: durabilityComp.progressColor(stack, darkMode: ctx.isDarkMode),

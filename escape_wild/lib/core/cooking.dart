@@ -517,6 +517,7 @@ mixin CampfireCookingMixin on CampfirePlaceProtocol {
 
 const _emberCostFactor = 5;
 
+// TODO: Better formula
 FireState _burningFuel(
   FireState former,
   double cost,

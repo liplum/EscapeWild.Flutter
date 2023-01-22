@@ -28,12 +28,15 @@ class DurabilityComp extends ItemComp {
 
   double getDurability(ItemStack stack) => stack[_durabilityK] ?? max;
 
-  bool isBroken(ItemStack stack) => getDurability(stack) <= 0.0;
+  bool isBroken(ItemStack stack) {
+    if (max <= 0.0) return false;
+    return getDurability(stack) <= 0.0;
+  }
 
   void setDurability(ItemStack stack, double value) => stack[_durabilityK] = allowExceed ? value : value.clamp(0, max);
 
-  Ratio durabilityRatio(ItemStack stack) {
-    if (max < 0.0) return 1;
+  Ratio getDurabilityRatio(ItemStack stack) {
+    if (max <= 0.0) return 1;
     return getDurability(stack) / max;
   }
 
@@ -55,7 +58,7 @@ class DurabilityComp extends ItemComp {
 
   @override
   void buildStatus(ItemStack stack, ItemStackStatusBuilder builder) {
-    final ratio = durabilityRatio(stack);
+    final ratio = getDurabilityRatio(stack);
     final percent = (ratio * 100).toInt();
     final label = " $percent% Durability";
     final color = _progressColor(ratio, darkMode: builder.darkMode);
@@ -75,7 +78,7 @@ class DurabilityComp extends ItemComp {
   }
 
   Color progressColor(ItemStack stack, {required bool darkMode}) {
-    final ratio = durabilityRatio(stack);
+    final ratio = getDurabilityRatio(stack);
     return _progressColor(ratio, darkMode: darkMode);
   }
 
@@ -87,7 +90,7 @@ class DurabilityComp extends ItemComp {
   static bool tryGetIsBroken(ItemStack stack) => of(stack)?.isBroken(stack) ?? false;
 
   /// Default is 1.0
-  static double tryGetDurabilityRatio(ItemStack stack) => of(stack)?.durabilityRatio(stack) ?? 1.0;
+  static double tryGetDurabilityRatio(ItemStack stack) => of(stack)?.getDurabilityRatio(stack) ?? 1.0;
 
   static void trySetDurability(ItemStack stack, double durability) => of(stack)?.setDurability(stack, durability);
 
