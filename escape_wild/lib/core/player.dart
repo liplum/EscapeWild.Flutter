@@ -16,6 +16,7 @@ const polymorphismSave = Object();
 const noSave = Object();
 
 const actionStepTime = Ts(minutes: 5);
+const actionDefaultTime = Ts(minutes: 30);
 const actionMinTime = Ts.from(minute: 5);
 const actionMaxTime = Ts.from(hour: 2);
 

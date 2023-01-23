@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/game/ui/move.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
@@ -339,20 +340,21 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
 
   @override
   Future<void> performMove(UAction action) async {
-    final duration = player.overallActionDuration;
-    final f = duration.minutes;
-    await player.onPassTime(duration);
-    player.modifyX(Attr.food, -0.0001 * f);
-    player.modifyX(Attr.water, -0.0001 * f);
-    player.modifyX(Attr.energy, -0.0001 * f);
-    var routeProgress = route.getRouteProgress();
-    if (action == UAction.moveForward) {
-      await route.setRouteProgress(routeProgress + 0.03 * f);
-    } else if (action == UAction.moveBackward) {
-      await route.setRouteProgress(routeProgress - 0.03 * f);
-    }
-    player.journeyProgress = route.journeyProgress;
-    player.location = route.current;
+    await showMoveSheet(onMoved: (duration) async {
+      final f = duration.minutes;
+      await player.onPassTime(duration);
+      player.modifyX(Attr.food, -0.0001 * f);
+      player.modifyX(Attr.water, -0.0001 * f);
+      player.modifyX(Attr.energy, -0.0001 * f);
+      var routeProgress = route.getRouteProgress();
+      if (action == UAction.moveForward) {
+        await route.setRouteProgress(routeProgress + 0.03 * f);
+      } else if (action == UAction.moveBackward) {
+        await route.setRouteProgress(routeProgress - 0.03 * f);
+      }
+      player.journeyProgress = route.journeyProgress;
+      player.location = route.current;
+    });
   }
 
   @override
