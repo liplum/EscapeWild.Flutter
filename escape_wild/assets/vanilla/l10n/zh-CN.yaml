@@ -4,25 +4,63 @@ attribute:
   water: 水分
   energy: 体力
 action:
+  # Move forward
   move:
-    name: 前进
+    name: 移动 # no direction specified
+    left: 向左移动
+    right: 向右移动
+    up: 向上移动
+    down: 向下移动
+    forward: 向前移动
+    backward: 向后移动
+  # Explore the surroundings
   explore:
     name: 探索
-  hunt: 捕猎
-  cut-down-tree: 砍树
+  gather:
+    name: 采集
+    get-water: 取水
+    get-wood: 伐木
+    get-food: 觅食
+  hunt:
+    name: 打猎
+    trap: 带上陷阱
+    gun: 带上猎枪
+    # Go fishing
   fish:
     name: 捕鱼
+  # When player win the game
+  escape-wild:
+    name: 逃离荒野
+  # When player lose the game
+  stop-heartbeat:
+    name: 将死之人
   shelter:
+    name: 休息
+    sleep-till-tomorrow: 睡到明天
+    # Reinforce the shelter
+    reinforce: 加固避难所
+    # Have a rest
     rest: 休息
 use-type:
   use: 使用
   eat: 食用
   drink: 饮用
   equip: 装备
+tool-type:
+  cutting: 切削
+  axe: 砍伐
+  trap: 陷阱
+  gun: 枪支
+  fishing: 钓鱼
+  lighting: 照明
 craft-recipe-cat:
+  # Such as axe and trap.
   tool: 工具
+  survival: 生存
   food: 食物
+  # Fire, burning and combustion
   fire: 燃烧
+  # Processing materials
   refine: 精炼
   medical: 药物
 craft-type:
@@ -42,9 +80,11 @@ item:
   dirty-water:
     name: 脏水
     desc: 呕！最好把它煮开再喝。
+    # The water is clean like the drinking water.
   clean-water:
-    name: 纯净水
+    name: 净水
     desc: 嗯~有点甜.
+    # Although the water looks clear, there is still bacteria.
   clear-water:
     name: 清澈的水
     desc: 看起来是干净了。
@@ -81,6 +121,7 @@ item:
   roasted-berry:
     name: 热煨浆果
     desc: 黏糊糊的。
+  # https://wikipedia.org/wiki/Hand_drill
   hand-drill-kit:
     name: 钻木取火
     desc: 比看上去的更要难。
@@ -92,6 +133,7 @@ item:
     desc: 老而弥坚。
   stone-axe:
     name: 石斧
+    # The Stone Age
     desc: 我这是回到石器时代去了吗？
   old-fish-rod:
     name: 旧钓鱼竿
@@ -102,15 +144,18 @@ item:
   bear-trap:
     name: 捕熊夹
     desc: 哈哈，中套了。
+  # https://en.wikipedia.org/wiki/Moss
   moss:
     name: 苔藓
-    desc: ...
+    desc: 《科学研究报：苔藓可否食用》。
   pine-needle:
     name: 松针
-    desc: ...
+    desc: 富含维生素C。
+  # Tinder is used to start a fire. It's an easily combustible material.
+  # https://wikipedia.org/wiki/Tinder
   tinder:
     name: 引火物
-    desc: ...
+    desc: 易燃品
   raw-rabbit:
     name: 生兔肉
     desc: 没有脂肪，只有蛋白质。
@@ -125,13 +170,62 @@ item:
     desc: 小心刺伤
   stone:
     name: 石头
-    desc: ...
+    desc: 背包里装这么石头有什么用啊？
   sharp-stone:
     name: 尖锐的石头
-    desc: ...
+    desc: 我回的还是旧石器时代。
   straw-rope:
     name: 捆绳
+    desc: 又粗又硬又持久。
+  wooden-bowl:
+    name: 木碗
+    desc: 美味的苔藓沙拉我来拉！
+  bandage:
+    name: 绷带
+    desc: 《生存者之友：消毒绷带》
+  first-aid-kit:
+    name: 急救包
+    # https://www.youtube.com/watch?v=qXfPAodBVZQ&ab_channel=OgreJoe
+    # Overwatch `I Need Healing` meme
+    desc: 救我救我快救我！
+  # A tomato can.
+  can:
+    name: 罐头
+    desc: 选用新鲜西红柿制作，极速运达
+  battle-bottle:
+    name: 燃烧瓶
+    desc: 清朝老兵的遗产。
+  # Something like ash
+  ember:
+    name: 灰尘
+    desc: 别给火吹灭了。
+  sand:
+    name: 沙子
+    desc: 尘归尘，土归土。
+  water-filter:
+    name: 清水过滤器
     desc: ...
+  bear-meat:
+    name: 生熊肉
+    desc: ...
+  cooked-bear-meat:
+    name: 熟熊肉
+    desc: ...
+  cloth:
+    name: 布料
+    desc: ...
+  charcoal:
+    name: 木炭
+    desc: ...
+  unlit-torch:
+    name: 熄灭的火把
+    desc: 夜路漫漫，以火作伴。
+  lit-torch:
+    name: 燃烧的火把
+    desc: 星星之火，可以燎原。
+  fat:
+    name: 脂肪
+    desc: 高密度能量储存方式。
 route:
   subtropics:
     plain:
@@ -144,3 +238,5 @@ route:
       name: 洞穴
     hut:
       name: 小屋
+    village:
+      name: 村庄
