@@ -50,10 +50,11 @@ class _HomePageState extends State<Homepage> {
 
   Widget buildMain() {
     return Scaffold(
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        child: buildBody(),
-      ),
+      body: player >>
+          (_) => AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: buildBody(),
+              ),
       bottomNavigationBar: buildBottom(),
     );
   }
@@ -172,25 +173,4 @@ class _HomePageState extends State<Homepage> {
     focusNode.dispose();
     super.dispose();
   }
-}
-
-List<double> brightnessAdjustMatrix({required double value}) {
-  if (value <= 0) {
-    value *= 255;
-  } else {
-    value *= 100;
-  }
-
-  if (value == 0) {
-    return [
-      1, 0, 0, 0, 0, //
-      0, 1, 0, 0, 0, //
-      0, 0, 1, 0, 0, //
-      0, 0, 0, 1, 0, //
-    ];
-  }
-
-  return List<double>.from(<double>[1, 0, 0, 0, value, 0, 1, 0, 0, value, 0, 0, 1, 0, value, 0, 0, 0, 1, 0])
-      .map((i) => i.toDouble())
-      .toList();
 }

@@ -36,13 +36,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void loadFrom(Backpack source) {
     items = source.items;
     mass = source.mass;
-    notifyListeners();
+    notifyChange();
   }
 
   void clear() {
     items.clear();
     mass = 0;
-    notifyListeners();
+    notifyChange();
   }
 
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
@@ -69,7 +69,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       final part = item.split(massOfPart);
       if (part.isNotEmpty) {
         mass -= massOfPart;
-        notifyListeners();
+        notifyChange();
       }
       return part;
     }
@@ -89,13 +89,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       addedOrMerged |= _addItemOrMerge(item);
     }
     if (addedOrMerged) {
-      notifyListeners();
+      notifyChange();
     }
   }
 
   void addItemOrMerge(ItemStack item) {
     if (_addItemOrMerge(item)) {
-      notifyListeners();
+      notifyChange();
     }
   }
 
@@ -112,7 +112,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       }
       stack.trackId = null;
       player.onEndUntrackStack(stack);
-      notifyListeners();
+      notifyChange();
     }
     return hasRemoved;
   }
@@ -124,7 +124,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
       stack.trackId = null;
-      notifyListeners();
+      notifyChange();
     }
     return hasRemoved;
   }
@@ -155,7 +155,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       final delta = item.stackMass - newMass;
       item.mass = newMass;
       mass -= delta;
-      notifyListeners();
+      notifyChange();
     }
   }
 
@@ -174,12 +174,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void validate() {
     removeEmptyOrBrokenStacks();
     mass = sumMass();
-    notifyListeners();
+    notifyChange();
   }
 
   /// manually call [notifyListeners] if some state was changed outside.
   void notifyChange() {
     notifyListeners();
+    player.notifyListeners();
   }
 
   static const type = "Backpack";

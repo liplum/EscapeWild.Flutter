@@ -62,7 +62,7 @@ class _MoveSheetState extends State<MoveSheet> {
     return [
       buildStepper(),
       buildMoveBtn(),
-    ].column(mas:MainAxisSize.min);
+    ].column(mas: MainAxisSize.min);
   }
 
   Widget buildMoveBtn() {
@@ -84,7 +84,6 @@ class _MoveSheetState extends State<MoveSheet> {
               color: onMove != null ? null : Colors.grey,
             ),
           )
-          .center()
           .padAll(5),
     );
   }

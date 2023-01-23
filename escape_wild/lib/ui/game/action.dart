@@ -163,7 +163,7 @@ class _ActionPageState extends State<ActionPage> {
       onTap: !canPerform
           ? null
           : () async {
-              player.performAction(type);
+              await player.performAction(type);
               if (!mounted) return;
               // force to refresh the area, because it's hard to listen to all changes of player.
               setState(() {});

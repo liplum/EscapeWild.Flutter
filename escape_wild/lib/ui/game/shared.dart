@@ -1032,14 +1032,9 @@ class _DurationStepperState extends State<DurationStepper> {
 
   Widget buildBody(Ts ts) {
     return [
-      buildStepper(isLeft: true).flexible(flex: 1),
-      I
-          .ts(ts)
-          .toUpperCase()
-          .text(style: context.textTheme.headlineSmall, textAlign: TextAlign.end)
-          .center()
-          .flexible(flex: 4),
-      buildStepper(isLeft: false).flexible(flex: 1),
+      buildStepper(isLeft: true),
+      I.ts(ts).toUpperCase().text(style: context.textTheme.headlineSmall, textAlign: TextAlign.end),
+      buildStepper(isLeft: false),
     ].row(maa: MainAxisAlignment.spaceEvenly);
   }
 
