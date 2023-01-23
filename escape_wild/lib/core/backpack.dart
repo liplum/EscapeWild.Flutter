@@ -8,7 +8,7 @@ import 'package:noitcelloc/noitcelloc.dart';
 part 'backpack.g.dart';
 
 @JsonSerializable()
-class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConvertibleProtocol {
+class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
   /// [tracked] is an annotation to declare [ItemStack] or its list is tracked by [Backpack].
   /// For example, those items come from [Backpack.items].
   ///
@@ -28,7 +28,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   /// [ItemStack.trackId] is used to locate item in backpack without a real reference.
   @JsonKey()
   int lastTrackId = 0;
-  @JsonKey(name: "mass")
+  @JsonKey()
   int mass = 0;
 
   Backpack();
@@ -36,13 +36,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void loadFrom(Backpack source) {
     items = source.items;
     mass = source.mass;
-    notifyChange();
+    notifyChanges();
   }
 
   void clear() {
     items.clear();
     mass = 0;
-    notifyChange();
+    notifyChanges();
   }
 
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
@@ -69,7 +69,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       final part = item.split(massOfPart);
       if (part.isNotEmpty) {
         mass -= massOfPart;
-        notifyChange();
+        notifyChanges();
       }
       return part;
     }
@@ -89,13 +89,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       addedOrMerged |= _addItemOrMerge(item);
     }
     if (addedOrMerged) {
-      notifyChange();
+      notifyChanges();
     }
   }
 
   void addItemOrMerge(ItemStack item) {
     if (_addItemOrMerge(item)) {
-      notifyChange();
+      notifyChanges();
     }
   }
 
@@ -112,7 +112,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       }
       stack.trackId = null;
       player.onEndUntrackStack(stack);
-      notifyChange();
+      notifyChanges();
     }
     return hasRemoved;
   }
@@ -124,7 +124,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
       stack.trackId = null;
-      notifyChange();
+      notifyChanges();
     }
     return hasRemoved;
   }
@@ -155,7 +155,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       final delta = item.stackMass - newMass;
       item.mass = newMass;
       mass -= delta;
-      notifyChange();
+      notifyChanges();
     }
   }
 
@@ -174,13 +174,12 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void validate() {
     removeEmptyOrBrokenStacks();
     mass = sumMass();
-    notifyChange();
+    notifyChanges();
   }
 
   /// manually call [notifyListeners] if some state was changed outside.
-  void notifyChange() {
-    notifyListeners();
-    player.notifyListeners();
+  void notifyChanges() {
+    player.notifyChanges();
   }
 
   static const type = "Backpack";

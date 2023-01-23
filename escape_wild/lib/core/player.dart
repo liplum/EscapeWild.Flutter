@@ -25,13 +25,6 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   Ratio _journeyProgress = 0.0;
 
-  Ratio get journeyProgress => _journeyProgress;
-
-  set journeyProgress(Ratio v) {
-    _journeyProgress = v;
-    notifyListeners();
-  }
-
   @noSave
   PlaceProtocol? _location;
 
@@ -193,6 +186,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     await init();
     _isExecutingOnPass = false;
     actionTimes = 0;
+    envColor = const Color(0x00000000);
     attrs = AttrModel.full;
     backpack.clear();
     totalTimePassed = Ts.zero;
@@ -354,6 +348,10 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     return Cvt.toJson(jobj, indent: indent) ?? "{}";
   }
 
+  void notifyChanges() {
+    notifyListeners();
+  }
+
   Ts get totalTimePassed => _totalTimePassed;
 
   set totalTimePassed(Ts v) {
@@ -388,6 +386,13 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   set envColor(Color v) {
     _envColor = v;
+    notifyListeners();
+  }
+
+  Ratio get journeyProgress => _journeyProgress;
+
+  set journeyProgress(Ratio v) {
+    _journeyProgress = v;
     notifyListeners();
   }
 }

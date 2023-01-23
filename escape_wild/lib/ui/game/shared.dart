@@ -568,7 +568,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
         });
       }
     });
-    player.backpack.addListener(updateAllMatched);
+    player.addListener(updateAllMatched);
   }
 
   void updateAllMatched() {
@@ -603,7 +603,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget != widget) {
       if (!widget.behavior.includingBackpack) {
-        player.backpack.removeListener(updateAllMatched);
+        player.removeListener(updateAllMatched);
       }
       updateAllMatched();
     }
@@ -631,7 +631,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   void dispose() {
     super.dispose();
     marqueeTimer.cancel();
-    player.backpack.removeListener(updateAllMatched);
+    player.removeListener(updateAllMatched);
   }
 }
 
@@ -852,12 +852,12 @@ class _BackpackSheetState extends State<BackpackSheet> {
   void initState() {
     super.initState();
     updateBackpackFilter();
-    player.backpack.addListener(updateBackpackFilter);
+    player.addListener(updateBackpackFilter);
   }
 
   @override
   void dispose() {
-    player.backpack.removeListener(updateBackpackFilter);
+    player.removeListener(updateBackpackFilter);
     super.dispose();
   }
 

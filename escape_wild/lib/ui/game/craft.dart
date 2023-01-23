@@ -226,7 +226,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
         ],
         backgroundColor: Colors.transparent,
       ),
-      body: player.backpack >> (_) => context.isPortrait ? buildPortrait() : buildLandscape(),
+      body: context.isPortrait ? buildPortrait() : buildLandscape(),
     );
   }
 
