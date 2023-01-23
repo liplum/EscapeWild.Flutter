@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:rettulf/rettulf.dart';
 
 import 'game.dart';
 import 'mine.dart';
@@ -37,7 +38,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: buildBody(),
-      bottomNavigationBar: buildBottom(),
+      bottomNavigationBar: buildBottom().expanded(),
     );
   }
 
