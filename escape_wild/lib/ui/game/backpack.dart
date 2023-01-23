@@ -15,7 +15,8 @@ part 'backpack.i18n.dart';
 String get backpackTitle => _I.title;
 
 class BackpackPage extends StatefulWidget {
-  const BackpackPage({super.key});
+  // ignore: prefer_const_constructors_in_immutables
+  BackpackPage({super.key});
 
   @override
   State<BackpackPage> createState() => _BackpackPageState();

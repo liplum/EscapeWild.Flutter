@@ -9,7 +9,8 @@ import 'package:rettulf/rettulf.dart';
 import 'hud.dart';
 
 class ActionPage extends StatefulWidget {
-  const ActionPage({Key? key}) : super(key: key);
+  // ignore: prefer_const_constructors_in_immutables
+  ActionPage({super.key});
 
   @override
   State<ActionPage> createState() => _ActionPageState();
@@ -28,10 +29,9 @@ class _ActionPageState extends State<ActionPage> {
         snap: false,
         floating: false,
         flexibleSpace: FlexibleSpaceBar(
-          title: player.$location >>
-              (ctx, l) => "${l?.displayName()}".text(
-                    style: ctx.textTheme.headlineMedium,
-                  ),
+          title: "${player.location?.displayName()}".text(
+            style: context.textTheme.headlineMedium,
+          ),
           centerTitle: true,
         ),
         actions: buildAppBarActions(),
@@ -58,9 +58,6 @@ class _ActionPageState extends State<ActionPage> {
       padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
       sliver: buttonArea,
     ));
-    if (player.canPlayerAct()) {
-      slivers.add(SliverToBoxAdapter(child: buildStepper().padFromLTRB(5, 0, 5, 5)));
-    }
     return Scaffold(
       body: CustomScrollView(
         physics: const RangeMaintainingScrollPhysics(),
@@ -73,10 +70,9 @@ class _ActionPageState extends State<ActionPage> {
     return [
       Scaffold(
         appBar: AppBar(
-          title: player.$location >>
-              (ctx, l) => "${l?.displayName()}".text(
-                    style: ctx.textTheme.headlineMedium,
-                  ),
+          title: "${player.location?.displayName()}".text(
+            style: context.textTheme.headlineMedium,
+          ),
           actions: buildAppBarActions(),
           centerTitle: true,
           backgroundColor: Colors.transparent,
@@ -86,28 +82,8 @@ class _ActionPageState extends State<ActionPage> {
           buildHud(),
         ].column(maa: MainAxisAlignment.start),
       ).expanded(),
-      buildActionButtonArea().expanded(),
+      buildActionArea().expanded(),
     ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
-  }
-
-  Widget buildStepper() {
-    return DurationStepper(
-      $cur: player.$overallActionDuration,
-      min: actionStepTime,
-      max: actionMaxTime,
-      step: actionStepTime,
-    );
-  }
-
-  Widget buildActionButtonArea() {
-    if (player.canPlayerAct()) {
-      return [
-        buildActionArea().flexible(flex: 12),
-        buildStepper().flexible(flex: context.isPortrait ? 2 : 3),
-      ].column();
-    } else {
-      return buildActionArea().expanded();
-    }
   }
 
   Widget buildActionArea() {
@@ -135,16 +111,15 @@ class _ActionPageState extends State<ActionPage> {
   }
 
   Widget buildHud() {
-    return player.$attrs >>
-        (ctx, attr) => Hud(
-              attrs: attr,
-              textStyle: context.textTheme.headlineMedium,
-              minHeight: 14,
-            ).padAll(12).inCard(elevation: 2);
+    return Hud(
+      attrs: player.attrs,
+      textStyle: context.textTheme.headlineMedium,
+      minHeight: 14,
+    ).padAll(12).inCard(elevation: 2);
   }
 
   Widget buildJourneyProgress() {
-    return player.$journeyProgress >> (ctx, p) => AttrProgress(value: p).padAll(10);
+    return AttrProgress(value: player.journeyProgress).padAll(10);
   }
 
   List<Widget> buildActions(List<PlaceAction> actions) {
@@ -164,9 +139,6 @@ class _ActionPageState extends State<ActionPage> {
           ? null
           : () async {
               await player.performAction(type);
-              if (!mounted) return;
-              // force to refresh the area, because it's hard to listen to all changes of player.
-              setState(() {});
             },
       child: type
           .l10nName()

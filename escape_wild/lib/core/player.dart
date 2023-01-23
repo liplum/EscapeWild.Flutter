@@ -21,22 +21,34 @@ const actionMinTime = Ts.from(minute: 5);
 const actionMaxTime = Ts.from(hour: 2);
 
 class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
-  final $attrs = ValueNotifier(const AttrModel());
+  AttrModel _attrs = const AttrModel();
+
+  Ratio _journeyProgress = 0.0;
+
+  Ratio get journeyProgress => _journeyProgress;
+
+  set journeyProgress(Ratio v) {
+    _journeyProgress = v;
+    notifyListeners();
+  }
+
+  @noSave
+  PlaceProtocol? _location;
+
+  int _actionTimes = 0;
+
+  Color _envColor = const Color(0x00000000);
+
+  Ts _totalTimePassed = Ts.zero;
+
   @polymorphismSave
   var backpack = Backpack();
-  final $journeyProgress = ValueNotifier<Progress>(0.0);
   final $isWin = ValueNotifier(false);
   @noSave
   var initialized = false;
   @noSave
-  final $location = ValueNotifier<PlaceProtocol?>(null);
-  @noSave
-  final $maxMassLoad = ValueNotifier(10000);
-  final $actionTimes = ValueNotifier(0);
-  final $envColor = ValueNotifier(const Color(0x00000000));
+  final maxMassLoad = 10000;
   Ts startClock = const Ts.from(hour: 7, minute: 0);
-  final $totalTimePassed = ValueNotifier(Ts.zero);
-  final $overallActionDuration = ValueNotifier(const Ts(minutes: 30));
 
   /// The preference item for each [ToolType].
   /// - If player doesn't select a preferred tool, the tool with highest [ToolAttr] will be selected as default.
@@ -144,12 +156,6 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     }
     return false;
   }
-
-  @override
-  AttrModel get attrs => $attrs.value;
-
-  @override
-  set attrs(AttrModel value) => $attrs.value = value;
 
   bool canPlayerAct() {
     if (isWin) return false;
@@ -347,6 +353,43 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     final jobj = toJsonObj();
     return Cvt.toJson(jobj, indent: indent) ?? "{}";
   }
+
+  Ts get totalTimePassed => _totalTimePassed;
+
+  set totalTimePassed(Ts v) {
+    _totalTimePassed = v;
+    notifyListeners();
+  }
+
+  @override
+  AttrModel get attrs => _attrs;
+
+  @override
+  set attrs(AttrModel v) {
+    _attrs = v;
+    notifyListeners();
+  }
+
+  PlaceProtocol? get location => _location;
+
+  set location(PlaceProtocol? v) {
+    _location = v;
+    notifyListeners();
+  }
+
+  int get actionTimes => _actionTimes;
+
+  set actionTimes(int v) {
+    _actionTimes = v;
+    notifyListeners();
+  }
+
+  Color get envColor => _envColor;
+
+  set envColor(Color v) {
+    _envColor = v;
+    notifyListeners();
+  }
 }
 
 extension PlayerX on Player {
@@ -357,30 +400,6 @@ extension PlayerX on Player {
   bool get isWin => $isWin.value;
 
   set isWin(bool v) => $isWin.value = v;
-
-  Ts get overallActionDuration => $overallActionDuration.value;
-
-  set overallActionDuration(Ts v) => $overallActionDuration.value = v;
-
-  Ts get totalTimePassed => $totalTimePassed.value;
-
-  set totalTimePassed(Ts v) => $totalTimePassed.value = v;
-
-  int get actionTimes => $actionTimes.value;
-
-  set actionTimes(int v) => $actionTimes.value = v;
-
-  int get maxMassLoad => $maxMassLoad.value;
-
-  set maxMassLoad(int v) => $maxMassLoad.value = v;
-
-  PlaceProtocol? get location => $location.value;
-
-  set location(PlaceProtocol? v) => $location.value = v;
-
-  double get journeyProgress => $journeyProgress.value;
-
-  set journeyProgress(double v) => $journeyProgress.value = v;
 
   void modifyX(Attr attr, double delta) {
     if (delta < 0) {
