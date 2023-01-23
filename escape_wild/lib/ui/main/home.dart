@@ -38,7 +38,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: buildBody(),
-      bottomNavigationBar: buildBottom().expanded(),
+      bottomNavigationBar: buildBottom(),
     );
   }
 
