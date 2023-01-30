@@ -36,14 +36,14 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
             context,
             ThemeData(
               brightness: Brightness.light,
-              primarySwatch: Colors.yellow,
+              colorSchemeSeed: Colors.yellow,
               useMaterial3: true,
             )),
         darkTheme: bakeTheme(
             context,
             ThemeData(
               brightness: Brightness.dark,
-              primarySwatch: Colors.green,
+              colorSchemeSeed: Colors.green,
               useMaterial3: true,
             )),
         home: const AppWrapper(),

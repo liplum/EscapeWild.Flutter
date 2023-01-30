@@ -406,7 +406,7 @@ class _ItemDetailsState extends State<ItemDetails> {
       entries.add(ChoiceChip(
         selected: isToolPref,
         elevation: 2,
-        tooltip: isToolPref ? "Is default" : "Set to default",
+        tooltip: isToolPref ? "Unset default" : "Set default",
         selectedColor: context.fixColorBrightness(context.colorScheme.primary),
         onSelected: (newIsPref) {
           if (newIsPref == isToolPref) return;
