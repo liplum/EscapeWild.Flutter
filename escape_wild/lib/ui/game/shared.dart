@@ -256,7 +256,7 @@ class ItemStackCell extends StatelessWidget {
     if (theme.$showProgressBar && theme.$progressBarOpacity > 0) {
       final durabilityComp = DurabilityComp.of(stack);
       if (durabilityComp != null) {
-        final ratio = durabilityComp.durabilityRatio(stack);
+        final ratio = durabilityComp.getDurabilityRatio(stack);
         final durabilityBar = AttrProgress(
           value: ratio,
           color: durabilityComp.progressColor(stack, darkMode: ctx.isDarkMode),
@@ -568,7 +568,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
         });
       }
     });
-    player.backpack.addListener(updateAllMatched);
+    player.addListener(updateAllMatched);
   }
 
   void updateAllMatched() {
@@ -603,7 +603,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget != widget) {
       if (!widget.behavior.includingBackpack) {
-        player.backpack.removeListener(updateAllMatched);
+        player.removeListener(updateAllMatched);
       }
       updateAllMatched();
     }
@@ -631,7 +631,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   void dispose() {
     super.dispose();
     marqueeTimer.cancel();
-    player.backpack.removeListener(updateAllMatched);
+    player.removeListener(updateAllMatched);
   }
 }
 
@@ -852,12 +852,12 @@ class _BackpackSheetState extends State<BackpackSheet> {
   void initState() {
     super.initState();
     updateBackpackFilter();
-    player.backpack.addListener(updateBackpackFilter);
+    player.addListener(updateBackpackFilter);
   }
 
   @override
   void dispose() {
-    player.backpack.removeListener(updateBackpackFilter);
+    player.removeListener(updateBackpackFilter);
     super.dispose();
   }
 
@@ -1032,14 +1032,9 @@ class _DurationStepperState extends State<DurationStepper> {
 
   Widget buildBody(Ts ts) {
     return [
-      buildStepper(isLeft: true).flexible(flex: 1),
-      I
-          .ts(ts)
-          .toUpperCase()
-          .text(style: context.textTheme.headlineSmall, textAlign: TextAlign.end)
-          .center()
-          .flexible(flex: 4),
-      buildStepper(isLeft: false).flexible(flex: 1),
+      buildStepper(isLeft: true),
+      I.ts(ts).toUpperCase().text(style: context.textTheme.headlineSmall, textAlign: TextAlign.end),
+      buildStepper(isLeft: false),
     ].row(maa: MainAxisAlignment.spaceEvenly);
   }
 

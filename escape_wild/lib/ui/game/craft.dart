@@ -10,7 +10,8 @@ import 'backpack.dart';
 import 'shared.dart';
 
 class CraftPage extends StatefulWidget {
-  const CraftPage({super.key});
+  // ignore: prefer_const_constructors_in_immutables
+  CraftPage({super.key});
 
   @override
   State<CraftPage> createState() => _CraftPageState();
@@ -225,7 +226,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
         ],
         backgroundColor: Colors.transparent,
       ),
-      body: player.backpack >> (_) => context.isPortrait ? buildPortrait() : buildLandscape(),
+      body: context.isPortrait ? buildPortrait() : buildLandscape(),
     );
   }
 

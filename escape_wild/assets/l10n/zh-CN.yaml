@@ -1,32 +1,104 @@
 ui:
-  main:
+  main:    
+    home:
+      game: 游戏
+      # A bottom navigation about user themselves. 
+      mine: 个人信息
     game:
       title: 逃离荒野
       new-game: 新的游戏
       continue: 继续游戏
   game:
     home:
+      # Where to display HUD, action buttons and progress.
       action: 行动
       backpack: 背包
       craft: 合成
       camp: 营地
     backpack:
+      title: 背包
       mass-load: '{cur} / {max}'
+            # The title of discard request
       discard-request: 是否丢弃？
+            # Ask before player is going to discard something in backpack.
       discard-confirm: "确定要丢弃 {} 吗？"
+            # Display when backpack is empty
       empty-tip: 背包空荡荡的
+    ingame-menu:
+      save: 存档
     camp:
+      
+      shelter:
+        title: 避难所
       campfire:
         title: 篝火
+        start-fire: 生火
+        restart-fire: 重新生火
+        # verb: supply campfire with fuel
+        fuel: 添加燃料
+  debug:
+    debug-console:
+      title: 调试台
+      cat:
+        item: 物品
+  settings:
+    language:
+      title: 语言
+    measurement:
+      title: 度量单位
+time:
+  hour: '{} 小时'
+  minute: '{} 分钟'
+  hm: '{hour} 小时 {min} 分钟'
+physical-quantity:
+  mass: 重量
+  length: 长度
+  temperature: 温度
+# The unit of measurement system.
+unit:
+  mass:
+    gram:
+      name: 克 (g)
+      unit: g
+      format: '{} g'
+    kilogram:
+      name: 千克 (kg)
+      unit: kg
+      format: '{} kg'
+    pound:
+      name: 磅 (lb)
+      unit: lbs
+      format: '{} lbs'
+    ounce:
+      name: 盎司 (oz)
+      unit: oz
+      format: '{} oz'
+  temperature:
+    celsius:
+      name: 摄氏度(°C)
+      unit: '°C'
+      format: '{} °C'
+    fahrenheit:
+      name: 华氏度(°F)
+      unit: '°F'
+      format: '{} °F'
+# To express knowing.
 ok: 好的
+# To approve.
 yes: 是
+# To refuse.
 no: 否
+# To cancel or delay.
 not-now: 再等等
 cancel: 取消
+# To express acceptable but not good.
 alright: 好吧
+# Discard something.
 discard: 丢弃
 action:
+  # When player gets items
   got-items: 你得到了 {}。
+  # When player gets nothing
   got-nothing: 你什么也没得到。
+  # When a tool is broken
   tool-broken: "{} 已经彻底坏了，没法再使用了。"
-  

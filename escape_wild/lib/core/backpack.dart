@@ -8,7 +8,7 @@ import 'package:noitcelloc/noitcelloc.dart';
 part 'backpack.g.dart';
 
 @JsonSerializable()
-class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConvertibleProtocol {
+class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
   /// [tracked] is an annotation to declare [ItemStack] or its list is tracked by [Backpack].
   /// For example, those items come from [Backpack.items].
   ///
@@ -28,7 +28,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   /// [ItemStack.trackId] is used to locate item in backpack without a real reference.
   @JsonKey()
   int lastTrackId = 0;
-  @JsonKey(name: "mass")
+  @JsonKey()
   int mass = 0;
 
   Backpack();
@@ -36,13 +36,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void loadFrom(Backpack source) {
     items = source.items;
     mass = source.mass;
-    notifyListeners();
+    notifyChanges();
   }
 
   void clear() {
     items.clear();
     mass = 0;
-    notifyListeners();
+    notifyChanges();
   }
 
   factory Backpack.fromJson(Map<String, dynamic> json) => _$BackpackFromJson(json);
@@ -69,7 +69,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       final part = item.split(massOfPart);
       if (part.isNotEmpty) {
         mass -= massOfPart;
-        notifyListeners();
+        notifyChanges();
       }
       return part;
     }
@@ -89,13 +89,13 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       addedOrMerged |= _addItemOrMerge(item);
     }
     if (addedOrMerged) {
-      notifyListeners();
+      notifyChanges();
     }
   }
 
   void addItemOrMerge(ItemStack item) {
     if (_addItemOrMerge(item)) {
-      notifyListeners();
+      notifyChanges();
     }
   }
 
@@ -103,13 +103,16 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   /// - [force] will force this to remove [stack].
   bool removeStackInBackpack(@tracked ItemStack stack) {
     if (stack.isEmpty) return true;
-    final removedMass = stack.stackMass;
-    stack.mass = 0;
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
-      mass -= removedMass;
+      player.onStartUntrackStack(stack);
+      mass -= stack.stackMass;
+      if (stack.meta.mergeable) {
+        stack.mass = 0;
+      }
       stack.trackId = null;
-      notifyListeners();
+      player.onEndUntrackStack(stack);
+      notifyChanges();
     }
     return hasRemoved;
   }
@@ -121,7 +124,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
       stack.trackId = null;
-      notifyListeners();
+      notifyChanges();
     }
     return hasRemoved;
   }
@@ -152,7 +155,7 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
       final delta = item.stackMass - newMass;
       item.mass = newMass;
       mass -= delta;
-      notifyListeners();
+      notifyChanges();
     }
   }
 
@@ -171,12 +174,12 @@ class Backpack extends Iterable<ItemStack> with ChangeNotifier implements JConve
   void validate() {
     removeEmptyOrBrokenStacks();
     mass = sumMass();
-    notifyListeners();
+    notifyChanges();
   }
 
   /// manually call [notifyListeners] if some state was changed outside.
-  void notifyChange() {
-    notifyListeners();
+  void notifyChanges() {
+    player.notifyChanges();
   }
 
   static const type = "Backpack";
@@ -232,15 +235,21 @@ extension BackpackX on Backpack {
       final existed = getItemByIdenticalMeta(addition);
       if (existed != null) {
         addition.mergeTo(existed);
+        mass += additionMass;
       } else {
-        addition.trackId = lastTrackId++;
         items.add(addition);
+        player.onStartTrackStack(addition);
+        addition.trackId = lastTrackId++;
+        mass += additionMass;
+        player.onEndTrackStack(addition);
       }
     } else {
-      addition.trackId = lastTrackId++;
       items.add(addition);
+      player.onStartTrackStack(addition);
+      addition.trackId = lastTrackId++;
+      mass += additionMass;
+      player.onEndTrackStack(addition);
     }
-    mass += additionMass;
     return true;
   }
 

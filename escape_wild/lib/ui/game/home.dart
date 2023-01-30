@@ -40,14 +40,40 @@ class _HomePageState extends State<Homepage> {
         focusNode: focusNode,
         autofocus: true,
         onKeyEvent: onKeyEvent,
-        child: Scaffold(
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
-            child: buildBody(),
-          ),
-          bottomNavigationBar: buildBottom(),
+        child: player >>
+            (_) => [
+                  buildMain(),
+                  buildEnvColorCover(),
+                ].stack(),
+      ),
+    );
+  }
+
+  Widget buildMain() {
+    return Scaffold(
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: buildBody(),
+      ),
+      bottomNavigationBar: buildBottom(),
+    );
+  }
+
+  Widget buildEnvColorCover() {
+    return IgnorePointer(
+      child: LayoutBuilder(
+        builder: (ctx, box) => buildEnvColorBox().sized(
+          w: box.maxWidth,
+          h: box.maxHeight,
         ),
       ),
+    );
+  }
+
+  Widget buildEnvColorBox() {
+    return AnimatedContainer(
+      color: player.envColor,
+      duration: const Duration(milliseconds: 100),
     );
   }
 
@@ -115,13 +141,13 @@ class _HomePageState extends State<Homepage> {
 
   Widget buildBody() {
     if (curIndex == _P.action) {
-      return const ActionPage();
+      return ActionPage();
     } else if (curIndex == _P.backpack) {
-      return const BackpackPage();
+      return BackpackPage();
     } else if (curIndex == _P.craft) {
-      return const CraftPage();
+      return CraftPage();
     } else {
-      return const CampPage();
+      return CampPage();
     }
   }
 

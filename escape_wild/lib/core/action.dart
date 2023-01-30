@@ -83,7 +83,7 @@ class UAction with Moddable {
   int get hashCode => name.hashCode;
 }
 
-extension ActionTypeX on UAction {
+extension UActionX on UAction {
   bool get isTopLevel => parent == null;
 
   bool get isLeaf => subActions.isEmpty;

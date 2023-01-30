@@ -3,7 +3,8 @@ import 'dart:math';
 
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:escape_wild/game/ui/move.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 
@@ -11,7 +12,7 @@ import 'shared.dart';
 
 part 'subtropics.g.dart';
 
-Ts get per => actionTsStep;
+Ts get per => actionStepTime;
 
 final moveWithEnergy = PlaceAction(UAction.move, () => player.energy > 0.0);
 final exploreWithEnergy = PlaceAction(UAction.explore, () => player.energy > 0.0);
@@ -41,11 +42,10 @@ final cutDownTreeWithTool = PlaceAction(
       ),
 );
 
-bool _always() => true;
-final rest = PlaceAction(UAction.shelterRest, _always);
-final shelter = PlaceAction(UAction.shelter, _always);
-final stopHeartbeatAndLose = PlaceAction(UAction.stopHeartbeat, _always);
-final escapeWildAndWin = PlaceAction(UAction.escapeWild, _always);
+final rest = PlaceAction(UAction.shelterRest, () => true);
+final shelter = PlaceAction(UAction.shelter, () => true);
+final stopHeartbeatAndLose = PlaceAction(UAction.stopHeartbeat, () => true);
+final escapeWildAndWin = PlaceAction(UAction.escapeWild, () => true);
 
 @JsonSerializable()
 class SubtropicsLevel extends LevelProtocol {
@@ -95,6 +95,17 @@ class SubtropicsLevel extends LevelProtocol {
       await stack.onPassTime(delta);
     }
     await route?.onPassTime(delta);
+    player.envColor = calcEnvColor();
+  }
+
+  Color calcEnvColor() {
+    final cur = player.startClock + player.totalTimePassed;
+    final hour = cur.hourPart;
+    if (hour < 6 || hour > 18) {
+      return Colors.black.withOpacity(0.5);
+    } else {
+      return Colors.transparent;
+    }
   }
 
   factory SubtropicsLevel.fromJson(Map<String, dynamic> json) => _$SubtropicsLevelFromJson(json);
@@ -329,18 +340,21 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
 
   @override
   Future<void> performMove(UAction action) async {
-    await player.onPassTime(player.overallActionDuration);
-    player.modifyX(Attr.food, -0.05);
-    player.modifyX(Attr.water, -0.05);
-    player.modifyX(Attr.energy, -0.05);
-    var routeProgress = route.getRouteProgress();
-    if (action == UAction.moveForward) {
-      await route.setRouteProgress(routeProgress + 1.0);
-    } else if (action == UAction.moveBackward) {
-      await route.setRouteProgress(routeProgress - 1.0);
-    }
-    player.journeyProgress = route.journeyProgress;
-    player.location = route.current;
+    await showMoveSheet(onMoved: (duration) async {
+      final f = duration.minutes;
+      await player.onPassTime(duration);
+      player.modifyX(Attr.food, -0.0001 * f);
+      player.modifyX(Attr.water, -0.0001 * f);
+      player.modifyX(Attr.energy, -0.0001 * f);
+      var routeProgress = route.getRouteProgress();
+      if (action == UAction.moveForward) {
+        await route.setRouteProgress(routeProgress + 0.03 * f);
+      } else if (action == UAction.moveBackward) {
+        await route.setRouteProgress(routeProgress - 0.03 * f);
+      }
+      player.journeyProgress = route.journeyProgress;
+      player.location = route.current;
+    });
   }
 
   @override
@@ -375,14 +389,17 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
   @override
   Future<void> performShelter(UAction action) async {
     // TODO: A dedicate duration
-    await player.onPassTime(player.overallActionDuration);
-    player.modifyX(Attr.food, -0.03);
-    player.modifyX(Attr.water, -0.03);
-    if (player.food > 0.0 && player.water > 0.0) {
-      player.modifyX(Attr.health, 0.02);
-      player.modifyX(Attr.energy, 0.25);
+    final duration = actionDefaultTime;
+    final f = duration / const Ts(minutes: 30);
+    await player.onPassTime(actionDefaultTime);
+    final canRestore = player.food > 0.0 && player.water > 0.0;
+    player.modifyX(Attr.food, -0.03 * f);
+    player.modifyX(Attr.water, -0.03 * f);
+    if (canRestore) {
+      player.modifyX(Attr.health, 0.02 * f);
+      player.modifyX(Attr.energy, 0.35 * f);
     } else {
-      player.modifyX(Attr.energy, 0.05);
+      player.modifyX(Attr.energy, 0.05 * f);
     }
   }
 
@@ -409,7 +426,7 @@ class PlainPlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     player.modifyX(Attr.food, -0.02);
     player.modifyX(Attr.water, -0.02);
     player.modifyX(Attr.energy, -0.08);
@@ -458,7 +475,7 @@ class ForestPlace extends SubtropicsPlace {
   }
 
   Future<void> performCutDownTree() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     final tool = player.findBestToolOfType(ToolType.axe);
     if (tool == null) return;
     final comp = tool.comp;
@@ -486,7 +503,7 @@ class ForestPlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
@@ -534,7 +551,7 @@ class RiversidePlace extends SubtropicsPlace {
 
   @override
   Future<void> performFish() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     final tool = player.findBestToolOfType(ToolType.fishing);
     if (tool == null) return;
     final comp = tool.comp;
@@ -558,7 +575,7 @@ class RiversidePlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.025);
     player.modifyX(Attr.energy, -0.10);
@@ -603,7 +620,7 @@ class CavePlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.10);
@@ -638,7 +655,7 @@ class HutPlace extends SubtropicsPlace {
 
   @override
   Future<void> performExplore() async {
-    await player.onPassTime(player.overallActionDuration);
+    await player.onPassTime(actionDefaultTime);
     player.modifyX(Attr.food, -0.03);
     player.modifyX(Attr.water, -0.03);
     player.modifyX(Attr.energy, -0.08);

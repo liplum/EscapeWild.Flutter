@@ -1,42 +1,105 @@
+import 'package:escape_wild/app.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:rettulf/rettulf.dart';
 
-/*
-Future<Ts>  */
+Future<void> showMoveSheet({ValueChanged<Ts>? onMoved}) async {
+  return await showCupertinoModalBottomSheet(
+    context: AppCtx,
+    builder: (ctx) {
+      final sheet = MoveSheet(
+        initialDuration: actionDefaultTime,
+        onMove: onMoved,
+      );
+      final size = AppCtx.mediaQuery.size;
+      if (AppCtx.isPortrait) {
+        return sheet.constrained(maxH: size.height * 0.4);
+      } else {
+        return sheet.constrained(maxH: size.height * 0.5);
+      }
+    },
+  );
+}
 
-class ActionTsSelector extends StatefulWidget {
-  final Ts initial;
-  final Ts min;
-  final Ts max;
-  final Ts step;
+class MoveSheet extends StatefulWidget {
+  final Ts initialDuration;
+  final ValueChanged<Ts>? onMove;
 
-  const ActionTsSelector({
+  const MoveSheet({
     super.key,
-    required this.initial,
-    required this.min,
-    required this.max,
-    required this.step,
+    required this.initialDuration,
+    this.onMove,
   });
 
   @override
-  State<ActionTsSelector> createState() => _ActionTsSelectorState();
+  State<MoveSheet> createState() => _MoveSheetState();
 }
 
-class _ActionTsSelectorState extends State<ActionTsSelector> {
-  late final $cur = ValueNotifier(widget.initial);
+class _MoveSheetState extends State<MoveSheet> {
+  late final $cur = ValueNotifier(widget.initialDuration);
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: "Forward".text(),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            context.navigator.pop();
+          },
+        ),
+      ),
+      body: buildBody(),
+    );
+  }
+
+  Widget buildBody() {
+    return [
+      buildStepper(),
+      buildMoveBtn(),
+    ].column(mas: MainAxisSize.min);
+  }
+
+  Widget buildMoveBtn() {
+    final onMove = widget.onMove;
+    return CardButton(
+      elevation: onMove != null ? 10 : 0,
+      onTap: onMove == null
+          ? null
+          : () {
+              onMove($cur.value);
+            },
+      child: UAction.move
+          .l10nName()
+          .toUpperCase()
+          .autoSizeText(
+            maxLines: 1,
+            minFontSize: 8,
+            style: context.textTheme.headlineSmall?.copyWith(
+              color: onMove != null ? null : Colors.grey,
+            ),
+          )
+          .padAll(5),
+    );
   }
 
   Widget buildStepper() {
     return DurationStepper(
       $cur: $cur,
-      min: actionTsStep,
-      max: maxActionDuration,
-      step: actionTsStep,
+      min: actionMinTime,
+      max: actionMaxTime,
+      step: actionStepTime,
     );
+  }
+
+  @override
+  void dispose() {
+    $cur.dispose();
+    super.dispose();
   }
 }

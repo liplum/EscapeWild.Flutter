@@ -15,7 +15,8 @@ part 'backpack.i18n.dart';
 String get backpackTitle => _I.title;
 
 class BackpackPage extends StatefulWidget {
-  const BackpackPage({super.key});
+  // ignore: prefer_const_constructors_in_immutables
+  BackpackPage({super.key});
 
   @override
   State<BackpackPage> createState() => _BackpackPageState();
@@ -43,7 +44,7 @@ class _BackpackPageState extends State<BackpackPage> {
   @override
   void initState() {
     super.initState();
-    player.backpack.addListener(updateDefaultSelection);
+    player.addListener(updateDefaultSelection);
     if (lastSelectedIndex >= 0) {
       selected = player.backpack[lastSelectedIndex];
     }
@@ -52,7 +53,7 @@ class _BackpackPageState extends State<BackpackPage> {
 
   @override
   void dispose() {
-    player.backpack.removeListener(updateDefaultSelection);
+    player.removeListener(updateDefaultSelection);
     super.dispose();
   }
 
@@ -72,7 +73,7 @@ class _BackpackPageState extends State<BackpackPage> {
           onPointerScroll(pointerSignal);
         }
       },
-      child: player.backpack >> (ctx) => ctx.isPortrait ? buildPortrait() : buildLandscape(),
+      child: context.isPortrait ? buildPortrait() : buildLandscape(),
     );
   }
 
