@@ -22,10 +22,6 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Restore packages
-        run: |
-          flutter pub get
-
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
           workingDir: escape_wild
