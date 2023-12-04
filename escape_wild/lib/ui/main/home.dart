@@ -1,8 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:rettulf/rettulf.dart';
 
 import 'game.dart';
 import 'mine.dart';
@@ -26,13 +23,6 @@ class _P {
 
 class _HomepageState extends State<Homepage> {
   var curIndex = _P.game;
-
-  @override
-  void initState() {
-    super.initState();
-    // precache campfire
-    precachePicture(ExactAssetPicture(SvgPicture.svgStringDecoderBuilder, 'assets/img/campfire.svg'), null);
-  }
 
   @override
   Widget build(BuildContext context) {

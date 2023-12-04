@@ -4,13 +4,28 @@ on:
   push:
     branches: [ master ]
 
+env:
+  flutter_version: '3.16.2'
+
 jobs:
   build:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event_name,'[no-page]') }}
     steps:
-      - uses: actions/checkout@v2 # Only works with v2
-      - uses: subosito/flutter-action@v1
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.flutter_version }}
+          channel: stable
+          cache: true
+
+      - name: Restore packages
+        run: |
+          flutter pub get
+
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
           workingDir: escape_wild

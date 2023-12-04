@@ -1,5 +1,5 @@
-import 'package:easy_localization_loader/easy_localization_loader.dart';
 import 'package:escape_wild/i18n.dart';
+import 'package:escape_wild/utils/yaml_assets_loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/game/items/foods.dart';

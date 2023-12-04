@@ -5,14 +5,14 @@ import 'package:escape_wild/ui/debug/console.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
-import 'package:rettulf/build_context/show.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 part 'ingame_menu.i18n.dart';
 
 extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {
-    await this.showDialog(
+    await showDialog(
+      context: this,
       builder: (ctx) => $Dialog(
         icon: const Icon(
           Icons.local_fire_department_rounded,
