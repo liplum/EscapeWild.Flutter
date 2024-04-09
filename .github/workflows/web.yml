@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 env:
-  flutter_version: '3.16.2'
+  flutter_version: '3.19.5'
 
 jobs:
   build:
