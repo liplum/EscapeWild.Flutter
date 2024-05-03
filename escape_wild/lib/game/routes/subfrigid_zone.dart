@@ -30,7 +30,7 @@ class SubFrigidZoneRouteGenerator implements RouteGeneratorProtocol {
   RouteProtocol generateRoute(RouteGenerateContext ctx, int seed) {
     final route = SubFrigidZoneRoute("subfrigidzone");
 
-    final zhongzi = Random(seed);
+    final rand = Random(seed);
 
     int countNum = 50;
     var randomNum = Random();
@@ -194,9 +194,7 @@ class SubFrigidZoneRoute extends RouteProtocol {
   String get typeName => type;
 
   @override
-  Future<void> onPassTime(Ts delta) async {
-
-  }
+  Future<void> onPassTime(Ts delta) async {}
 }
 
 @JsonSerializable()

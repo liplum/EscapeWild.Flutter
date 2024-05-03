@@ -2,6 +2,8 @@ import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'item_comp/wetness.dart';
+
 part 'craft.g.dart';
 
 class CraftType with Moddable {

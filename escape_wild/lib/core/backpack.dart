@@ -5,6 +5,9 @@ import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 
+import 'item_comp/durability.dart';
+import 'item_comp/tool.dart';
+
 part 'backpack.g.dart';
 
 @JsonSerializable()

@@ -8,10 +8,10 @@ part of 'item.dart';
 
 ItemStack _$ItemStackFromJson(Map<String, dynamic> json) => ItemStack(
       Contents.getItemMetaByName(json['meta'] as String),
-      mass: json['mass'] as int?,
+      mass: (json['mass'] as num?)?.toInt(),
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..trackId = json['id'] as int?;
+      ..trackId = (json['id'] as num?)?.toInt();
 
 Map<String, dynamic> _$ItemStackToJson(ItemStack instance) {
   final val = <String, dynamic>{};
@@ -29,16 +29,13 @@ Map<String, dynamic> _$ItemStackToJson(ItemStack instance) {
   return val;
 }
 
-ContainerItemStack _$ContainerItemStackFromJson(Map<String, dynamic> json) =>
-    ContainerItemStack(
+ContainerItemStack _$ContainerItemStackFromJson(Map<String, dynamic> json) => ContainerItemStack(
       Contents.getItemMetaByName(json['meta'] as String),
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..trackId = json['id'] as int?
-      ..inner = json['inner'] == null
-          ? null
-          : ItemStack.fromJson(json['inner'] as Map<String, dynamic>)
-      ..mass = json['mass'] as int?;
+      ..trackId = (json['id'] as num?)?.toInt()
+      ..inner = json['inner'] == null ? null : ItemStack.fromJson(json['inner'] as Map<String, dynamic>)
+      ..mass = (json['mass'] as num?)?.toInt();
 
 Map<String, dynamic> _$ContainerItemStackToJson(ContainerItemStack instance) {
   final val = <String, dynamic>{};

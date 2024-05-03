@@ -3,6 +3,9 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/item_comp/durability.dart';
+import 'package:escape_wild/core/item_comp/freshness.dart';
+import 'package:escape_wild/core/item_comp/usable.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
@@ -633,7 +636,6 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       assert(false, "No item matched.");
       return const NullItemCell();
     }
-    ;
   }
 
   @override

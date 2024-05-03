@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/item_comp/tool.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/game/ui/move.dart';
 import 'package:flutter/material.dart';

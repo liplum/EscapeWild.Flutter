@@ -6,6 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'item_comp/durability.dart';
+import 'item_comp/freshness.dart';
+import 'item_comp/wetness.dart';
+import 'item_prop.dart';
+
 part 'cooking.g.dart';
 
 abstract class CookRecipeProtocol with Moddable {

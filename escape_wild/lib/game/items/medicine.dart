@@ -1,4 +1,5 @@
 import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/item_comp/usable.dart';
 
 class Medicines {
   static late Item bandage, firstAidKit, herbs;

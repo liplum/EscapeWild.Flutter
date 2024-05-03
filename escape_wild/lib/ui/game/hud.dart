@@ -38,7 +38,7 @@ class _HudState extends State<Hud> {
   Widget build(BuildContext context) {
     return LayoutGrid(
       columnSizes: [auto, 1.5.fr],
-      gridFit : GridFit.expand,
+      gridFit: GridFit.expand,
       rowSizes: const [auto, auto, auto, auto],
       children: [
         label(Attr.health),
