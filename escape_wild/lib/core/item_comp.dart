@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/random.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:quiver/core.dart';
 
 part 'item_comp.g.dart';
 
@@ -791,7 +790,7 @@ class ItemPropModifier {
   }
 
   @override
-  int get hashCode => hash2(prop, deltaPerMinute);
+  int get hashCode => Object.hash(prop, deltaPerMinute);
 }
 
 extension ItemPropModifierX on ItemPropModifier {

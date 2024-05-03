@@ -3,7 +3,6 @@ import 'package:escape_wild/core.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:quiver/core.dart';
 
 part 'attribute.g.dart';
 
@@ -273,7 +272,7 @@ class AttrModifier {
   }
 
   @override
-  int get hashCode => hash2(attr, delta);
+  int get hashCode => Object.hash(attr, delta);
 }
 
 extension AttrModifierX on AttrModifier {
