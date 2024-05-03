@@ -3,10 +3,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/utils/random.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'durability.dart';
-import 'wetness.dart';
-
-part 'firestarter.g.dart';
+part 'fire_starter.g.dart';
 
 /// An [Item] can have at most one [FireStarterComp].
 @JsonSerializable(createToJson: false)

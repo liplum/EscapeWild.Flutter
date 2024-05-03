@@ -9,8 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 
-import 'item_comp/tool.dart';
-
 final player = Player();
 const polymorphismSave = Object();
 

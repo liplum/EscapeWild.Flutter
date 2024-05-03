@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'firestarter.dart';
+part of 'fire_starter.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
