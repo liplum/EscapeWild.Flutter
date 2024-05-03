@@ -611,6 +611,14 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: it doesn't work
+    return AnimatedSwitcher(
+      duration: Durations.medium4,
+      child: buildCell(),
+    );
+  }
+
+  Widget buildCell() {
     if (allMatched.isNotEmpty) {
       final cur = allMatched[curIndex];
       if (cur is Item) {
@@ -625,6 +633,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       assert(false, "No item matched.");
       return const NullItemCell();
     }
+    ;
   }
 
   @override
