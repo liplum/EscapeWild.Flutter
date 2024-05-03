@@ -6,8 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'ecs/ecs.dart';
-
 part 'item.g.dart';
 
 typedef ItemGetter = Item Function();

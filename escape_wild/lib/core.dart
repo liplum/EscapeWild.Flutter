@@ -8,6 +8,7 @@ export 'package:escape_wild/core/ecs/ecs.dart';
 export 'package:escape_wild/core/level.dart';
 export 'package:escape_wild/core/content.dart';
 export 'package:escape_wild/core/time.dart';
+export 'package:escape_wild/core/item_prop.dart';
 export 'package:escape_wild/core/craft.dart';
 export 'package:escape_wild/core/i18n.dart';
 export 'package:escape_wild/core/hardness.dart';
@@ -19,7 +20,7 @@ export 'package:escape_wild/core/data_class.dart';
 export 'package:escape_wild/core/player.dart';
 export 'package:escape_wild/core/route.dart';
 export 'package:escape_wild/core/campfire.dart';
-export 'package:escape_wild/core/cooking.dart';
+export 'package:escape_wild/core/cook/cook.dart';
 export 'package:escape_wild/core/item_pool.dart';
 export 'package:escape_wild/ambiguous.dart';
 
