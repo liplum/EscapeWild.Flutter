@@ -5,15 +5,18 @@ publish_to: 'none'
 
 version: 1.0.0+1
 
-environment: { sdk: '>=3.3.0 <4.0.0', flutter: ^3.19.6 }
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+  flutter: 3.27.2
 
 dependencies:
   flutter:
     sdk: flutter
+
   # I18n
-  easy_localization: ^3.0.6
+  easy_localization: ^3.0.7
   locale_names: ^1.1.1
-  intl: 0.18.1
+  intl: ^0.19.0
 
   # Basic
   collection: ^1.18.0
@@ -44,7 +47,7 @@ dependencies:
   flutter_layout_grid: ^2.0.6
   auto_size_text: ^3.0.0
   flutter_svg: ^2.0.10+1
-  syncfusion_flutter_sliders: ^25.1.42
+  syncfusion_flutter_sliders: ^28.1.39
   modal_bottom_sheet: ^3.0.0
   animations: ^2.0.11
   flutter_staggered_grid_view: ^0.7.0
@@ -60,7 +63,7 @@ dev_dependencies:
     git:
       url: https://github.com/Gaurav192/icon_font_generator.git
       ref: file_path_fix
-  flutter_lints: ^3.0.2
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
