@@ -76,9 +76,6 @@ flutter:
     - assets/vanilla/l10n/
     - assets/img/
   fonts:
-    - family: Roboto
-      fonts:
-        - asset: google_fonts/Roboto-Regular.ttf
     - family: IconsX
       fonts:
         - asset: assets/icons.ttf
