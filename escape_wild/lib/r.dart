@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:platform_safe_func/platform_safe_func.dart';
 
 class R {
@@ -13,6 +14,7 @@ class R {
     zhCnLocale,
     frLocale,
   ];
+  static const debugMode = kDebugMode;
   static const packageName = "net.liplum.escape_wild.flutter";
   static late final String appDir;
   static late final String tmpDir;

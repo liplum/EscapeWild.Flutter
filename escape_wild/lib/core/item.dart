@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:escape_wild/core.dart';
-import 'package:flutter/foundation.dart';
+import 'package:escape_wild/r.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -357,7 +357,7 @@ abstract class ItemComp extends Comp {
 extension ItemCompDebugX on ItemComp {
   /// validate item if debug mode
   void validateItemConfigIfDebug(Item item) {
-    if (kDebugMode) {
+    if (R.debugMode) {
       validateItemConfig(item);
     }
   }
