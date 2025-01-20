@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/r.dart';
 import 'package:jconverter/jconverter.dart';
@@ -378,6 +379,7 @@ class ItemCompPair<T extends Comp> {
 }
 
 @JsonSerializable()
+@CopyWith(skipFields: true)
 class ItemStack with ExtraMixin implements JConvertibleProtocol {
   static final empty = ItemStack(Item.empty);
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: Item.getName)

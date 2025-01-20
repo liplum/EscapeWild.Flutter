@@ -54,6 +54,7 @@ dependencies:
   flutter_screenutil: ^5.9.0
   flutter_highlight: ^0.7.0
   meta: ^1.15.0
+  copy_with_extension: ^5.0.4
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ dev_dependencies:
       url: https://github.com/Gaurav192/icon_font_generator.git
       ref: file_path_fix
   flutter_lints: ^5.0.0
+  copy_with_extension_gen: ^5.0.4
 
 flutter:
   uses-material-design: true

@@ -3,6 +3,60 @@
 part of 'item.dart';
 
 // **************************************************************************
+// CopyWithGenerator
+// **************************************************************************
+
+abstract class _$ItemStackCWProxy {
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored.
+  ///
+  /// Usage
+  /// ```dart
+  /// ItemStack(...).copyWith(id: 12, name: "My name")
+  /// ````
+  ItemStack call({
+    Item? meta,
+    int? mass,
+  });
+}
+
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfItemStack.copyWith(...)`.
+class _$ItemStackCWProxyImpl implements _$ItemStackCWProxy {
+  const _$ItemStackCWProxyImpl(this._value);
+
+  final ItemStack _value;
+
+  @override
+
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored.
+  ///
+  /// Usage
+  /// ```dart
+  /// ItemStack(...).copyWith(id: 12, name: "My name")
+  /// ````
+  ItemStack call({
+    Object? meta = const $CopyWithPlaceholder(),
+    Object? mass = const $CopyWithPlaceholder(),
+  }) {
+    return ItemStack(
+      meta == const $CopyWithPlaceholder() || meta == null
+          ? _value.meta
+          // ignore: cast_nullable_to_non_nullable
+          : meta as Item,
+      mass: mass == const $CopyWithPlaceholder()
+          ? _value.mass
+          // ignore: cast_nullable_to_non_nullable
+          : mass as int?,
+    );
+  }
+}
+
+extension $ItemStackCopyWith on ItemStack {
+  /// Returns a callable class that can be used as follows: `instanceOfItemStack.copyWith(...)`.
+  // ignore: library_private_types_in_public_api
+  _$ItemStackCWProxy get copyWith => _$ItemStackCWProxyImpl(this);
+}
+
+// **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 

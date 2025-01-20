@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 mixin ExtraMixin {
+  /// Nested objects are not allowed
   @JsonKey(includeIfNull: false)
   Map<String, dynamic>? extra;
 }
