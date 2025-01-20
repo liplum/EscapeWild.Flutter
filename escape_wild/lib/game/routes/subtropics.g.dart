@@ -11,20 +11,11 @@ SubtropicsLevel _$SubtropicsLevelFromJson(Map<String, dynamic> json) => Subtropi
   ..routeSeed = (json['routeSeed'] as num).toInt()
   ..hardness = Contents.getHardnessByName(json['hardness'] as String);
 
-Map<String, dynamic> _$SubtropicsLevelToJson(SubtropicsLevel instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('route', instance.route);
-  val['routeSeed'] = instance.routeSeed;
-  val['hardness'] = Hardness.toName(instance.hardness);
-  return val;
-}
+Map<String, dynamic> _$SubtropicsLevelToJson(SubtropicsLevel instance) => <String, dynamic>{
+      if (instance.route case final value?) 'route': value,
+      'routeSeed': instance.routeSeed,
+      'hardness': Hardness.toName(instance.hardness),
+    };
 
 SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) => SubtropicsRoute(
       json['name'] as String,
@@ -51,25 +42,16 @@ SubtropicsPlace _$SubtropicsPlaceFromJson(Map<String, dynamic> json) => Subtropi
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$SubtropicsPlaceToJson(SubtropicsPlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };
 
 PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
       json['name'] as String,
@@ -82,25 +64,16 @@ PlainPlace _$PlainPlaceFromJson(Map<String, dynamic> json) => PlainPlace(
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$PlainPlaceToJson(PlainPlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };
 
 ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
       json['name'] as String,
@@ -113,25 +86,16 @@ ForestPlace _$ForestPlaceFromJson(Map<String, dynamic> json) => ForestPlace(
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$ForestPlaceToJson(ForestPlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };
 
 RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) => RiversidePlace(
       json['name'] as String,
@@ -144,25 +108,16 @@ RiversidePlace _$RiversidePlaceFromJson(Map<String, dynamic> json) => RiversideP
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$RiversidePlaceToJson(RiversidePlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };
 
 CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
       json['name'] as String,
@@ -175,25 +130,16 @@ CavePlace _$CavePlaceFromJson(Map<String, dynamic> json) => CavePlace(
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$CavePlaceToJson(CavePlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };
 
 HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
       json['name'] as String,
@@ -206,25 +152,16 @@ HutPlace _$HutPlaceFromJson(Map<String, dynamic> json) => HutPlace(
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$HutPlaceToJson(HutPlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };
 
 VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
       json['name'] as String,
@@ -237,22 +174,13 @@ VillagePlace _$VillagePlaceFromJson(Map<String, dynamic> json) => VillagePlace(
       ..fireState = CampfireCookingMixin.fireStateFromJson(json['fireState'])
       ..exploreCount = (json['ec'] as num).toInt();
 
-Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  writeNotNull('cookingTime', CampfireCookingMixin.tsToJson(instance.cookingTime));
-  writeNotNull('onCampfire', CampfireCookingMixin.campfireStackToJson(instance.onCampfire));
-  writeNotNull('offCampfire', CampfireCookingMixin.campfireStackToJson(instance.offCampfire));
-  writeNotNull('recipe', CookRecipeProtocol.getNameOrNull(instance.recipe));
-  writeNotNull('fireState', CampfireCookingMixin.fireStateStackToJson(instance.fireState));
-  val['name'] = instance.name;
-  val['ec'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$VillagePlaceToJson(VillagePlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      if (CampfireCookingMixin.tsToJson(instance.cookingTime) case final value?) 'cookingTime': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.onCampfire) case final value?) 'onCampfire': value,
+      if (CampfireCookingMixin.campfireStackToJson(instance.offCampfire) case final value?) 'offCampfire': value,
+      if (CookRecipeProtocol.getNameOrNull(instance.recipe) case final value?) 'recipe': value,
+      if (CampfireCookingMixin.fireStateStackToJson(instance.fireState) case final value?) 'fireState': value,
+      'name': instance.name,
+      'ec': instance.exploreCount,
+    };

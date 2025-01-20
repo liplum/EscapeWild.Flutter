@@ -27,21 +27,12 @@ SubFrigidZonePlace _$SubFrigidZonePlaceFromJson(Map<String, dynamic> json) => Su
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$SubFrigidZonePlaceToJson(SubFrigidZonePlace instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$SubFrigidZonePlaceToJson(SubFrigidZonePlace instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 IceSheet _$IceSheetFromJson(Map<String, dynamic> json) => IceSheet(
       json['name'] as String,
@@ -50,21 +41,12 @@ IceSheet _$IceSheetFromJson(Map<String, dynamic> json) => IceSheet(
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$IceSheetToJson(IceSheet instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$IceSheetToJson(IceSheet instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 Snowfield _$SnowfieldFromJson(Map<String, dynamic> json) => Snowfield(
       json['name'] as String,
@@ -73,21 +55,12 @@ Snowfield _$SnowfieldFromJson(Map<String, dynamic> json) => Snowfield(
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$SnowfieldToJson(Snowfield instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$SnowfieldToJson(Snowfield instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 Rivers _$RiversFromJson(Map<String, dynamic> json) => Rivers(
       json['name'] as String,
@@ -96,21 +69,12 @@ Rivers _$RiversFromJson(Map<String, dynamic> json) => Rivers(
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$RiversToJson(Rivers instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$RiversToJson(Rivers instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 ConiferousForest _$ConiferousForestFromJson(Map<String, dynamic> json) => ConiferousForest(
       json['name'] as String,
@@ -119,21 +83,12 @@ ConiferousForest _$ConiferousForestFromJson(Map<String, dynamic> json) => Conife
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$ConiferousForestToJson(ConiferousForest instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$ConiferousForestToJson(ConiferousForest instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 BrownBearNest _$BrownBearNestFromJson(Map<String, dynamic> json) => BrownBearNest(
       json['name'] as String,
@@ -142,21 +97,12 @@ BrownBearNest _$BrownBearNestFromJson(Map<String, dynamic> json) => BrownBearNes
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$BrownBearNestToJson(BrownBearNest instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$BrownBearNestToJson(BrownBearNest instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 Tundra _$TundraFromJson(Map<String, dynamic> json) => Tundra(
       json['name'] as String,
@@ -165,21 +111,12 @@ Tundra _$TundraFromJson(Map<String, dynamic> json) => Tundra(
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$TundraToJson(Tundra instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$TundraToJson(Tundra instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };
 
 Swamp _$SwampFromJson(Map<String, dynamic> json) => Swamp(
       json['name'] as String,
@@ -188,18 +125,9 @@ Swamp _$SwampFromJson(Map<String, dynamic> json) => Swamp(
       ..mod = Moddable.modId2ModFunc(json['mod'] as String)
       ..exploreCount = (json['exploreCount'] as num).toInt();
 
-Map<String, dynamic> _$SwampToJson(Swamp instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['mod'] = Moddable.mod2ModIdFunc(instance.mod);
-  val['name'] = instance.name;
-  val['exploreCount'] = instance.exploreCount;
-  return val;
-}
+Map<String, dynamic> _$SwampToJson(Swamp instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'mod': Moddable.mod2ModIdFunc(instance.mod),
+      'name': instance.name,
+      'exploreCount': instance.exploreCount,
+    };

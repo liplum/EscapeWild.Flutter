@@ -5,14 +5,16 @@ import 'durability.dart';
 
 part 'tool.g.dart';
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ToolAttr implements Comparable<ToolAttr> {
   @JsonKey()
   final double efficiency;
 
   const ToolAttr({required this.efficiency});
 
-  static const ToolAttr low = ToolAttr(
+  static const //
+
+      low = ToolAttr(
         efficiency: 0.6,
       ),
       normal = ToolAttr(
@@ -26,6 +28,8 @@ class ToolAttr implements Comparable<ToolAttr> {
       );
 
   factory ToolAttr.fromJson(Map<String, dynamic> json) => _$ToolAttrFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ToolAttrToJson(this);
 
   @override
   int compareTo(ToolAttr other) => efficiency.compareTo(other.efficiency);
@@ -50,22 +54,25 @@ class ToolType with Moddable {
   factory ToolType.fromJson(String name) => ToolType(name);
 
   String toJson() => name;
-  static final ToolType cutting = ToolType("cutting");
+  static final //
 
-  /// Use to cut down tree
-  static final ToolType axe = ToolType("axe");
+      /// Use to cut materials
+      cutting = ToolType("cutting"),
 
-  /// Use to hunt
-  static final ToolType trap = ToolType("trap");
+      /// Use to cut down tree
+      axe = ToolType("axe"),
 
-  /// Use to hunt
-  static final ToolType gun = ToolType("gun");
+      /// Use to hunt
+      trap = ToolType("trap"),
 
-  /// Use to fish
-  static final ToolType fishing = ToolType("fishing");
+      /// Use to hunt
+      gun = ToolType("gun"),
 
-  /// Use to light
-  static final ToolType lighting = ToolType("lighting");
+      /// Use to fish
+      fishing = ToolType("fishing"),
+
+      /// Use to light
+      lighting = ToolType("lighting");
 
   String l10nName() => i18n("tool-type.$name");
 

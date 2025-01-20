@@ -13,21 +13,12 @@ ItemStack _$ItemStackFromJson(Map<String, dynamic> json) => ItemStack(
       ..extra = json['extra'] as Map<String, dynamic>?
       ..trackId = (json['id'] as num?)?.toInt();
 
-Map<String, dynamic> _$ItemStackToJson(ItemStack instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['meta'] = Item.getName(instance.meta);
-  val['id'] = instance.trackId;
-  writeNotNull('mass', instance.mass);
-  return val;
-}
+Map<String, dynamic> _$ItemStackToJson(ItemStack instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'meta': Item.getName(instance.meta),
+      'id': instance.trackId,
+      if (instance.mass case final value?) 'mass': value,
+    };
 
 ContainerItemStack _$ContainerItemStackFromJson(Map<String, dynamic> json) => ContainerItemStack(
       Contents.getItemMetaByName(json['meta'] as String),
@@ -37,19 +28,10 @@ ContainerItemStack _$ContainerItemStackFromJson(Map<String, dynamic> json) => Co
       ..inner = json['inner'] == null ? null : ItemStack.fromJson(json['inner'] as Map<String, dynamic>)
       ..mass = (json['mass'] as num?)?.toInt();
 
-Map<String, dynamic> _$ContainerItemStackToJson(ContainerItemStack instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('extra', instance.extra);
-  val['meta'] = Item.getName(instance.meta);
-  val['id'] = instance.trackId;
-  writeNotNull('inner', instance.inner);
-  writeNotNull('mass', instance.mass);
-  return val;
-}
+Map<String, dynamic> _$ContainerItemStackToJson(ContainerItemStack instance) => <String, dynamic>{
+      if (instance.extra case final value?) 'extra': value,
+      'meta': Item.getName(instance.meta),
+      'id': instance.trackId,
+      if (instance.inner case final value?) 'inner': value,
+      if (instance.mass case final value?) 'mass': value,
+    };
