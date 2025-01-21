@@ -6,6 +6,8 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/r.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
+import 'package:uuid/uuid.dart';
 
 part 'item.g.dart';
 
@@ -380,8 +382,11 @@ class ItemCompPair<T extends Comp> {
 
 @JsonSerializable()
 @CopyWith(skipFields: true)
+// @immutable
 class ItemStack with ExtraMixin implements JConvertibleProtocol {
-  static final empty = ItemStack(Item.empty);
+  static final empty = ItemStack(Item.empty, id: -1);
+  final int id;
+
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: Item.getName)
   final Item meta;
 
@@ -390,8 +395,8 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
   /// - When backpack loses track, [trackId] should be null.
   ///
   /// see [Backpack.tracked]
-  @JsonKey(name: "id", includeIfNull: true)
-  int? trackId;
+  // @JsonKey(name: "id", includeIfNull: true)
+  // int? trackId;
 
   @JsonKey(includeIfNull: false)
   int? mass;
@@ -400,8 +405,9 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
 
   ItemStack(
     this.meta, {
+    int? id,
     this.mass,
-  });
+  }) : id = id ?? const Uuid().v4().hashCode;
 
   String displayName() => meta.l10nName();
 

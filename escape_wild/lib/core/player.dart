@@ -45,7 +45,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
 
   /// The preference item for each [ToolType].
   /// - If player doesn't select a preferred tool, the tool with highest [ToolAttr] will be selected as default.
-  Map<ToolType, int> toolType2TrackIdPref = {};
+  Map<ToolType, int> toolType2ItemIdPref = {};
   var _isExecutingOnPass = false;
   LevelProtocol level = LevelProtocol.empty;
 
@@ -76,32 +76,18 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     return level.getAvailableActions();
   }
 
-  /// When [stack] starts to be tracked, at this point:
-  /// - [backpack.mass] has not increased.
-  /// - [stack.trackId] has not been allocated.
-  /// - [stack] is already added to [backpack.items].
-  ///
-  /// If [stack] is merged to existed one, this won't be called.
-  void onStartTrackStack(ItemStack stack) {
-    final trackId = stack.trackId;
-    assert(trackId == null, "TrackId of $stack should be null in $onStartTrackStack.");
-  }
-
   /// When [stack] ends to be tracked, at this point:
   /// - [backpack.mass] was increased by [stack.stackMass].
   /// - [stack.trackId] was allocated.
   /// - [stack] is in [backpack.items].
   ///
   /// If [stack] is merged to existed one, this won't be called.
-  void onEndTrackStack(ItemStack stack) {
-    final trackId = stack.trackId;
-    assert(trackId != null, "TrackId of $stack should be not-null in $onEndTrackStack.");
-    if (trackId == null) return;
+  void onItemStackAdded(ItemStack stack) {
     var anyChange = false;
     for (final toolComp in ToolComp.of(stack)) {
       final toolType = toolComp.toolType;
-      if (!toolType2TrackIdPref.containsKey(toolType)) {
-        toolType2TrackIdPref[toolType] = trackId;
+      if (!toolType2ItemIdPref.containsKey(toolType)) {
+        toolType2ItemIdPref[toolType] = stack.id;
         anyChange = true;
       }
     }
@@ -114,30 +100,18 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   /// - [backpack.mass] has not decreased.
   /// - [stack.trackId] has not been set to null.
   /// - [stack] is already removed in [backpack.items].
-  void onStartUntrackStack(ItemStack stack) {
-    final trackId = stack.trackId;
-    assert(trackId != null, "TrackId of $stack should be not-null in $onStartUntrackStack.");
-    if (trackId == null) return;
+  void onItemStackRemoved(ItemStack stack) {
     var anyChange = false;
     for (final toolComp in ToolComp.of(stack)) {
       final toolType = toolComp.toolType;
-      if (toolType2TrackIdPref.containsValue(trackId)) {
-        toolType2TrackIdPref.remove(toolType);
+      if (toolType2ItemIdPref.containsValue(stack.id)) {
+        toolType2ItemIdPref.remove(toolType);
         anyChange = true;
       }
     }
     if (anyChange) {
       notifyListeners();
     }
-  }
-
-  /// When [stack] ends to be untracked, at this point:
-  /// - [backpack.mass] was decreased by [stack.stackMass].
-  /// - [stack.trackId] was set to null.
-  /// - [stack] is not in [backpack.items].
-  void onEndUntrackStack(ItemStack stack) {
-    final trackId = stack.trackId;
-    assert(trackId == null, "TrackId of $stack should be null in $onEndUntrackStack.");
   }
 
   /// return whether the tool is broken and removed.
@@ -198,30 +172,26 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   bool setToolPref(ToolType toolType, ItemStack stack) {
-    final trackId = stack.trackId;
-    assert(trackId != null, "$stack is in backpack but has no trackId.");
-    if (trackId == null) return false;
-    toolType2TrackIdPref[toolType] = trackId;
+    toolType2ItemIdPref[toolType] = stack.id;
     notifyListeners();
     return true;
   }
 
   void clearToolPref(ToolType toolType) {
-    if (toolType2TrackIdPref.remove(toolType) != null) {
+    if (toolType2ItemIdPref.remove(toolType) != null) {
       notifyListeners();
     }
   }
 
   ItemStack? getToolPref(ToolType toolType) {
-    final trackId = toolType2TrackIdPref[toolType];
-    if (trackId == null) return null;
-    final stack = backpack.findStackByTrackId(trackId);
-    assert(stack != null, "$toolType is in $toolType2TrackIdPref but untracked.");
+    final itemId = toolType2ItemIdPref[toolType];
+    if (itemId == null) return null;
+    final stack = backpack.findStackById(itemId);
+    assert(stack != null, "$toolType is in $toolType2ItemIdPref but untracked.");
     return stack;
   }
 
   bool isToolPref(ItemStack stack, ToolType toolType) {
-    assert(stack.trackId != null, "$stack has a null trackId");
     assert(() {
       for (final comp in stack.meta.getCompsOf<ToolComp>()) {
         if (comp.toolType == toolType) {
@@ -234,7 +204,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   bool isToolPrefOrDefault(ItemStack stack, ToolType toolType) {
-    if (toolType2TrackIdPref.containsKey(toolType)) {
+    if (toolType2ItemIdPref.containsKey(toolType)) {
       return isToolPref(stack, toolType);
     } else {
       final best = backpack.findToolsOfType(toolType).maxOfOrNull((p) => p.comp.attr);
@@ -253,7 +223,6 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
           if (!stack.meta.mergeable) {
             assert(stack.mass == null, "${stack.meta} is unmergeable but $stack has not-null mass.");
           }
-          assert(stack.trackId != null, "$stack in backpack has a null trackId");
         }
       }
       {
@@ -269,11 +238,9 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
               if (place is CampfirePlaceProtocol) {
                 for (final stack in place.onCampfire) {
                   assert(stack.isNotEmpty, "$place has empty onCampfire stack, $stack");
-                  assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
                 }
                 for (final stack in place.offCampfire) {
                   assert(stack.isNotEmpty, "$place has empty offCampfire stack, $stack.");
-                  assert(stack.trackId == null, "$stack on campfire has a not-null trackId[${stack.trackId}]");
                 }
               }
             }
@@ -310,7 +277,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       this.level = level;
       this.journeyProgress = journeyProgress;
       // ignore: unnecessary_this
-      this.toolType2TrackIdPref = toolTypePref;
+      this.toolType2ItemIdPref = toolTypePref;
       // ignore: unnecessary_this
       this.location = lastLocation;
     } catch (e, stacktrace) {
@@ -335,7 +302,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     };
     {
       final map = <String, int>{};
-      for (final p in toolType2TrackIdPref.entries) {
+      for (final p in toolType2ItemIdPref.entries) {
         map[p.key.name] = p.value;
       }
       json["toolTypePref"] = map;

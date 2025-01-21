@@ -14,7 +14,7 @@ abstract class CookRecipeProtocol with Moddable {
   /// - [inputs] is in no order.
   /// - [inputs.length] equals to [slotRequired].
   /// - [inputs] is [Backpack.untracked].
-  bool match(@Backpack.untracked List<ItemStack> inputs);
+  bool match(List<ItemStack> inputs);
 
   /// Called as long as this is matched.
   /// ## Constrains
@@ -26,10 +26,9 @@ abstract class CookRecipeProtocol with Moddable {
   /// - return whether [inputs] or [outputs] was changed.
   /// ## Use cases
   /// - Instant cooking: such as igniting a torch.
-  @Backpack.untracked
   bool onMatch(
-    @Backpack.untracked List<ItemStack> inputs,
-    @Backpack.untracked List<ItemStack> outputs,
+    List<ItemStack> inputs,
+    List<ItemStack> outputs,
   ) {
     return false;
   }
@@ -41,10 +40,9 @@ abstract class CookRecipeProtocol with Moddable {
   /// - [outputs] is in no order.
   /// - [outputs] is [Backpack.untracked].
   /// - return whether [inputs] or [outputs] was changed.
-  @Backpack.untracked
   bool updateCooking(
-    @Backpack.untracked List<ItemStack> inputs,
-    @Backpack.untracked List<ItemStack> outputs,
+    List<ItemStack> inputs,
+    List<ItemStack> outputs,
     Ts totalTimePassed,
     Ts delta,
   ) {

@@ -90,7 +90,7 @@ abstract class CraftRecipeProtocol with Moddable {
 
   /// The order of [inputs] should be the same as [inputSlots].
   /// - [inputs] is [Backpack.untracked].
-  void onConsume(@Backpack.tracked List<ItemStack> inputs, ItemStackConsumeReceiver consume);
+  void onConsume(List<ItemStack> inputs, ItemStackConsumeReceiver consume);
 }
 
 /// It will merge [WetnessComp].

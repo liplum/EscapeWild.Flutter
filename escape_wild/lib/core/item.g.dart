@@ -15,6 +15,7 @@ abstract class _$ItemStackCWProxy {
   /// ````
   ItemStack call({
     Item? meta,
+    int? id,
     int? mass,
   });
 }
@@ -35,6 +36,7 @@ class _$ItemStackCWProxyImpl implements _$ItemStackCWProxy {
   /// ````
   ItemStack call({
     Object? meta = const $CopyWithPlaceholder(),
+    Object? id = const $CopyWithPlaceholder(),
     Object? mass = const $CopyWithPlaceholder(),
   }) {
     return ItemStack(
@@ -42,6 +44,10 @@ class _$ItemStackCWProxyImpl implements _$ItemStackCWProxy {
           ? _value.meta
           // ignore: cast_nullable_to_non_nullable
           : meta as Item,
+      id: id == const $CopyWithPlaceholder()
+          ? _value.id
+          // ignore: cast_nullable_to_non_nullable
+          : id as int?,
       mass: mass == const $CopyWithPlaceholder()
           ? _value.mass
           // ignore: cast_nullable_to_non_nullable
@@ -62,15 +68,14 @@ extension $ItemStackCopyWith on ItemStack {
 
 ItemStack _$ItemStackFromJson(Map<String, dynamic> json) => ItemStack(
       Contents.getItemMetaByName(json['meta'] as String),
+      id: (json['id'] as num?)?.toInt(),
       mass: (json['mass'] as num?)?.toInt(),
-    )
-      ..extra = json['extra'] as Map<String, dynamic>?
-      ..trackId = (json['id'] as num?)?.toInt();
+    )..extra = json['extra'] as Map<String, dynamic>?;
 
 Map<String, dynamic> _$ItemStackToJson(ItemStack instance) => <String, dynamic>{
       if (instance.extra case final value?) 'extra': value,
+      'id': instance.id,
       'meta': Item.getName(instance.meta),
-      'id': instance.trackId,
       if (instance.mass case final value?) 'mass': value,
     };
 
@@ -78,14 +83,12 @@ ContainerItemStack _$ContainerItemStackFromJson(Map<String, dynamic> json) => Co
       Contents.getItemMetaByName(json['meta'] as String),
     )
       ..extra = json['extra'] as Map<String, dynamic>?
-      ..trackId = (json['id'] as num?)?.toInt()
       ..inner = json['inner'] == null ? null : ItemStack.fromJson(json['inner'] as Map<String, dynamic>)
       ..mass = (json['mass'] as num?)?.toInt();
 
 Map<String, dynamic> _$ContainerItemStackToJson(ContainerItemStack instance) => <String, dynamic>{
       if (instance.extra case final value?) 'extra': value,
       'meta': Item.getName(instance.meta),
-      'id': instance.trackId,
       if (instance.inner case final value?) 'inner': value,
       if (instance.mass case final value?) 'mass': value,
     };

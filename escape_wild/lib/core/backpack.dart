@@ -1,36 +1,16 @@
 import 'package:collection/collection.dart';
 import 'package:escape_wild/core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
-
-import 'item_comp/durability.dart';
-import 'item_comp/tool.dart';
 
 part 'backpack.g.dart';
 
 @JsonSerializable()
 class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
-  /// [tracked] is an annotation to declare [ItemStack] or its list is tracked by [Backpack].
-  /// For example, those items come from [Backpack.items].
-  ///
-  /// You should change [ItemStack]'s with [Backpack].
-  static const tracked = Object();
-
-  /// [untracked] is an annotation to declare [ItemStack] or its list is untracked by [Backpack].
-  /// For example, those items are on campfire.
-  ///
-  /// You can safely change [ItemStack]'s state.
-  static const untracked = Object();
   @JsonKey()
   List<ItemStack> items = [];
 
-  /// It's used to generate a unique [ItemStack.trackId].
-  ///
-  /// [ItemStack.trackId] is used to locate item in backpack without a real reference.
-  @JsonKey()
-  int lastTrackId = 0;
   @JsonKey()
   int mass = 0;
 
@@ -57,7 +37,7 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
   /// - If the [massOfPart] is more than or equal to [item.mass],
   ///   the [item] will be removed in backpack, and [item] itself will be returned.
   /// - If the [massOfPart] is less than 0, the [ItemStack.empty] will be returned.
-  ItemStack splitItemInBackpack(@tracked ItemStack item, int massOfPart) {
+  ItemStack splitItemInBackpack(ItemStack item, int massOfPart) {
     assert(item.meta.mergeable, "${item.meta.name} can't split, because it's unmergeable");
     if (!item.meta.mergeable) return ItemStack.empty;
     final actualMass = item.stackMass;
@@ -78,7 +58,7 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
     }
   }
 
-  void consumeItemInBackpack(@tracked ItemStack item, int? mass) {
+  void consumeItemInBackpack(ItemStack item, int? mass) {
     if (mass != null) {
       splitItemInBackpack(item, mass);
     } else {
@@ -104,17 +84,15 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
 
   /// It will remove the [stack] in backpack, and won't change [stack]'s state.
   /// - [force] will force this to remove [stack].
-  bool removeStackInBackpack(@tracked ItemStack stack) {
+  bool removeStackInBackpack(ItemStack stack) {
     if (stack.isEmpty) return true;
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
-      player.onStartUntrackStack(stack);
+      player.onItemStackRemoved(stack);
       mass -= stack.stackMass;
       if (stack.meta.mergeable) {
         stack.mass = 0;
       }
-      stack.trackId = null;
-      player.onEndUntrackStack(stack);
       notifyChanges();
     }
     return hasRemoved;
@@ -122,28 +100,20 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
 
   /// Untrack [stack].
   /// - [stack.trackId] will be set to null.
-  bool handOverStackInBackpack(@tracked ItemStack stack) {
+  bool handOverStackInBackpack(ItemStack stack) {
     if (stack.isEmpty) return true;
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
-      stack.trackId = null;
       notifyChanges();
     }
     return hasRemoved;
   }
 
   /// Return [-1] if [stack] is not in this.
-  int indexOfStack(@tracked ItemStack? stack) {
+  int indexOfStack(ItemStack? stack) {
     if (stack == null) return -1;
     if (stack.isEmpty) return -1;
     final index = items.indexOf(stack);
-    if (kDebugMode) {
-      if (index >= 0) {
-        assert(stack.trackId != null, "$stack is in $this but doesn't have trackId[${stack.trackId}].");
-      } else {
-        assert(stack.trackId == null, "$stack isn't in $this but has trackId[${stack.trackId}]");
-      }
-    }
     return index;
   }
 
@@ -231,7 +201,7 @@ extension BackpackX on Backpack {
 
   /// return whether [addition] is added or merged.
   bool _addItemOrMerge(ItemStack addition) {
-    assert(addition.trackId == null, "$addition already has a trackId before being added.");
+    assert(findStackById(addition.id) == null, "$addition has been already added.");
     if (addition.isEmpty) return false;
     final additionMass = addition.stackMass;
     if (addition.meta.mergeable) {
@@ -241,17 +211,13 @@ extension BackpackX on Backpack {
         mass += additionMass;
       } else {
         items.add(addition);
-        player.onStartTrackStack(addition);
-        addition.trackId = lastTrackId++;
         mass += additionMass;
-        player.onEndTrackStack(addition);
+        player.onItemStackAdded(addition);
       }
     } else {
       items.add(addition);
-      player.onStartTrackStack(addition);
-      addition.trackId = lastTrackId++;
       mass += additionMass;
-      player.onEndTrackStack(addition);
+      player.onItemStackAdded(addition);
     }
     return true;
   }
@@ -264,8 +230,8 @@ extension BackpackX on Backpack {
     return sum;
   }
 
-  ItemStack? findStackByTrackId(int trackId) {
-    return items.firstWhereOrNull((stack) => stack.trackId == trackId);
+  ItemStack? findStackById(int itemId) {
+    return items.firstWhereOrNull((stack) => stack.id == itemId);
   }
 
   ItemStack? get firstOrNull => items.firstOrNull;
