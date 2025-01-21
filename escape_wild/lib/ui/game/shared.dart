@@ -88,7 +88,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
       value: progress,
       minHeight: widget.minHeight ?? 8,
       color: $color?.animate(animation).value,
-      backgroundColor: Colors.grey.withOpacity(0.2),
+      backgroundColor: Colors.grey.withValues(alpha: 0.2),
     );
   }
 
@@ -271,7 +271,7 @@ class ItemStackCell extends StatelessWidget {
     if (freshnessComp != null) {
       final color = freshnessComp.progressColor(stack, darkMode: ctx.isDarkMode);
       inStack.add(AnimatedContainer(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         duration: const Duration(milliseconds: 1200),
         curve: Curves.fastLinearToSlowEaseIn,
       ).clipRRect(borderRadius: ctx.cardBorderRadius));

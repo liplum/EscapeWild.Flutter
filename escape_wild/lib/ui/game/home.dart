@@ -5,6 +5,7 @@ import 'package:escape_wild/generated/icons.dart';
 import 'package:escape_wild/ui/game/backpack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rettulf/rettulf.dart';
 import 'action.dart';
 import 'camp.dart';
@@ -12,11 +13,11 @@ import 'craft.dart';
 
 part 'home.i18n.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+class GameHomepage extends StatefulWidget {
+  const GameHomepage({super.key});
 
   @override
-  State<Homepage> createState() => _HomePageState();
+  State<GameHomepage> createState() => _HomePageState();
 }
 
 class _P {
@@ -29,13 +30,32 @@ class _P {
   static const pageCount = 4;
 }
 
-class _HomePageState extends State<Homepage> {
+class _HomePageState extends State<GameHomepage> {
   var curIndex = _P.action;
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final selection = await context.showDialogRequest(
+          title: "Leave?",
+          desc: "Your unsaved game will be lost",
+          primary: "Save&Leave",
+          secondary: "Leave",
+        );
+        if (!context.mounted) return;
+        if (selection == true) {
+          // save and leave
+          final json = player.toJson();
+          DB.setGameSave(json);
+          context.pop();
+        } else if (selection == false) {
+          // directly leave
+          context.pop();
+        }
+      },
       child: KeyboardListener(
         focusNode: focusNode,
         autofocus: true,
@@ -75,26 +95,6 @@ class _HomePageState extends State<Homepage> {
       color: player.envColor,
       duration: const Duration(milliseconds: 100),
     );
-  }
-
-  Future<bool> onWillPop() async {
-    final selection = await context.showDialogRequest(
-      title: "Leave?",
-      desc: "Your unsaved game will be lost",
-      primary: "Save&Leave",
-      secondary: "Leave",
-    );
-    if (selection == true) {
-      // save and leave
-      final json = player.toJson();
-      DB.setGameSave(json);
-      return true;
-    } else if (selection == false) {
-      // directly leave
-      return true;
-    } else {
-      return false;
-    }
   }
 
   Widget buildBottom() {

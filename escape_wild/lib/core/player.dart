@@ -8,7 +8,6 @@ import 'package:escape_wild/game/routes/subtropics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:noitcelloc/noitcelloc.dart';
-import 'package:rettulf/rettulf.dart';
 
 final player = Player();
 const polymorphismSave = Object();

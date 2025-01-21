@@ -524,7 +524,7 @@ class StaticCampfireImage extends StatelessWidget {
       return SvgPicture.asset(
         "assets/img/campfire.svg",
         //color: context.themeColor,
-        color: color ?? context.themeColor,
+        colorFilter: ColorFilter.mode(color ?? context.themeColor, BlendMode.srcIn),
         placeholderBuilder: (_) => const Placeholder(),
       ).constrained(maxW: box.maxWidth, maxH: min(180, box.maxHeight * 0.8));
     });

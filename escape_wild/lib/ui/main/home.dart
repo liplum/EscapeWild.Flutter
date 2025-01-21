@@ -6,11 +6,11 @@ import 'mine.dart';
 
 part 'home.i18n.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+class MainHomepage extends StatefulWidget {
+  const MainHomepage({super.key});
 
   @override
-  State<Homepage> createState() => _HomepageState();
+  State<MainHomepage> createState() => _MainHomepageState();
 }
 
 class _P {
@@ -21,7 +21,7 @@ class _P {
   static const content = 1;
 }
 
-class _HomepageState extends State<Homepage> {
+class _MainHomepageState extends State<MainHomepage> {
   var curIndex = _P.game;
 
   @override

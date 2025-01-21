@@ -1,6 +1,6 @@
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/ui/game/home.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -47,9 +47,7 @@ class _GamePageState extends State<GamePage> {
     return buildBtn(_I.newGame, () async {
       DB.deleteGameSave();
       await onNewGame();
-      context.navigator.push(MaterialPageRoute(
-        builder: (_) => const Homepage(),
-      ));
+      context.push("/game");
     });
   }
 
@@ -64,9 +62,7 @@ class _GamePageState extends State<GamePage> {
       );
       return;
     }
-    context.navigator.push(MaterialPageRoute(
-      builder: (_) => const Homepage(),
-    ));
+    context.push("/game");
   }
 
   Widget buildContinueGameBtn() {

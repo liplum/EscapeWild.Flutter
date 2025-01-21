@@ -2,8 +2,13 @@ import 'package:animations/animations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/main/home.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+
+import 'route.dart';
+import 'ui/main/error.dart';
 
 // ignore: non_constant_identifier_names
 final $key = GlobalKey<NavigatorState>();
@@ -18,6 +23,9 @@ class EscapeWildApp extends StatefulWidget {
 }
 
 class _EscapeWildAppState extends State<EscapeWildApp> {
+  final $routingConfig = ValueNotifier(buildRoutingConfig());
+  late final router = _buildRouter($routingConfig);
+
   @override
   void initState() {
     super.initState();
@@ -26,32 +34,26 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
   @override
   Widget build(BuildContext context) {
     return Top.global(
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Escape Wild',
-        navigatorKey: $key,
+        routerConfig: router,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,
-        theme: bakeTheme(
-            context,
-            ThemeData(
-              brightness: Brightness.light,
-              colorSchemeSeed: Colors.yellow,
-              useMaterial3: true,
-            )),
-        darkTheme: bakeTheme(
-            context,
-            ThemeData(
-              brightness: Brightness.dark,
-              colorSchemeSeed: Colors.green,
-              useMaterial3: true,
-            )),
-        home: const AppWrapper(),
+        theme: buildTheme(ThemeData(
+          brightness: Brightness.light,
+          colorSchemeSeed: Colors.yellow,
+        )),
+        darkTheme: buildTheme(ThemeData(
+          brightness: Brightness.dark,
+          colorSchemeSeed: Colors.green,
+        )),
+        builder: (ctx, child) => child ?? const SizedBox.shrink(),
       ),
     );
   }
 
-  ThemeData bakeTheme(BuildContext ctx, ThemeData raw) {
+  ThemeData buildTheme(ThemeData raw) {
     return raw.copyWith(
       cardTheme: raw.cardTheme.copyWith(
         shape: const RoundedRectangleBorder(
@@ -66,6 +68,16 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),
+    );
+  }
+
+  GoRouter _buildRouter(ValueNotifier<RoutingConfig> $routingConfig) {
+    return GoRouter.routingConfig(
+      routingConfig: $routingConfig,
+      navigatorKey: $key,
+      initialLocation: "/",
+      debugLogDiagnostics: kDebugMode,
+      errorBuilder: (ctx, state) => ErrorPage(message: state.error.toString()),
     );
   }
 }
@@ -98,7 +110,7 @@ class _AppWrapperState extends State<AppWrapper> {
       }
     }
     return wrapWithScreenUtil(
-      const Homepage(),
+      const MainHomepage(),
     );
   }
 
