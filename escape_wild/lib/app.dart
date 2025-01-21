@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'route.dart';
@@ -114,20 +113,6 @@ class _PostServiceRunnerState extends State<_PostServiceRunner> {
         onLocaleChange();
       }
     }
-    return wrapWithScreenUtil(
-      widget.child,
-    );
-  }
-
-  Widget wrapWithScreenUtil(Widget body) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      child: body,
-      builder: (context, child) {
-        return body;
-      },
-    );
+    return widget.child;
   }
 }

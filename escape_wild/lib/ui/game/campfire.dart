@@ -9,7 +9,6 @@ import 'package:escape_wild/r.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -74,7 +73,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
   Widget buildPortrait() {
     return [
       const StaticCampfireImage(),
-      SizedBox(height: 30.h),
+      SizedBox(height: 30),
       FireStarterArea(
         place: place,
         actionLabel: _I.startFire,
