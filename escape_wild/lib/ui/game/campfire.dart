@@ -66,11 +66,6 @@ class _FireStartingPageState extends State<FireStartingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final body = context.isPortrait ? buildPortrait() : buildLandscape();
-    return body.padAll(5);
-  }
-
-  Widget buildPortrait() {
     return [
       const StaticCampfireImage(),
       SizedBox(height: 30),
@@ -78,17 +73,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
         place: place,
         actionLabel: _I.startFire,
       ),
-    ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().center();
-  }
-
-  Widget buildLandscape() {
-    return [
-      const StaticCampfireImage().expanded(),
-      FireStarterArea(
-        place: place,
-        actionLabel: _I.startFire,
-      ).expanded(),
-    ].row();
+    ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().center().padAll(5);
   }
 }
 
@@ -298,10 +283,6 @@ class _CookPageState extends State<CookPage> {
 
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? buildBodyPortrait() : buildBodyLandscape();
-  }
-
-  Widget buildBodyPortrait() {
     return [
       buildFoodGrid().flexible(flex: 2),
       [
@@ -310,17 +291,6 @@ class _CookPageState extends State<CookPage> {
       ].column(maa: MainAxisAlignment.spaceEvenly).flexible(flex: 4),
       buildButtons().flexible(flex: 1),
     ].column(maa: MainAxisAlignment.spaceBetween).padAll(5);
-  }
-
-  Widget buildBodyLandscape() {
-    return [
-      buildFoodGrid().expanded(),
-      [
-        buildCampfireImage().flexible(flex: 3),
-        buildFuelState(place.fireState),
-        buildButtons().flexible(flex: 1),
-      ].column(mas: MainAxisSize.min, maa: MainAxisAlignment.center).expanded(),
-    ].row(mas: MainAxisSize.min);
   }
 
   Widget buildCampfireImage() {

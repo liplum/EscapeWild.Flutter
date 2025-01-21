@@ -20,71 +20,44 @@ class ActionPage extends StatefulWidget {
 class _ActionPageState extends State<ActionPage> {
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? buildPortrait() : buildLandscape();
-  }
-
-  Widget buildPortrait() {
-    final slivers = [
-      SliverAppBar(
-        pinned: true,
-        snap: false,
-        floating: false,
-        flexibleSpace: FlexibleSpaceBar(
-          title: "${player.location?.displayName()}".text(
-            style: context.textTheme.headlineMedium,
-          ),
-          centerTitle: true,
-        ),
-        actions: buildAppBarActions(),
-      ),
-      SliverList(
-          delegate: SliverChildListDelegate([
-        buildHud().padFromLTRB(5, 5, 5, 0),
-        buildJourneyProgress(),
-      ])),
-    ];
     final actions = player.getAvailableActions();
-    final Widget buttonArea;
-    if (actions.length == 1) {
-      final singleBtn = buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center();
-      buttonArea = SliverToBoxAdapter(child: singleBtn);
-    } else {
-      buttonArea = SliverGrid.extent(
-        maxCrossAxisExtent: 256,
-        childAspectRatio: 3,
-        children: buildActions(actions),
-      );
-    }
-    slivers.add(SliverPadding(
-      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-      sliver: buttonArea,
-    ));
     return Scaffold(
       body: CustomScrollView(
         physics: const RangeMaintainingScrollPhysics(),
-        slivers: slivers,
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            snap: false,
+            floating: false,
+            flexibleSpace: FlexibleSpaceBar(
+              title: "${player.location?.displayName()}".text(
+                style: context.textTheme.headlineMedium,
+              ),
+              centerTitle: true,
+            ),
+            actions: buildAppBarActions(),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              buildHud().padFromLTRB(5, 5, 5, 0),
+              buildJourneyProgress(),
+            ]),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            sliver: actions.length == 1
+                ? SliverToBoxAdapter(
+                    child: buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center(),
+                  )
+                : SliverGrid.extent(
+                    maxCrossAxisExtent: 256,
+                    childAspectRatio: 3,
+                    children: buildActions(actions),
+                  ),
+          ),
+        ],
       ),
     );
-  }
-
-  Widget buildLandscape() {
-    return [
-      Scaffold(
-        appBar: AppBar(
-          title: "${player.location?.displayName()}".text(
-            style: context.textTheme.headlineMedium,
-          ),
-          actions: buildAppBarActions(),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-        ),
-        body: [
-          buildJourneyProgress(),
-          buildHud(),
-        ].column(maa: MainAxisAlignment.start),
-      ).expanded(),
-      buildActionArea().expanded(),
-    ].row(maa: MainAxisAlignment.spaceEvenly).safeArea().padAll(5);
   }
 
   Widget buildActionArea() {

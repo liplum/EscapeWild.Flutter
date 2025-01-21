@@ -438,10 +438,6 @@ class _MergeableItemStackUsePreviewState extends State<MergeableItemStackUsePrev
 
   @override
   Widget build(BuildContext context) {
-    return context.isPortrait ? buildPortrait() : buildLandscape();
-  }
-
-  Widget buildPortrait() {
     return [
       buildHud(mock.attrs).inCard(),
       const SizedBox(height: 40),
@@ -453,19 +449,6 @@ class _MergeableItemStackUsePreviewState extends State<MergeableItemStackUsePrev
         },
       ),
     ].column(mas: MainAxisSize.min);
-  }
-
-  Widget buildLandscape() {
-    return [
-      buildHud(mock.attrs).expanded(),
-      ItemStackMassSelector(
-        template: template,
-        $selectedMass: $selectedMass,
-        onSelectedMassChange: (newMass) {
-          onSelectedMassChange(newMass);
-        },
-      ).expanded(),
-    ].row(mas: MainAxisSize.max).constrained(minW: 500);
   }
 
   Widget buildHud(AttrModel attrs) {

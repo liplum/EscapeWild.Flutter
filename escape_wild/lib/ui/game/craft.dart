@@ -10,7 +10,6 @@ import 'backpack.dart';
 import 'shared.dart';
 
 class CraftPage extends StatefulWidget {
-  
   const CraftPage({super.key});
 
   @override
@@ -40,19 +39,16 @@ class _CraftPageState extends State<CraftPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isPortrait = context.isPortrait;
     return Scaffold(
-      appBar: !isPortrait
-          ? null
-          : AppBar(
-              title: "Craft".text(),
-              automaticallyImplyLeading: false,
-              centerTitle: true,
-            ),
+      appBar: AppBar(
+        title: "Craft".text(),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+      ),
       body: [
-        buildCatView(context).flexible(flex: isPortrait ? 4 : 3),
+        buildCatView(context).flexible(flex: 4),
         const VerticalDivider(thickness: 1),
-        buildRecipes(cat2Recipes[selectedCatIndex].value).flexible(flex: isPortrait ? 10 : 12),
+        buildRecipes(cat2Recipes[selectedCatIndex].value).flexible(flex: 10),
       ].row().padAll(5),
     );
   }
@@ -232,24 +228,12 @@ class _CraftingSheetState extends State<CraftingSheet> {
         ],
         backgroundColor: Colors.transparent,
       ),
-      body: context.isPortrait ? buildPortrait() : buildLandscape(),
+      body: [
+        buildTableView().flexible(flex: 3),
+        const Divider(thickness: 2, height: 1),
+        buildBackpackView().flexible(flex: 6),
+      ].column().padAll(5),
     );
-  }
-
-  Widget buildPortrait() {
-    return [
-      buildTableView().flexible(flex: 3),
-      const Divider(thickness: 2, height: 1),
-      buildBackpackView().flexible(flex: 6),
-    ].column().padAll(5);
-  }
-
-  Widget buildLandscape() {
-    return [
-      buildTableView().expanded(),
-      const VerticalDivider(thickness: 2),
-      buildBackpackView().expanded(),
-    ].row().padAll(5);
   }
 
   void onCraft() {

@@ -14,7 +14,6 @@ part 'backpack.i18n.dart';
 String get backpackTitle => _I.title;
 
 class BackpackPage extends StatefulWidget {
-  
   const BackpackPage({super.key});
 
   @override
@@ -72,7 +71,7 @@ class _BackpackPageState extends State<BackpackPage> {
           onPointerScroll(pointerSignal);
         }
       },
-      child: context.isPortrait ? buildPortrait() : buildLandscape(),
+      child: buildBody(),
     );
   }
 
@@ -82,55 +81,23 @@ class _BackpackPageState extends State<BackpackPage> {
     });
   }
 
-  Widget buildPortrait() {
+  Widget buildBody() {
     return Scaffold(
       appBar: AppBar(
         title: _I.massLoad(player.backpack.totalMass(), player.maxMassLoad).text(),
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      body: buildPortraitBody().safeArea().padAll(5),
+      body: (player.backpack.isEmpty
+              ? buildEmptyBackpack()
+              : [
+                  ItemDetails(stack: selected).flexible(flex: 2),
+                  buildItems(player.backpack).flexible(flex: 5),
+                  buildButtonArea(selected).flexible(flex: 1),
+                ].column(maa: MainAxisAlignment.spaceBetween))
+          .safeArea()
+          .padAll(5),
     );
-  }
-
-  Widget buildLandscape() {
-    final backpack = player.backpack;
-    if (backpack.isEmpty) {
-      return buildEmptyBackpack();
-    }
-    return [
-      Scaffold(
-        appBar: AppBar(
-          title: _I.massLoad(player.backpack.totalMass(), player.maxMassLoad).text(),
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          toolbarHeight: 40,
-          backgroundColor: Colors.transparent,
-        ),
-        body: buildLandscapeBody().safeArea().padAll(5),
-      ).expanded(),
-      buildItems(player.backpack).expanded(),
-    ].row();
-  }
-
-  Widget buildPortraitBody() {
-    final backpack = player.backpack;
-    if (backpack.isEmpty) {
-      return buildEmptyBackpack();
-    } else {
-      return [
-        ItemDetails(stack: selected).flexible(flex: 2),
-        buildItems(player.backpack).flexible(flex: 5),
-        buildButtonArea(selected).flexible(flex: 1),
-      ].column(maa: MainAxisAlignment.spaceBetween);
-    }
-  }
-
-  Widget buildLandscapeBody() {
-    return [
-      ItemDetails(stack: selected).flexible(flex: 4),
-      buildButtonArea(selected).flexible(flex: 2),
-    ].column(maa: MainAxisAlignment.spaceBetween);
   }
 
   Widget buildItems(Backpack backpack) {
