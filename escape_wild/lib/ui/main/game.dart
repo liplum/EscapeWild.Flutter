@@ -60,7 +60,7 @@ class _GamePageState extends State<GamePage> {
       await context.showTip(
         title: "Corrupted",
         desc: "Sorry for that. This game save is corrupted or outdated.",
-        ok: I.alright,
+        primary: I.alright,
       );
       return;
     }

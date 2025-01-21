@@ -13,12 +13,9 @@ extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {
     await showDialog(
       context: this,
-      builder: (ctx) => $Dialog(
-        icon: const Icon(
-          Icons.local_fire_department_rounded,
-          size: 36,
-        ),
-        make: (ctx) => const _IngameMenu(),
+      builder: (ctx) => $Dialog$(
+        builder: (ctx) => const _IngameMenu(),
+        primary: $Action$(text:  "OK"),
       ),
     );
   }
@@ -48,7 +45,7 @@ class _IngameMenuState extends State<_IngameMenu> {
       await context.showTip(
         title: I.done,
         desc: "Your game is saved.",
-        ok: I.ok,
+        primary: I.ok,
       );
       context.navigator.pop();
     });

@@ -7,7 +7,7 @@ Future<void> showToolBroken(UAction action, ItemStack tool) async {
   await $context.showTip(
     title: action.l10nName(),
     desc: "action.tool-broken".tr(args: [tool.displayName()]),
-    ok: "alright".tr(),
+    primary: "alright".tr(),
   );
 }
 
@@ -16,14 +16,14 @@ Future<void> showGain(UAction action, List<ItemStack> gain) async {
     await $context.showTip(
       title: action.l10nName(),
       desc: "action.got-nothing".tr(),
-      ok: "alright".tr(),
+      primary: "alright".tr(),
     );
   } else {
     final result = gain.map((e) => e.meta.l10nName()).join(", ");
     await $context.showTip(
       title: action.l10nName(),
       desc: "action.got-items".tr(args: [result]),
-      ok: "ok".tr(),
+      primary: "ok".tr(),
     );
   }
 }

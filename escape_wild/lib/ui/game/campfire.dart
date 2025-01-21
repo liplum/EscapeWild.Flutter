@@ -372,12 +372,11 @@ class _CookPageState extends State<CookPage> {
     if (slot.isNotEmpty) return;
     final anyIngredientExisted = ingredientsSlots.any((slot) => slot.isNotEmpty);
     if (anyIngredientExisted) {
-      final confirmed = await context.showRequest(
+      final confirmed = await context.showDialogRequest(
         title: "Add Ingredient?",
         desc: "Confirm to add ingredient and reset cooking?",
-        yes: I.yes,
-        no: I.no,
-        highlight: true,
+        primary: I.yes,
+        secondary: I.no,
       );
       if (confirmed != true) return;
     }
@@ -409,13 +408,11 @@ class _CookPageState extends State<CookPage> {
   Future<void> onTakeOutIngredient(ItemStackSlot slot) async {
     final stack = slot.stack;
     if (slot.isEmpty) return;
-    final confirmed = await context.showRequest(
+    final confirmed = await context.showDialogRequest(
       title: "Stop Cooking?",
       desc: "Confirm to take out ${stack.displayName()} and reset cooking?",
-      yes: I.yes,
-      no: I.no,
-      serious: true,
-      highlight: true,
+      primary: I.yes,
+      secondary: I.no,
     );
     if (confirmed != true) return;
     player.backpack.addItemOrMerge(stack);

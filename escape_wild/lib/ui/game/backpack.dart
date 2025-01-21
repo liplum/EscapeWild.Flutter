@@ -228,13 +228,12 @@ class _BackpackPageState extends State<BackpackPage> {
       $selectedMass.value = stack.stackMass;
       final confirmed = await context.showAnyRequest(
         title: _I.discardRequest,
-        make: (_) => ItemStackMassSelector(
+        builder: (_) => ItemStackMassSelector(
           template: stack,
           $selectedMass: $selectedMass,
         ),
-        yes: I.discard,
-        no: I.cancel,
-        highlight: true,
+        primary: I.discard,
+        secondary: I.cancel,
       );
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
@@ -246,12 +245,11 @@ class _BackpackPageState extends State<BackpackPage> {
         }
       }
     } else {
-      final confirmed = await context.showRequest(
+      final confirmed = await context.showDialogRequest(
         title: _I.discardRequest,
         desc: _I.discardConfirm(stack.displayName()),
-        yes: I.discard,
-        no: I.cancel,
-        highlight: true,
+        primary: I.discard,
+        secondary: I.cancel,
       );
       if (confirmed == true) {
         await removeItem(stack);
@@ -276,15 +274,14 @@ class _BackpackPageState extends State<BackpackPage> {
       $selectedMass.value = item.stackMass;
       final confirmed = await context.showAnyRequest(
         title: item.displayName(),
-        isPrimaryDefault: true,
-        make: (_) => MergeableItemStackUsePreview(
+        builder: (_) => MergeableItemStackUsePreview(
           template: item,
           useType: useType,
           $selectedMass: $selectedMass,
           comps: modifiers,
         ),
-        yes: useType.l10nName(),
-        no: I.cancel,
+        primary: useType.l10nName(),
+        secondary: I.cancel,
       );
       if (confirmed == true) {
         final selectedMassOrPart = $selectedMass.value;
@@ -301,15 +298,15 @@ class _BackpackPageState extends State<BackpackPage> {
       $isShowAttrPreview.value = true;
       final confirmed = await context.showAnyRequest(
         title: item.displayName(),
-        titleTrailing: buildShowAttrPreviewToggle(),
-        make: (_) => UnmergeableItemStackUsePreview(
+        // TODO: preview toggle
+        // titleTrailing: buildShowAttrPreviewToggle(),
+        builder: (_) => UnmergeableItemStackUsePreview(
           item: item,
           comps: modifiers,
           $isShowAttrPreview: $isShowAttrPreview,
         ),
-        yes: useType.l10nName(),
-        no: I.cancel,
-        highlight: true,
+        primary: useType.l10nName(),
+        secondary: I.cancel,
       );
       if (confirmed == true) {
         for (final usableComp in usableComps) {

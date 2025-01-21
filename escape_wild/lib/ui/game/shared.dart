@@ -967,13 +967,12 @@ class _BackpackSheetState extends State<BackpackSheet> {
       $selectedMass.value = selected.stackMass;
       final confirmed = await context.showAnyRequest(
         title: selected.displayName(),
-        make: (_) => ItemStackMassSelector(
+        builder: (_) => ItemStackMassSelector(
           template: selected,
           $selectedMass: $selectedMass,
         ),
-        yes: "Select",
-        no: I.cancel,
-        highlight: true,
+        primary: "Select",
+        secondary: I.cancel,
       );
       if (confirmed != true) return;
       final massOrPart = $selectedMass.value;

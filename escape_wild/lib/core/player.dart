@@ -6,6 +6,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/game/routes/subtropics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -135,10 +136,12 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       title: "Congratulation!",
       desc:
           "You win the game after $actionTimes actions and ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
-      ok: "OK",
       dismissible: false,
+      primary: 'OK',
     );
-    $context.navigator.pop();
+    if ($context.mounted) {
+      $context.pop();
+    }
   }
 
   Future<void> onGameFailed() async {
@@ -146,10 +149,12 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
       title: "YOU DIED",
       desc:
           "Your soul is lost in the wilderness, but you have still tried $actionTimes times and last ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
-      ok: "Alright",
+      primary: "Alright",
       dismissible: false,
     );
-    $context.navigator.pop();
+    if ($context.mounted) {
+      $context.pop();
+    }
   }
 
   Future<void> init() async {

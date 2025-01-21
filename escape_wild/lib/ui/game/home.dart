@@ -78,21 +78,18 @@ class _HomePageState extends State<Homepage> {
   }
 
   Future<bool> onWillPop() async {
-    final selection = await context.show123(
+    final selection = await context.showDialogRequest(
       title: "Leave?",
-      make: (_) => "Your unsaved game will be lost".text(),
+      desc: "Your unsaved game will be lost",
       primary: "Save&Leave",
       secondary: "Leave",
-      tertiary: "Cancel",
-      highlight: 2,
-      isDefault: 1,
     );
-    if (selection == 1) {
+    if (selection == true) {
       // save and leave
       final json = player.toJson();
       DB.setGameSave(json);
       return true;
-    } else if (selection == 2) {
+    } else if (selection == false) {
       // directly leave
       return true;
     } else {
