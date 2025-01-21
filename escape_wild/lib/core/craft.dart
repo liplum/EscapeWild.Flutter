@@ -2,8 +2,6 @@ import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'item_comp/wetness.dart';
-
 part 'craft.g.dart';
 
 class CraftType with Moddable {
@@ -72,10 +70,10 @@ abstract class CraftRecipeProtocol with Moddable {
   @JsonKey()
   final String name;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemMatcher> get inputSlots;
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemMatcher> get toolSlots;
 
   CraftRecipeProtocol(
@@ -105,10 +103,10 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   /// - [names]
   /// - [ingredients]
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemMatcher> inputSlots = [];
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemMatcher> toolSlots = [];
   final int? outputMass;
 

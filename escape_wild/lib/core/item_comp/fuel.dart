@@ -1,9 +1,6 @@
 import 'package:escape_wild/core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'durability.dart';
-import 'wetness.dart';
-
 part 'fuel.g.dart';
 
 /// An [Item] can have at most one [FuelComp].

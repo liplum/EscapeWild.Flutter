@@ -1,8 +1,6 @@
 import 'package:escape_wild/core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'item_prop.dart';
-
 part 'continuous.g.dart';
 
 @JsonSerializable(createToJson: false)

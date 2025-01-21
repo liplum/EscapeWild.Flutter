@@ -1,8 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/item_comp/durability.dart';
-import 'package:escape_wild/core/item_comp/fire_starter.dart';
-import 'package:escape_wild/core/item_comp/fuel.dart';
-import 'package:escape_wild/core/item_comp/tool.dart';
 
 class Tools {
   Tools._();

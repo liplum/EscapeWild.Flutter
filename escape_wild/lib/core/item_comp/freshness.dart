@@ -2,8 +2,6 @@ import 'dart:ui';
 import 'package:escape_wild/core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'wetness.dart';
-
 part 'freshness.g.dart';
 
 /// An [Item] can have at most one [FreshnessComp].

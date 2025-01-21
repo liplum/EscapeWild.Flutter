@@ -1,4 +1,4 @@
-part of 'ingame_menu.dart';
+part of 'in_game_menu.dart';
 
 const _n = "ui.game.ingame-menu";
 

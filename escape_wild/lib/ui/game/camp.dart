@@ -8,8 +8,8 @@ import 'shelter.dart';
 part 'camp.i18n.dart';
 
 class CampPage extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  CampPage({super.key});
+  
+  const CampPage({super.key});
 
   @override
   State<CampPage> createState() => _CampPageState();

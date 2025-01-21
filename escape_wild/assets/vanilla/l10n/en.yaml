@@ -70,7 +70,7 @@ craft-type:
 item:
   empty:
     name: Empty
-    desc: This is a blank descritpion.
+    desc: This is a blank description.
   energy-bar:
     name: Energy Bar
     desc: You're not you when you're hungry.
@@ -167,7 +167,7 @@ item:
     desc: Beware of phishing net.
   cooked-fish:
     name: Cooked Fish
-    desc: Beware of fishbone.
+    desc: Beware of fish-bone.
   stone:
     name: Stone
     desc: I don't really want my backpack to be stuffed with this.
@@ -198,7 +198,7 @@ item:
   # Something like ash
   ember:
     name: Ember
-    desc: Shhh, don't blow out the fire.
+    desc: Shh, don't blow out the fire.
   sand:
     name: Sand
     desc: Ashes to ashes, dust to dust.

@@ -1,8 +1,6 @@
 import 'package:escape_wild/core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'durability.dart';
-
 part 'tool.g.dart';
 
 @JsonSerializable()

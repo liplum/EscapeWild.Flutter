@@ -10,8 +10,8 @@ import 'backpack.dart';
 import 'shared.dart';
 
 class CraftPage extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  CraftPage({super.key});
+  
+  const CraftPage({super.key});
 
   @override
   State<CraftPage> createState() => _CraftPageState();

@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/item_comp/tool.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/game/ui/move.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +102,7 @@ class SubtropicsLevel extends LevelProtocol {
     final cur = player.startClock + player.totalTimePassed;
     final hour = cur.hourPart;
     if (hour < 6 || hour > 18) {
-      return Colors.black.withOpacity(0.5);
+      return Colors.black.withValues(alpha: 0.5);
     } else {
       return Colors.transparent;
     }
@@ -295,10 +294,10 @@ class SubtropicsRoute extends RouteProtocol with IterableMixin<SubtropicsPlace> 
 class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixin, CampfireCookingMixin {
   /// To reduce the json size, the mod will be set later during restoration.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   ModProtocol get mod => super.mod;
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late SubtropicsRoute route;
   @override
   @JsonKey()

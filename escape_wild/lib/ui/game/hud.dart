@@ -63,7 +63,7 @@ class _HudState extends State<Hud> {
     return AttrProgress(
       value: value,
       minHeight: widget.minHeight,
-      color: opacity != null ? color.withOpacity(opacity) : color,
+      color: opacity != null ? color.withValues(alpha: opacity) : color,
     ).center().padOnly(l: 12);
   }
 }

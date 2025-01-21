@@ -206,7 +206,7 @@ class SubFrigidZonePlace extends PlaceProtocol with PlaceActionDelegateMixin {
   SubFrigidZonePlace(this.name);
 
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   late SubFrigidZoneRoute route;
 
   @JsonKey()

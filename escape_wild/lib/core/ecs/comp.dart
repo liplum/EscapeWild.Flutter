@@ -2,7 +2,7 @@ import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 abstract class Comp implements JConvertibleProtocol {
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Type get compType => runtimeType;
 
   const Comp();

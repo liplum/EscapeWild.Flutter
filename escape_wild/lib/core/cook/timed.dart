@@ -3,8 +3,6 @@ import 'package:escape_wild/core.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'protocol.dart';
-
 part 'timed.g.dart';
 
 /// - [dishes] will be created as long as [cookingTime] is reached.

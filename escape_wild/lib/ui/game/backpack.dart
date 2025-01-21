@@ -1,6 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/item_comp/tool.dart';
-import 'package:escape_wild/core/item_comp/usable.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -17,8 +15,8 @@ part 'backpack.i18n.dart';
 String get backpackTitle => _I.title;
 
 class BackpackPage extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  BackpackPage({super.key});
+  
+  const BackpackPage({super.key});
 
   @override
   State<BackpackPage> createState() => _BackpackPageState();

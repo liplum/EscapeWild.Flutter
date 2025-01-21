@@ -1,7 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/ui/main/home.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,7 +47,9 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
           brightness: Brightness.dark,
           colorSchemeSeed: Colors.green,
         )),
-        builder: (ctx, child) => child ?? const SizedBox.shrink(),
+        builder: (ctx, child) => _PostServiceRunner(
+          child: child ?? const SizedBox.shrink(),
+        ),
       ),
     );
   }
@@ -82,14 +83,18 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
   }
 }
 
-class AppWrapper extends StatefulWidget {
-  const AppWrapper({super.key});
+class _PostServiceRunner extends StatefulWidget {
+  final Widget child;
+
+  const _PostServiceRunner({
+    required this.child,
+  });
 
   @override
-  State<AppWrapper> createState() => _AppWrapperState();
+  State<_PostServiceRunner> createState() => _PostServiceRunnerState();
 }
 
-class _AppWrapperState extends State<AppWrapper> {
+class _PostServiceRunnerState extends State<_PostServiceRunner> {
   Locale? lastLocale;
 
   @override
@@ -110,7 +115,7 @@ class _AppWrapperState extends State<AppWrapper> {
       }
     }
     return wrapWithScreenUtil(
-      const MainHomepage(),
+      widget.child,
     );
   }
 

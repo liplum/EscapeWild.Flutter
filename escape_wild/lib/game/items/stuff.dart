@@ -1,6 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/item_comp/durability.dart';
-import 'package:escape_wild/core/item_comp/fuel.dart';
 
 class Stuff {
   Stuff._();

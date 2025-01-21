@@ -1,7 +1,7 @@
 import 'package:escape_wild/core.dart';
 import 'package:escape_wild/design/extension.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/ui/game/ingame_menu.dart';
+import 'package:escape_wild/ui/game/in_game_menu.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
@@ -9,8 +9,9 @@ import 'package:rettulf/rettulf.dart';
 import 'hud.dart';
 
 class ActionPage extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  ActionPage({super.key});
+  const ActionPage({
+    super.key,
+  });
 
   @override
   State<ActionPage> createState() => _ActionPageState();

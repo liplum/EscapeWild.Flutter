@@ -6,7 +6,6 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/r.dart';
 import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
 part 'item.g.dart';

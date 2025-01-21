@@ -7,28 +7,28 @@ import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-part 'ingame_menu.i18n.dart';
+part 'in_game_menu.i18n.dart';
 
 extension IngameMenuBuildContextX on BuildContext {
   Future<void> showIngameMenuDialog() async {
     await showDialog(
       context: this,
       builder: (ctx) => $Dialog$(
-        builder: (ctx) => const _IngameMenu(),
+        builder: (ctx) => const _InGameMenu(),
         primary: $Action$(text:  "OK"),
       ),
     );
   }
 }
 
-class _IngameMenu extends StatefulWidget {
-  const _IngameMenu({super.key});
+class _InGameMenu extends StatefulWidget {
+  const _InGameMenu({super.key});
 
   @override
-  State<_IngameMenu> createState() => _IngameMenuState();
+  State<_InGameMenu> createState() => _InGameMenuState();
 }
 
-class _IngameMenuState extends State<_IngameMenu> {
+class _InGameMenuState extends State<_InGameMenu> {
   @override
   Widget build(BuildContext context) {
     return [

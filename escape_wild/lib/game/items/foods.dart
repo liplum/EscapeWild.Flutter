@@ -1,7 +1,4 @@
 import 'package:escape_wild/core.dart';
-import 'package:escape_wild/core/item_comp/freshness.dart';
-import 'package:escape_wild/core/item_comp/usable.dart';
-import 'package:escape_wild/core/item_comp/wetness.dart';
 
 import 'stuff.dart';
 
