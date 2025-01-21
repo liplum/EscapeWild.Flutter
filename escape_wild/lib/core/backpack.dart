@@ -11,20 +11,15 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
   @JsonKey()
   List<ItemStack> items = [];
 
-  @JsonKey()
-  int mass = 0;
-
   Backpack();
 
   void loadFrom(Backpack source) {
     items = source.items;
-    mass = source.mass;
     notifyChanges();
   }
 
   void clear() {
     items.clear();
-    mass = 0;
     notifyChanges();
   }
 
@@ -51,7 +46,6 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
     } else {
       final part = item.split(massOfPart);
       if (part.isNotEmpty) {
-        mass -= massOfPart;
         notifyChanges();
       }
       return part;
@@ -89,7 +83,6 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
     final hasRemoved = items.remove(stack);
     if (hasRemoved) {
       player.onItemStackRemoved(stack);
-      mass -= stack.stackMass;
       if (stack.meta.mergeable) {
         stack.mass = 0;
       }
@@ -125,9 +118,7 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
     if (newMass <= 0) {
       removeStackInBackpack(item);
     } else {
-      final delta = item.stackMass - newMass;
       item.mass = newMass;
-      mass -= delta;
       notifyChanges();
     }
   }
@@ -146,7 +137,6 @@ class Backpack extends Iterable<ItemStack> implements JConvertibleProtocol {
 
   void validate() {
     removeEmptyOrBrokenStacks();
-    mass = sumMass();
     notifyChanges();
   }
 
@@ -203,26 +193,22 @@ extension BackpackX on Backpack {
   bool _addItemOrMerge(ItemStack addition) {
     assert(findStackById(addition.id) == null, "$addition has been already added.");
     if (addition.isEmpty) return false;
-    final additionMass = addition.stackMass;
     if (addition.meta.mergeable) {
       final existed = getItemByIdenticalMeta(addition);
       if (existed != null) {
         addition.mergeTo(existed);
-        mass += additionMass;
       } else {
         items.add(addition);
-        mass += additionMass;
         player.onItemStackAdded(addition);
       }
     } else {
       items.add(addition);
-      mass += additionMass;
       player.onItemStackAdded(addition);
     }
     return true;
   }
 
-  int sumMass() {
+  int totalMass() {
     var sum = 0;
     for (final item in items) {
       sum += item.stackMass;

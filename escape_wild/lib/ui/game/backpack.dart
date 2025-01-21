@@ -88,7 +88,7 @@ class _BackpackPageState extends State<BackpackPage> {
   Widget buildPortrait() {
     return Scaffold(
       appBar: AppBar(
-        title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
+        title: _I.massLoad(player.backpack.totalMass(), player.maxMassLoad).text(),
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
@@ -104,7 +104,7 @@ class _BackpackPageState extends State<BackpackPage> {
     return [
       Scaffold(
         appBar: AppBar(
-          title: _I.massLoad(player.backpack.mass, player.maxMassLoad).text(),
+          title: _I.massLoad(player.backpack.totalMass(), player.maxMassLoad).text(),
           centerTitle: true,
           automaticallyImplyLeading: false,
           toolbarHeight: 40,

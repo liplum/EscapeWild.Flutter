@@ -216,8 +216,6 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     if (kDebugMode) {
       {
         // check backpack
-        final backpackSumMass = backpack.sumMass();
-        assert(backpack.mass == backpack.sumMass(), "Sum[$backpackSumMass] != State[${backpack.mass}]");
         for (final stack in backpack) {
           assert(stack.isNotEmpty, "$stack is empty in backpack.");
           if (!stack.meta.mergeable) {
