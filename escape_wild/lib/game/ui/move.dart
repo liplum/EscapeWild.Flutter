@@ -8,14 +8,14 @@ import 'package:rettulf/rettulf.dart';
 
 Future<void> showMoveSheet({ValueChanged<Ts>? onMoved}) async {
   return await showCupertinoModalBottomSheet(
-    context: AppCtx,
+    context: $context,
     builder: (ctx) {
       final sheet = MoveSheet(
         initialDuration: actionDefaultTime,
         onMove: onMoved,
       );
-      final size = AppCtx.mediaQuery.size;
-      if (AppCtx.isPortrait) {
+      final size = $context.mediaQuery.size;
+      if ($context.isPortrait) {
         return sheet.constrained(maxH: size.height * 0.4);
       } else {
         return sheet.constrained(maxH: size.height * 0.5);

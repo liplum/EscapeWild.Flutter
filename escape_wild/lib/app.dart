@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 // ignore: non_constant_identifier_names
-final AppKey = GlobalKey<NavigatorState>();
+final $key = GlobalKey<NavigatorState>();
 // ignore: non_constant_identifier_names
-BuildContext get AppCtx => AppKey.currentState!.context;
+BuildContext get $context => $key.currentState!.context;
 
 class EscapeWildApp extends StatefulWidget {
   const EscapeWildApp({super.key});
@@ -28,7 +28,7 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
     return Top.global(
       child: MaterialApp(
         title: 'Escape Wild',
-        navigatorKey: AppKey,
+        navigatorKey: $key,
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
         locale: context.locale,

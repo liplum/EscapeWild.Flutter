@@ -4,7 +4,7 @@ import 'package:escape_wild/core.dart';
 import 'package:escape_wild/foundation.dart';
 
 Future<void> showToolBroken(UAction action, ItemStack tool) async {
-  await AppCtx.showTip(
+  await $context.showTip(
     title: action.l10nName(),
     desc: "action.tool-broken".tr(args: [tool.displayName()]),
     ok: "alright".tr(),
@@ -13,14 +13,14 @@ Future<void> showToolBroken(UAction action, ItemStack tool) async {
 
 Future<void> showGain(UAction action, List<ItemStack> gain) async {
   if (gain.isEmpty) {
-    await AppCtx.showTip(
+    await $context.showTip(
       title: action.l10nName(),
       desc: "action.got-nothing".tr(),
       ok: "alright".tr(),
     );
   } else {
     final result = gain.map((e) => e.meta.l10nName()).join(", ");
-    await AppCtx.showTip(
+    await $context.showTip(
       title: action.l10nName(),
       desc: "action.got-items".tr(args: [result]),
       ok: "ok".tr(),

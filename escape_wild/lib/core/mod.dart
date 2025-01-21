@@ -49,7 +49,7 @@ class Mod implements ModProtocol {
   @override
   Future<void> load() async {
     // TODO: Mod loader
-    final locale = AppCtx.locale;
+    final locale = $context.locale;
   }
 
   @override
@@ -65,7 +65,7 @@ class Mod implements ModProtocol {
 
   @override
   Future<void> loadL10n() async {
-    final locale = AppCtx.locale;
+    final locale = $context.locale;
   }
 }
 
@@ -107,7 +107,7 @@ class Vanilla implements ModProtocol {
 
   @override
   Future<void> loadL10n() async {
-    final userLocale = AppCtx.locale;
+    final userLocale = $context.locale;
     final actualLocale = tryFindBestMatchedLocale(userLocale, R.defaultLocale, R.supportedLocales);
     final string2Map = await yamlAssetsLoader.load("assets/vanilla/l10n", actualLocale);
     _key2Translated = _flattenString2Map(string2Map);

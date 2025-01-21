@@ -131,25 +131,25 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
   }
 
   Future<void> onGameWin() async {
-    await AppCtx.showTip(
+    await $context.showTip(
       title: "Congratulation!",
       desc:
           "You win the game after $actionTimes actions and ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
       ok: "OK",
       dismissible: false,
     );
-    AppCtx.navigator.pop();
+    $context.navigator.pop();
   }
 
   Future<void> onGameFailed() async {
-    await AppCtx.showTip(
+    await $context.showTip(
       title: "YOU DIED",
       desc:
           "Your soul is lost in the wilderness, but you have still tried $actionTimes times and last ${totalTimePassed.hourPart} hours ${totalTimePassed.minutePart} minutes.",
       ok: "Alright",
       dismissible: false,
     );
-    AppCtx.navigator.pop();
+    $context.navigator.pop();
   }
 
   Future<void> init() async {
