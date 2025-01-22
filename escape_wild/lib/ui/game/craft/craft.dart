@@ -9,14 +9,14 @@ import 'package:rettulf/rettulf.dart';
 import '../backpack/backpack.dart';
 import '../shared.dart';
 
-class CraftPage extends StatefulWidget {
-  const CraftPage({super.key});
+class GameCraftPage extends StatefulWidget {
+  const GameCraftPage({super.key});
 
   @override
-  State<CraftPage> createState() => _CraftPageState();
+  State<GameCraftPage> createState() => _GameCraftPageState();
 }
 
-class _CraftPageState extends State<CraftPage> {
+class _GameCraftPageState extends State<GameCraftPage> {
   int _selectedCatIndex = 0;
 
   int get selectedCatIndex => _selectedCatIndex;

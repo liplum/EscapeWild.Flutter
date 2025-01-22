@@ -8,16 +8,16 @@ import 'package:rettulf/rettulf.dart';
 
 import 'hud.dart';
 
-class ActionPage extends StatefulWidget {
-  const ActionPage({
+class GameActionPage extends StatefulWidget {
+  const GameActionPage({
     super.key,
   });
 
   @override
-  State<ActionPage> createState() => _ActionPageState();
+  State<GameActionPage> createState() => _GameActionPageState();
 }
 
-class _ActionPageState extends State<ActionPage> {
+class _GameActionPageState extends State<GameActionPage> {
   @override
   Widget build(BuildContext context) {
     final actions = player.getAvailableActions();

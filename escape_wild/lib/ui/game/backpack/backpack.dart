@@ -13,11 +13,11 @@ part 'backpack.i18n.dart';
 
 String get backpackTitle => _I.title;
 
-class BackpackPage extends StatefulWidget {
-  const BackpackPage({super.key});
+class GameBackpackPage extends StatefulWidget {
+  const GameBackpackPage({super.key});
 
   @override
-  State<BackpackPage> createState() => _BackpackPageState();
+  State<GameBackpackPage> createState() => _GameBackpackPageState();
 }
 
 Widget buildEmptyBackpack() {
@@ -27,7 +27,7 @@ Widget buildEmptyBackpack() {
   );
 }
 
-class _BackpackPageState extends State<BackpackPage> {
+class _GameBackpackPageState extends State<GameBackpackPage> {
   int selectedIndex = 0;
 
   ItemStack get selected => player.backpack[selectedIndex];
