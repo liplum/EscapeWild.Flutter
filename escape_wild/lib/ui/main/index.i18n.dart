@@ -1,4 +1,4 @@
-part of 'home.dart';
+part of 'index.dart';
 
 const _n = "ui.main.home";
 

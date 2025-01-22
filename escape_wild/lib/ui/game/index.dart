@@ -12,13 +12,13 @@ import 'action/action.dart';
 import 'camp/camp.dart';
 import 'craft/craft.dart';
 
-part 'home.i18n.dart';
+part 'index.i18n.dart';
 
-class GameHomepage extends StatefulWidget {
-  const GameHomepage({super.key});
+class GameIndexPage extends StatefulWidget {
+  const GameIndexPage({super.key});
 
   @override
-  State<GameHomepage> createState() => _HomePageState();
+  State<GameIndexPage> createState() => _HomePageState();
 }
 
 class _P {
@@ -31,7 +31,7 @@ class _P {
   static const pageCount = 4;
 }
 
-class _HomePageState extends State<GameHomepage> {
+class _HomePageState extends State<GameIndexPage> {
   var curIndex = _P.action;
 
   @override

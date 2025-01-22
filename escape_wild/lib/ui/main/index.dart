@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'game.dart';
 import 'mine.dart';
 
-part 'home.i18n.dart';
+part 'index.i18n.dart';
 
-class MainHomepage extends StatefulWidget {
-  const MainHomepage({super.key});
+class MainIndexPage extends StatefulWidget {
+  const MainIndexPage({super.key});
 
   @override
-  State<MainHomepage> createState() => _MainHomepageState();
+  State<MainIndexPage> createState() => _MainIndexPageState();
 }
 
 class _P {
@@ -21,7 +21,7 @@ class _P {
   static const content = 1;
 }
 
-class _MainHomepageState extends State<MainHomepage> {
+class _MainIndexPageState extends State<MainIndexPage> {
   var curIndex = _P.game;
 
   @override
