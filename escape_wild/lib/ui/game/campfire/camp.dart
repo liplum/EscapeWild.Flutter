@@ -3,7 +3,7 @@ import 'package:escape_wild/generated/icons.dart';
 import 'package:flutter/material.dart';
 
 import 'campfire.dart';
-import 'shelter.dart';
+import '../shelter/shelter.dart';
 
 part 'camp.i18n.dart';
 

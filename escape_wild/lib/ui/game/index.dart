@@ -3,7 +3,6 @@ import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/design/adaptive_navigation.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/game/serialization.dart';
-import 'package:escape_wild/generated/icons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rettulf/rettulf.dart';
@@ -75,12 +74,6 @@ class _HomePageState extends State<GameIndexPage> {
           icon: Icons.build_outlined,
           activeIcon: Icons.build,
           label: _I.craft,
-        ),
-        (
-          route: "/camp",
-          icon: IconsX.camping_outlined,
-          activeIcon: IconsX.camping,
-          label: _I.camp,
         ),
       ],
     );

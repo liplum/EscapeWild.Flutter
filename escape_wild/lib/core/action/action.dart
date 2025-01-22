@@ -43,28 +43,39 @@ class UserAction with Moddable {
   String toString() => name;
 
   // Move
-  static final UserAction move = UserAction("move"),
+  static final //
+      move = UserAction("move"),
       moveLeft = move.sub("left"),
       moveRight = move.sub("right"),
       moveUp = move.sub("up"),
       moveDown = move.sub("down"),
       moveForward = move.sub("forward"),
       moveBackward = move.sub("backward");
-  static final UserAction explore = UserAction("explore");
-  static final UserAction gather = UserAction("gather"),
+  static final //
+      explore = UserAction("explore");
+  static final //
+      gather = UserAction("gather"),
       gatherGetWater = gather.sub("get-water"),
       gatherGetWood = gather.sub("get-wood"),
       gatherGetFood = gather.sub("get-food");
 
-  static final UserAction shelter = UserAction("shelter"),
+  static final //
+      shelter = UserAction("shelter"),
       shelterSleepTillTomorrow = shelter.sub("sleep-till-tomorrow"),
       shelterReinforce = shelter.sub("reinforce"),
       shelterRest = shelter.sub("rest");
-  static final UserAction hunt = UserAction("hunt"), hunTrap = hunt.sub("trap"), hunGun = hunt.sub("gun");
-  static final UserAction fish = UserAction("fish");
+
+  static final //
+      campfire = UserAction("campfire");
+  static final //
+      hunt = UserAction("hunt"),
+      hunTrap = hunt.sub("trap"),
+      hunGun = hunt.sub("gun");
+  static final //
+      fish = UserAction("fish");
 
   // Win or lose the game.
-  static final UserAction escapeWild = UserAction("escape-wild"), stopHeartbeat = UserAction("stop-heartbeat");
+  static final escapeWild = UserAction("escape-wild"), stopHeartbeat = UserAction("stop-heartbeat");
 
   static final List<UserAction> defaultActions = [
     move,

@@ -336,6 +336,7 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
       exploreWithEnergy,
       shelter,
       huntWithTool,
+      PlaceAction(UserAction.campfire, () => true),
     ];
   }
 
