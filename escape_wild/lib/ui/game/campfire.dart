@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';

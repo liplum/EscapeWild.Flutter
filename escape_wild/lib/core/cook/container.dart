@@ -1,4 +1,4 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:jconverter/jconverter.dart';
 
 /// [ContainerCookRecipe] will transform a certain [Item] that meets [inputTags] into [result] by a certain ratio.

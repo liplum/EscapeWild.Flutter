@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/app.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
 
-Future<void> showToolBroken(UAction action, ItemStack tool) async {
+Future<void> showToolBroken(UserAction action, ItemStack tool) async {
   await $context.showTip(
     title: action.l10nName(),
     desc: "action.tool-broken".tr(args: [tool.displayName()]),
@@ -11,7 +11,7 @@ Future<void> showToolBroken(UAction action, ItemStack tool) async {
   );
 }
 
-Future<void> showGain(UAction action, List<ItemStack> gain) async {
+Future<void> showGain(UserAction action, List<ItemStack> gain) async {
   if (gain.isEmpty) {
     await $context.showTip(
       title: action.l10nName(),

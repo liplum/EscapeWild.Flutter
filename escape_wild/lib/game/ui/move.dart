@@ -1,5 +1,5 @@
 import 'package:escape_wild/app.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class _MoveSheetState extends State<MoveSheet> {
           : () {
               onMove($cur.value);
             },
-      child: UAction.move
+      child: UserAction.move
           .l10nName()
           .toUpperCase()
           .autoSizeText(

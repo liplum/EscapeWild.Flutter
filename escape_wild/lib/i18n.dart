@@ -1,5 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
 
 class I {

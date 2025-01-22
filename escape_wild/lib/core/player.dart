@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:escape_wild/app.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/design/dialog.dart';
 import 'package:escape_wild/game/routes/subtropics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jconverter/jconverter.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 
 final player = Player();
@@ -64,7 +65,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     }
   }
 
-  Future<void> performAction(UAction action) {
+  Future<void> performAction(UserAction action) {
     assert(!_isExecutingOnPass, "$onPassTime is not ended before $performAction called.");
     if (kDebugMode) {
       _debugValidate();
@@ -252,18 +253,18 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     }
   }
 
-  void loadFromJson(String json) {
-    loadFromJsonObj(jsonDecode(json));
+  void loadFromJson(String json, JConverter converter) {
+    loadFromJsonObj(jsonDecode(json), converter);
   }
 
-  void loadFromJsonObj(Map<String, dynamic> json) {
+  void loadFromJsonObj(Map<String, dynamic> json, JConverter converter) {
     try {
       // deserialize first to avoid unstable state when an exception is thrown.
       final attrs = AttrModel.fromJson(json["attrs"]);
-      final backpack = Cvt.fromJsonObj<Backpack>(json["backpack"])!;
+      final backpack = converter.fromJsonObj<Backpack>(json["backpack"])!;
       final actionTimes = (json["actionTimes"] as num).toInt();
       final journeyProgress = (json["journeyProgress"] as num).toDouble();
-      final level = Cvt.fromJsonObj<LevelProtocol>(json["level"]);
+      final level = converter.fromJsonObj<LevelProtocol>(json["level"]);
       final locationRestoreId = json["locationRestoreId"];
       final lastLocation = level!.restoreLastLocation(locationRestoreId);
       final toolTypePref = <ToolType, int>{};
@@ -292,14 +293,14 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     notifyListeners();
   }
 
-  Map<String, dynamic> toJsonObj() {
+  Map<String, dynamic> toJsonObj(JConverter converter) {
     backpack.validate();
     final json = {
       "attrs": attrs.toJson(),
-      "backpack": Cvt.toJsonObj(backpack),
+      "backpack": converter.toJsonObj(backpack),
       "journeyProgress": journeyProgress,
       "actionTimes": actionTimes,
-      "level": Cvt.toJsonObj(level),
+      "level": converter.toJsonObj(level),
       "locationRestoreId": level.getLocationRestoreId(location!),
     };
     {
@@ -312,9 +313,9 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
     return json;
   }
 
-  String toJson({int? indent}) {
-    final jobj = toJsonObj();
-    return Cvt.toJson(jobj, indent: indent) ?? "{}";
+  String toJson(JConverter converter, {int? indent}) {
+    final jobj = toJsonObj(converter);
+    return converter.toJson(jobj, indent: indent) ?? "{}";
   }
 
   void notifyChanges() {

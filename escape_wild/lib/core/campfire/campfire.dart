@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:flutter/widgets.dart';
 
 part 'campfire.g.dart';

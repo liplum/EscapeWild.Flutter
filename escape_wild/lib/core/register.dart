@@ -1,4 +1,4 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:jconverter/jconverter.dart';
 
 void registerTypes(JConverter cvt) {

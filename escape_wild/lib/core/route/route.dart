@@ -1,4 +1,4 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:jconverter/jconverter.dart';
 
 abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
@@ -32,13 +32,13 @@ abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertiblePr
 
   String localizedDescription() => i18n("route.${route.name}.$name.desc");
 
-  Future<void> performAction(UAction action);
+  Future<void> performAction(UserAction action);
 
   List<PlaceAction> getAvailableActions();
 }
 
 class PlaceAction {
-  final UAction type;
+  final UserAction type;
   final bool Function() canPerform;
 
   const PlaceAction(this.type, this.canPerform);
@@ -73,22 +73,22 @@ extension PlaceProps on PlaceProtocol {
   set wet(double v) => this[wetK] = v;
 }
 
-/// [PlaceActionDelegateMixin] will create delegates for each [UAction].
+/// [PlaceActionDelegateMixin] will create delegates for each [UserAction].
 /// It's easy to provide default behaviors.
 mixin PlaceActionDelegateMixin on PlaceProtocol {
   @override
-  Future<void> performAction(UAction action) async {
-    if (action.belongsToOrSelf(UAction.explore)) {
+  Future<void> performAction(UserAction action) async {
+    if (action.belongsToOrSelf(UserAction.explore)) {
       await performExplore();
-    } else if (action.belongsToOrSelf(UAction.move)) {
+    } else if (action.belongsToOrSelf(UserAction.move)) {
       await performMove(action);
-    } else if (action.belongsToOrSelf(UAction.gather)) {
+    } else if (action.belongsToOrSelf(UserAction.gather)) {
       await performGather(action);
-    } else if (action.belongsToOrSelf(UAction.fish)) {
+    } else if (action.belongsToOrSelf(UserAction.fish)) {
       await performFish();
-    } else if (action.belongsToOrSelf(UAction.shelter)) {
+    } else if (action.belongsToOrSelf(UserAction.shelter)) {
       await performShelter(action);
-    } else if (action.belongsToOrSelf(UAction.hunt)) {
+    } else if (action.belongsToOrSelf(UserAction.hunt)) {
       await performHunt(action);
     } else {
       await performOthers(action);
@@ -97,16 +97,16 @@ mixin PlaceActionDelegateMixin on PlaceProtocol {
 
   Future<void> performExplore() async {}
 
-  Future<void> performMove(UAction action) async {}
+  Future<void> performMove(UserAction action) async {}
 
-  Future<void> performGather(UAction action) async {}
+  Future<void> performGather(UserAction action) async {}
 
   Future<void> performFish() async {}
 
-  Future<void> performShelter(UAction action) async {}
+  Future<void> performShelter(UserAction action) async {}
 
-  Future<void> performHunt(UAction action) async {}
+  Future<void> performHunt(UserAction action) async {}
 
   /// Called when the [action] is not caught by other delegates
-  Future<void> performOthers(UAction action) async {}
+  Future<void> performOthers(UserAction action) async {}
 }

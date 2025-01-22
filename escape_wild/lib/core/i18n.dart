@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 
 // ignore: non_constant_identifier_names
 final I18n = I18nImpl();

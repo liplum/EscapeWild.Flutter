@@ -1,23 +1,24 @@
 import 'dart:collection';
 import 'dart:math';
 
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/game/ui/move.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 
+import '../serialization.dart';
 import 'shared.dart';
 
 part 'subtropics.g.dart';
 
 Ts get per => actionStepTime;
 
-final moveWithEnergy = PlaceAction(UAction.move, () => player.energy > 0.0);
-final exploreWithEnergy = PlaceAction(UAction.explore, () => player.energy > 0.0);
+final moveWithEnergy = PlaceAction(UserAction.move, () => player.energy > 0.0);
+final exploreWithEnergy = PlaceAction(UserAction.explore, () => player.energy > 0.0);
 final huntWithTool = PlaceAction(
-  UAction.hunt,
+  UserAction.hunt,
   () =>
       player.energy > 0.0 &&
       player.backpack.hasAnyToolOfAnyTypeIn([
@@ -26,7 +27,7 @@ final huntWithTool = PlaceAction(
       ]),
 );
 final fishWithTool = PlaceAction(
-  UAction.fish,
+  UserAction.fish,
   () =>
       player.energy > 0.0 &&
       player.backpack.hasAnyToolOfType(
@@ -34,7 +35,7 @@ final fishWithTool = PlaceAction(
       ),
 );
 final cutDownTreeWithTool = PlaceAction(
-  UAction.gatherGetWood,
+  UserAction.gatherGetWood,
   () =>
       player.energy > 0.0 &&
       player.backpack.hasAnyToolOfType(
@@ -42,10 +43,10 @@ final cutDownTreeWithTool = PlaceAction(
       ),
 );
 
-final rest = PlaceAction(UAction.shelterRest, () => true);
-final shelter = PlaceAction(UAction.shelter, () => true);
-final stopHeartbeatAndLose = PlaceAction(UAction.stopHeartbeat, () => true);
-final escapeWildAndWin = PlaceAction(UAction.escapeWild, () => true);
+final rest = PlaceAction(UserAction.shelterRest, () => true);
+final shelter = PlaceAction(UserAction.shelter, () => true);
+final stopHeartbeatAndLose = PlaceAction(UserAction.stopHeartbeat, () => true);
+final escapeWildAndWin = PlaceAction(UserAction.escapeWild, () => true);
 
 @JsonSerializable()
 class SubtropicsLevel extends LevelProtocol {
@@ -68,8 +69,8 @@ class SubtropicsLevel extends LevelProtocol {
   }
 
   @override
-  Future<void> performAction(UAction action) async {
-    if (action == UAction.stopHeartbeat) {
+  Future<void> performAction(UserAction action) async {
+    if (action == UserAction.stopHeartbeat) {
       await player.onGameFailed();
     } else {
       final curLoc = player.location;
@@ -305,8 +306,8 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
 
   SubtropicsPlace(this.name);
 
-  late final PlaceAction forward = PlaceAction(UAction.moveForward, () => route.canMoveForward);
-  late final PlaceAction backward = PlaceAction(UAction.moveBackward, () => route.canMoveBackward);
+  late final PlaceAction forward = PlaceAction(UserAction.moveForward, () => route.canMoveForward);
+  late final PlaceAction backward = PlaceAction(UserAction.moveBackward, () => route.canMoveBackward);
 
   /// Short name to reduce json size.
   @JsonKey(name: "ec")
@@ -339,7 +340,7 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
   }
 
   @override
-  Future<void> performMove(UAction action) async {
+  Future<void> performMove(UserAction action) async {
     await showMoveSheet(onMoved: (duration) async {
       final f = duration.minutes;
       await player.onPassTime(duration);
@@ -347,9 +348,9 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
       player.modifyX(Attr.water, -0.0001 * f);
       player.modifyX(Attr.energy, -0.0001 * f);
       var routeProgress = route.getRouteProgress();
-      if (action == UAction.moveForward) {
+      if (action == UserAction.moveForward) {
         await route.setRouteProgress(routeProgress + 0.03 * f);
-      } else if (action == UAction.moveBackward) {
+      } else if (action == UserAction.moveBackward) {
         await route.setRouteProgress(routeProgress - 0.03 * f);
       }
       player.journeyProgress = route.journeyProgress;
@@ -358,7 +359,7 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
   }
 
   @override
-  Future<void> performHunt(UAction action) async {
+  Future<void> performHunt(UserAction action) async {
     // TODO: A dedicate hunting UI.
     final trapTool = player.findBestToolForType(ToolType.trap);
     final gunTool = player.findBestToolForType(ToolType.gun);
@@ -380,14 +381,14 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
     if (any) {
       isToolBroken = player.damageTool(tool.stack, comp, 30.0);
     }
-    await showGain(UAction.hunt, gain);
+    await showGain(UserAction.hunt, gain);
     if (isToolBroken) {
-      await showToolBroken(UAction.hunt, tool.stack);
+      await showToolBroken(UserAction.hunt, tool.stack);
     }
   }
 
   @override
-  Future<void> performShelter(UAction action) async {
+  Future<void> performShelter(UserAction action) async {
     // TODO: A dedicate duration
     final duration = actionDefaultTime;
     final f = duration / const Ts(minutes: 30);
@@ -439,7 +440,7 @@ class PlainPlace extends SubtropicsPlace {
     randGain(stone * p, gain, () => Stuff.stone.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(UAction.explore, gain);
+    await showGain(UserAction.explore, gain);
   }
 
   factory PlainPlace.fromJson(Map<String, dynamic> json) => _$PlainPlaceFromJson(json);
@@ -496,9 +497,9 @@ class ForestPlace extends SubtropicsPlace {
     var isToolBroken = false;
     isToolBroken = player.damageTool(tool.stack, comp, dmg * 30.0);
     if (isToolBroken) {
-      await showToolBroken(UAction.gatherGetWood, tool.stack);
+      await showToolBroken(UserAction.gatherGetWood, tool.stack);
     }
-    await showGain(UAction.gatherGetWood, gain);
+    await showGain(UserAction.gatherGetWood, gain);
   }
 
   @override
@@ -518,7 +519,7 @@ class ForestPlace extends SubtropicsPlace {
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 1);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(UAction.explore, gain);
+    await showGain(UserAction.explore, gain);
   }
 
   factory ForestPlace.fromJson(Map<String, dynamic> json) => _$ForestPlaceFromJson(json);
@@ -567,9 +568,9 @@ class RiversidePlace extends SubtropicsPlace {
     if (any) {
       isToolBroken = player.damageTool(tool.stack, comp, 30.0);
     }
-    await showGain(UAction.fish, gain);
+    await showGain(UserAction.fish, gain);
     if (isToolBroken) {
-      await showToolBroken(UAction.fish, tool.stack);
+      await showToolBroken(UserAction.fish, tool.stack);
     }
   }
 
@@ -587,7 +588,7 @@ class RiversidePlace extends SubtropicsPlace {
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(UAction.explore, gain);
+    await showGain(UserAction.explore, gain);
   }
 
   factory RiversidePlace.fromJson(Map<String, dynamic> json) => _$RiversidePlaceFromJson(json);
@@ -631,7 +632,7 @@ class CavePlace extends SubtropicsPlace {
     randGain(moss * p, gain, () => Foods.moss.create(massF: Rand.fluctuate(0.2)), 2);
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(UAction.explore, gain);
+    await showGain(UserAction.explore, gain);
   }
 
   factory CavePlace.fromJson(Map<String, dynamic> json) => _$CavePlaceFromJson(json);
@@ -683,7 +684,7 @@ class HutPlace extends SubtropicsPlace {
     }
     player.backpack.addItemsOrMergeAll(gain);
     exploreCount++;
-    await showGain(UAction.explore, gain);
+    await showGain(UserAction.explore, gain);
   }
 
   factory HutPlace.fromJson(Map<String, dynamic> json) => _$HutPlaceFromJson(json);
@@ -708,8 +709,8 @@ class VillagePlace extends SubtropicsPlace {
   }
 
   @override
-  Future<void> performOthers(UAction action) async {
-    if (action == UAction.escapeWild) {
+  Future<void> performOthers(UserAction action) async {
+    if (action == UserAction.escapeWild) {
       await player.onGameWin();
     }
   }

@@ -1,5 +1,6 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/game/serialization.dart';
 import 'package:escape_wild/stage_manager.dart';
 import 'package:escape_wild/ui/debug/console.dart';
 import 'package:flutter/foundation.dart';
@@ -40,7 +41,7 @@ class _InGameMenuState extends State<_InGameMenu> {
 
   Widget buildSaveGameBtn() {
     return btn(_I.save, () async {
-      final json = player.toJson();
+      final json = player.toJson(Cvt);
       DB.setGameSave(json);
       await context.showTip(
         title: I.done,

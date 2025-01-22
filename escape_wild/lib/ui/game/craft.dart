@@ -1,4 +1,4 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import 'package:escape_wild/ambiguous.dart';
+import 'package:escape_wild/core/typing.dart';
 import 'package:flutter/material.dart';
 
 extension ColorX on Color {

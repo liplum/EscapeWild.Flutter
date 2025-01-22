@@ -1,8 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/game/serialization.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
@@ -91,7 +92,7 @@ class JsonGameSave extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final json = player.toJson(indent: 2);
+    final json = player.toJson(Cvt, indent: 2);
     return HighlightView(
       json,
       language: 'json',

@@ -1,7 +1,8 @@
+import 'package:escape_wild/game/serialization.dart';
 import 'package:escape_wild/i18n.dart';
 import 'package:escape_wild/utils/yaml_assets_loader.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/game/items/foods.dart';
 import 'package:escape_wild/game/items/medicine.dart';
 import 'package:escape_wild/game/items/stuff.dart';
@@ -98,7 +99,7 @@ Future<void> onNewGame() async {
 
 Future<void> loadGameSave(String gameSave) async {
   await player.init();
-  player.loadFromJson(gameSave);
+  player.loadFromJson(gameSave, Cvt);
 }
 
 void loadVanilla() {

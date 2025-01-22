@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
+import 'package:escape_wild/game/serialization.dart';
 import 'package:escape_wild/generated/icons.dart';
 import 'package:escape_wild/ui/game/backpack.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class _HomePageState extends State<GameHomepage> {
         if (!context.mounted) return;
         if (selection == true) {
           // save and leave
-          final json = player.toJson();
+          final json = player.toJson(Cvt);
           DB.setGameSave(json);
           context.pop();
         } else if (selection == false) {

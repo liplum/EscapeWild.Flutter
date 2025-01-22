@@ -1,22 +1,22 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 
 /// Full name: User Action.
 ///
 /// It's to disambiguate with `Action` in flutter.
-class UAction with Moddable {
-  final UAction? parent;
+class UserAction with Moddable {
+  final UserAction? parent;
   @override
   final String name;
-  final List<UAction> subActions = [];
+  final List<UserAction> subActions = [];
 
-  UAction(this.name, {this.parent}) {
+  UserAction(this.name, {this.parent}) {
     parent?.subActions.add(this);
   }
 
   /// The sub-action should be in `parent-name.sub-name`.
-  UAction sub(String name) => UAction("${this.name}.$name", parent: this);
+  UserAction sub(String name) => UserAction("${this.name}.$name", parent: this);
 
-  factory UAction.named(String name) => UAction(name);
+  factory UserAction.named(String name) => UserAction(name);
 
   String l10nName() {
     final parent = this.parent;
@@ -28,9 +28,9 @@ class UAction with Moddable {
     }
   }
 
-  bool belongsToOrSelf(UAction ancestorOrSelf) => this == ancestorOrSelf || belongsTo(ancestorOrSelf);
+  bool belongsToOrSelf(UserAction ancestorOrSelf) => this == ancestorOrSelf || belongsTo(ancestorOrSelf);
 
-  bool belongsTo(UAction ancestor) {
+  bool belongsTo(UserAction ancestor) {
     var cur = parent;
     while (cur != null) {
       if (cur == ancestor) return true;
@@ -43,30 +43,30 @@ class UAction with Moddable {
   String toString() => name;
 
   // Move
-  static final UAction move = UAction("move"),
+  static final UserAction move = UserAction("move"),
       moveLeft = move.sub("left"),
       moveRight = move.sub("right"),
       moveUp = move.sub("up"),
       moveDown = move.sub("down"),
       moveForward = move.sub("forward"),
       moveBackward = move.sub("backward");
-  static final UAction explore = UAction("explore");
-  static final UAction gather = UAction("gather"),
+  static final UserAction explore = UserAction("explore");
+  static final UserAction gather = UserAction("gather"),
       gatherGetWater = gather.sub("get-water"),
       gatherGetWood = gather.sub("get-wood"),
       gatherGetFood = gather.sub("get-food");
 
-  static final UAction shelter = UAction("shelter"),
+  static final UserAction shelter = UserAction("shelter"),
       shelterSleepTillTomorrow = shelter.sub("sleep-till-tomorrow"),
       shelterReinforce = shelter.sub("reinforce"),
       shelterRest = shelter.sub("rest");
-  static final UAction hunt = UAction("hunt"), hunTrap = hunt.sub("trap"), hunGun = hunt.sub("gun");
-  static final UAction fish = UAction("fish");
+  static final UserAction hunt = UserAction("hunt"), hunTrap = hunt.sub("trap"), hunGun = hunt.sub("gun");
+  static final UserAction fish = UserAction("fish");
 
   // Win or lose the game.
-  static final UAction escapeWild = UAction("escape-wild"), stopHeartbeat = UAction("stop-heartbeat");
+  static final UserAction escapeWild = UserAction("escape-wild"), stopHeartbeat = UserAction("stop-heartbeat");
 
-  static final List<UAction> defaultActions = [
+  static final List<UserAction> defaultActions = [
     move,
     explore,
     shelter,
@@ -75,7 +75,7 @@ class UAction with Moddable {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! UAction || other.runtimeType != runtimeType) return false;
+    if (other is! UserAction || other.runtimeType != runtimeType) return false;
     return name == other.name;
   }
 
@@ -83,7 +83,7 @@ class UAction with Moddable {
   int get hashCode => name.hashCode;
 }
 
-extension UActionX on UAction {
+extension UActionX on UserAction {
   bool get isTopLevel => parent == null;
 
   bool get isLeaf => subActions.isEmpty;

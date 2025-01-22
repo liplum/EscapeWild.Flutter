@@ -1,4 +1,4 @@
-import 'package:escape_wild/core.dart';
+import 'package:escape_wild/core/index.dart';
 import 'package:jconverter/jconverter.dart';
 
 abstract class LevelMetaProtocol with Moddable {
@@ -18,7 +18,7 @@ abstract class LevelProtocol implements JConvertibleProtocol {
 
   List<PlaceAction> getAvailableActions();
 
-  Future<void> performAction(UAction action);
+  Future<void> performAction(UserAction action);
 
   Future<void> onPassTime(Ts delta);
 
@@ -45,7 +45,7 @@ class _EmptyLevel extends LevelProtocol {
   }
 
   @override
-  Future<void> performAction(UAction action) async {
+  Future<void> performAction(UserAction action) async {
     player.actionTimes++;
   }
 
