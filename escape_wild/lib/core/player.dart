@@ -287,7 +287,7 @@ class Player with AttributeManagerMixin, ChangeNotifier, ExtraMixin {
         print(e);
         print(stacktrace);
       }
-      throw GameSaveCorruptedError(e, stacktrace);
+      throw GameSaveCorruptedException(e, stacktrace);
     }
     notifyListeners();
   }
@@ -384,7 +384,7 @@ extension PlayerX on Player {
     modify(attr, delta);
   }
 
-  ItemCompPair<ToolComp>? findBestToolOfType(ToolType toolType) {
+  ItemCompPair<ToolComp>? findBestToolForType(ToolType toolType) {
     final pref = getToolPref(toolType);
     if (pref != null) {
       final comp = ToolComp.ofType(pref, toolType);
@@ -396,11 +396,11 @@ extension PlayerX on Player {
   }
 }
 
-class GameSaveCorruptedError implements Exception {
+class GameSaveCorruptedException implements Exception {
   final Object cause;
   final StackTrace stacktrace;
 
-  const GameSaveCorruptedError(this.cause, this.stacktrace);
+  const GameSaveCorruptedException(this.cause, this.stacktrace);
 
   @override
   String toString() => "$cause";

@@ -360,8 +360,8 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
   @override
   Future<void> performHunt(UAction action) async {
     // TODO: A dedicate hunting UI.
-    final trapTool = player.findBestToolOfType(ToolType.trap);
-    final gunTool = player.findBestToolOfType(ToolType.gun);
+    final trapTool = player.findBestToolForType(ToolType.trap);
+    final gunTool = player.findBestToolForType(ToolType.gun);
     final tool = [
       if (trapTool != null) trapTool,
       if (gunTool != null) gunTool,
@@ -476,7 +476,7 @@ class ForestPlace extends SubtropicsPlace {
 
   Future<void> performCutDownTree() async {
     await player.onPassTime(actionDefaultTime);
-    final tool = player.findBestToolOfType(ToolType.axe);
+    final tool = player.findBestToolForType(ToolType.axe);
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;
@@ -552,7 +552,7 @@ class RiversidePlace extends SubtropicsPlace {
   @override
   Future<void> performFish() async {
     await player.onPassTime(actionDefaultTime);
-    final tool = player.findBestToolOfType(ToolType.fishing);
+    final tool = player.findBestToolForType(ToolType.fishing);
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;

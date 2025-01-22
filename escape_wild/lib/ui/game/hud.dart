@@ -1,4 +1,4 @@
-import 'package:escape_wild/core/attribute.dart';
+import 'package:escape_wild/core/attribute/attribute.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
