@@ -15,11 +15,10 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version-file: escape_wild/pubspec.yaml
+          flutter-version-file: pubspec.yaml
           channel: stable
           cache: true
 
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
-          workingDir: escape_wild
           baseHref: /EscapeWild.Flutter/
