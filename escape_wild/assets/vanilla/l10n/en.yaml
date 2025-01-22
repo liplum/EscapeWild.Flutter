@@ -5,42 +5,22 @@ attribute:
   energy: Energy
 action:
   # Move forward
-  move:
-    name: Move # no direction specified
-    left: Left
-    right: Right
-    up: Up
-    down: Down
-    forward: Forward
-    backward: Backward
+  move: Move
   # Explore the surroundings
-  explore:
-    name: Explore
-  gather:
-    name: Gather
-    get-water: Get Water
-    get-wood: Get Wood
-    get-food: Get Food
-  hunt:
-    name: Hunt
-    trap: With Trap
-    gun: With Gun
+  explore: Explore
+  gather: Gather
+  get-water: Get Water
+  get-wood: Get Wood
+  get-food: Get Food
+  hunt: Hunt
   # Go fishing
-  fish:
-    name: Fish
+  fish: Fish
+  shelter: Shelter
+  campfire: Campfire
   # When player win the game
-  escape-wild:
-    name: Escape Wild
+  escape-wild: Escape Wild
   # When player lose the game
-  stop-heartbeat:
-    name: Stop Heartbeat
-  shelter:
-    name: Shelter
-    sleep-till-tomorrow: Sleep Till Tomorrow
-    # Reinforce the shelter
-    reinforce: Reinforce
-    # Have a rest
-    rest: Rest
+  stop-heartbeat: Stop Heartbeat
 use-type:
   use: Use
   eat: Eat

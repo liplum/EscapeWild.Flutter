@@ -78,17 +78,17 @@ extension PlaceProps on PlaceProtocol {
 mixin PlaceActionDelegateMixin on PlaceProtocol {
   @override
   Future<void> performAction(UserAction action) async {
-    if (action.belongsToOrSelf(UserAction.explore)) {
+    if (action == UserAction.explore) {
       await performExplore();
-    } else if (action.belongsToOrSelf(UserAction.move)) {
+    } else if (action == UserAction.move) {
       await performMove(action);
-    } else if (action.belongsToOrSelf(UserAction.gather)) {
+    } else if (action == UserAction.gather) {
       await performGather(action);
-    } else if (action.belongsToOrSelf(UserAction.fish)) {
+    } else if (action == UserAction.fish) {
       await performFish();
-    } else if (action.belongsToOrSelf(UserAction.shelter)) {
+    } else if (action == UserAction.shelter) {
       await performShelter(action);
-    } else if (action.belongsToOrSelf(UserAction.hunt)) {
+    } else if (action == UserAction.hunt) {
       await performHunt(action);
     } else {
       await performOthers(action);

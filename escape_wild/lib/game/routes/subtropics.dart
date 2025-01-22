@@ -35,7 +35,7 @@ final fishWithTool = PlaceAction(
       ),
 );
 final cutDownTreeWithTool = PlaceAction(
-  UserAction.gatherGetWood,
+  UserAction.getWood,
   () =>
       player.energy > 0.0 &&
       player.backpack.hasAnyToolOfType(
@@ -43,7 +43,6 @@ final cutDownTreeWithTool = PlaceAction(
       ),
 );
 
-final rest = PlaceAction(UserAction.shelterRest, () => true);
 final shelter = PlaceAction(UserAction.shelter, () => true);
 final stopHeartbeatAndLose = PlaceAction(UserAction.stopHeartbeat, () => true);
 final escapeWildAndWin = PlaceAction(UserAction.escapeWild, () => true);
@@ -230,9 +229,7 @@ class SubtropicsRoute extends RouteProtocol with IterableMixin<SubtropicsPlace> 
   @override
   PlaceProtocol get initialPlace => places[0];
 
-  bool get canMoveForward => routeProgress.toInt() < placeCount;
-
-  bool get canMoveBackward => 0 < routeProgress.toInt();
+  bool get canMove => routeProgress.toInt() < placeCount;
 
   @override
   Future<void> onPassTime(Ts delta) async {
@@ -306,8 +303,7 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
 
   SubtropicsPlace(this.name);
 
-  late final PlaceAction forward = PlaceAction(UserAction.moveForward, () => route.canMoveForward);
-  late final PlaceAction backward = PlaceAction(UserAction.moveBackward, () => route.canMoveBackward);
+  late final PlaceAction forward = PlaceAction(UserAction.move, () => route.canMove);
 
   /// Short name to reduce json size.
   @JsonKey(name: "ec")
@@ -331,7 +327,6 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
   @override
   List<PlaceAction> getAvailableActions() {
     return [
-      backward,
       forward,
       exploreWithEnergy,
       shelter,
@@ -349,11 +344,7 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
       player.modifyX(Attr.water, -0.0001 * f);
       player.modifyX(Attr.energy, -0.0001 * f);
       var routeProgress = route.getRouteProgress();
-      if (action == UserAction.moveForward) {
-        await route.setRouteProgress(routeProgress + 0.03 * f);
-      } else if (action == UserAction.moveBackward) {
-        await route.setRouteProgress(routeProgress - 0.03 * f);
-      }
+      await route.setRouteProgress(routeProgress + 0.03 * f);
       player.journeyProgress = route.journeyProgress;
       player.location = route.current;
     });
@@ -498,9 +489,9 @@ class ForestPlace extends SubtropicsPlace {
     var isToolBroken = false;
     isToolBroken = player.damageTool(tool.stack, comp, dmg * 30.0);
     if (isToolBroken) {
-      await showToolBroken(UserAction.gatherGetWood, tool.stack);
+      await showToolBroken(UserAction.getWood, tool.stack);
     }
-    await showGain(UserAction.gatherGetWood, gain);
+    await showGain(UserAction.getWood, gain);
   }
 
   @override
