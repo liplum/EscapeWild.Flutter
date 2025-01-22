@@ -42,7 +42,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
   @override
   void initState() {
     super.initState();
-    player.addListener(updateDefaultSelection);
+    player.addListener(refresh);
     if (lastSelectedIndex >= 0) {
       selected = player.backpack[lastSelectedIndex];
     }
@@ -51,8 +51,13 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
 
   @override
   void dispose() {
-    player.removeListener(updateDefaultSelection);
+    player.removeListener(refresh);
     super.dispose();
+  }
+
+  void refresh() {
+    updateDefaultSelection();
+    setState(() {});
   }
 
   void updateDefaultSelection() {

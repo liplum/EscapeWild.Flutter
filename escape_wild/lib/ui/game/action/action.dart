@@ -19,6 +19,22 @@ class GameActionPage extends StatefulWidget {
 
 class _GameActionPageState extends State<GameActionPage> {
   @override
+  void initState() {
+    super.initState();
+    player.addListener(refresh);
+  }
+
+  @override
+  void dispose() {
+    player.removeListener(refresh);
+    super.dispose();
+  }
+
+  void refresh() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     final actions = player.getAvailableActions();
     return Scaffold(

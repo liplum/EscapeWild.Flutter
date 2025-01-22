@@ -34,6 +34,17 @@ class _GameCraftPageState extends State<GameCraftPage> {
     super.initState();
     cat2Recipes = Contents.craftRecipes.cat2Recipes.entries.toList();
     selectedCatIndex = lastSelectedIndex.clamp(0, cat2Recipes.length - 1);
+    player.addListener(refresh);
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    player.removeListener(refresh);
+    super.dispose();
+  }
+
+  void refresh() {
     setState(() {});
   }
 

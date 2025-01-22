@@ -83,14 +83,14 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
 
   int getSelectedIndex(BuildContext context, List<AdaptiveNavigationItem> items) {
     final location = GoRouterState.of(context).uri.toString();
-    return max(0, items.indexWhere((item) => location.startsWith(item.route)));
+    return max(0, items.indexWhere((item) => location.endsWith(item.route)));
   }
 
   void onItemTapped(int index, List<AdaptiveNavigationItem> items) {
     final item = items[index];
     final branchIndex = navigationShell.route.routes.indexWhere((r) {
       if (r is GoRoute) {
-        return r.path.startsWith(item.route);
+        return r.path.endsWith(item.route);
       }
       return false;
     });
