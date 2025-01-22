@@ -47,7 +47,8 @@ class _GamePageState extends State<GamePage> {
     return buildBtn(_I.newGame, () async {
       DB.deleteGameSave();
       await onNewGame();
-      context.push("/game");
+      if (!mounted) return;
+      context.go("/game");
     });
   }
 
@@ -55,6 +56,7 @@ class _GamePageState extends State<GamePage> {
     try {
       await loadGameSave(gameSave);
     } catch (e, _) {
+      if (!mounted) return;
       await context.showTip(
         title: "Corrupted",
         desc: "Sorry for that. This game save is corrupted or outdated.",
@@ -62,7 +64,8 @@ class _GamePageState extends State<GamePage> {
       );
       return;
     }
-    context.push("/game");
+    if (!mounted) return;
+    context.go("/game");
   }
 
   Widget buildContinueGameBtn() {
