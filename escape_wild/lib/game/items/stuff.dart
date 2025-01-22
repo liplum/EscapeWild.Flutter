@@ -39,7 +39,7 @@ class Stuff {
     ]);
     // craft
     Contents.items.addAll([
-      strawRope = Item.mergeable("straw-rope", mass: 200).asFuel(heatValue: 100.0).tagged(["rope"]),
+      strawRope = Item.unmergeable("straw-rope", mass: 100).asFuel(heatValue: 50.0).tagged(["rope"]),
     ]);
     // container
     Contents.items.addAll([

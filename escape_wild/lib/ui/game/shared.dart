@@ -11,8 +11,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-import 'backpack.dart';
-import 'hud.dart';
+import 'backpack/backpack.dart';
+import 'action/hud.dart';
 
 const itemCellGridDelegatePortrait = SliverGridDelegateWithMaxCrossAxisExtent(
   maxCrossAxisExtent: 180,

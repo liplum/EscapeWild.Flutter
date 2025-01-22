@@ -7,7 +7,7 @@ import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'shared.dart';
+import '../shared.dart';
 
 part 'backpack.i18n.dart';
 

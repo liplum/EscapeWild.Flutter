@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
-import 'package:escape_wild/game/ui/move.dart';
+import 'package:escape_wild/ui/game/action/move.dart';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:noitcelloc/noitcelloc.dart';

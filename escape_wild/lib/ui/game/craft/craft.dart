@@ -6,8 +6,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 
-import 'backpack.dart';
-import 'shared.dart';
+import '../backpack/backpack.dart';
+import '../shared.dart';
 
 class CraftPage extends StatefulWidget {
   const CraftPage({super.key});

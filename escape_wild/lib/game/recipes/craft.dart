@@ -28,7 +28,6 @@ class CraftRecipes {
         CraftRecipeCat.refine,
         ingredients: [200.tag("straw")],
         output: () => Stuff.strawRope,
-        outputMass: 100,
       ),
       TagCraftRecipe(
         "stone-axe",

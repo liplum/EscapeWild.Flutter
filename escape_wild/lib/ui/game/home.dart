@@ -3,14 +3,14 @@ import 'package:escape_wild/core/index.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/game/serialization.dart';
 import 'package:escape_wild/generated/icons.dart';
-import 'package:escape_wild/ui/game/backpack.dart';
+import 'package:escape_wild/ui/game/backpack/backpack.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rettulf/rettulf.dart';
-import 'action.dart';
-import 'camp.dart';
-import 'craft.dart';
+import 'action/action.dart';
+import 'camp/camp.dart';
+import 'craft/craft.dart';
 
 part 'home.i18n.dart';
 

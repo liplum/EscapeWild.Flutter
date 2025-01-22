@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/generated/icons.dart';
-import 'package:escape_wild/ui/game/campfire.dart';
 import 'package:flutter/material.dart';
 
+import 'campfire.dart';
 import 'shelter.dart';
 
 part 'camp.i18n.dart';

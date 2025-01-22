@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:rettulf/rettulf.dart';
 
-import 'shared.dart';
+import '../shared.dart';
 
 class Hud extends StatefulWidget {
   final AttrModel attrs;
