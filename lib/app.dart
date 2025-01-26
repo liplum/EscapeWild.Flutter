@@ -57,14 +57,23 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
     return raw.copyWith(
       cardTheme: raw.cardTheme.copyWith(
         shape: const RoundedRectangleBorder(
-            side: BorderSide(color: Colors.transparent), //the outline color
-            borderRadius: BorderRadius.all(Radius.circular(14))),
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+        ),
+      ),
+      navigationBarTheme: raw.navigationBarTheme.copyWith(
+        height: 68,
       ),
       splashFactory: InkSparkle.splashFactory,
       pageTransitionsTheme: const PageTransitionsTheme(builders: {
-        TargetPlatform.android: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
-        TargetPlatform.windows: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
-        TargetPlatform.linux: SharedAxisPageTransitionsBuilder(transitionType: SharedAxisTransitionType.horizontal),
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.windows: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
+        TargetPlatform.linux: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.horizontal,
+        ),
         TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         TargetPlatform.macOS: CupertinoPageTransitionsBuilder(),
       }),

@@ -96,9 +96,9 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
       body: (player.backpack.isEmpty
               ? buildEmptyBackpack()
               : [
-                  ItemDetails(stack: selected).flexible(flex: 2),
-                  buildItems(player.backpack).flexible(flex: 5),
-                  buildButtonArea(selected).flexible(flex: 1),
+                  ItemDetails(stack: selected),
+                  buildItems(player.backpack).expanded(),
+                  buildButtonArea(selected),
                 ].column(maa: MainAxisAlignment.spaceBetween))
           .safeArea()
           .padAll(5),
