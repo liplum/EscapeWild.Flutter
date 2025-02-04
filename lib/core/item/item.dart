@@ -8,6 +8,8 @@ import 'package:jconverter/jconverter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
+import 'item.new.dart';
+
 part 'item.g.dart';
 
 typedef ItemGetter = Item Function();
@@ -333,6 +335,8 @@ class ItemCompConflictError implements Exception {
   const ItemCompConflictError(this.message, this.item);
 }
 
+typedef ItemCompStoreInfo = ({ItemCompStore store, int mass});
+
 abstract class ItemComp extends Comp {
   const ItemComp();
 
@@ -342,14 +346,12 @@ abstract class ItemComp extends Comp {
   /// - The [ItemStack.mass] of [from] and [to] are not changed.
   /// ## contrarians:
   /// - Implementation mustn't change [ItemStack.mass].
-  void onMerge(ItemStack from, ItemStack to) {}
+  ItemCompStore merge(ItemCompStoreInfo self, ItemCompStoreInfo other);
 
   /// ## preconditions:
   /// - The [ItemStack.mass] of [from] and [to] are not changed.
   /// - [to] has an [Item.extra] clone from [from].
-  /// ## contrarians:
-  /// - Implementation mustn't change [ItemStack.mass].
-  void onSplit(ItemStack from, ItemStack to) {}
+  ({ItemCompStore rest, ItemCompStore part}) split(ItemCompStoreInfo from, int massOfPart);
 
   Future<void> onPassTime(ItemStack stack, Ts delta) async {}
 
