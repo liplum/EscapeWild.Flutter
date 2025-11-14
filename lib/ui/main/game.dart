@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:tabler_icons/tabler_icons.dart';
+
+import 'settings.dart';
 
 part 'game.i18n.dart';
 
@@ -18,7 +21,19 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, elevation: 0, backgroundColor: Colors.transparent),
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.navigator.push(MaterialPageRoute(builder: (_) => const SettingsPage()));
+            },
+            icon: const Icon(TablerIcons.settings),
+          ),
+        ],
+      ),
       body: buildBody(),
     );
   }
