@@ -8,7 +8,7 @@
 PRODUCT_NAME = Escape Wild
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = net.liplum.EscapeWildFlutter
+PRODUCT_BUNDLE_IDENTIFIER = net.liplum.EscapeWild
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2023 Liplum. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2025 net.liplum. All rights reserved.

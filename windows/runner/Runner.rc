@@ -93,7 +93,7 @@ BEGIN
             VALUE "FileDescription", "escape_wild" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "escape_wild" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 net.liplum. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 net.liplum. All rights reserved." "\0"
             VALUE "OriginalFilename", "escape_wild.exe" "\0"
             VALUE "ProductName", "escape_wild" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
