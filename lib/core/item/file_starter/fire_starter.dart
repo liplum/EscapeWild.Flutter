@@ -15,11 +15,7 @@ class FireStarterComp extends ItemComp {
   /// If so, campfire will gain [FuelComp.getActualHeatValue] amount of fuel.
   final bool consumeSelfAfterBurning;
 
-  const FireStarterComp({
-    required this.chance,
-    required this.cost,
-    this.consumeSelfAfterBurning = true,
-  });
+  const FireStarterComp({required this.chance, required this.cost, this.consumeSelfAfterBurning = true});
 
   bool tryStartFire(ItemStack stack, [Random? rand]) {
     rand ??= Rand.backend;
@@ -46,10 +42,7 @@ class FireStarterComp extends ItemComp {
       );
     }
     if (item.hasComp(FireStarterComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $FireStarterComp.",
-        item,
-      );
+      throw ItemCompConflictError("Only allow one $FireStarterComp.", item);
     }
   }
 
@@ -64,16 +57,8 @@ class FireStarterComp extends ItemComp {
 }
 
 extension FireStarterCompX on Item {
-  Item asFireStarter({
-    required Ratio chance,
-    required double cost,
-    bool consumeSelfAfterBurning = true,
-  }) {
-    final comp = FireStarterComp(
-      chance: chance,
-      cost: cost,
-      consumeSelfAfterBurning: consumeSelfAfterBurning,
-    );
+  Item asFireStarter({required Ratio chance, required double cost, bool consumeSelfAfterBurning = true}) {
+    final comp = FireStarterComp(chance: chance, cost: cost, consumeSelfAfterBurning: consumeSelfAfterBurning);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;

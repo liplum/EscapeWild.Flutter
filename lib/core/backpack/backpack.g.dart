@@ -6,9 +6,8 @@ part of 'backpack.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Backpack _$BackpackFromJson(Map<String, dynamic> json) => Backpack()
-  ..items = (json['items'] as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
+Backpack _$BackpackFromJson(Map<String, dynamic> json) =>
+    Backpack()
+      ..items = (json['items'] as List<dynamic>).map((e) => ItemStack.fromJson(e as Map<String, dynamic>)).toList();
 
-Map<String, dynamic> _$BackpackToJson(Backpack instance) => <String, dynamic>{
-      'items': instance.items,
-    };
+Map<String, dynamic> _$BackpackToJson(Backpack instance) => <String, dynamic>{'items': instance.items};

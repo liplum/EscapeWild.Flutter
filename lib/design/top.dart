@@ -27,11 +27,7 @@ typedef TopBuilder = Widget Function(BuildContext context, TopEntry entry);
 /// showTop(builder2, key: key);
 ///
 ///
-TopEntry showTop(
-  TopBuilder builder, {
-  Key? key,
-  BuildContext? context,
-}) {
+TopEntry showTop(TopBuilder builder, {Key? key, BuildContext? context}) {
   assert(key is! GlobalKey);
 
   final top = findTopState(context);
@@ -50,20 +46,19 @@ TopEntry showTop(
 
   oldTopEntry?.closeWindow();
   late final TopEntry topEntry;
-  final entry = OverlayEntry(builder: (context) {
-    // Capture local variable [topEntry]
-    return KeyedTop(key: overlayKey, child: builder(context, topEntry));
-  });
+  final entry = OverlayEntry(
+    builder: (context) {
+      // Capture local variable [topEntry]
+      return KeyedTop(key: overlayKey, child: builder(context, topEntry));
+    },
+  );
   topEntry = TopEntry._internal(entry, overlayKey, top);
   top.addEntry(topEntry, key: overlayKey);
   overlay.insert(entry);
   return topEntry;
 }
 
-TopEntry? getTopEntry({
-  required Key key,
-  BuildContext? context,
-}) {
+TopEntry? getTopEntry({required Key key, BuildContext? context}) {
   final top = findTopState(context);
   return top?.getEntry(key: key);
 }
@@ -75,11 +70,7 @@ abstract class CloseableProtocol {
 }
 
 abstract class TopEntry extends CloseableProtocol {
-  factory TopEntry._internal(
-    OverlayEntry entry,
-    Key key,
-    TopState top,
-  ) {
+  factory TopEntry._internal(OverlayEntry entry, Key key, TopState top) {
     return _TopEntryImpl._(entry, key, top);
   }
 
@@ -103,11 +94,7 @@ class _TopEntryImpl implements TopEntry {
   final Key _overlayKey;
   final TopState _top;
 
-  _TopEntryImpl._(
-    this._entry,
-    this._overlayKey,
-    this._top,
-  );
+  _TopEntryImpl._(this._entry, this._overlayKey, this._top);
 
   // To known when notification has been dismissed.
   final Completer<bool> _$dismissed = Completer<bool>();
@@ -177,21 +164,11 @@ class Top extends StatelessWidget {
 
   final bool global;
 
-  const Top({
-    super.key,
-    required this.child,
-    this.global = true,
-  });
+  const Top({super.key, required this.child, this.global = true});
 
-  const Top.global({
-    super.key,
-    required this.child,
-  }) : global = true;
+  const Top.global({super.key, required this.child}) : global = true;
 
-  const Top.local({
-    super.key,
-    required this.child,
-  }) : global = false;
+  const Top.local({super.key, required this.child}) : global = false;
 
   TopState? of(BuildContext context) {
     return context.findAncestorStateOfType<TopState>();
@@ -274,10 +251,7 @@ class _GlobalTopState extends TopState<_GlobalTop> {
 class _LocalTop extends StatefulWidget {
   final Widget child;
 
-  const _LocalTop({
-    super.key,
-    required this.child,
-  });
+  const _LocalTop({super.key, required this.child});
 
   @override
   _LocalTopState createState() => _LocalTopState();

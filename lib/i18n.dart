@@ -30,10 +30,7 @@ class I {
 
   static String timeHourOf(String hour) => "$_t.hour".tr(args: [hour]);
 
-  static String timeHmOf(String hour, String minute) => "$_t.hm".tr(namedArgs: {
-        "hour": hour,
-        "min": minute,
-      });
+  static String timeHmOf(String hour, String minute) => "$_t.hm".tr(namedArgs: {"hour": hour, "min": minute});
 
   static String ts(Ts ts) {
     final hour = ts.hourPart;
@@ -63,11 +60,7 @@ class PhysicalQuantity {
   static const mass = PhysicalQuantity("mass"),
       length = PhysicalQuantity("length"),
       temperature = PhysicalQuantity("temperature");
-  static const all = [
-    mass,
-    length,
-    temperature,
-  ];
+  static const all = [mass, length, temperature];
 
   @override
   String toString() => name;
@@ -93,22 +86,10 @@ abstract class UnitConverter {
 
   static const gram2PoundUnit = 0.0022046226;
   static const gram2OunceUnit = 0.03527396195;
-  static final UnitConverter gram = _UnitConverterImpl.mass(
-        "gram",
-        (gram) => gram,
-      ),
-      kilogram = _UnitConverterImpl.mass(
-        "kilogram",
-        (gram) => gram / 1000,
-      ),
-      pound = _UnitConverterImpl.mass(
-        "pound",
-        (gram) => gram * gram2PoundUnit,
-      ),
-      ounce = _UnitConverterImpl.mass(
-        "ounce",
-        (gram) => gram * gram2OunceUnit,
-      );
+  static final UnitConverter gram = _UnitConverterImpl.mass("gram", (gram) => gram),
+      kilogram = _UnitConverterImpl.mass("kilogram", (gram) => gram / 1000),
+      pound = _UnitConverterImpl.mass("pound", (gram) => gram * gram2PoundUnit),
+      ounce = _UnitConverterImpl.mass("ounce", (gram) => gram * gram2OunceUnit);
   static final Map<String, UnitConverter> name2Cvt$Mass = {
     "gram": gram,
     "kilogram": kilogram,
@@ -126,18 +107,9 @@ class _UnitConverterImpl extends UnitConverter {
   final num Function(int gram) converter;
   final int maxTrailingZero;
 
-  const _UnitConverterImpl(
-    super.quantity,
-    super.name,
-    this.converter, {
-    this.maxTrailingZero = 2,
-  });
+  const _UnitConverterImpl(super.quantity, super.name, this.converter, {this.maxTrailingZero = 2});
 
-  const _UnitConverterImpl.mass(
-    String name,
-    this.converter, {
-    this.maxTrailingZero = 2,
-  }) : super(.mass, name);
+  const _UnitConverterImpl.mass(String name, this.converter, {this.maxTrailingZero = 2}) : super(.mass, name);
 
   @override
   num convertToNum(int gram) => converter(gram);

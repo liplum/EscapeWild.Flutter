@@ -35,12 +35,8 @@ class FuelComp extends ItemComp {
 }
 
 extension FuelCompX on Item {
-  Item asFuel({
-    required double heatValue,
-  }) {
-    final comp = FuelComp(
-      heatValue,
-    );
+  Item asFuel({required double heatValue}) {
+    final comp = FuelComp(heatValue);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;

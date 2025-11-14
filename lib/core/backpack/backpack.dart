@@ -174,9 +174,7 @@ extension BackpackX on Backpack {
   }
 
   /// Separate the [items] into matched and unmatched.
-  MapEntry<List<ItemStack>, List<ItemStack>> separateMatchedFromUnmatched(
-    bool Function(ItemStack stack) matcher,
-  ) {
+  MapEntry<List<ItemStack>, List<ItemStack>> separateMatchedFromUnmatched(bool Function(ItemStack stack) matcher) {
     final matched = <ItemStack>[];
     final unmatched = <ItemStack>[];
     for (final item in items) {

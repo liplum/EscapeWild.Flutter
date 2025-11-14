@@ -16,7 +16,7 @@ class UserAction with Moddable {
 
   // Move
   static final //
-      move = UserAction("move"),
+  move = UserAction("move"),
       explore = UserAction("explore"),
       gather = UserAction("gather"),
       getWood = UserAction("get-wood"),
@@ -29,15 +29,15 @@ class UserAction with Moddable {
 
   static final
       // Win the game
-      escapeWild = UserAction("escape-wild"),
+      escapeWild = UserAction(
+        "escape-wild",
+      ),
       // Lose the game
-      stopHeartbeat = UserAction("stop-heartbeat");
+      stopHeartbeat = UserAction(
+        "stop-heartbeat",
+      );
 
-  static final List<UserAction> defaultActions = [
-    move,
-    explore,
-    shelter,
-  ];
+  static final List<UserAction> defaultActions = [move, explore, shelter];
 
   @override
   bool operator ==(Object other) {

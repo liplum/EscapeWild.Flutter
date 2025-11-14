@@ -7,8 +7,8 @@ part of 'timed.dart';
 // **************************************************************************
 
 TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) => TimedCookRecipe(
-      json['name'] as String,
-      ingredients: (json['ingredients'] as List<dynamic>).map(TagMassEntry.fromJson).toList(),
-      dishes: (json['dishes'] as List<dynamic>).map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>)).toList(),
-      cookingTime: Ts.fromJson((json['cookingTime'] as num).toInt()),
-    )..mod = Moddable.modId2ModFunc(json['mod'] as String);
+  json['name'] as String,
+  ingredients: (json['ingredients'] as List<dynamic>).map(TagMassEntry.fromJson).toList(),
+  dishes: (json['dishes'] as List<dynamic>).map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>)).toList(),
+  cookingTime: Ts.fromJson((json['cookingTime'] as num).toInt()),
+)..mod = Moddable.modId2ModFunc(json['mod'] as String);

@@ -35,11 +35,7 @@ class _DebugConsoleState extends State<DebugConsole> {
 
   @override
   Widget build(BuildContext context) {
-    return [
-      buildLeft().flexible(flex: 1),
-      const VerticalDivider(thickness: 2),
-      buildRight().flexible(flex: 3),
-    ].row();
+    return [buildLeft().flexible(flex: 1), const VerticalDivider(thickness: 2), buildRight().flexible(flex: 3)].row();
   }
 
   Widget buildLeft() {
@@ -69,24 +65,27 @@ class _DebugConsoleState extends State<DebugConsole> {
 
   List<_Item> buildItems() {
     final res = <_Item>[];
-    res.add(_Item(_I.cat.item, (context) {
-      return const _ItemGrid();
-    }));
-    res.add(_Item("Save", (context) {
-      return const JsonGameSave();
-    }));
-    res.add(_Item("Cheat", (context) {
-      return const CheatOptions();
-    }));
+    res.add(
+      _Item(_I.cat.item, (context) {
+        return const _ItemGrid();
+      }),
+    );
+    res.add(
+      _Item("Save", (context) {
+        return const JsonGameSave();
+      }),
+    );
+    res.add(
+      _Item("Cheat", (context) {
+        return const CheatOptions();
+      }),
+    );
     return res;
   }
 }
 
 class JsonGameSave extends StatelessWidget {
-  static final dartTheme = {
-    ...darkTheme,
-    "number": const TextStyle(color: Colors.blue),
-  };
+  static final dartTheme = {...darkTheme, "number": const TextStyle(color: Colors.blue)};
 
   const JsonGameSave({super.key});
 
@@ -134,12 +133,7 @@ class _ItemGridState extends State<_ItemGrid> {
       onTap: () {
         player.backpack.addItemOrMerge(item.create());
       },
-      child: ItemCell(
-        item,
-        theme: ItemCellTheme(
-          nameStyle: context.textTheme.titleSmall,
-        ),
-      ),
+      child: ItemCell(item, theme: ItemCellTheme(nameStyle: context.textTheme.titleSmall)),
     );
   }
 }

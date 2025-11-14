@@ -6,6 +6,4 @@ part of 'fuel.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp(
-      (json['heatValue'] as num).toDouble(),
-    );
+FuelComp _$FuelCompFromJson(Map<String, dynamic> json) => FuelComp((json['heatValue'] as num).toDouble());

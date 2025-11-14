@@ -13,11 +13,7 @@ Future<void> showToolBroken(UserAction action, ItemStack tool) async {
 
 Future<void> showGain(UserAction action, List<ItemStack> gain) async {
   if (gain.isEmpty) {
-    await $context.showTip(
-      title: action.l10nName(),
-      desc: "action.got-nothing".tr(),
-      primary: "alright".tr(),
-    );
+    await $context.showTip(title: action.l10nName(), desc: "action.got-nothing".tr(), primary: "alright".tr());
   } else {
     final result = gain.map((e) => e.meta.l10nName()).join(", ");
     await $context.showTip(

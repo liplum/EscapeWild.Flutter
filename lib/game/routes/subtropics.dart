@@ -19,28 +19,15 @@ final moveWithEnergy = PlaceAction(UserAction.move, () => player.energy > 0.0);
 final exploreWithEnergy = PlaceAction(UserAction.explore, () => player.energy > 0.0);
 final huntWithTool = PlaceAction(
   UserAction.hunt,
-  () =>
-      player.energy > 0.0 &&
-      player.backpack.hasAnyToolOfAnyTypeIn([
-        ToolType.trap,
-        ToolType.gun,
-      ]),
+  () => player.energy > 0.0 && player.backpack.hasAnyToolOfAnyTypeIn([ToolType.trap, ToolType.gun]),
 );
 final fishWithTool = PlaceAction(
   UserAction.fish,
-  () =>
-      player.energy > 0.0 &&
-      player.backpack.hasAnyToolOfType(
-        ToolType.fishing,
-      ),
+  () => player.energy > 0.0 && player.backpack.hasAnyToolOfType(ToolType.fishing),
 );
 final cutDownTreeWithTool = PlaceAction(
   UserAction.getWood,
-  () =>
-      player.energy > 0.0 &&
-      player.backpack.hasAnyToolOfType(
-        ToolType.axe,
-      ),
+  () => player.energy > 0.0 && player.backpack.hasAnyToolOfType(ToolType.axe),
 );
 
 final shelter = PlaceAction(UserAction.shelter, () => true);
@@ -326,28 +313,24 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
 
   @override
   List<PlaceAction> getAvailableActions() {
-    return [
-      forward,
-      exploreWithEnergy,
-      shelter,
-      huntWithTool,
-      PlaceAction(UserAction.campfire, () => true),
-    ];
+    return [forward, exploreWithEnergy, shelter, huntWithTool, PlaceAction(UserAction.campfire, () => true)];
   }
 
   @override
   Future<void> performMove(UserAction action) async {
-    await showMoveSheet(onMoved: (duration) async {
-      final f = duration.minutes;
-      await player.onPassTime(duration);
-      player.modifyX(Attr.food, -0.0001 * f);
-      player.modifyX(Attr.water, -0.0001 * f);
-      player.modifyX(Attr.energy, -0.0001 * f);
-      var routeProgress = route.getRouteProgress();
-      await route.setRouteProgress(routeProgress + 0.03 * f);
-      player.journeyProgress = route.journeyProgress;
-      player.location = route.current;
-    });
+    await showMoveSheet(
+      onMoved: (duration) async {
+        final f = duration.minutes;
+        await player.onPassTime(duration);
+        player.modifyX(Attr.food, -0.0001 * f);
+        player.modifyX(Attr.water, -0.0001 * f);
+        player.modifyX(Attr.energy, -0.0001 * f);
+        var routeProgress = route.getRouteProgress();
+        await route.setRouteProgress(routeProgress + 0.03 * f);
+        player.journeyProgress = route.journeyProgress;
+        player.location = route.current;
+      },
+    );
   }
 
   @override
@@ -355,10 +338,7 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
     // TODO: A dedicate hunting UI.
     final trapTool = player.findBestToolForType(ToolType.trap);
     final gunTool = player.findBestToolForType(ToolType.gun);
-    final tool = [
-      if (trapTool != null) trapTool,
-      if (gunTool != null) gunTool,
-    ].maxOfOrNull((tool) => tool.comp.attr);
+    final tool = [if (trapTool != null) trapTool, if (gunTool != null) gunTool].maxOfOrNull((tool) => tool.comp.attr);
     if (tool == null) return;
     final comp = tool.comp;
     final eff = comp.attr.efficiency;
@@ -695,9 +675,7 @@ class VillagePlace extends SubtropicsPlace {
 
   @override
   List<PlaceAction> getAvailableActions() {
-    return [
-      escapeWildAndWin,
-    ];
+    return [escapeWildAndWin];
   }
 
   @override

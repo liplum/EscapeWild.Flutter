@@ -6,12 +6,16 @@ extension ThemeBuildContextX on BuildContext {
   BorderRadius get cardBorderRadius => (theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius;
 
   BorderRadius get cardBorderRadiusTop =>
-      ((theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius)
-          .copyWith(bottomLeft: Radius.zero, bottomRight: Radius.zero);
+      ((theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius).copyWith(
+        bottomLeft: Radius.zero,
+        bottomRight: Radius.zero,
+      );
 
   BorderRadius get cardBorderRadiusBottom =>
-      ((theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius)
-          .copyWith(topLeft: Radius.zero, topRight: Radius.zero);
+      ((theme.cardTheme.shape as RoundedRectangleBorder?)?.borderRadius as BorderRadius).copyWith(
+        topLeft: Radius.zero,
+        topRight: Radius.zero,
+      );
 
   Color get themeColor {
     final theme = this.theme;
@@ -23,11 +27,9 @@ extension ThemeBuildContextX on BuildContext {
   }
 
   RoundedRectangleBorder outlinedCardBorder() => RoundedRectangleBorder(
-        side: BorderSide(
-          color: isDarkMode ? colorScheme.outline : colorScheme.secondary,
-        ),
-        borderRadius: cardBorderRadius,
-      );
+    side: BorderSide(color: isDarkMode ? colorScheme.outline : colorScheme.secondary),
+    borderRadius: cardBorderRadius,
+  );
 
   Color fixColorBrightness(Color color) {
     if (isDarkMode) {

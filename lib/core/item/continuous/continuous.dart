@@ -57,9 +57,7 @@ class ContinuousModifyMassComp extends ItemComp {
   @JsonKey()
   final double deltaPerMinute;
 
-  const ContinuousModifyMassComp({
-    required this.deltaPerMinute,
-  });
+  const ContinuousModifyMassComp({required this.deltaPerMinute});
 
   @override
   Future<void> onPassTime(ItemStack stack, Ts delta) async {
@@ -93,45 +91,29 @@ class ContinuousModifyMassComp extends ItemComp {
 }
 
 extension ContinuousModifyItemPropCompX on Item {
-  Item continuousModify(
-    Iterable<ItemPropModifier> modifiers,
-  ) {
+  Item continuousModify(Iterable<ItemPropModifier> modifiers) {
     final comp = ContinuousModifyItemPropComp(modifiers);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 
-  Item continuousModifyMass({
-    required double deltaPerMinute,
-  }) {
-    final comp = ContinuousModifyMassComp(
-      deltaPerMinute: deltaPerMinute,
-    );
+  Item continuousModifyMass({required double deltaPerMinute}) {
+    final comp = ContinuousModifyMassComp(deltaPerMinute: deltaPerMinute);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 
-  Item continuousModifyWetness({
-    required double deltaPerMinute,
-  }) {
-    final comp = ContinuousModifyWetnessComp(
-      deltaPerMinute: deltaPerMinute,
-    );
+  Item continuousModifyWetness({required double deltaPerMinute}) {
+    final comp = ContinuousModifyWetnessComp(deltaPerMinute: deltaPerMinute);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 
-  Item continuousModifyFreshness({
-    required double deltaPerMinute,
-    double wetFactor = FreshnessComp.defaultWetFactor,
-  }) {
-    final comp = ContinuousModifyFreshnessComp(
-      deltaPerMinute: deltaPerMinute,
-      wetFactor: wetFactor,
-    );
+  Item continuousModifyFreshness({required double deltaPerMinute, double wetFactor = FreshnessComp.defaultWetFactor}) {
+    final comp = ContinuousModifyFreshnessComp(deltaPerMinute: deltaPerMinute, wetFactor: wetFactor);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
@@ -141,10 +123,7 @@ extension ContinuousModifyItemPropCompX on Item {
     required double deltaPerMinute,
     double wetFactor = ContinuousModifyDurabilityComp.defaultWetFactor,
   }) {
-    final comp = ContinuousModifyDurabilityComp(
-      deltaPerMinute: deltaPerMinute,
-      wetFactor: wetFactor,
-    );
+    final comp = ContinuousModifyDurabilityComp(deltaPerMinute: deltaPerMinute, wetFactor: wetFactor);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;

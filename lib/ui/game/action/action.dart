@@ -10,9 +10,7 @@ import 'package:tabler_icons/tabler_icons.dart';
 import 'hud.dart';
 
 class GameActionPage extends StatefulWidget {
-  const GameActionPage({
-    super.key,
-  });
+  const GameActionPage({super.key});
 
   @override
   State<GameActionPage> createState() => _GameActionPageState();
@@ -47,30 +45,17 @@ class _GameActionPageState extends State<GameActionPage> {
             snap: false,
             floating: false,
             flexibleSpace: FlexibleSpaceBar(
-              title: "${player.location?.displayName()}".text(
-                style: context.textTheme.headlineMedium,
-              ),
+              title: "${player.location?.displayName()}".text(style: context.textTheme.headlineMedium),
               centerTitle: true,
             ),
             actions: buildAppBarActions(),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              buildHud().padFromLTRB(5, 5, 5, 0),
-              buildJourneyProgress(),
-            ]),
-          ),
+          SliverList(delegate: SliverChildListDelegate([buildHud().padFromLTRB(5, 5, 5, 0), buildJourneyProgress()])),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             sliver: actions.length == 1
-                ? SliverToBoxAdapter(
-                    child: buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center(),
-                  )
-                : SliverGrid.extent(
-                    maxCrossAxisExtent: 256,
-                    childAspectRatio: 3,
-                    children: buildActions(actions),
-                  ),
+                ? SliverToBoxAdapter(child: buildActionBtn(actions[0]).constrained(maxW: 240, maxH: 80).center())
+                : SliverGrid.extent(maxCrossAxisExtent: 256, childAspectRatio: 3, children: buildActions(actions)),
           ),
         ],
       ),
@@ -102,11 +87,7 @@ class _GameActionPageState extends State<GameActionPage> {
   }
 
   Widget buildHud() {
-    return Hud(
-      attrs: player.attrs,
-      textStyle: context.textTheme.headlineMedium,
-      minHeight: 14,
-    ).padAll(12);
+    return Hud(attrs: player.attrs, textStyle: context.textTheme.headlineMedium, minHeight: 14).padAll(12);
   }
 
   Widget buildJourneyProgress() {
@@ -137,9 +118,7 @@ class _GameActionPageState extends State<GameActionPage> {
           .autoSizeText(
             maxLines: 1,
             minFontSize: 8,
-            style: context.textTheme.headlineSmall?.copyWith(
-              color: canPerform ? null : Colors.grey,
-            ),
+            style: context.textTheme.headlineSmall?.copyWith(color: canPerform ? null : Colors.grey),
           )
           .center()
           .padAll(5),

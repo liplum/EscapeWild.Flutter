@@ -7,10 +7,8 @@ class _I {
 
   static String get title => "$_n.title".tr();
 
-  static String massLoad(int cur, int max) => "$_n.mass-load".tr(namedArgs: {
-        "cur": I.massOf(cur),
-        "max": I.massOf(max),
-      });
+  static String massLoad(int cur, int max) =>
+      "$_n.mass-load".tr(namedArgs: {"cur": I.massOf(cur), "max": I.massOf(max)});
 
   static String get discardRequest => "$_n.discard-request".tr();
 

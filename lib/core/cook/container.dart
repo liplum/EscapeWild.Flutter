@@ -17,12 +17,7 @@ class ContainerCookRecipe extends CookRecipeProtocol implements JConvertibleProt
   }
 
   @override
-  bool updateCooking(
-    List<ItemStack> inputs,
-    List<ItemStack> outputs,
-    Ts totalTimePassed,
-    Ts delta,
-  ) {
+  bool updateCooking(List<ItemStack> inputs, List<ItemStack> outputs, Ts totalTimePassed, Ts delta) {
     throw UnimplementedError();
   }
 

@@ -16,7 +16,7 @@ extension IngameMenuBuildContextX on BuildContext {
       context: this,
       builder: (ctx) => $Dialog$(
         builder: (ctx) => const _InGameMenu(),
-        primary: $Action$(text:  "OK"),
+        primary: $Action$(text: "OK"),
       ),
     );
   }
@@ -43,11 +43,7 @@ class _InGameMenuState extends State<_InGameMenu> {
     return btn(_I.save, () async {
       final json = player.toJson(Cvt);
       DB.setGameSave(json);
-      await context.showTip(
-        title: I.done,
-        desc: "Your game is saved.",
-        primary: I.ok,
-      );
+      await context.showTip(title: I.done, desc: "Your game is saved.", primary: I.ok);
       context.navigator.pop();
     });
   }
@@ -63,9 +59,7 @@ class _InGameMenuState extends State<_InGameMenu> {
   Widget btn(String text, VoidCallback? onTap) {
     return FilledButton.tonal(
       onPressed: onTap,
-      child: text.text(
-        style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize),
-      ),
+      child: text.text(style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize)),
     );
   }
 }

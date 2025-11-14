@@ -5,6 +5,10 @@
 [![Button Discord]][Discord]
 [![Buttons Download]][Download]
 
+```shell
+dart run build_runner build --delete-conflicting-outputs && dart format . -l 120
+```
+
 #### *A multi-platform text-based game powered by Flutter*
 
 ### [Play This Online][Online Demo]

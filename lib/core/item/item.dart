@@ -68,43 +68,23 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
     tags.add(name);
   }
 
-  Item(
-    this.name, {
-    required this.mergeable,
-    required this.mass,
-  }) {
+  Item(this.name, {required this.mergeable, required this.mass}) {
     assert(mergeable != isContainer, "`mergeable` and `isContainer` are conflict.");
     _addSelfNameTag();
   }
 
-  Item.unmergeable(
-    this.name, {
-    required this.mass,
-  })  : mergeable = false,
-        assert(mass > 0) {
+  Item.unmergeable(this.name, {required this.mass}) : mergeable = false, assert(mass > 0) {
     _addSelfNameTag();
   }
 
-  Item.mergeable(
-    this.name, {
-    required this.mass,
-  }) : mergeable = true {
+  Item.mergeable(this.name, {required this.mass}) : mergeable = true {
     _addSelfNameTag();
   }
 
-  Item.container(
-    this.name, {
-    required this.mass,
-    Iterable<String>? acceptTags,
-    int? capacity,
-    bool? mergeablity,
-  }) : mergeable = false {
+  Item.container(this.name, {required this.mass, Iterable<String>? acceptTags, int? capacity, bool? mergeablity})
+    : mergeable = false {
     _addSelfNameTag();
-    final comp = ContainerComp(
-      acceptTags: acceptTags,
-      capacity: capacity,
-      mergeablity: mergeablity,
-    );
+    final comp = ContainerComp(acceptTags: acceptTags, capacity: capacity, mergeablity: mergeablity);
     comp.validateItemConfig(this);
     containerComp = comp;
   }
@@ -206,21 +186,11 @@ class ContainerComp extends ContainerCompProtocol {
   /// - When [mergeablity] is true, topping up is allowed, but the overflowing part will be ignored.
   final bool? mergeablity;
 
-  const ContainerComp({
-    this.acceptTags,
-    this.capacity,
-    this.mergeablity,
-  });
+  const ContainerComp({this.acceptTags, this.capacity, this.mergeablity});
 
-  const ContainerComp.limitCapacity(
-    this.capacity,
-    this.mergeablity,
-  ) : acceptTags = null;
+  const ContainerComp.limitCapacity(this.capacity, this.mergeablity) : acceptTags = null;
 
-  const ContainerComp.limitTags(
-    this.acceptTags,
-    this.mergeablity,
-  ) : capacity = null;
+  const ContainerComp.limitTags(this.acceptTags, this.mergeablity) : capacity = null;
 
   const ContainerComp.unlimited() : this();
 
@@ -295,16 +265,8 @@ class ContainerComp extends ContainerCompProtocol {
 }
 
 extension ContainerCompX on Item {
-  Item asContainer({
-    Iterable<String>? acceptTags,
-    int? capacity,
-    bool? mergeablity,
-  }) {
-    final comp = ContainerComp(
-      acceptTags: acceptTags,
-      capacity: capacity,
-      mergeablity: mergeablity,
-    );
+  Item asContainer({Iterable<String>? acceptTags, int? capacity, bool? mergeablity}) {
+    final comp = ContainerComp(acceptTags: acceptTags, capacity: capacity, mergeablity: mergeablity);
     comp.validateItemConfig(this);
     containerComp = comp;
     return this;
@@ -316,11 +278,7 @@ class ItemMergeableCompConflictError implements Exception {
   final Item item;
   final bool mergeableShouldBe;
 
-  const ItemMergeableCompConflictError(
-    this.message,
-    this.item, {
-    required this.mergeableShouldBe,
-  });
+  const ItemMergeableCompConflictError(this.message, this.item, {required this.mergeableShouldBe});
 
   @override
   String toString() => "[${item.name}]$message. [Item.mergeable] should be $mergeableShouldBe.";
@@ -402,11 +360,7 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
 
   int get stackMass => mass ?? meta.mass;
 
-  ItemStack(
-    this.meta, {
-    int? id,
-    this.mass,
-  }) : id = id ?? const Uuid().v4().hashCode;
+  ItemStack(this.meta, {int? id, this.mass}) : id = id ?? const Uuid().v4().hashCode;
 
   String displayName() => meta.l10nName();
 
@@ -584,19 +538,14 @@ class ItemStackStatus {
   final String name;
   final Color? color;
 
-  const ItemStackStatus({
-    required this.name,
-    this.color,
-  });
+  const ItemStackStatus({required this.name, this.color});
 }
 
 class ItemStackStatusBuilder {
   List<ItemStackStatus> statuses = [];
   final bool darkMode;
 
-  ItemStackStatusBuilder({
-    this.darkMode = false,
-  });
+  ItemStackStatusBuilder({this.darkMode = false});
 
   void add(ItemStackStatus status) {
     statuses.add(status);
@@ -723,31 +672,28 @@ class ItemMatcher {
   final ItemTypeMatcher typeOnly;
   final ItemStackMatcher exact;
 
-  const ItemMatcher({
-    required this.typeOnly,
-    required this.exact,
-  });
+  const ItemMatcher({required this.typeOnly, required this.exact});
 
   static ItemMatcher hasTags(List<String> tags) => ItemMatcher(
-        typeOnly: (item) => item.hasTags(tags),
-        exact: (item) => item.meta.hasTags(tags) ? .matched : .typeUnmatched,
-      );
+    typeOnly: (item) => item.hasTags(tags),
+    exact: (item) => item.meta.hasTags(tags) ? .matched : .typeUnmatched,
+  );
 
   static ItemMatcher hasAnyTag(List<String> tags) => ItemMatcher(
-        typeOnly: (item) => item.hasAnyTag(tags),
-        exact: (item) => item.meta.hasAnyTag(tags) ? .matched : .typeUnmatched,
-      );
+    typeOnly: (item) => item.hasAnyTag(tags),
+    exact: (item) => item.meta.hasAnyTag(tags) ? .matched : .typeUnmatched,
+  );
 
   static ItemMatcher hasComp(List<Type> compTypes) => ItemMatcher(
-        typeOnly: (item) => item.hasComps(compTypes),
-        exact: (item) =>
-            item.meta.hasComps(compTypes) ? .matched : .typeUnmatched,
-      );
+    typeOnly: (item) => item.hasComps(compTypes),
+    exact: (item) => item.meta.hasComps(compTypes) ? .matched : .typeUnmatched,
+  );
   static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => .matched);
 }
 
 extension ItemStackMatcherX on ItemStackMatcher {
-  Matcher<ItemStack> get bool => (stack) => this(stack).isMatched;
+  Matcher<ItemStack> get bool =>
+      (stack) => this(stack).isMatched;
 }
 
 extension ItemMatcherX on ItemMatcher {

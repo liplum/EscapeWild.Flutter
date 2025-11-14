@@ -17,15 +17,12 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
   @JsonKey()
   final Ts cookingTime;
 
-  TimedCookRecipe(
-    super.name, {
-    required this.ingredients,
-    required this.dishes,
-    required this.cookingTime,
-  }) {
+  TimedCookRecipe(super.name, {required this.ingredients, required this.dishes, required this.cookingTime}) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
-    assert(ingredients.length <= CookRecipeProtocol.maxIngredient,
-        "Ingredients of $registerName is > ${CookRecipeProtocol.maxIngredient}.");
+    assert(
+      ingredients.length <= CookRecipeProtocol.maxIngredient,
+      "Ingredients of $registerName is > ${CookRecipeProtocol.maxIngredient}.",
+    );
     assert(dishes.isNotEmpty, "Outputs of $registerName is empty.");
   }
 
@@ -58,12 +55,7 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
   }
 
   @override
-  bool updateCooking(
-    List<ItemStack> inputs,
-    List<ItemStack> outputs,
-    Ts totalTimePassed,
-    Ts delta,
-  ) {
+  bool updateCooking(List<ItemStack> inputs, List<ItemStack> outputs, Ts totalTimePassed, Ts delta) {
     // It must reach the [cookingTime]
     if (totalTimePassed < cookingTime) return false;
     if (inputs.length != ingredients.length) return false;

@@ -7,7 +7,7 @@ part of 'fire_starter.dart';
 // **************************************************************************
 
 FireStarterComp _$FireStarterCompFromJson(Map<String, dynamic> json) => FireStarterComp(
-      chance: (json['chance'] as num).toDouble(),
-      cost: (json['cost'] as num).toDouble(),
-      consumeSelfAfterBurning: json['consumeSelfAfterBurning'] as bool? ?? true,
-    );
+  chance: (json['chance'] as num).toDouble(),
+  cost: (json['cost'] as num).toDouble(),
+  consumeSelfAfterBurning: json['consumeSelfAfterBurning'] as bool? ?? true,
+);

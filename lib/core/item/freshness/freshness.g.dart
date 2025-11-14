@@ -7,9 +7,9 @@ part of 'freshness.dart';
 // **************************************************************************
 
 FreshnessComp _$FreshnessCompFromJson(Map<String, dynamic> json) => FreshnessComp(
-      expire: Ts.fromJson((json['expire'] as num).toInt()),
-      wetFactor: (json['wetFactor'] as num?)?.toDouble() ?? FreshnessComp.defaultWetFactor,
-    );
+  expire: Ts.fromJson((json['expire'] as num).toInt()),
+  wetFactor: (json['wetFactor'] as num?)?.toDouble() ?? FreshnessComp.defaultWetFactor,
+);
 
 ContinuousModifyFreshnessComp _$ContinuousModifyFreshnessCompFromJson(Map<String, dynamic> json) =>
     ContinuousModifyFreshnessComp(

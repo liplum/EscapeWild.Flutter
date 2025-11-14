@@ -17,10 +17,11 @@ class _MinePageState extends State<MinePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                context.navigator.push(MaterialPageRoute(builder: (_) => const SettingsPage()));
-              },
-              icon: const Icon(TablerIcons.settings)),
+            onPressed: () {
+              context.navigator.push(MaterialPageRoute(builder: (_) => const SettingsPage()));
+            },
+            icon: const Icon(TablerIcons.settings),
+          ),
         ],
       ),
       body: buildBody(),

@@ -765,12 +765,7 @@ class BackpackSheet extends StatefulWidget {
   final BackpackSheetDelegate? delegate;
   final BackpackFilterDisplayBehavior behavior;
 
-  const BackpackSheet({
-    super.key,
-    required this.matcher,
-    this.delegate,
-    this.behavior = .toggleable,
-  });
+  const BackpackSheet({super.key, required this.matcher, this.delegate, this.behavior = .toggleable});
 
   @override
   State<BackpackSheet> createState() => _BackpackSheetState();
@@ -782,9 +777,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
   List<ItemStack> unaccepted = const [];
   bool toggleFilter = false;
 
-  bool get showUnaccepted =>
-      widget.behavior == .both ||
-      (widget.behavior == .toggleable && !toggleFilter);
+  bool get showUnaccepted => widget.behavior == .both || (widget.behavior == .toggleable && !toggleFilter);
 
   @override
   void initState() {

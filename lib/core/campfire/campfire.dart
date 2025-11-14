@@ -14,11 +14,7 @@ class FireState {
   final double fuel;
   static const maxVisualFuel = 500.0;
 
-  FireState({
-    double ember = 0.0,
-    double fuel = 0.0,
-  })  : ember = max(0, ember),
-        fuel = max(0, fuel);
+  FireState({double ember = 0.0, double fuel = 0.0}) : ember = max(0, ember), fuel = max(0, fuel);
 
   bool get active => fuel > 0 || ember > 0;
   bool get isOff => fuel <= 0 && ember <= 0;
@@ -29,14 +25,7 @@ class FireState {
 
   static final FireState off = FireState();
 
-  FireState copyWith({
-    double? ember,
-    double? fuel,
-  }) =>
-      FireState(
-        ember: ember ?? this.ember,
-        fuel: fuel ?? this.fuel,
-      );
+  FireState copyWith({double? ember, double? fuel}) => FireState(ember: ember ?? this.ember, fuel: fuel ?? this.fuel);
 }
 
 abstract class CampfirePlaceProtocol extends PlaceProtocol with ChangeNotifier {
@@ -172,10 +161,7 @@ mixin CampfireCookingMixin on CampfirePlaceProtocol {
 const _emberCostFactor = 5;
 
 // TODO: Better formula
-FireState _burningFuel(
-  FireState former,
-  double cost,
-) {
+FireState _burningFuel(FireState former, double cost) {
   final curFuel = former.fuel;
   var resFuel = curFuel;
   var resEmber = former.ember;

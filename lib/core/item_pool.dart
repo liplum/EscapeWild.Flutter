@@ -19,19 +19,10 @@ class ItemPoolEntry {
   /// Exclusive
   final int maxSize;
 
-  const ItemPoolEntry(
-    this.item,
-    this.chance, {
-    required this.minSize,
-    required this.maxSize,
-  }) : assert(minSize <= maxSize);
+  const ItemPoolEntry(this.item, this.chance, {required this.minSize, required this.maxSize})
+    : assert(minSize <= maxSize);
 
-  const ItemPoolEntry.fixed(
-    this.item,
-    this.chance, {
-    required int size,
-  })  : minSize = size,
-        maxSize = size;
+  const ItemPoolEntry.fixed(this.item, this.chance, {required int size}) : minSize = size, maxSize = size;
 }
 
 /// An [ItemPool] is used to randomize loots.

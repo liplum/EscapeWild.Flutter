@@ -18,11 +18,7 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(centerTitle: true, elevation: 0, backgroundColor: Colors.transparent),
       body: buildBody(),
     );
   }
@@ -30,17 +26,12 @@ class _GamePageState extends State<GamePage> {
   Widget buildBody() {
     return [
       buildTitle(),
-      [
-        buildNewGameBtn(),
-        buildContinueGameBtn(),
-      ].column(maa: .center, caa: .stretch).constrained(maxW: 220),
+      [buildNewGameBtn(), buildContinueGameBtn()].column(maa: .center, caa: .stretch).constrained(maxW: 220),
     ].column(maa: .spaceEvenly, caa: .center).center();
   }
 
   Widget buildTitle() {
-    return _I.title.text(
-      style: context.textTheme.displayMedium,
-    );
+    return _I.title.text(style: context.textTheme.displayMedium);
   }
 
   Widget buildNewGameBtn() {
@@ -73,12 +64,13 @@ class _GamePageState extends State<GamePage> {
         (ctx, v) {
           final lastSave = DB.getGameSave();
           return buildBtn(
-              _I.$continue,
-              lastSave == null
-                  ? null
-                  : () async {
-                      await onLoadGameSave(lastSave);
-                    });
+            _I.$continue,
+            lastSave == null
+                ? null
+                : () async {
+                    await onLoadGameSave(lastSave);
+                  },
+          );
         };
   }
 
@@ -86,10 +78,7 @@ class _GamePageState extends State<GamePage> {
     return FilledButton.tonal(
       onPressed: onTap,
       child: text
-          .autoSizeText(
-            maxLines: 1,
-            style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize),
-          )
+          .autoSizeText(maxLines: 1, style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize))
           .padAll(5),
     ).padAll(5).constrained(minH: 60);
   }

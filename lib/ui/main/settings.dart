@@ -20,9 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: buildBody(),
-    );
+    return Scaffold(body: buildBody());
   }
 
   Widget buildBody() {
@@ -34,17 +32,12 @@ class _SettingsPageState extends State<SettingsPage> {
           snap: false,
           floating: false,
           expandedHeight: 100.0,
-          flexibleSpace: FlexibleSpaceBar(
-            title: "Settings".text(),
-          ),
+          flexibleSpace: FlexibleSpaceBar(title: "Settings".text()),
         ),
         SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: entries.length,
-            (ctx, index) {
-              return entries[index](ctx);
-            },
-          ),
+          delegate: SliverChildBuilderDelegate(childCount: entries.length, (ctx, index) {
+            return entries[index](ctx);
+          }),
         ),
       ],
     );
@@ -57,31 +50,20 @@ class _SettingsPageState extends State<SettingsPage> {
     all.add(
       (_) => NavigationListTile(
         onPop: onPop,
-        leading: const Icon(
-          TablerIcons.language,
-          size: iconSize,
-        ),
+        leading: const Icon(TablerIcons.language, size: iconSize),
         title: _I.languageTitle.text(),
         subtitle: "language.$curLocale".tr().text(),
-        to: (_) => LanguageSelectorPage(
-          candidates: R.supportedLocales,
-          selected: curLocale,
-        ),
+        to: (_) => LanguageSelectorPage(candidates: R.supportedLocales, selected: curLocale),
       ),
     );
     final q2cvt = Measurement.toMap();
     all.add(
       (_) => NavigationListTile(
         onPop: onPop,
-        leading: const Icon(
-          TablerIcons.ruler_measure,
-          size: iconSize,
-        ),
+        leading: const Icon(TablerIcons.ruler_measure, size: iconSize),
         title: _I.measurementTitle.text(),
         subtitle: q2cvt.values.map((cvt) => "(${cvt.l10nUnit()})").join(", ").text(),
-        to: (_) => MeasurementSelectorPage(
-          quality2Selected: q2cvt,
-        ),
+        to: (_) => MeasurementSelectorPage(quality2Selected: q2cvt),
       ),
     );
 
@@ -92,10 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
 class MeasurementSelectorPage extends StatefulWidget {
   final Map<PhysicalQuantity, UnitConverter> quality2Selected;
 
-  const MeasurementSelectorPage({
-    super.key,
-    required this.quality2Selected,
-  });
+  const MeasurementSelectorPage({super.key, required this.quality2Selected});
 
   @override
   State<MeasurementSelectorPage> createState() => _MeasurementSelectorPageState();
@@ -124,15 +103,10 @@ class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
               snap: false,
               floating: false,
               expandedHeight: 100.0,
-              flexibleSpace: FlexibleSpaceBar(
-                title: "Measurement".tr().text(),
-              ),
+              flexibleSpace: FlexibleSpaceBar(title: "Measurement".tr().text()),
             ),
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: sections.length,
-                (ctx, index) => sections[index],
-              ),
+              delegate: SliverChildBuilderDelegate(childCount: sections.length, (ctx, index) => sections[index]),
             ),
           ],
         ),
@@ -143,15 +117,17 @@ class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
   List<Widget> buildSections() {
     final all = <Widget>[];
     // mass
-    all.add(MeasurementSelection(
-      quantity: .mass,
-      candidates: UnitConverter.name2Cvt$Mass.values.toList(),
-      selected: Measurement.mass,
-      example: 1000,
-      onSelected: (cvt) {
-        cur[PhysicalQuantity.mass] = cvt;
-      },
-    ));
+    all.add(
+      MeasurementSelection(
+        quantity: .mass,
+        candidates: UnitConverter.name2Cvt$Mass.values.toList(),
+        selected: Measurement.mass,
+        example: 1000,
+        onSelected: (cvt) {
+          cur[PhysicalQuantity.mass] = cvt;
+        },
+      ),
+    );
     return all;
   }
 }
@@ -201,12 +177,7 @@ class _MeasurementSelectionState extends State<MeasurementSelection> {
               widget.onSelected(cvt);
             },
       subtitle: example == null ? null : cvt.convertWithUnit(example).text(),
-      trailing: cvt != curSelected
-          ? null
-          : const Icon(
-              TablerIcons.check,
-              color: Colors.green,
-            ),
+      trailing: cvt != curSelected ? null : const Icon(TablerIcons.check, color: Colors.green),
     );
   }
 }
@@ -215,11 +186,7 @@ class LanguageSelectorPage extends StatefulWidget {
   final List<Locale> candidates;
   final Locale selected;
 
-  const LanguageSelectorPage({
-    super.key,
-    required this.candidates,
-    required this.selected,
-  });
+  const LanguageSelectorPage({super.key, required this.candidates, required this.selected});
 
   @override
   State<LanguageSelectorPage> createState() => _LanguageSelectorPageState();
@@ -244,18 +211,13 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
               snap: false,
               floating: false,
               expandedHeight: 100.0,
-              flexibleSpace: FlexibleSpaceBar(
-                title: "language.$curSelected".tr().text(),
-              ),
+              flexibleSpace: FlexibleSpaceBar(title: "language.$curSelected".tr().text()),
             ),
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: widget.candidates.length,
-                (ctx, index) {
-                  final locale = widget.candidates[index];
-                  return buildOption(locale);
-                },
-              ),
+              delegate: SliverChildBuilderDelegate(childCount: widget.candidates.length, (ctx, index) {
+                final locale = widget.candidates[index];
+                return buildOption(locale);
+              }),
             ),
           ],
         ),
@@ -273,12 +235,7 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
                 curSelected = locale;
               });
             },
-      trailing: locale != curSelected
-          ? null
-          : const Icon(
-              TablerIcons.check,
-              color: Colors.green,
-            ),
+      trailing: locale != curSelected ? null : const Icon(TablerIcons.check, color: Colors.green),
     );
   }
 }

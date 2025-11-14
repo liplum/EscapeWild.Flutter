@@ -17,10 +17,7 @@ final _$gameCraft = GlobalKey<NavigatorState>();
 RoutingConfig buildRoutingConfig() {
   return RoutingConfig(
     routes: [
-      GoRoute(
-        path: "/",
-        redirect: (ctx, state) => "/main/game",
-      ),
+      GoRoute(path: "/", redirect: (ctx, state) => "/main/game"),
       GoRoute(
         path: "/main",
         redirect: (ctx, state) {
@@ -35,21 +32,11 @@ RoutingConfig buildRoutingConfig() {
             branches: [
               StatefulShellBranch(
                 navigatorKey: _$mainGame,
-                routes: [
-                  GoRoute(
-                    path: "/game",
-                    builder: (ctx, state) => const GamePage(),
-                  ),
-                ],
+                routes: [GoRoute(path: "/game", builder: (ctx, state) => const GamePage())],
               ),
               StatefulShellBranch(
                 navigatorKey: _$mainMine,
-                routes: [
-                  GoRoute(
-                    path: "/mine",
-                    builder: (ctx, state) => const MinePage(),
-                  ),
-                ],
+                routes: [GoRoute(path: "/mine", builder: (ctx, state) => const MinePage())],
               ),
             ],
           ),
@@ -69,30 +56,15 @@ RoutingConfig buildRoutingConfig() {
             branches: [
               StatefulShellBranch(
                 navigatorKey: _$gameAction,
-                routes: [
-                  GoRoute(
-                    path: "/action",
-                    builder: (ctx, state) => const GameActionPage(),
-                  ),
-                ],
+                routes: [GoRoute(path: "/action", builder: (ctx, state) => const GameActionPage())],
               ),
               StatefulShellBranch(
                 navigatorKey: _$gameBackpack,
-                routes: [
-                  GoRoute(
-                    path: "/backpack",
-                    builder: (ctx, state) => const GameBackpackPage(),
-                  ),
-                ],
+                routes: [GoRoute(path: "/backpack", builder: (ctx, state) => const GameBackpackPage())],
               ),
               StatefulShellBranch(
                 navigatorKey: _$gameCraft,
-                routes: [
-                  GoRoute(
-                    path: "/craft",
-                    builder: (c, state) => const GameCraftPage(),
-                  ),
-                ],
+                routes: [GoRoute(path: "/craft", builder: (c, state) => const GameCraftPage())],
               ),
             ],
           ),

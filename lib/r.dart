@@ -9,11 +9,7 @@ class R {
   static const defaultLocale = Locale('en');
   static const zhCnLocale = Locale('zh', "CN");
   static const frLocale = Locale('fr');
-  static const supportedLocales = [
-    defaultLocale,
-    zhCnLocale,
-    frLocale,
-  ];
+  static const supportedLocales = [defaultLocale, zhCnLocale, frLocale];
   static const debugMode = kDebugMode;
   static const packageName = "net.liplum.escape_wild";
   static late final String appDir;

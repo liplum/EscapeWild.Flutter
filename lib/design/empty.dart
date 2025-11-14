@@ -48,8 +48,7 @@ class Empty extends StatelessWidget {
               style: titleStyle?.copyWith(fontWeight: .w600),
               maxLines: 2,
             ).padH(16),
-          if (subtitle != null && shortestSide > 160)
-            Text(subtitle, textAlign: .center, style: subtitleStyle).padH(16),
+          if (subtitle != null && shortestSide > 160) Text(subtitle, textAlign: .center, style: subtitleStyle).padH(16),
           if (action != null && shortestSide > 80) action.padSymmetric(v: spacing / 2),
         ].column(maa: .center, mas: .min, spacing: spacing).center();
       },

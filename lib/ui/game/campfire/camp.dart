@@ -8,7 +8,6 @@ import '../shelter/shelter.dart';
 part 'camp.i18n.dart';
 
 class CampPage extends StatefulWidget {
-  
   const CampPage({super.key});
 
   @override
@@ -38,35 +37,28 @@ class _CampPageState extends State<CampPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (_, box) {
-      final showTabLabel = box.maxHeight > 480.0;
-      return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
-          automaticallyImplyLeading: false,
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(
-                icon: const Icon(TablerIcons.home),
-                text: !showTabLabel ? null : _I.shelterTitle,
-              ),
-              Tab(
-                icon: const Icon(TablerIcons.campfire),
-                text: !showTabLabel ? null : _I.campfireTitle,
-              ),
-            ],
+    return LayoutBuilder(
+      builder: (_, box) {
+        final showTabLabel = box.maxHeight > 480.0;
+        return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
+            automaticallyImplyLeading: false,
+            bottom: TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(icon: const Icon(TablerIcons.home), text: !showTabLabel ? null : _I.shelterTitle),
+                Tab(icon: const Icon(TablerIcons.campfire), text: !showTabLabel ? null : _I.campfireTitle),
+              ],
+            ),
           ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          physics: const RangeMaintainingScrollPhysics(),
-          children: const [
-            ShelterPage(),
-            CampfirePage(),
-          ],
-        ),
-      );
-    });
+          body: TabBarView(
+            controller: _tabController,
+            physics: const RangeMaintainingScrollPhysics(),
+            children: const [ShelterPage(), CampfirePage()],
+          ),
+        );
+      },
+    );
   }
 }

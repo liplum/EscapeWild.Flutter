@@ -11,9 +11,7 @@ class WetnessComp extends ItemComp {
   static const defaultDryTime = Ts.from(hour: 12);
   final Ts dryTime;
 
-  const WetnessComp({
-    this.dryTime = WetnessComp.defaultDryTime,
-  });
+  const WetnessComp({this.dryTime = WetnessComp.defaultDryTime});
 
   Ratio getWetness(ItemStack stack) => stack[_wetK] ?? defaultWetness;
 
@@ -40,10 +38,7 @@ class WetnessComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.hasComp(WetnessComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $WetnessComp.",
-        item,
-      );
+      throw ItemCompConflictError("Only allow one $WetnessComp.", item);
     }
   }
 
@@ -52,22 +47,13 @@ class WetnessComp extends ItemComp {
     final ratio = getWetness(stack);
     if (ratio >= 0.8) {
       builder <<
-          ItemStackStatus(
-            name: "Soaked",
-            color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
-          );
+          ItemStackStatus(name: "Soaked", color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet);
     } else if (ratio >= 0.5) {
       builder <<
-          ItemStackStatus(
-            name: "Wet",
-            color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
-          );
+          ItemStackStatus(name: "Wet", color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet);
     } else if (ratio >= 0.3) {
       builder <<
-          ItemStackStatus(
-            name: "Soggy",
-            color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet,
-          );
+          ItemStackStatus(name: "Soggy", color: builder.darkMode ? StatusColorPreset.wetDark : StatusColorPreset.wet);
     }
   }
 
@@ -86,12 +72,8 @@ class WetnessComp extends ItemComp {
 }
 
 extension WetnessCompX on Item {
-  Item hasWetness({
-    Ts dryTime = WetnessComp.defaultDryTime,
-  }) {
-    final comp = WetnessComp(
-      dryTime: dryTime,
-    );
+  Item hasWetness({Ts dryTime = WetnessComp.defaultDryTime}) {
+    final comp = WetnessComp(dryTime: dryTime);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
@@ -103,9 +85,7 @@ class ContinuousModifyWetnessComp extends ItemComp {
   @JsonKey()
   final double deltaPerMinute;
 
-  const ContinuousModifyWetnessComp({
-    required this.deltaPerMinute,
-  });
+  const ContinuousModifyWetnessComp({required this.deltaPerMinute});
 
   @override
   Future<void> onPassTime(ItemStack stack, Ts delta) async {

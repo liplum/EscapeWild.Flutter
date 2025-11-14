@@ -13,21 +13,13 @@ class Hud extends StatefulWidget {
   final double? opacity;
   final double? minHeight;
 
-  const Hud({
-    super.key,
-    required this.attrs,
-    this.textStyle,
-    this.opacity,
-    this.minHeight,
-  });
+  const Hud({super.key, required this.attrs, this.textStyle, this.opacity, this.minHeight});
 
   @override
   State<Hud> createState() => _HudState();
 
   Widget mini() {
-    return ListTile(
-      subtitle: this,
-    ).scrolled(physics: const NeverScrollableScrollPhysics()).padAll(5);
+    return ListTile(subtitle: this).scrolled(physics: const NeverScrollableScrollPhysics()).padAll(5);
   }
 }
 

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 extension ColorX on Color {
   Color darken(double d) {
     return Color.from(alpha: a, red: r * (1 - d), green: g * (1 - d), blue: b * (1 - d));
-    }
+  }
 
   Color lighten(Ratio ratio) {
     return mergeColors(Colors.white, ratio, this, 1 - ratio);

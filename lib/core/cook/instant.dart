@@ -22,12 +22,7 @@ class InstantConvertCookRecipe extends CookRecipeProtocol implements JConvertibl
 
   /// If [output] is mergeable, cooking will create [outputMass] amount of [output].
   final int? outputMass;
-  static const Set<ItemProp> kKeptProps = {
-    .mass,
-    .wetness,
-    .durability,
-    .freshness,
-  };
+  static const Set<ItemProp> kKeptProps = {.mass, .wetness, .durability, .freshness};
   @JsonKey()
   final Set<ItemProp> keptProps;
 

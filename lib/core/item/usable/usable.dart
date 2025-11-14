@@ -39,11 +39,7 @@ class ModifyAttrComp extends UsableComp {
   @itemGetterJsonKey
   final ItemGetter? afterUsedItem;
 
-  const ModifyAttrComp(
-    super.useType,
-    this.modifiers, {
-    this.afterUsedItem,
-  });
+  const ModifyAttrComp(super.useType, this.modifiers, {this.afterUsedItem});
 
   bool get displayPreview => true;
 
@@ -81,58 +77,29 @@ class ModifyAttrComp extends UsableComp {
 }
 
 extension ModifyAttrCompX on Item {
-  Item modifyAttr(
-    UseType useType,
-    List<AttrModifier> modifiers, {
-    ItemGetter? afterUsed,
-  }) {
-    final comp = ModifyAttrComp(
-      useType,
-      modifiers,
-      afterUsedItem: afterUsed,
-    );
+  Item modifyAttr(UseType useType, List<AttrModifier> modifiers, {ItemGetter? afterUsed}) {
+    final comp = ModifyAttrComp(useType, modifiers, afterUsedItem: afterUsed);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 
-  Item asEatable(
-    List<AttrModifier> modifiers, {
-    ItemGetter? afterUsedItem,
-  }) {
-    final comp = ModifyAttrComp(
-      UseType.eat,
-      modifiers,
-      afterUsedItem: afterUsedItem,
-    );
+  Item asEatable(List<AttrModifier> modifiers, {ItemGetter? afterUsedItem}) {
+    final comp = ModifyAttrComp(UseType.eat, modifiers, afterUsedItem: afterUsedItem);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 
-  Item asUsable(
-    List<AttrModifier> modifiers, {
-    ItemGetter? afterUsedItem,
-  }) {
-    final comp = ModifyAttrComp(
-      UseType.use,
-      modifiers,
-      afterUsedItem: afterUsedItem,
-    );
+  Item asUsable(List<AttrModifier> modifiers, {ItemGetter? afterUsedItem}) {
+    final comp = ModifyAttrComp(UseType.use, modifiers, afterUsedItem: afterUsedItem);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;
   }
 
-  Item asDrinkable(
-    List<AttrModifier> modifiers, {
-    ItemGetter? afterUsed,
-  }) {
-    final comp = ModifyAttrComp(
-      UseType.drink,
-      modifiers,
-      afterUsedItem: afterUsed,
-    );
+  Item asDrinkable(List<AttrModifier> modifiers, {ItemGetter? afterUsed}) {
+    final comp = ModifyAttrComp(UseType.drink, modifiers, afterUsedItem: afterUsed);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;

@@ -52,11 +52,7 @@ class _GameCraftPageState extends State<GameCraftPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: "Craft".text(),
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: "Craft".text(), automaticallyImplyLeading: false, centerTitle: true),
       body: [
         buildCatView(context).flexible(flex: 4),
         const VerticalDivider(thickness: 1),
@@ -109,10 +105,7 @@ class _GameCraftPageState extends State<GameCraftPage> {
 class CraftRecipeEntry extends StatefulWidget {
   final CraftRecipeProtocol recipe;
 
-  const CraftRecipeEntry(
-    this.recipe, {
-    super.key,
-  });
+  const CraftRecipeEntry(this.recipe, {super.key});
 
   @override
   State<CraftRecipeEntry> createState() => _CraftRecipeEntryState();
@@ -123,10 +116,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
 
   @override
   Widget build(BuildContext context) {
-    return [
-      buildOutputItemBtn(),
-      buildInputGrid(),
-    ].column().inCard();
+    return [buildOutputItemBtn(), buildInputGrid()].column().inCard();
   }
 
   Widget buildOutputItemBtn() {
@@ -140,9 +130,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
               await showCupertinoModalBottomSheet(
                 context: context,
                 enableDrag: false,
-                builder: (_) => CraftingSheet(
-                  recipe: recipe,
-                ),
+                builder: (_) => CraftingSheet(recipe: recipe),
               );
             },
       child: ItemCell(output).aspectRatio(aspectRatio: 5),
@@ -159,14 +147,8 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
       itemBuilder: (ctx, i) {
         return DynamicMatchingCell(
           matcher: inputSlots[i],
-          onNotInBackpack: (item) => ItemCell(item).inCard(
-            key: const ValueKey("not in backpack"),
-            elevation: 0.6,
-          ),
-          onInBackpack: (item) => ItemCell(item.meta).inCard(
-            key: const ValueKey("in backpack"),
-            elevation: 5,
-          ),
+          onNotInBackpack: (item) => ItemCell(item).inCard(key: const ValueKey("not in backpack"), elevation: 0.6),
+          onInBackpack: (item) => ItemCell(item.meta).inCard(key: const ValueKey("in backpack"), elevation: 5),
         );
       },
     );
@@ -176,10 +158,7 @@ class _CraftRecipeEntryState extends State<CraftRecipeEntry> {
 class CraftingSheet extends StatefulWidget {
   final CraftRecipeProtocol recipe;
 
-  const CraftingSheet({
-    super.key,
-    required this.recipe,
-  });
+  const CraftingSheet({super.key, required this.recipe});
 
   @override
   State<CraftingSheet> createState() => _CraftingSheetState();
@@ -234,9 +213,9 @@ class _CraftingSheetState extends State<CraftingSheet> {
           TextButton(
             onPressed: !isSatisfyAllConditions ? null : onCraft,
             child: recipe.craftType.l10nName().text(
-                  style: TextStyle(fontSize: context.textTheme.titleMedium?.fontSize),
-                ),
-          )
+              style: TextStyle(fontSize: context.textTheme.titleMedium?.fontSize),
+            ),
+          ),
         ],
         backgroundColor: Colors.transparent,
       ),
@@ -322,10 +301,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
           : () {
               gotoFirstMatchedSlot(item);
             },
-      child: ItemStackCell(
-        item,
-        theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha),
-      ),
+      child: ItemStackCell(item, theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha)),
     );
   }
 

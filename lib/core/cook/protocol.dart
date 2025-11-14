@@ -26,10 +26,7 @@ abstract class CookRecipeProtocol with Moddable {
   /// - return whether [inputs] or [outputs] was changed.
   /// ## Use cases
   /// - Instant cooking: such as igniting a torch.
-  bool onMatch(
-    List<ItemStack> inputs,
-    List<ItemStack> outputs,
-  ) {
+  bool onMatch(List<ItemStack> inputs, List<ItemStack> outputs) {
     return false;
   }
 
@@ -40,12 +37,7 @@ abstract class CookRecipeProtocol with Moddable {
   /// - [outputs] is in no order.
   /// - [outputs] is [Backpack.untracked].
   /// - return whether [inputs] or [outputs] was changed.
-  bool updateCooking(
-    List<ItemStack> inputs,
-    List<ItemStack> outputs,
-    Ts totalTimePassed,
-    Ts delta,
-  ) {
+  bool updateCooking(List<ItemStack> inputs, List<ItemStack> outputs, Ts totalTimePassed, Ts delta) {
     return false;
   }
 

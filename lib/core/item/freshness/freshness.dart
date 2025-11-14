@@ -21,10 +21,7 @@ class FreshnessComp extends ItemComp {
   final double wetFactor;
   static const defaultWetFactor = 0.6;
 
-  const FreshnessComp({
-    required this.expire,
-    this.wetFactor = FreshnessComp.defaultWetFactor,
-  });
+  const FreshnessComp({required this.expire, this.wetFactor = FreshnessComp.defaultWetFactor});
 
   Ratio getFreshness(ItemStack stack) => stack[_freshnessK] ?? 1.0;
 
@@ -52,10 +49,7 @@ class FreshnessComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.hasComp(FreshnessComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $FreshnessComp.",
-        item,
-      );
+      throw ItemCompConflictError("Only allow one $FreshnessComp.", item);
     }
   }
 
@@ -64,10 +58,7 @@ class FreshnessComp extends ItemComp {
     final ratio = getFreshness(stack);
     if (ratio >= 0.7) {
       builder <<
-          ItemStackStatus(
-            name: "Fresh",
-            color: builder.darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good,
-          );
+          ItemStackStatus(name: "Fresh", color: builder.darkMode ? StatusColorPreset.goodDark : StatusColorPreset.good);
     } else if (ratio >= 0.4) {
       builder <<
           ItemStackStatus(
@@ -113,9 +104,7 @@ class FreshnessComp extends ItemComp {
 }
 
 extension FreshnessCompX on Item {
-  Item hasFreshness({
-    required Ts expire,
-  }) {
+  Item hasFreshness({required Ts expire}) {
     final comp = FreshnessComp(expire: expire);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
@@ -132,10 +121,7 @@ class ContinuousModifyFreshnessComp extends ItemComp {
   @JsonKey()
   final double wetFactor;
 
-  const ContinuousModifyFreshnessComp({
-    required this.deltaPerMinute,
-    this.wetFactor = FreshnessComp.defaultWetFactor,
-  });
+  const ContinuousModifyFreshnessComp({required this.deltaPerMinute, this.wetFactor = FreshnessComp.defaultWetFactor});
 
   @override
   Future<void> onPassTime(ItemStack stack, Ts delta) async {

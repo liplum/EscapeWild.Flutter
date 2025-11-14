@@ -5,20 +5,11 @@ import 'top.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
 
-TopEntry showWindow({
-  Key? key,
-  required String title,
-  required WidgetBuilder builder,
-  BuildContext? context,
-}) {
+TopEntry showWindow({Key? key, required String title, required WidgetBuilder builder, BuildContext? context}) {
   return showTop(
     context: context,
     key: key,
-    (context, entry) => Window(
-      title: title,
-      builder: builder,
-      closeable: entry,
-    ),
+    (context, entry) => Window(title: title, builder: builder, closeable: entry),
   );
 }
 
@@ -124,14 +115,7 @@ class _WindowState extends State<Window> {
     return AnimatedOpacity(
       opacity: opacity,
       duration: widget.fadeDuration,
-      child: [
-        Positioned(
-          key: _mainBodyKey,
-          left: _x,
-          top: _y,
-          child: buildWindowContent(context),
-        ),
-      ].stack().safeArea(),
+      child: [Positioned(key: _mainBodyKey, left: _x, top: _y, child: buildWindowContent(context))].stack().safeArea(),
     );
   }
 
@@ -154,10 +138,7 @@ class _WindowState extends State<Window> {
     final windowSize = calcuWindowSize(ctx);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(TablerIcons.x),
-          onPressed: onCloseWindow,
-        ),
+        leading: IconButton(icon: const Icon(TablerIcons.x), onPressed: onCloseWindow),
         title: widget.title.text(),
         centerTitle: true,
       ).listener(onPointerMove: onWindowMove).preferredSize(Size.fromHeight(widget.titleHeight ?? 40)),

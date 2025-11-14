@@ -54,11 +54,7 @@ class FoodRecipes {
 
   static void _registerSpecial() {
     Contents.cookRecipes.addAll([
-      InstantConvertCookRecipe(
-        "light-torch",
-        input: () => Tools.unlitTorch,
-        output: () => Tools.litTorch,
-      ),
+      InstantConvertCookRecipe("light-torch", input: () => Tools.unlitTorch, output: () => Tools.litTorch),
     ]);
   }
 }

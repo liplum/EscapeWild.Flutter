@@ -3,12 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'item_prop.g.dart';
 
 @JsonEnum()
-enum ItemProp {
-  mass,
-  wetness,
-  durability,
-  freshness;
-}
+enum ItemProp { mass, wetness, durability, freshness }
 
 extension ItemPropX on ItemProp {
   ItemPropModifier operator +(double deltaPerMinute) => ItemPropModifier(this, deltaPerMinute);

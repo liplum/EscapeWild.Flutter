@@ -55,12 +55,7 @@ class ContinuousCookRecipe extends CookRecipeProtocol implements JConvertiblePro
   }
 
   @override
-  bool updateCooking(
-    List<ItemStack> inputs,
-    List<ItemStack> outputs,
-    Ts totalTimePassed,
-    Ts delta,
-  ) {
+  bool updateCooking(List<ItemStack> inputs, List<ItemStack> outputs, Ts totalTimePassed, Ts delta) {
     if (inputs.length != 1) return false;
     final input = inputs.first;
     if (!input.meta.mergeable) return false;

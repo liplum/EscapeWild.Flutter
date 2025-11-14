@@ -11,10 +11,7 @@ Future<void> showMoveSheet({ValueChanged<Ts>? onMoved}) async {
   return await showCupertinoModalBottomSheet(
     context: $context,
     builder: (ctx) {
-      final sheet = MoveSheet(
-        initialDuration: actionDefaultTime,
-        onMove: onMoved,
-      );
+      final sheet = MoveSheet(initialDuration: actionDefaultTime, onMove: onMoved);
       final size = $context.mediaQuery.size;
       if ($context.isPortrait) {
         return sheet.constrained(maxH: size.height * 0.4);
@@ -29,11 +26,7 @@ class MoveSheet extends StatefulWidget {
   final Ts initialDuration;
   final ValueChanged<Ts>? onMove;
 
-  const MoveSheet({
-    super.key,
-    required this.initialDuration,
-    this.onMove,
-  });
+  const MoveSheet({super.key, required this.initialDuration, this.onMove});
 
   @override
   State<MoveSheet> createState() => _MoveSheetState();
@@ -60,10 +53,7 @@ class _MoveSheetState extends State<MoveSheet> {
   }
 
   Widget buildBody() {
-    return [
-      buildStepper(),
-      buildMoveBtn(),
-    ].column(mas: MainAxisSize.min);
+    return [buildStepper(), buildMoveBtn()].column(mas: MainAxisSize.min);
   }
 
   Widget buildMoveBtn() {
@@ -81,21 +71,14 @@ class _MoveSheetState extends State<MoveSheet> {
           .autoSizeText(
             maxLines: 1,
             minFontSize: 8,
-            style: context.textTheme.headlineSmall?.copyWith(
-              color: onMove != null ? null : Colors.grey,
-            ),
+            style: context.textTheme.headlineSmall?.copyWith(color: onMove != null ? null : Colors.grey),
           )
           .padAll(5),
     );
   }
 
   Widget buildStepper() {
-    return DurationStepper(
-      $cur: $cur,
-      min: actionMinTime,
-      max: actionMaxTime,
-      step: actionStepTime,
-    );
+    return DurationStepper($cur: $cur, min: actionMinTime, max: actionMaxTime, step: actionStepTime);
   }
 
   @override

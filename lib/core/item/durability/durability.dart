@@ -18,10 +18,7 @@ class DurabilityComp extends ItemComp {
   @JsonKey()
   final bool allowExceed;
 
-  const DurabilityComp({
-    required this.max,
-    this.allowExceed = false,
-  });
+  const DurabilityComp({required this.max, this.allowExceed = false});
 
   double getDurability(ItemStack stack) => stack[_durabilityK] ?? max;
 
@@ -46,10 +43,7 @@ class DurabilityComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.hasComp(DurabilityComp)) {
-      throw ItemCompConflictError(
-        "Only allow one $DurabilityComp.",
-        item,
-      );
+      throw ItemCompConflictError("Only allow one $DurabilityComp.", item);
     }
   }
 
@@ -99,14 +93,8 @@ class DurabilityComp extends ItemComp {
 }
 
 extension DurabilityCompX on Item {
-  Item hasDurability({
-    required double max,
-    bool allowExceed = false,
-  }) {
-    final comp = DurabilityComp(
-      max: max,
-      allowExceed: allowExceed,
-    );
+  Item hasDurability({required double max, bool allowExceed = false}) {
+    final comp = DurabilityComp(max: max, allowExceed: allowExceed);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;

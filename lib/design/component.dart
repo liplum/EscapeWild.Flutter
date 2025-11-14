@@ -9,14 +9,7 @@ class NavigationListTile extends StatelessWidget {
   final WidgetBuilder? to;
   final VoidCallback? onPop;
 
-  const NavigationListTile({
-    super.key,
-    this.leading,
-    this.title,
-    this.subtitle,
-    this.to,
-    this.onPop,
-  });
+  const NavigationListTile({super.key, this.leading, this.title, this.subtitle, this.to, this.onPop});
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +24,7 @@ class NavigationListTile extends StatelessWidget {
               await context.navigator.push(MaterialPageRoute(builder: to));
               onPop?.call();
             },
-      trailing: to == null
-          ? null
-          : const Icon(
-              TablerIcons.chevron_right,
-            ),
+      trailing: to == null ? null : const Icon(TablerIcons.chevron_right),
     );
   }
 }

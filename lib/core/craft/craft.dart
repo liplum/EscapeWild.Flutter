@@ -76,11 +76,8 @@ abstract class CraftRecipeProtocol with Moddable {
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<ItemMatcher> get toolSlots;
 
-  CraftRecipeProtocol(
-    this.name,
-    this.cat, {
-    CraftType? craftType,
-  }) : craftType = craftType ?? CraftType.craft;
+  CraftRecipeProtocol({required this.name, required this.cat, CraftType? craftType})
+    : craftType = craftType ?? CraftType.craft;
 
   Item get outputItem;
 
@@ -110,9 +107,9 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   List<ItemMatcher> toolSlots = [];
   final int? outputMass;
 
-  TagCraftRecipe(
-    super.name,
-    super.cat, {
+  TagCraftRecipe({
+    required super.name,
+    required super.cat,
     required this.ingredients,
     super.craftType,
     this.outputMass,
@@ -120,14 +117,16 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
   }) {
     assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
     for (final ingredient in ingredients) {
-      inputSlots.add(ItemMatcher(
-        typeOnly: (item) => item.hasTags(ingredient.tags),
-        exact: (item) {
-          if (!item.meta.hasTags(ingredient.tags)) return ItemStackMatchResult.typeUnmatched;
-          if (item.stackMass < (ingredient.mass ?? 0.0)) return ItemStackMatchResult.massUnmatched;
-          return ItemStackMatchResult.matched;
-        },
-      ));
+      inputSlots.add(
+        ItemMatcher(
+          typeOnly: (item) => item.hasTags(ingredient.tags),
+          exact: (item) {
+            if (!item.meta.hasTags(ingredient.tags)) return ItemStackMatchResult.typeUnmatched;
+            if (item.stackMass < (ingredient.mass ?? 0.0)) return ItemStackMatchResult.massUnmatched;
+            return ItemStackMatchResult.matched;
+          },
+        ),
+      );
     }
   }
 
