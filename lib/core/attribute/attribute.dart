@@ -13,7 +13,7 @@ enum Attr {
   water,
   energy;
 
-  String l10nName() => I18n["attribute.$name"];
+  String l10nName() => i18n("attribute.$name");
 }
 
 @JsonSerializable()

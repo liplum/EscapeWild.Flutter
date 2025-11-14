@@ -280,7 +280,6 @@ class SubtropicsPlace extends CampfirePlaceProtocol with PlaceActionDelegateMixi
   /// To reduce the json size, the mod will be set later during restoration.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  ModProtocol get mod => super.mod;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   late SubtropicsRoute route;

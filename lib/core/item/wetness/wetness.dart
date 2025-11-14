@@ -104,7 +104,7 @@ class ContinuousModifyWetnessComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.mergeable) {
-      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.registerName}.", item);
+      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.name}.", item);
     }
   }
 

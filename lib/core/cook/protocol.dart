@@ -1,11 +1,9 @@
 import 'package:escape_wild/core/index.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-abstract class CookRecipeProtocol with Moddable {
+abstract class CookRecipeProtocol {
   /// The max cooking slot.
   static const maxIngredient = 3;
-
-  @override
   final String name;
 
   CookRecipeProtocol(this.name);

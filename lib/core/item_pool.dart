@@ -26,8 +26,7 @@ class ItemPoolEntry {
 }
 
 /// An [ItemPool] is used to randomize loots.
-class ItemPool with Moddable {
-  @override
+class ItemPool {
   final String name;
   final Set<Item> _items = {};
   final List<ItemPoolEntry> _candidates = [];
@@ -35,7 +34,7 @@ class ItemPool with Moddable {
   ItemPool(this.name);
 
   List<ItemStack> randomize(Random rand) {
-    assert(_candidates.isNotEmpty, "$registerName is empty.");
+    assert(_candidates.isNotEmpty, "$name is empty.");
     final entry = _candidates[rand.i(0, _candidates.length)];
     final int size;
     if (entry.minSize == entry.maxSize) {

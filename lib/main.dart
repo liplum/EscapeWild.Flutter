@@ -22,7 +22,6 @@ void main() async {
   registerConverter();
   initPreference();
   runApp(const EscapeWildApp().withEasyLocalization());
-  await loadGameContent();
 }
 
 extension _AppX on Widget {

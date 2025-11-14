@@ -42,7 +42,7 @@ class ContinuousCookRecipe extends CookRecipeProtocol implements JConvertiblePro
     required this.speed,
     this.ratio = 1.0,
   }) {
-    assert(ingredient.isNotEmpty, "Input tags of $registerName is empty.");
+    assert(ingredient.isNotEmpty, "Input tags of $name is empty.");
   }
 
   @override

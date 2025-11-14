@@ -1,8 +1,7 @@
-import 'package:escape_wild/core/index.dart';
+import 'package:escape_wild/core/i18n.dart';
 
 /// It's to disambiguate with `Action` in flutter.
-class UserAction with Moddable {
-  @override
+class UserAction {
   final String name;
 
   UserAction(this.name);

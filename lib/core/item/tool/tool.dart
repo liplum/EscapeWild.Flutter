@@ -34,8 +34,7 @@ class ToolAttr implements Comparable<ToolAttr> {
   int get hashCode => efficiency.hashCode;
 }
 
-class ToolType with Moddable {
-  @override
+class ToolType {
   final String name;
 
   ToolType(this.name);

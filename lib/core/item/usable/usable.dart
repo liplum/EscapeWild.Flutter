@@ -10,7 +10,7 @@ enum UseType {
   eat,
   equip;
 
-  String l10nName() => I18n["use-type.$name"];
+  String l10nName() => i18n("use-type.$name");
 }
 
 /// An [Item] can have multiple [UsableComp].

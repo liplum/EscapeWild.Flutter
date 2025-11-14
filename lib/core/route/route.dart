@@ -1,8 +1,7 @@
 import 'package:escape_wild/core/index.dart';
 import 'package:jconverter/jconverter.dart';
 
-abstract class RouteProtocol with Moddable implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
-  @override
+abstract class RouteProtocol implements JConvertibleProtocol, RestorationProvider<PlaceProtocol> {
   String get name;
 
   RouteProtocol();
@@ -18,8 +17,7 @@ abstract class RouteProtocol with Moddable implements JConvertibleProtocol, Rest
   String localizedDescription() => i18n("route.$name.desc");
 }
 
-abstract class PlaceProtocol with ExtraMixin, Moddable implements JConvertibleProtocol {
-  @override
+abstract class PlaceProtocol with ExtraMixin implements JConvertibleProtocol {
   String get name;
 
   RouteProtocol get route;
@@ -45,13 +43,10 @@ class PlaceAction {
 }
 
 class RouteGenerateContext {
-  ModProtocol mod = Vanilla.instance;
-
   // hardness decides the total journey distance and resource intensity.
   Hardness hardness = Hardness.normal;
 
-  RouteGenerateContext({ModProtocol? mod, Hardness? hardness}) {
-    this.mod = mod ?? Vanilla.instance;
+  RouteGenerateContext({Hardness? hardness}) {
     this.hardness = hardness ?? .normal;
   }
 }

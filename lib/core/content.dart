@@ -4,7 +4,6 @@ class Contents {
   Contents._();
 
   static final items = ItemContents();
-  static final mods = ModContents();
   static final craftRecipes = CraftRecipeContents();
   static final cookRecipes = CookRecipeContents();
   static final hardness = HardnessContents();
@@ -15,11 +14,6 @@ class Contents {
 
   static CookRecipeProtocol? getCookRecipesByName(String? name) {
     return name == null ? null : cookRecipes[name];
-  }
-
-  static ModProtocol? getModById(String modId) {
-    if (modId == Vanilla.instance.modId) return Vanilla.instance;
-    return mods[modId];
   }
 
   static List<CraftRecipeProtocol> getCraftRecipesByCat(CraftRecipeCat cat) {
@@ -48,8 +42,8 @@ extension ItemContentsX on ItemContents {
   Item? operator [](String name) => name2Item[name];
 
   void operator <<(Item item) {
-    assert(!name2Item.containsKey(item.registerName), "${item.registerName} has been registered.");
-    name2Item[item.registerName] = item;
+    assert(!name2Item.containsKey(item.name), "${item.name} has been registered.");
+    name2Item[item.name] = item;
   }
 
   void addAll(Iterable<Item> items) {
@@ -61,14 +55,6 @@ extension ItemContentsX on ItemContents {
   List<Item> toList() => name2Item.values.toList();
 }
 
-class ModContents {
-  Map<String, ModProtocol> modId2Mod = {};
-}
-
-extension ModContentsX on ModContents {
-  ModProtocol? operator [](String name) => modId2Mod[name];
-}
-
 class CraftRecipeContents {
   Map<CraftRecipeCat, List<CraftRecipeProtocol>> cat2Recipes = {};
   Map<String, CraftRecipeProtocol> name2Recipe = {};
@@ -78,8 +64,8 @@ extension CraftRecipeContentsX on CraftRecipeContents {
   List<CraftRecipeProtocol>? operator [](CraftRecipeCat cat) => cat2Recipes[cat];
 
   void operator <<(CraftRecipeProtocol recipe) {
-    assert(!name2Recipe.containsKey(recipe.registerName), "${recipe.registerName} has been registered.");
-    name2Recipe[recipe.registerName] = recipe;
+    assert(!name2Recipe.containsKey(recipe.name), "${recipe.name} has been registered.");
+    name2Recipe[recipe.name] = recipe;
     var list = cat2Recipes[recipe.cat];
     if (list == null) {
       list = <CraftRecipeProtocol>[];
@@ -103,9 +89,9 @@ extension HardnessContentsX on HardnessContents {
   Hardness? operator [](String name) => name2Hardness[name];
 
   void operator <<(Hardness hardness) {
-    assert(!name2Hardness.containsKey(hardness.registerName), "${hardness.registerName} has been registered.");
+    assert(!name2Hardness.containsKey(hardness.name), "${hardness.name} has been registered.");
 
-    name2Hardness[hardness.registerName] = hardness;
+    name2Hardness[hardness.name] = hardness;
   }
 
   void addAll(Iterable<Hardness> hardnessList) {
@@ -123,8 +109,8 @@ extension ItemPoolContentsX on ItemPoolContents {
   ItemPool? operator [](String name) => name2Pool[name];
 
   void operator <<(ItemPool pool) {
-    assert(!name2Pool.containsKey(pool.registerName), "${pool.registerName} has been registered.");
-    name2Pool[pool.registerName] = pool;
+    assert(!name2Pool.containsKey(pool.name), "${pool.name} has been registered.");
+    name2Pool[pool.name] = pool;
   }
 
   void addAll(Iterable<ItemPool> poolList) {
@@ -142,8 +128,8 @@ extension FoodRecipeContentsX on CookRecipeContents {
   CookRecipeProtocol? operator [](String name) => name2FoodRecipe[name];
 
   void operator <<(CookRecipeProtocol recipe) {
-    assert(!name2FoodRecipe.containsKey(recipe.registerName), "${recipe.registerName} has been registered.");
-    name2FoodRecipe[recipe.registerName] = recipe;
+    assert(!name2FoodRecipe.containsKey(recipe.name), "${recipe.name} has been registered.");
+    name2FoodRecipe[recipe.name] = recipe;
   }
 
   void addAll(Iterable<CookRecipeProtocol> recipes) {

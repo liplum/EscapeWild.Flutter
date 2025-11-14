@@ -11,4 +11,4 @@ TimedCookRecipe _$TimedCookRecipeFromJson(Map<String, dynamic> json) => TimedCoo
   ingredients: (json['ingredients'] as List<dynamic>).map(TagMassEntry.fromJson).toList(),
   dishes: (json['dishes'] as List<dynamic>).map((e) => LazyItemStack.fromJson(e as Map<String, dynamic>)).toList(),
   cookingTime: Ts.fromJson((json['cookingTime'] as num).toInt()),
-)..mod = Moddable.modId2ModFunc(json['mod'] as String);
+);

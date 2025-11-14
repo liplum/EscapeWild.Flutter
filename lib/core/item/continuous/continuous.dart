@@ -37,7 +37,7 @@ class ContinuousModifyItemPropComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.mergeable && modifiers.any((m) => m.prop == ItemProp.mass)) {
-      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.registerName}.", item);
+      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.name}.", item);
     }
   }
 
@@ -77,7 +77,7 @@ class ContinuousModifyMassComp extends ItemComp {
   @override
   void validateItemConfig(Item item) {
     if (item.mergeable) {
-      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.registerName}.", item);
+      throw ItemCompConflictError("Can't change the mass of unmergeable item ${item.name}.", item);
     }
   }
 

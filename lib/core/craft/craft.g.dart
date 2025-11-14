@@ -13,4 +13,4 @@ TagCraftRecipe _$TagCraftRecipeFromJson(Map<String, dynamic> json) => TagCraftRe
   craftType: CraftType.named(json['craftType'] as String),
   outputMass: (json['outputMass'] as num?)?.toInt(),
   output: NamedItemGetter.create(json['output'] as String),
-)..mod = Moddable.modId2ModFunc(json['mod'] as String);
+);

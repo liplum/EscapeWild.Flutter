@@ -1,9 +1,8 @@
 import 'package:escape_wild/core/index.dart';
 import 'package:jconverter/jconverter.dart';
 
-abstract class LevelMetaProtocol with Moddable {
+abstract class LevelMetaProtocol {
   static final LevelMetaProtocol empty = _EmptyLevelMeta();
-  @override
   final String name;
 
   LevelMetaProtocol(this.name);

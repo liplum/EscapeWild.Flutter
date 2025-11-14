@@ -15,7 +15,7 @@ InstantConvertCookRecipe _$InstantConvertCookRecipeFromJson(Map<String, dynamic>
       InstantConvertCookRecipe.kKeptProps,
   inputMass: (json['inputMass'] as num?)?.toInt(),
   outputMass: (json['outputMass'] as num?)?.toInt(),
-)..mod = Moddable.modId2ModFunc(json['mod'] as String);
+);
 
 const _$ItemPropEnumMap = {
   ItemProp.mass: 'mass',

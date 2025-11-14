@@ -12,4 +12,4 @@ ContinuousCookRecipe _$ContinuousCookRecipeFromJson(Map<String, dynamic> json) =
   dish: NamedItemGetter.create(json['dish'] as String),
   speed: (json['speed'] as num).toDouble(),
   ratio: (json['ratio'] as num?)?.toDouble() ?? 1.0,
-)..mod = Moddable.modId2ModFunc(json['mod'] as String);
+);

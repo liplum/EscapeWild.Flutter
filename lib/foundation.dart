@@ -63,24 +63,6 @@ class Measurement {
 
 final yamlAssetsLoader = YamlAssetLoader();
 final isGameLoaded = ValueNotifier(false);
-var isGameContentLoaded = false;
-
-Future<void> loadGameContent() async {
-  // load vanilla
-  await Vanilla.instance.load();
-  isGameContentLoaded = true;
-  _checkGameLoadState();
-}
-
-Future<void> onLocaleChange() async {
-  await Vanilla.instance.onLocaleChange();
-}
-
-void _checkGameLoadState() {
-  if (isGameContentLoaded) {
-    isGameLoaded.value = true;
-  }
-}
 
 Future<void> initPlayer() async {
   await player.init();

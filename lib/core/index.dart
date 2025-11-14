@@ -19,7 +19,6 @@ export 'hardness/hardness.dart';
 export 'item/item.dart';
 export 'item/continuous/continuous.dart';
 export 'explore.dart';
-export 'mod/mod.dart';
 export 'data_class.dart';
 export 'player.dart';
 export 'route/route.dart';

@@ -18,12 +18,12 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
   final Ts cookingTime;
 
   TimedCookRecipe(super.name, {required this.ingredients, required this.dishes, required this.cookingTime}) {
-    assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
+    assert(ingredients.isNotEmpty, "Ingredients of $name is empty.");
     assert(
       ingredients.length <= CookRecipeProtocol.maxIngredient,
-      "Ingredients of $registerName is > ${CookRecipeProtocol.maxIngredient}.",
+      "Ingredients of $name is > ${CookRecipeProtocol.maxIngredient}.",
     );
-    assert(dishes.isNotEmpty, "Outputs of $registerName is empty.");
+    assert(dishes.isNotEmpty, "Outputs of $name is empty.");
   }
 
   factory TimedCookRecipe.fromJson(Map<String, dynamic> json) => _$TimedCookRecipeFromJson(json);
@@ -63,7 +63,7 @@ class TimedCookRecipe extends CookRecipeProtocol implements JConvertibleProtocol
     final rest = Set.of(inputs);
     for (final ingredient in ingredients) {
       final matched = rest.firstWhereOrNull((input) => isMatched(input, ingredient));
-      assert(matched != null, "$inputs should match $registerName in $updateCooking");
+      assert(matched != null, "$inputs should match $name in $updateCooking");
       if (matched == null) return false;
       rest.remove(matched);
       if (matched.meta.mergeable) {

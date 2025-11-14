@@ -18,12 +18,10 @@ Map<String, dynamic> _$SubtropicsLevelToJson(SubtropicsLevel instance) => <Strin
 };
 
 SubtropicsRoute _$SubtropicsRouteFromJson(Map<String, dynamic> json) => SubtropicsRoute(json['name'] as String)
-  ..mod = Moddable.modId2ModFunc(json['mod'] as String)
   ..places = _placesFromJson(json['places'])
   ..routeProgress = (json['routeProgress'] as num).toDouble();
 
 Map<String, dynamic> _$SubtropicsRouteToJson(SubtropicsRoute instance) => <String, dynamic>{
-  'mod': Moddable.mod2ModIdFunc(instance.mod),
   'name': instance.name,
   'places': instance.places,
   'routeProgress': instance.routeProgress,

@@ -8,8 +8,7 @@ typedef ValueFixer = double Function(double raw);
 typedef RandomGetter<T> = T Function(Random rand);
 
 /// TODO: Add to [Contents].
-class Hardness with Moddable, TagsMixin {
-  @override
+class Hardness with TagsMixin {
   final String name;
   final ValueFixer attrCostFix;
   final ValueGetter<Times> maxFireMakingPrompt;
@@ -26,9 +25,9 @@ class Hardness with Moddable, TagsMixin {
     required this.resourceIntensity,
   });
 
-  String localizedName() => I18n["hardness.$name.name"];
+  String localizedName() => i18n("hardness.$name.name");
 
-  String localizedDesc() => I18n["hardness.$name.desc"];
+  String localizedDesc() => i18n("hardness.$name.desc");
   static final Hardness easy = Hardness(
     name: "easy",
     attrCostFix: (e) => e * Rand.f(0.5, 0.8),

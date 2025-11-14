@@ -47,9 +47,8 @@ extension NamedItemGetterX on String {
 /// ## When [isContainer] is true
 /// It means the item is a container, and [mass] stands for the weight of container itself.
 ///
-class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
+class Item with TagsMixin, CompMixin<ItemComp> {
   static final empty = Item("empty", mergeable: true, mass: 0);
-  @override
   final String name;
 
   /// Unit: [g] gram.
@@ -99,13 +98,13 @@ class Item with Moddable, TagsMixin, CompMixin<ItemComp> {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! Item || other.runtimeType != runtimeType) return false;
-    return mod == other.mod && name == other.name;
+    return name == other.name;
   }
 
   @override
-  int get hashCode => registerName.hashCode;
+  int get hashCode => name.hashCode;
 
-  static String getName(Item item) => item.registerName;
+  static String getName(Item item) => item.name;
 }
 
 extension ItemX on Item {

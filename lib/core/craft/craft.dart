@@ -4,8 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'craft.g.dart';
 
-class CraftType with Moddable {
-  @override
+class CraftType {
   final String name;
 
   CraftType(this.name);
@@ -27,8 +26,7 @@ class CraftType with Moddable {
   int get hashCode => name.hashCode;
 }
 
-class CraftRecipeCat with Moddable {
-  @override
+class CraftRecipeCat {
   final String name;
 
   CraftRecipeCat(this.name);
@@ -61,12 +59,11 @@ String _craftType2Name(CraftType craftType) => craftType.name;
 
 typedef ItemStackConsumeReceiver = void Function(ItemStack item, int? mass);
 
-abstract class CraftRecipeProtocol with Moddable {
+abstract class CraftRecipeProtocol {
   @JsonKey(fromJson: CraftRecipeCat.named, toJson: _cat2Name)
   final CraftRecipeCat cat;
   @JsonKey(fromJson: CraftType.named, toJson: _craftType2Name)
   final CraftType craftType;
-  @override
   @JsonKey()
   final String name;
 
@@ -115,7 +112,7 @@ class TagCraftRecipe extends CraftRecipeProtocol implements JConvertibleProtocol
     this.outputMass,
     required this.output,
   }) {
-    assert(ingredients.isNotEmpty, "Ingredients of $registerName is empty.");
+    assert(ingredients.isNotEmpty, "Ingredients of $name is empty.");
     for (final ingredient in ingredients) {
       inputSlots.add(
         ItemMatcher(
