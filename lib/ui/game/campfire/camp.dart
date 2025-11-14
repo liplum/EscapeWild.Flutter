@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:escape_wild/generated/icons.dart';
 import 'package:flutter/material.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 import 'campfire.dart';
 import '../shelter/shelter.dart';
@@ -48,11 +48,11 @@ class _CampPageState extends State<CampPage> with TickerProviderStateMixin {
             controller: _tabController,
             tabs: [
               Tab(
-                icon: const Icon(IconsX.camping_outlined),
+                icon: const Icon(TablerIcons.home),
                 text: !showTabLabel ? null : _I.shelterTitle,
               ),
               Tab(
-                icon: const Icon(Icons.local_fire_department_outlined),
+                icon: const Icon(TablerIcons.campfire),
                 text: !showTabLabel ? null : _I.campfireTitle,
               ),
             ],
