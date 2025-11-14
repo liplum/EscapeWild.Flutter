@@ -109,42 +109,20 @@ attribute:
   energy: 体力
 action:
   # Move forward
-  move:
-    name: 移动 # no direction specified
-    left: 向左移动
-    right: 向右移动
-    up: 向上移动
-    down: 向下移动
-    forward: 向前移动
-    backward: 向后移动
+  move: 移动
   # Explore the surroundings
-  explore:
-    name: 探索
-  gather:
-    name: 采集
-    get-water: 取水
-    get-wood: 伐木
-    get-food: 觅食
-  hunt:
-    name: 打猎
-    trap: 带上陷阱
-    gun: 带上猎枪
-    # Go fishing
-  fish:
-    name: 捕鱼
+  explore: 探索
+  gather: 采集
+  get-water: 取水
+  get-wood: 伐木
+  get-food: 觅食
+  hunt: 打猎
+  fish: 捕鱼
   # When player win the game
-  escape-wild:
-    name: 逃离荒野
+  escape-wild: 逃离荒野
   # When player lose the game
-  stop-heartbeat:
-    name: 将死之人
-  shelter:
-    name: 休息
-    sleep-till-tomorrow: 睡到明天
-    # Reinforce the shelter
-    reinforce: 加固避难所
-    # Have a rest
-    rest: 休息
+  stop-heartbeat: 将死之人
+  shelter: 休息
 use-type:
   use: 使用
   eat: 食用

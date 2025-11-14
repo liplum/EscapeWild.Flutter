@@ -19,6 +19,7 @@ void main() async {
     await Hive.initFlutter(R.hiveDir);
   }
   await DB.init();
+  loadVanilla();
   registerConverter();
   initPreference();
   runApp(const EscapeWildApp().withEasyLocalization());
