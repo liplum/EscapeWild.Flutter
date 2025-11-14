@@ -601,12 +601,12 @@ class ItemStackSlot with ChangeNotifier {
   }
 
   void reset() {
-    stack = ItemStack.empty;
+    stack = .empty;
   }
 
   void resetIfEmpty() {
     if (stack.isEmpty) {
-      stack = ItemStack.empty;
+      stack = .empty;
     }
   }
 
@@ -865,7 +865,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
           : () async {
               await onSelectItemStack(stack, delegate);
             },
-      child: ItemStackCell(stack, theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha)),
+      child: ItemStackCell(stack, theme: .new(opacity: accepted ? 1.0 : R.disabledAlpha)),
     );
   }
 
@@ -944,9 +944,9 @@ class _DurationStepperState extends State<DurationStepper> {
   Widget buildBody(Ts ts) {
     return [
       buildStepper(isLeft: true),
-      I.ts(ts).toUpperCase().text(style: context.textTheme.headlineSmall, textAlign: TextAlign.end),
+      I.ts(ts).toUpperCase().text(style: context.textTheme.headlineSmall, textAlign: .end),
       buildStepper(isLeft: false),
-    ].row(maa: MainAxisAlignment.spaceEvenly);
+    ].row(maa: .spaceEvenly);
   }
 
   Widget buildStepper({required bool isLeft}) {
