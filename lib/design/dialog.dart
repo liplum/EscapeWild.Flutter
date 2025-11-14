@@ -292,7 +292,7 @@ class $Dialog$ extends StatelessWidget {
     } else {
       // For other platform
       dialog = AlertDialog(
-        backgroundColor: context.theme.dialogBackgroundColor,
+        backgroundColor: context.theme.dialogTheme.backgroundColor,
         title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: destructive ? context.$red$ : null)),
         content: builder(context),
         actions: [

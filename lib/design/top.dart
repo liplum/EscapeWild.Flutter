@@ -178,10 +178,10 @@ class Top extends StatelessWidget {
   final bool global;
 
   const Top({
-    Key? key,
+    super.key,
     required this.child,
     this.global = true,
-  }) : super(key: key);
+  });
 
   const Top.global({
     super.key,
@@ -275,9 +275,9 @@ class _LocalTop extends StatefulWidget {
   final Widget child;
 
   const _LocalTop({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   _LocalTopState createState() => _LocalTopState();

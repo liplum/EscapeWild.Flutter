@@ -15,7 +15,7 @@ class R {
     frLocale,
   ];
   static const debugMode = kDebugMode;
-  static const packageName = "net.liplum.escape_wild.flutter";
+  static const packageName = "net.liplum.escape_wild";
   static late final String appDir;
   static late final String tmpDir;
 

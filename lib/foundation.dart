@@ -34,7 +34,7 @@ class Measurement {
 
   static var mass = UnitConverter.gram;
 
-  static reload() {
+  static void reload() {
     Measurement.mass = UnitConverter.getMassForName(DB.preference.getMeasurementSystemOf(PhysicalQuantity.mass.name));
   }
 

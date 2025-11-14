@@ -16,7 +16,7 @@ extension ColorX on Color {
   }
 
   static Color mergeColors(Color a, double fa, Color b, double fb) {
-    final $a = a.opacity * b.opacity;
+    final $a = a.a * b.a;
     final $r = (fa * a.red + fb * b.red) / (fa + fb);
     final $g = (fa * a.green + fb * b.green) / (fa + fb);
     final $b = (fa * a.blue + fb * b.blue) / (fa + fb);

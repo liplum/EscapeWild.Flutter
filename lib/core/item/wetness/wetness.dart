@@ -112,7 +112,7 @@ class ContinuousModifyWetnessComp extends ItemComp {
     modify(stack, delta, deltaPerMinute);
   }
 
-  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute) {
+  static void modify(ItemStack stack, Ts timePassed, double deltaPerMinute) {
     final totalDelta = deltaPerMinute * timePassed.minutes;
     final comp = WetnessComp.of(stack);
     if (comp != null) {

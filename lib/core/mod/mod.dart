@@ -33,10 +33,10 @@ class Mod implements ModProtocol {
 
   Mod(this.modId);
 
-  var _key2Translated = <String, String>{};
+  final _key2Translated = <String, String>{};
 
   /// Used when key not found in current locale.
-  var _fallbackKey2Translated = <String, String>{};
+  final _fallbackKey2Translated = <String, String>{};
 
   @override
   String decorateRegisterName(String name) => "$modId-$name";

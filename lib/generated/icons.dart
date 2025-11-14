@@ -4,9 +4,8 @@ import 'package:flutter/widgets.dart';
 
 @immutable
 class _IconsXData extends IconData {
-  const _IconsXData(int codePoint)
+  const _IconsXData(super.codePoint)
       : super(
-          codePoint,
           fontFamily: 'IconsX',
         );
 }

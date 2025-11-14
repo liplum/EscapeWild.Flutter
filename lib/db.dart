@@ -16,9 +16,9 @@ class DBImpl {
 
   String? getGameSave({int slot = 0}) => $gameSave.get(slot);
 
-  setGameSave(String save, {int slot = 0}) => $gameSave.put(slot, save);
+  Future<void> setGameSave(String save, {int slot = 0}) => $gameSave.put(slot, save);
 
-  deleteGameSave({int slot = 0}) => $gameSave.delete(slot);
+  Future<void> deleteGameSave({int slot = 0}) => $gameSave.delete(slot);
 }
 
 class Preference {

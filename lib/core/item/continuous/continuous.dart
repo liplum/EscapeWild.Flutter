@@ -66,7 +66,7 @@ class ContinuousModifyMassComp extends ItemComp {
     modify(stack, delta, deltaPerMinute);
   }
 
-  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute) {
+  static void modify(ItemStack stack, Ts timePassed, double deltaPerMinute) {
     final totalDelta = deltaPerMinute * timePassed.minutes;
     if (stack.meta.mergeable) {
       stack.mass = stack.stackMass + totalDelta.toInt();

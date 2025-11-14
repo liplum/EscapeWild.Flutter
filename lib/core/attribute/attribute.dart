@@ -85,9 +85,9 @@ abstract class AttributeManagerProtocol {
 }
 
 extension AttributeManagerProtocolX on AttributeManagerProtocol {
-  operator [](Attr attr) => getAttr(attr);
+  double operator [](Attr attr) => getAttr(attr);
 
-  operator []=(Attr attr, double value) => setAttr(attr, value);
+  void operator []=(Attr attr, double value) => setAttr(attr, value);
 
   double get health => this[Attr.health];
 
@@ -312,5 +312,5 @@ class AttrModifierBuilder {
 }
 
 extension AttrModifierBuilderX on AttrModifierBuilder {
-  operator <<(AttrModifier modifier) => add(modifier);
+  void operator <<(AttrModifier modifier) => add(modifier);
 }

@@ -142,7 +142,7 @@ class ContinuousModifyFreshnessComp extends ItemComp {
     modify(stack, delta, deltaPerMinute, wetFactor: wetFactor);
   }
 
-  static modify(ItemStack stack, Ts timePassed, double deltaPerMinute, {double wetFactor = 0.0}) {
+  static void modify(ItemStack stack, Ts timePassed, double deltaPerMinute, {double wetFactor = 0.0}) {
     var totalDelta = deltaPerMinute * timePassed.minutes;
     final comp = FreshnessComp.of(stack);
     if (comp != null) {
