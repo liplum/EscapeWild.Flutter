@@ -39,11 +39,11 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
         supportedLocales: context.supportedLocales,
         locale: context.locale,
         theme: buildTheme(ThemeData(
-          brightness: Brightness.light,
+          brightness: .light,
           colorSchemeSeed: Colors.yellow,
         )),
         darkTheme: buildTheme(ThemeData(
-          brightness: Brightness.dark,
+          brightness: .dark,
           colorSchemeSeed: Colors.green,
         )),
         builder: (ctx, child) => _PostServiceRunner(
@@ -57,7 +57,7 @@ class _EscapeWildAppState extends State<EscapeWildApp> {
     return raw.copyWith(
       cardTheme: raw.cardTheme.copyWith(
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderRadius: .all(.circular(14)),
         ),
       ),
       navigationBarTheme: raw.navigationBarTheme.copyWith(

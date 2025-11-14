@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:platform_safe_func/platform_safe_func.dart';
 import 'package:rettulf/rettulf.dart';
 
@@ -13,37 +12,18 @@ extension ColorEx on BuildContext {
 }
 
 extension DialogEx on BuildContext {
-  Future<T?> showSheet<T>(
-    WidgetBuilder builder, {
-    bool dismissible = true,
-    bool fullScreen = true,
-    bool useRootNavigator = true,
-  }) async {
+  Future<T?> showSheet<T>(WidgetBuilder builder) async {
     if (isCupertino) {
-      return await showCupertinoModalBottomSheet<T>(
-        context: this,
-        expand: fullScreen,
-        builder: builder,
-        animationCurve: Curves.fastEaseInToSlowEaseOut,
-        isDismissible: dismissible,
-        enableDrag: dismissible,
-        useRootNavigator: useRootNavigator,
-      );
+      return await showCupertinoSheet(context: this, builder: builder);
     } else {
-      // dismissible not working with CustomScrollView
-      // see https://github.com/flutter/flutter/issues/36283
-      var enableDrag = dismissible;
-      var showDragHandle = enableDrag;
       return await showModalBottomSheet<T>(
         context: this,
         builder: builder,
-        isDismissible: dismissible,
-        isScrollControlled: fullScreen,
         useSafeArea: true,
-        // It's a workaround
-        showDragHandle: showDragHandle,
-        enableDrag: enableDrag,
-        useRootNavigator: useRootNavigator,
+        showDragHandle: true,
+        enableDrag: true,
+        isScrollControlled: true,
+        useRootNavigator: true,
       );
     }
   }
@@ -94,16 +74,17 @@ extension DialogEx on BuildContext {
       barrierDismissible: dismissible,
       context: this,
       builder: (ctx) => $Dialog$(
-          title: title,
-          destructive: destructive,
-          builder: desc,
-          primary: $Action$(
-            warning: primaryDestructive,
-            text: primary,
-            onPressed: () {
-              ctx.navigator.pop(true);
-            },
-          )),
+        title: title,
+        destructive: destructive,
+        builder: desc,
+        primary: $Action$(
+          warning: primaryDestructive,
+          text: primary,
+          onPressed: () {
+            ctx.navigator.pop(true);
+          },
+        ),
+      ),
     );
     return confirm == true;
   }
@@ -235,12 +216,7 @@ class $Action$ {
   final bool warning;
   final VoidCallback? onPressed;
 
-  const $Action$({
-    required this.text,
-    this.onPressed,
-    this.isDefault = false,
-    this.warning = false,
-  });
+  const $Action$({required this.text, this.onPressed, this.isDefault = false, this.warning = false});
 }
 
 class $Dialog$ extends StatelessWidget {
@@ -267,7 +243,9 @@ class $Dialog$ extends StatelessWidget {
     final second = secondary;
     if (isCupertino) {
       dialog = CupertinoAlertDialog(
-        title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: destructive ? context.$red$ : null)),
+        title: title?.text(
+          style: TextStyle(fontWeight: FontWeight.w600, color: destructive ? context.$red$ : null),
+        ),
         content: builder(context),
         actions: [
           if (second != null)
@@ -286,14 +264,16 @@ class $Dialog$ extends StatelessWidget {
               primary.onPressed?.call();
             },
             child: primary.text.text(),
-          )
+          ),
         ],
       );
     } else {
       // For other platform
       dialog = AlertDialog(
         backgroundColor: context.theme.dialogTheme.backgroundColor,
-        title: title?.text(style: TextStyle(fontWeight: FontWeight.w600, color: destructive ? context.$red$ : null)),
+        title: title?.text(
+          style: TextStyle(fontWeight: FontWeight.w600, color: destructive ? context.$red$ : null),
+        ),
         content: builder(context),
         actions: [
           if (second != null)
@@ -309,15 +289,16 @@ class $Dialog$ extends StatelessWidget {
               ),
             ),
           TextButton(
-              onPressed: () {
-                primary.onPressed?.call();
-              },
-              child: primary.text.text(
-                style: TextStyle(
-                  color: primary.warning ? context.$red$ : null,
-                  fontWeight: primary.isDefault ? FontWeight.w600 : null,
-                ),
-              )),
+            onPressed: () {
+              primary.onPressed?.call();
+            },
+            child: primary.text.text(
+              style: TextStyle(
+                color: primary.warning ? context.$red$ : null,
+                fontWeight: primary.isDefault ? FontWeight.w600 : null,
+              ),
+            ),
+          ),
         ],
       );
     }

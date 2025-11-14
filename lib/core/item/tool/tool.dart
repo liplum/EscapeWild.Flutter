@@ -10,20 +10,11 @@ class ToolAttr implements Comparable<ToolAttr> {
 
   const ToolAttr({required this.efficiency});
 
-  static const //
-
-      low = ToolAttr(
-        efficiency: 0.6,
-      ),
-      normal = ToolAttr(
-        efficiency: 1.0,
-      ),
-      high = ToolAttr(
-        efficiency: 1.8,
-      ),
-      max = ToolAttr(
-        efficiency: 2.0,
-      );
+  static const ToolAttr //
+  low = .new(efficiency: 0.6),
+      normal = .new(efficiency: 1.0),
+      high = .new(efficiency: 1.8),
+      max = .new(efficiency: 2.0);
 
   factory ToolAttr.fromJson(Map<String, dynamic> json) => _$ToolAttrFromJson(json);
 
@@ -52,25 +43,31 @@ class ToolType with Moddable {
   factory ToolType.fromJson(String name) => ToolType(name);
 
   String toJson() => name;
-  static final //
-
+  static final ToolType //
       /// Use to cut materials
-      cutting = ToolType("cutting"),
-
+      cutting = .new(
+        "cutting",
+      ),
       /// Use to cut down tree
-      axe = ToolType("axe"),
-
+      axe = .new(
+        "axe",
+      ),
       /// Use to hunt
-      trap = ToolType("trap"),
-
+      trap = .new(
+        "trap",
+      ),
       /// Use to hunt
-      gun = ToolType("gun"),
-
+      gun = .new(
+        "gun",
+      ),
       /// Use to fish
-      fishing = ToolType("fishing"),
-
+      fishing = .new(
+        "fishing",
+      ),
       /// Use to light
-      lighting = ToolType("lighting");
+      lighting = .new(
+        "lighting",
+      );
 
   String l10nName() => i18n("tool-type.$name");
 
@@ -93,10 +90,7 @@ class ToolComp extends ItemComp {
   @JsonKey(fromJson: ToolType.fromJson)
   final ToolType toolType;
 
-  const ToolComp({
-    this.attr = ToolAttr.normal,
-    required this.toolType,
-  });
+  const ToolComp({this.attr = .normal, required this.toolType});
 
   void damageTool(ItemStack item, double damage) {
     final durabilityComp = DurabilityComp.of(item);
@@ -145,14 +139,8 @@ class ToolComp extends ItemComp {
 }
 
 extension ToolCompX on Item {
-  Item asTool({
-    required ToolType type,
-    ToolAttr attr = ToolAttr.normal,
-  }) {
-    final comp = ToolComp(
-      attr: attr,
-      toolType: type,
-    );
+  Item asTool({required ToolType type, ToolAttr attr = ToolAttr.normal}) {
+    final comp = ToolComp(attr: attr, toolType: type);
     comp.validateItemConfigIfDebug(this);
     addComp(comp);
     return this;

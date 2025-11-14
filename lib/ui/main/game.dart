@@ -33,8 +33,8 @@ class _GamePageState extends State<GamePage> {
       [
         buildNewGameBtn(),
         buildContinueGameBtn(),
-      ].column(maa: MainAxisAlignment.center, caa: CrossAxisAlignment.stretch).constrained(maxW: 220),
-    ].column(maa: MainAxisAlignment.spaceEvenly, caa: CrossAxisAlignment.center).center();
+      ].column(maa: .center, caa: .stretch).constrained(maxW: 220),
+    ].column(maa: .spaceEvenly, caa: .center).center();
   }
 
   Widget buildTitle() {

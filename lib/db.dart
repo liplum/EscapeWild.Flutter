@@ -7,7 +7,7 @@ class DBImpl {
   DBImpl._();
 
   late final Box<String> $gameSave;
-  final Preference preference = Preference();
+  final preference = Preference();
 
   Future<void> init() async {
     $gameSave = await Hive.openBox("GameSave");
@@ -26,5 +26,5 @@ class Preference {
 
   String? getMeasurementSystemOf(String name) => box.get("measurement-system.$name");
 
-  setMeasurementSystemOf(String name, String? v) => box.put("measurement-system.$name", v);
+  Future<void> setMeasurementSystemOf(String name, String? v) => box.put("measurement-system.$name", v);
 }

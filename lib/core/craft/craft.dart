@@ -14,7 +14,7 @@ class CraftType with Moddable {
 
   String l10nName() => i18n("craft-type.$name");
 
-  static final CraftType craft = CraftType("craft"), repair = CraftType("repair"), process = CraftType("process");
+  static final CraftType craft = .new("craft"), repair = .new("repair"), process = .new("process");
 
   @override
   bool operator ==(Object other) {
@@ -35,12 +35,12 @@ class CraftRecipeCat with Moddable {
 
   CraftRecipeCat.named(this.name);
 
-  static final CraftRecipeCat tool = CraftRecipeCat("tool"),
-      survival = CraftRecipeCat("survival"),
-      food = CraftRecipeCat("food"),
-      fire = CraftRecipeCat("fire"),
-      refine = CraftRecipeCat("refine"),
-      medical = CraftRecipeCat("medical");
+  static final CraftRecipeCat tool = .new("tool"),
+      survival = .new("survival"),
+      food = .new("food"),
+      fire = .new("fire"),
+      refine = .new("refine"),
+      medical = .new("medical");
 
   String l10nName() => i18n("craft-recipe-cat.$name");
 

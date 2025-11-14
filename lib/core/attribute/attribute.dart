@@ -41,24 +41,14 @@ class AttrModel {
     this.energy = AttrModel.maxValue,
   });
 
-  const AttrModel.all(Progress v)
-      : health = v,
-        food = v,
-        water = v,
-        energy = v;
+  const AttrModel.all(Progress v) : health = v, food = v, water = v, energy = v;
 
-  AttrModel copyWith({
-    Progress? health,
-    Progress? food,
-    Progress? water,
-    Progress? energy,
-  }) =>
-      AttrModel(
-        health: health ?? this.health,
-        food: food ?? this.food,
-        water: water ?? this.water,
-        energy: energy ?? this.energy,
-      );
+  AttrModel copyWith({Progress? health, Progress? food, Progress? water, Progress? energy}) => AttrModel(
+    health: health ?? this.health,
+    food: food ?? this.food,
+    water: water ?? this.water,
+    energy: energy ?? this.energy,
+  );
 }
 
 extension AttrModelX on AttrModel {
@@ -89,21 +79,21 @@ extension AttributeManagerProtocolX on AttributeManagerProtocol {
 
   void operator []=(Attr attr, double value) => setAttr(attr, value);
 
-  double get health => this[Attr.health];
+  double get health => this[.health];
 
-  set health(double value) => this[Attr.health] = value;
+  set health(double value) => this[.health] = value;
 
-  double get food => this[Attr.food];
+  double get food => this[.food];
 
-  set food(double value) => this[Attr.food] = value;
+  set food(double value) => this[.food] = value;
 
-  double get water => this[Attr.water];
+  double get water => this[.water];
 
-  set water(double value) => this[Attr.water] = value;
+  set water(double value) => this[.water] = value;
 
-  double get energy => this[Attr.energy];
+  double get energy => this[.energy];
 
-  set energy(double value) => this[Attr.energy] = value;
+  set energy(double value) => this[.energy] = value;
 }
 
 class AttributeManagerListenable with AttributeManagerMixin, ChangeNotifier implements AttributeManagerProtocol {
@@ -168,13 +158,13 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
       if (after < 0) {
         var underflow = after.abs();
         switch (attr) {
-          case Attr.food:
-          case Attr.water:
-          case Attr.energy:
+          case .food:
+          case .water:
+          case .energy:
             setAttr(attr, 0);
-            setAttr(Attr.health, getAttr(Attr.health) - underflow * underflowPunishmentRadio);
+            setAttr(.health, getAttr(.health) - underflow * underflowPunishmentRadio);
             break;
-          case Attr.health:
+          case .health:
             setAttr(attr, after);
             break;
         }
@@ -188,17 +178,17 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   void setAttr(Attr attr, double value) {
     value = max(0.0, value);
     switch (attr) {
-      case Attr.health:
+      case .health:
         value = min(value, 1);
         if (attrs.health != value) attrs = attrs.copyWith(health: value);
         break;
-      case Attr.food:
+      case .food:
         if (attrs.food != value) attrs = attrs.copyWith(food: value);
         break;
-      case Attr.water:
+      case .water:
         if (attrs.water != value) attrs = attrs.copyWith(water: value);
         break;
-      case Attr.energy:
+      case .energy:
         if (attrs.energy != value) attrs = attrs.copyWith(energy: value);
         break;
     }
@@ -207,11 +197,11 @@ mixin AttributeManagerMixin implements AttributeManagerProtocol {
   @override
   double getAttr(Attr attr) {
     switch (attr) {
-      case Attr.food:
+      case .food:
         return attrs.food;
-      case Attr.water:
+      case .water:
         return attrs.water;
-      case Attr.health:
+      case .health:
         return attrs.health;
       default:
         return attrs.energy;
@@ -255,14 +245,7 @@ class AttrModifier {
     }
   }
 
-  AttrModifier copyWith({
-    Attr? attr,
-    double? delta,
-  }) =>
-      AttrModifier(
-        attr ?? this.attr,
-        delta ?? this.delta,
-      );
+  AttrModifier copyWith({Attr? attr, double? delta}) => AttrModifier(attr ?? this.attr, delta ?? this.delta);
 
   @override
   bool operator ==(Object other) {

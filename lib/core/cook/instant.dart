@@ -23,10 +23,10 @@ class InstantConvertCookRecipe extends CookRecipeProtocol implements JConvertibl
   /// If [output] is mergeable, cooking will create [outputMass] amount of [output].
   final int? outputMass;
   static const Set<ItemProp> kKeptProps = {
-    ItemProp.mass,
-    ItemProp.wetness,
-    ItemProp.durability,
-    ItemProp.freshness,
+    .mass,
+    .wetness,
+    .durability,
+    .freshness,
   };
   @JsonKey()
   final Set<ItemProp> keptProps;
@@ -81,21 +81,21 @@ class InstantConvertCookRecipe extends CookRecipeProtocol implements JConvertibl
   void _bakeOutput(ItemStack input, ItemStack output) {
     for (final prop in keptProps) {
       switch (prop) {
-        case ItemProp.wetness:
+        case .wetness:
           final inputComp = WetnessComp.of(input);
           final outputComp = WetnessComp.of(output);
           if (inputComp != null && outputComp != null) {
             outputComp.setWetness(output, inputComp.getWetness(input));
           }
           break;
-        case ItemProp.durability:
+        case .durability:
           final inputComp = DurabilityComp.of(input);
           final outputComp = DurabilityComp.of(output);
           if (inputComp != null && outputComp != null) {
             outputComp.setDurability(output, inputComp.getDurability(input));
           }
           break;
-        case ItemProp.freshness:
+        case .freshness:
           final inputComp = FreshnessComp.of(input);
           final outputComp = FreshnessComp.of(output);
           if (inputComp != null && outputComp != null) {

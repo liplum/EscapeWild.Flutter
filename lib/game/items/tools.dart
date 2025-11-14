@@ -35,12 +35,12 @@ class Tools {
     // axe
     Contents.items.addAll([
       oldAxe = Item.unmergeable("old-axe", mass: 3000)
-          .asTool(type: ToolType.axe, attr: ToolAttr.normal)
+          .asTool(type: .axe, attr: .normal)
           .hasDurability(max: 300.0),
       stoneAxe = Item.unmergeable("stone-axe", mass: 1500)
           .asTool(
-            type: ToolType.axe,
-            attr: ToolAttr.low,
+            type: .axe,
+            attr: .low,
           )
           .hasDurability(max: 100.0)
     ]);
@@ -48,8 +48,8 @@ class Tools {
     Contents.items.addAll([
       oldFishRod = Item.unmergeable("old-fish-rod", mass: 500)
           .asTool(
-            type: ToolType.fishing,
-            attr: ToolAttr.normal,
+            type: .fishing,
+            attr: .normal,
           )
           .hasDurability(max: 300.0)
     ]);
@@ -57,8 +57,8 @@ class Tools {
     Contents.items.addAll([
       oldShotgun = Item.unmergeable("old-shotgun", mass: 3000)
           .asTool(
-            type: ToolType.gun,
-            attr: ToolAttr.low,
+            type: .gun,
+            attr: .low,
           )
           .hasDurability(max: 300.0)
     ]);
@@ -66,8 +66,8 @@ class Tools {
     Contents.items.addAll([
       bearTrap = Item.unmergeable("bear-trap", mass: 2000)
           .asTool(
-            type: ToolType.trap,
-            attr: ToolAttr.high,
+            type: .trap,
+            attr: .high,
           )
           .hasDurability(max: 100.0)
     ]);
@@ -88,7 +88,7 @@ class Tools {
       // cook to ignite it.
       unlitTorch = Item.unmergeable("unlit-torch", mass: 1500).tagged(["cookable"]),
       litTorch = Item.unmergeable("lit-torch", mass: 1500)
-          .asTool(type: ToolType.lighting, attr: ToolAttr.normal)
+          .asTool(type: .lighting, attr: .normal)
           .hasDurability(max: 1000) // it can last 2 hours
           .continuousModifyDurability(deltaPerMinute: 8, wetFactor: 10)
           .asFireStarter(chance: 1.0, cost: 0, consumeSelfAfterBurning: false),

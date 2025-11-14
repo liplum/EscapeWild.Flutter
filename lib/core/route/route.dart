@@ -55,7 +55,7 @@ class RouteGenerateContext {
     Hardness? hardness,
   }) {
     this.mod = mod ?? Vanilla.instance;
-    this.hardness = hardness ?? Hardness.normal;
+    this.hardness = hardness ?? .normal;
   }
 }
 
@@ -78,17 +78,17 @@ extension PlaceProps on PlaceProtocol {
 mixin PlaceActionDelegateMixin on PlaceProtocol {
   @override
   Future<void> performAction(UserAction action) async {
-    if (action == UserAction.explore) {
+    if (action == .explore) {
       await performExplore();
-    } else if (action == UserAction.move) {
+    } else if (action == .move) {
       await performMove(action);
-    } else if (action == UserAction.gather) {
+    } else if (action == .gather) {
       await performGather(action);
-    } else if (action == UserAction.fish) {
+    } else if (action == .fish) {
       await performFish();
-    } else if (action == UserAction.shelter) {
+    } else if (action == .shelter) {
       await performShelter(action);
-    } else if (action == UserAction.hunt) {
+    } else if (action == .hunt) {
       await performHunt(action);
     } else {
       await performOthers(action);

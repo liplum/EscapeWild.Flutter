@@ -144,7 +144,7 @@ class _MeasurementSelectorPageState extends State<MeasurementSelectorPage> {
     final all = <Widget>[];
     // mass
     all.add(MeasurementSelection(
-      quantity: PhysicalQuantity.mass,
+      quantity: .mass,
       candidates: UnitConverter.name2Cvt$Mass.values.toList(),
       selected: Measurement.mass,
       example: 1000,

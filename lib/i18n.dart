@@ -137,7 +137,7 @@ class _UnitConverterImpl extends UnitConverter {
     String name,
     this.converter, {
     this.maxTrailingZero = 2,
-  }) : super(PhysicalQuantity.mass, name);
+  }) : super(.mass, name);
 
   @override
   num convertToNum(int gram) => converter(gram);

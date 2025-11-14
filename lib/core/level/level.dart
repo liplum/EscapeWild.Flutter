@@ -35,7 +35,7 @@ class _EmptyLevelMeta extends LevelMetaProtocol {
   _EmptyLevelMeta() : super("empty");
 
   @override
-  LevelProtocol create() => LevelProtocol.empty;
+  LevelProtocol create() => .empty;
 }
 
 class _EmptyLevel extends LevelProtocol {
@@ -61,7 +61,7 @@ class _EmptyLevel extends LevelProtocol {
   }
 
   @override
-  Hardness get hardness => Hardness.normal;
+  Hardness get hardness => .normal;
 
   @override
   void onRestore() {}

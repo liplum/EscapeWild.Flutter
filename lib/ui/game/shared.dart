@@ -122,7 +122,7 @@ class ItemCell extends StatelessWidget {
       item.l10nName(),
       maxLines: 2,
       style: theme.nameStyle ?? context.textTheme.titleMedium,
-      textAlign: TextAlign.center,
+      textAlign: .center,
     ).opacity(theme.$opacity).center();
   }
 }
@@ -213,9 +213,9 @@ class ItemStackCell extends StatelessWidget {
         stack.meta.l10nName(),
         maxLines: 2,
         style: theme.nameStyle ?? context.textTheme.titleMedium,
-        textAlign: TextAlign.center,
+        textAlign: .center,
       ),
-      subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: TextAlign.right),
+      subtitle: !theme.$showMass ? null : I.massOf(stack.stackMass).text(textAlign: .right),
       dense: true,
       contentPadding: !theme.$showMass ? null : theme.$pad,
     ).opacity(theme.$opacity).center();
@@ -231,7 +231,7 @@ class ItemStackCell extends StatelessWidget {
         final durabilityBar = AttrProgress(
           value: ratio,
           color: durabilityComp.progressColor(stack, darkMode: ctx.isDarkMode),
-        ).opacity(theme.$progressBarOpacity * theme.$opacity).align(at: const Alignment(1.0, -0.86)).padH(5);
+        ).opacity(theme.$progressBarOpacity * theme.$opacity).align(at: const .new(1.0, -0.86)).padH(5);
         inStack.add(durabilityBar);
       }
     }
@@ -769,7 +769,7 @@ class BackpackSheet extends StatefulWidget {
     super.key,
     required this.matcher,
     this.delegate,
-    this.behavior = BackpackFilterDisplayBehavior.toggleable,
+    this.behavior = .toggleable,
   });
 
   @override
@@ -783,8 +783,8 @@ class _BackpackSheetState extends State<BackpackSheet> {
   bool toggleFilter = false;
 
   bool get showUnaccepted =>
-      widget.behavior == BackpackFilterDisplayBehavior.both ||
-      (widget.behavior == BackpackFilterDisplayBehavior.toggleable && !toggleFilter);
+      widget.behavior == .both ||
+      (widget.behavior == .toggleable && !toggleFilter);
 
   @override
   void initState() {
@@ -901,7 +901,7 @@ extension BackpackBuildContextX on BuildContext {
   Future<T?> showBackpackSheet<T>({
     required ItemMatcher matcher,
     BackpackSheetDelegate? delegate,
-    BackpackFilterDisplayBehavior behavior = BackpackFilterDisplayBehavior.toggleable,
+    BackpackFilterDisplayBehavior behavior = .toggleable,
   }) async {
     return await showCupertinoModalBottomSheet<T>(
       context: this,

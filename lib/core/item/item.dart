@@ -730,20 +730,20 @@ class ItemMatcher {
 
   static ItemMatcher hasTags(List<String> tags) => ItemMatcher(
         typeOnly: (item) => item.hasTags(tags),
-        exact: (item) => item.meta.hasTags(tags) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
+        exact: (item) => item.meta.hasTags(tags) ? .matched : .typeUnmatched,
       );
 
   static ItemMatcher hasAnyTag(List<String> tags) => ItemMatcher(
         typeOnly: (item) => item.hasAnyTag(tags),
-        exact: (item) => item.meta.hasAnyTag(tags) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
+        exact: (item) => item.meta.hasAnyTag(tags) ? .matched : .typeUnmatched,
       );
 
   static ItemMatcher hasComp(List<Type> compTypes) => ItemMatcher(
         typeOnly: (item) => item.hasComps(compTypes),
         exact: (item) =>
-            item.meta.hasComps(compTypes) ? ItemStackMatchResult.matched : ItemStackMatchResult.typeUnmatched,
+            item.meta.hasComps(compTypes) ? .matched : .typeUnmatched,
       );
-  static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => ItemStackMatchResult.matched);
+  static ItemMatcher any = ItemMatcher(typeOnly: (_) => true, exact: (_) => .matched);
 }
 
 extension ItemStackMatcherX on ItemStackMatcher {

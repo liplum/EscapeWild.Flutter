@@ -19,16 +19,16 @@ class ContinuousModifyItemPropComp extends ItemComp {
 
   void performModifier(ItemStack stack, Ts timePassed, ItemProp prop, double deltaPerMinute) {
     switch (prop) {
-      case ItemProp.mass:
+      case .mass:
         ContinuousModifyMassComp.modify(stack, timePassed, deltaPerMinute);
         break;
-      case ItemProp.wetness:
+      case .wetness:
         ContinuousModifyWetnessComp.modify(stack, timePassed, deltaPerMinute);
         break;
-      case ItemProp.durability:
+      case .durability:
         ContinuousModifyDurabilityComp.modify(stack, timePassed, deltaPerMinute);
         break;
-      case ItemProp.freshness:
+      case .freshness:
         ContinuousModifyFreshnessComp.modify(stack, timePassed, deltaPerMinute);
         break;
     }
