@@ -1,4 +1,5 @@
 import 'package:escape_wild/core/index.dart';
+import 'package:escape_wild/design/empty.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:noitcelloc/noitcelloc.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 import '../shared.dart';
 
@@ -21,10 +23,7 @@ class GameBackpackPage extends StatefulWidget {
 }
 
 Widget buildEmptyBackpack() {
-  return LeavingBlank(
-    icon: Icons.no_backpack_outlined,
-    desc: _I.emptyTip,
-  );
+  return Empty(icon: Icon(TablerIcons.backpack_off), title: _I.emptyTip);
 }
 
 class _GameBackpackPageState extends State<GameBackpackPage> {
@@ -93,15 +92,16 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      body: (player.backpack.isEmpty
-              ? buildEmptyBackpack()
-              : [
-                  ItemDetails(stack: selected),
-                  buildItems(player.backpack).expanded(),
-                  buildButtonArea(selected),
-                ].column(maa: MainAxisAlignment.spaceBetween))
-          .safeArea()
-          .padAll(5),
+      body:
+          (player.backpack.isEmpty
+                  ? buildEmptyBackpack()
+                  : [
+                      ItemDetails(stack: selected),
+                      buildItems(player.backpack).expanded(),
+                      buildButtonArea(selected),
+                    ].column(maa: MainAxisAlignment.spaceBetween))
+              .safeArea()
+              .padAll(5),
     );
   }
 
@@ -156,9 +156,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
         child: text
             .autoSizeText(
               maxLines: 1,
-              style: context.textTheme.headlineSmall?.copyWith(
-                color: color,
-              ),
+              style: context.textTheme.headlineSmall?.copyWith(color: color),
               textAlign: TextAlign.center,
             )
             .padAll(10),
@@ -177,12 +175,14 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
     final usableComps = item.meta.getCompsOf<UsableComp>();
     final useType = _matchBestUseType(usableComps);
     if (usableComps.isNotEmpty) {
-      buttons.add(btn(
-        useType.l10nName(),
-        onTap: () async {
-          await onUse(item, useType, usableComps);
-        },
-      ));
+      buttons.add(
+        btn(
+          useType.l10nName(),
+          onTap: () async {
+            await onUse(item, useType, usableComps);
+          },
+        ),
+      );
     } else {
       buttons.add(btn(UseType.use.l10nName(), onTap: null));
     }
@@ -197,10 +197,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
       $selectedMass.value = stack.stackMass;
       final confirmed = await context.showAnyRequest(
         title: _I.discardRequest,
-        builder: (_) => ItemStackMassSelector(
-          template: stack,
-          $selectedMass: $selectedMass,
-        ),
+        builder: (_) => ItemStackMassSelector(template: stack, $selectedMass: $selectedMass),
         primary: I.discard,
         secondary: I.cancel,
       );
@@ -231,10 +228,11 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
   Widget buildShowAttrPreviewToggle() {
     return $isShowAttrPreview >>
         (_, b) => Switch(
-            value: b,
-            onChanged: (newV) {
-              $isShowAttrPreview.value = newV;
-            });
+          value: b,
+          onChanged: (newV) {
+            $isShowAttrPreview.value = newV;
+          },
+        );
   }
 
   Future<void> onUse(ItemStack item, UseType useType, List<UsableComp> usableComps) async {
@@ -269,11 +267,8 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
         title: item.displayName(),
         // TODO: preview toggle
         // titleTrailing: buildShowAttrPreviewToggle(),
-        builder: (_) => UnmergeableItemStackUsePreview(
-          item: item,
-          comps: modifiers,
-          $isShowAttrPreview: $isShowAttrPreview,
-        ),
+        builder: (_) =>
+            UnmergeableItemStackUsePreview(item: item, comps: modifiers, $isShowAttrPreview: $isShowAttrPreview),
         primary: useType.l10nName(),
         secondary: I.cancel,
       );
@@ -323,10 +318,7 @@ UseType _matchBestUseType(Iterable<UsableComp> comps) {
 class ItemDetails extends StatefulWidget {
   final ItemStack stack;
 
-  const ItemDetails({
-    super.key,
-    required this.stack,
-  });
+  const ItemDetails({super.key, required this.stack});
 
   @override
   State<ItemDetails> createState() => _ItemDetailsState();
@@ -337,19 +329,12 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return [
-      buildTop(context),
-      buildBottom(context),
-    ].column().inCard(elevation: 4);
+    return [buildTop(context), buildBottom(context)].column().inCard(elevation: 4);
   }
 
   Widget buildTop(BuildContext ctx) {
     return Container(
-      color: Color.lerp(
-        ctx.theme.cardColor,
-        ctx.colorScheme.secondary,
-        ctx.isLightMode ? 0.2 : 0.15,
-      ),
+      color: Color.lerp(ctx.theme.cardColor, ctx.colorScheme.secondary, ctx.isLightMode ? 0.2 : 0.15),
       child: ListTile(
         title: stack.displayName().text(style: ctx.textTheme.titleLarge),
         subtitle: stack.meta.l10nDescription().text(),
@@ -371,36 +356,37 @@ class _ItemDetailsState extends State<ItemDetails> {
     final entries = <Widget>[];
     for (final toolComp in stack.meta.getCompsOf<ToolComp>()) {
       final isToolPref = player.isToolPrefOrDefault(stack, toolComp.toolType);
-      entries.add(ChoiceChip(
-        selected: isToolPref,
-        elevation: 2,
-        tooltip: isToolPref ? "Unset default" : "Set default",
-        selectedColor: context.fixColorBrightness(context.colorScheme.primary),
-        onSelected: (newIsPref) {
-          if (newIsPref == isToolPref) return;
-          if (newIsPref) {
-            player.setToolPref(toolComp.toolType, stack);
-          } else {
-            player.clearToolPref(toolComp.toolType);
-          }
-          setState(() {});
-        },
-        label: toolComp.toolType.l10nName().text(),
-      ));
+      entries.add(
+        ChoiceChip(
+          selected: isToolPref,
+          elevation: 2,
+          tooltip: isToolPref ? "Unset default" : "Set default",
+          selectedColor: context.fixColorBrightness(context.colorScheme.primary),
+          onSelected: (newIsPref) {
+            if (newIsPref == isToolPref) return;
+            if (newIsPref) {
+              player.setToolPref(toolComp.toolType, stack);
+            } else {
+              player.clearToolPref(toolComp.toolType);
+            }
+            setState(() {});
+          },
+          label: toolComp.toolType.l10nName().text(),
+        ),
+      );
     }
     for (final status in builder.build()) {
       var color = status.color;
       color ??= ctx.colorScheme.primary;
-      entries.add(Chip(
-        elevation: 2,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
-        label: status.name.text(),
-        backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
-      ));
+      entries.add(
+        Chip(
+          elevation: 2,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          label: status.name.text(),
+          backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
+        ),
+      );
     }
-    return Wrap(
-      spacing: 4,
-      children: entries,
-    );
+    return Wrap(spacing: 4, children: entries);
   }
 }

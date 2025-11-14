@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 import '../backpack/backpack.dart';
 import '../shared.dart';
@@ -222,7 +223,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(TablerIcons.x),
           onPressed: () {
             context.navigator.pop();
           },

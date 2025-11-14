@@ -1,6 +1,7 @@
 import 'package:escape_wild/ui/main/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 class MinePage extends StatefulWidget {
   const MinePage({super.key});
@@ -19,7 +20,7 @@ class _MinePageState extends State<MinePage> {
               onPressed: () {
                 context.navigator.push(MaterialPageRoute(builder: (_) => const SettingsPage()));
               },
-              icon: const Icon(Icons.settings)),
+              icon: const Icon(TablerIcons.settings)),
         ],
       ),
       body: buildBody(),

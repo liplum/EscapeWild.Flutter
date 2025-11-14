@@ -5,6 +5,7 @@ import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 Future<void> showMoveSheet({ValueChanged<Ts>? onMoved}) async {
   return await showCupertinoModalBottomSheet(
@@ -48,7 +49,7 @@ class _MoveSheetState extends State<MoveSheet> {
         title: "Forward".text(),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(TablerIcons.x),
           onPressed: () {
             context.navigator.pop();
           },

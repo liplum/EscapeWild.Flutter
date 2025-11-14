@@ -1,26 +1,31 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rettulf/rettulf.dart';
 
-typedef AdaptiveNavigationItem = ({String route, IconData icon, IconData activeIcon, String label});
+part 'adaptive_navigation.freezed.dart';
 
-extension _AdaptiveNavigationItemEX on AdaptiveNavigationItem {
+@Freezed()
+sealed class AdaptiveNavigationItem with _$AdaptiveNavigationItem {
+  const AdaptiveNavigationItem._();
+
+  const factory AdaptiveNavigationItem({
+    required String route,
+    required IconData icon,
+    IconData? activeIcon,
+    required String label,
+  }) = _AdaptiveNavigationItem;
+
+  IconData? get _activeIcon => activeIcon ?? icon;
+
   NavigationDestination toBarItem() {
-    return NavigationDestination(
-      icon: Icon(icon),
-      selectedIcon: Icon(activeIcon),
-      label: label,
-    );
+    return NavigationDestination(icon: Icon(icon), selectedIcon: Icon(_activeIcon), label: label);
   }
 
   NavigationRailDestination toRailDest() {
-    return NavigationRailDestination(
-      icon: Icon(icon),
-      selectedIcon: Icon(activeIcon),
-      label: Text(label),
-    );
+    return NavigationRailDestination(icon: Icon(icon), selectedIcon: Icon(_activeIcon), label: Text(label));
   }
 }
 
@@ -53,10 +58,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     } else {
       return Scaffold(
         backgroundColor: scaffoldBackgroundColor,
-        body: [
-          buildNavigationRail(context, items),
-          navigationShell.expanded(),
-        ].row(),
+        body: [buildNavigationRail(context, items), navigationShell.expanded()].row(),
       );
     }
   }

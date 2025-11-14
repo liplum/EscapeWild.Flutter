@@ -1,4 +1,5 @@
 import 'package:escape_wild/design/theme.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 import 'top.dart';
 import 'package:flutter/material.dart';
@@ -154,7 +155,7 @@ class _WindowState extends State<Window> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(TablerIcons.x),
           onPressed: onCloseWindow,
         ),
         title: widget.title.text(),

@@ -3,6 +3,7 @@ import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 part 'settings.i18n.dart';
 
@@ -57,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
       (_) => NavigationListTile(
         onPop: onPop,
         leading: const Icon(
-          Icons.public_rounded,
+          TablerIcons.language,
           size: iconSize,
         ),
         title: _I.languageTitle.text(),
@@ -73,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
       (_) => NavigationListTile(
         onPop: onPop,
         leading: const Icon(
-          Icons.straighten_rounded,
+          TablerIcons.ruler_measure,
           size: iconSize,
         ),
         title: _I.measurementTitle.text(),
@@ -203,7 +204,7 @@ class _MeasurementSelectionState extends State<MeasurementSelection> {
       trailing: cvt != curSelected
           ? null
           : const Icon(
-              Icons.check,
+              TablerIcons.check,
               color: Colors.green,
             ),
     );
@@ -275,7 +276,7 @@ class _LanguageSelectorPageState extends State<LanguageSelectorPage> {
       trailing: locale != curSelected
           ? null
           : const Icon(
-              Icons.check,
+              TablerIcons.check,
               color: Colors.green,
             ),
     );

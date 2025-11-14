@@ -5,6 +5,7 @@ import 'package:escape_wild/ui/game/in_game_menu.dart';
 import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 import 'hud.dart';
 
@@ -95,7 +96,7 @@ class _GameActionPageState extends State<GameActionPage> {
         onPressed: () async {
           await context.showIngameMenuDialog();
         },
-        icon: const Icon(Icons.settings),
+        icon: const Icon(TablerIcons.settings),
       ),
     ];
   }

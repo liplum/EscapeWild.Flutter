@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 import 'backpack/backpack.dart';
 import 'action/hud.dart';
@@ -815,7 +816,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
             SliverAppBar(
               expandedHeight: 50.0,
               leading: IconButton(
-                icon: const Icon(Icons.close_rounded),
+                icon: const Icon(TablerIcons.x),
                 onPressed: () {
                   context.navigator.pop();
                 },
@@ -829,7 +830,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
                         toggleFilter = !toggleFilter;
                       });
                     },
-                    icon: Icon(toggleFilter ? Icons.filter_alt_rounded : Icons.filter_alt_off_rounded),
+                    icon: Icon(toggleFilter ? TablerIcons.filter : TablerIcons.filter_off),
                   ),
               ],
             ),
@@ -956,9 +957,9 @@ class _DurationStepperState extends State<DurationStepper> {
 
   Widget buildStepper({required bool isLeft}) {
     if (isLeft) {
-      return buildStepperBtn(Icons.arrow_left_rounded, canStep: () => cur > min, onStep: () => cur -= step);
+      return buildStepperBtn(TablerIcons.chevron_left, canStep: () => cur > min, onStep: () => cur -= step);
     } else {
-      return buildStepperBtn(Icons.arrow_right_rounded, canStep: () => cur < max, onStep: () => cur += step);
+      return buildStepperBtn(TablerIcons.chevron_right, canStep: () => cur < max, onStep: () => cur += step);
     }
   }
 

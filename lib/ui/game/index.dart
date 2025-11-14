@@ -6,16 +6,14 @@ import 'package:escape_wild/game/serialization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 part 'index.i18n.dart';
 
 class GameIndexPage extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
 
-  const GameIndexPage({
-    super.key,
-    required this.navigationShell,
-  });
+  const GameIndexPage({super.key, required this.navigationShell});
 
   @override
   State<GameIndexPage> createState() => _HomePageState();
@@ -45,11 +43,7 @@ class _HomePageState extends State<GameIndexPage> {
           context.pop();
         }
       },
-      child: player >>
-              (_) => [
-            buildMain(),
-            buildEnvColorCover(),
-          ].stack(),
+      child: player >> (_) => [buildMain(), buildEnvColorCover()].stack(),
     );
   }
 
@@ -57,24 +51,9 @@ class _HomePageState extends State<GameIndexPage> {
     return AdaptiveNavigationScaffold(
       navigationShell: widget.navigationShell,
       items: [
-        (
-          route: "/action",
-          icon: Icons.grid_view_outlined,
-          activeIcon: Icons.grid_view_sharp,
-          label: _I.action,
-        ),
-        (
-          route: "/backpack",
-          icon: Icons.backpack_outlined,
-          activeIcon: Icons.backpack,
-          label: _I.backpack,
-        ),
-        (
-          route: "/craft",
-          icon: Icons.build_outlined,
-          activeIcon: Icons.build,
-          label: _I.craft,
-        ),
+        AdaptiveNavigationItem(route: "/action", icon: TablerIcons.layout_2, label: _I.action),
+        AdaptiveNavigationItem(route: "/backpack", icon: TablerIcons.backpack, label: _I.backpack),
+        AdaptiveNavigationItem(route: "/craft", icon: TablerIcons.tool, label: _I.craft),
       ],
     );
   }
@@ -82,18 +61,12 @@ class _HomePageState extends State<GameIndexPage> {
   Widget buildEnvColorCover() {
     return IgnorePointer(
       child: LayoutBuilder(
-        builder: (ctx, box) => buildEnvColorBox().sized(
-          w: box.maxWidth,
-          h: box.maxHeight,
-        ),
+        builder: (ctx, box) => buildEnvColorBox().sized(w: box.maxWidth, h: box.maxHeight),
       ),
     );
   }
 
   Widget buildEnvColorBox() {
-    return AnimatedContainer(
-      color: player.envColor,
-      duration: const Duration(milliseconds: 100),
-    );
+    return AnimatedContainer(color: player.envColor, duration: const Duration(milliseconds: 100));
   }
 }

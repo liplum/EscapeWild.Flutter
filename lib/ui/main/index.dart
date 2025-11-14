@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/design/adaptive_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 part 'index.i18n.dart';
 
@@ -23,16 +24,14 @@ class _MainIndexPageState extends State<MainIndexPage> {
     return AdaptiveNavigationScaffold(
       navigationShell: widget.navigationShell,
       items: [
-        (
+        AdaptiveNavigationItem(
           route: "/game",
-          icon: Icons.sports_esports_outlined,
-          activeIcon: Icons.sports_esports_rounded,
+          icon: TablerIcons.device_gamepad_2,
           label: _I.game,
         ),
-        (
+       AdaptiveNavigationItem (
           route: "/mine",
-          icon: Icons.person_outline_rounded,
-          activeIcon: Icons.person_rounded,
+          icon: TablerIcons.user,
           label: _I.mine,
         ),
       ],

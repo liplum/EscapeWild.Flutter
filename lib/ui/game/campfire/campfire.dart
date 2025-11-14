@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:escape_wild/core/index.dart';
+import 'package:escape_wild/design/empty.dart';
 import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rettulf/rettulf.dart';
+import 'package:tabler_icons/tabler_icons.dart';
 
 part 'campfire.i18n.dart';
 
@@ -26,13 +28,9 @@ class _CampfirePageState extends State<CampfirePage> {
   Widget build(BuildContext context) {
     final place = player.location;
     if (place is CampfirePlaceProtocol) {
-      return place >>
-          (ctx) => AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: buildBody(place),
-              );
+      return place >> (ctx) => AnimatedSwitcher(duration: const Duration(milliseconds: 300), child: buildBody(place));
     } else {
-      return LeavingBlank(icon: Icons.close_rounded, desc: "I can't start fire here.");
+      return Empty(icon: Icon(TablerIcons.x), title: "I can't start fire here.");
     }
   }
 
@@ -48,10 +46,7 @@ class _CampfirePageState extends State<CampfirePage> {
 class FireStartingPage extends StatefulWidget {
   final CampfirePlaceProtocol place;
 
-  const FireStartingPage({
-    super.key,
-    required this.place,
-  });
+  const FireStartingPage({super.key, required this.place});
 
   @override
   State<FireStartingPage> createState() => _FireStartingPageState();
@@ -69,10 +64,7 @@ class _FireStartingPageState extends State<FireStartingPage> {
     return [
       const StaticCampfireImage(),
       SizedBox(height: 30),
-      FireStarterArea(
-        place: place,
-        actionLabel: _I.startFire,
-      ),
+      FireStarterArea(place: place, actionLabel: _I.startFire),
     ].column(maa: MainAxisAlignment.spaceEvenly).scrolled().center().padAll(5);
   }
 }
@@ -82,12 +74,7 @@ class FireStarterArea extends StatefulWidget {
   final Axis direction;
   final String actionLabel;
 
-  const FireStarterArea({
-    super.key,
-    required this.place,
-    this.direction = Axis.vertical,
-    required this.actionLabel,
-  });
+  const FireStarterArea({super.key, required this.place, this.direction = Axis.vertical, required this.actionLabel});
 
   @override
   State<FireStarterArea> createState() => _FireStarterAreaState();
@@ -120,20 +107,11 @@ class _FireStarterAreaState extends State<FireStarterArea> {
 
   @override
   Widget build(BuildContext context) {
-    final widgets = [
-      buildFireStarterCell(),
-      buildStartFireButton(),
-    ];
+    final widgets = [buildFireStarterCell(), buildStartFireButton()];
     if (widget.direction == Axis.vertical) {
-      return widgets.column(
-        caa: CrossAxisAlignment.center,
-        maa: MainAxisAlignment.spaceEvenly,
-      );
+      return widgets.column(caa: CrossAxisAlignment.center, maa: MainAxisAlignment.spaceEvenly);
     } else {
-      return widgets.row(
-        caa: CrossAxisAlignment.center,
-        maa: MainAxisAlignment.spaceEvenly,
-      );
+      return widgets.row(caa: CrossAxisAlignment.center, maa: MainAxisAlignment.spaceEvenly);
     }
   }
 
@@ -142,10 +120,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
       slot: fireStarterSlot,
       onTapSatisfied: onSelectFireStarter,
       onTapUnsatisfied: onSelectFireStarter,
-      onInBackpack: const ItemStackCellTheme(
-        showMass: false,
-        showProgressBar: false,
-      ),
+      onInBackpack: const ItemStackCellTheme(showMass: false, showProgressBar: false),
     ).constrained(maxW: 180, maxH: 80);
     return cell;
   }
@@ -153,13 +128,15 @@ class _FireStarterAreaState extends State<FireStarterArea> {
   Future<void> onSelectFireStarter() async {
     await context.showBackpackSheet(
       matcher: fireStarterSlot.matcher,
-      delegate: BackpackSheetItemStack(onSelect: (selected) {
-        if (!mounted) return;
-        setState(() {
-          fireStarterSlot.toggle(selected);
-        });
-        context.navigator.pop();
-      }),
+      delegate: BackpackSheetItemStack(
+        onSelect: (selected) {
+          if (!mounted) return;
+          setState(() {
+            fireStarterSlot.toggle(selected);
+          });
+          context.navigator.pop();
+        },
+      ),
     );
   }
 
@@ -212,10 +189,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
 class CookPage extends StatefulWidget {
   final CampfirePlaceProtocol place;
 
-  const CookPage({
-    super.key,
-    required this.place,
-  });
+  const CookPage({super.key, required this.place});
 
   @override
   State<CookPage> createState() => _CookPageState();
@@ -326,10 +300,7 @@ class _CookPageState extends State<CookPage> {
       onTapSatisfied: () async {
         await onTakeOutIngredient(slot);
       },
-      unsatisfiedTheme: NullItemCellTheme(
-        placeholder: "Ingredient",
-        opacity: R.disabledAlpha,
-      ),
+      unsatisfiedTheme: NullItemCellTheme(placeholder: "Ingredient", opacity: R.disabledAlpha),
     ).sized(w: 150, h: 80).center();
     return cell;
   }
@@ -349,25 +320,27 @@ class _CookPageState extends State<CookPage> {
     if (!mounted) return;
     await context.showBackpackSheet<ItemStack>(
       matcher: cookMatcher,
-      delegate: BackpackSheetItemStackWithMass(onSelect: (selected, mass) {
-        final ItemStack ingredient;
-        if (selected.meta.mergeable) {
-          assert(mass != null, "$selected is mergeable, but selected mass is null");
-          ingredient = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
-        } else {
-          player.backpack.handOverStackInBackpack(selected);
-          ingredient = selected;
-        }
-        // the slot should be empty, but there is no guarantee in async context.
-        if (slot.isEmpty) {
-          slot.stack = ingredient;
-        } else {
-          ingredient.mergeTo(slot.stack);
-        }
-        // sync
-        place.onCampfire = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
-        place.onResetCooking();
-      }),
+      delegate: BackpackSheetItemStackWithMass(
+        onSelect: (selected, mass) {
+          final ItemStack ingredient;
+          if (selected.meta.mergeable) {
+            assert(mass != null, "$selected is mergeable, but selected mass is null");
+            ingredient = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
+          } else {
+            player.backpack.handOverStackInBackpack(selected);
+            ingredient = selected;
+          }
+          // the slot should be empty, but there is no guarantee in async context.
+          if (slot.isEmpty) {
+            slot.stack = ingredient;
+          } else {
+            ingredient.mergeTo(slot.stack);
+          }
+          // sync
+          place.onCampfire = ingredientsSlots.where((slot) => slot.isNotEmpty).map((slot) => slot.stack).toList();
+          place.onResetCooking();
+        },
+      ),
     );
   }
 
@@ -391,10 +364,7 @@ class _CookPageState extends State<CookPage> {
   Widget buildDishesSlot(ItemStackSlot slot) {
     final cell = ItemStackReqCell(
       slot: slot,
-      unsatisfiedTheme: NullItemCellTheme(
-        placeholder: "Output",
-        opacity: R.disabledAlpha,
-      ),
+      unsatisfiedTheme: NullItemCellTheme(placeholder: "Output", opacity: R.disabledAlpha),
       onTapSatisfied: () {
         if (slot.isNotEmpty) {
           final stack = slot.stack;
@@ -409,51 +379,46 @@ class _CookPageState extends State<CookPage> {
 
   Widget buildButtons() {
     if (fireState.isOff) {
-      return FireStarterArea(
-        place: place,
-        direction: Axis.horizontal,
-        actionLabel: _I.restartFire,
-      );
+      return FireStarterArea(place: place, direction: Axis.horizontal, actionLabel: _I.restartFire);
     }
     Widget btn(String text, {required double elevation, VoidCallback? onTap}) {
       return CardButton(
         elevation: elevation,
         onTap: onTap,
         child: text
-            .autoSizeText(
-              maxLines: 1,
-              style: context.textTheme.headlineSmall,
-              textAlign: TextAlign.center,
-            )
+            .autoSizeText(maxLines: 1, style: context.textTheme.headlineSmall, textAlign: TextAlign.center)
             .padAll(10),
       ).expanded();
     }
 
-    final waitBtn = btn("Wait", elevation: 5, onTap: () {
-      player.onPassTime(const Ts(minutes: 5));
-    });
+    final waitBtn = btn(
+      "Wait",
+      elevation: 5,
+      onTap: () {
+        player.onPassTime(const Ts(minutes: 5));
+      },
+    );
     final fuelBtn = btn(_I.fuel, elevation: 5, onTap: onFuel);
-    return [
-      waitBtn,
-      fuelBtn,
-    ].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
+    return [waitBtn, fuelBtn].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
   }
 
   Future<void> onFuel() async {
     await context.showBackpackSheet<ItemStack>(
       matcher: ItemMatcher.hasComp(const [FuelComp]),
-      delegate: BackpackSheetItemStackWithMass(onSelect: (selected, mass) async {
-        final ItemStack fuel;
-        if (selected.meta.mergeable) {
-          assert(mass != null, "$selected is mergeable, but selected mass is null");
-          fuel = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
-        } else {
-          player.backpack.removeStackInBackpack(selected);
-          fuel = selected;
-        }
-        final heatValue = FuelComp.tryGetActualHeatValue(fuel);
-        fireFuel += heatValue;
-      }),
+      delegate: BackpackSheetItemStackWithMass(
+        onSelect: (selected, mass) async {
+          final ItemStack fuel;
+          if (selected.meta.mergeable) {
+            assert(mass != null, "$selected is mergeable, but selected mass is null");
+            fuel = player.backpack.splitItemInBackpack(selected, mass ?? selected.stackMass);
+          } else {
+            player.backpack.removeStackInBackpack(selected);
+            fuel = selected;
+          }
+          final heatValue = FuelComp.tryGetActualHeatValue(fuel);
+          fireFuel += heatValue;
+        },
+      ),
     );
   }
 
@@ -479,21 +444,20 @@ class _CookPageState extends State<CookPage> {
 class StaticCampfireImage extends StatelessWidget {
   final Color? color;
 
-  const StaticCampfireImage({
-    super.key,
-    this.color,
-  });
+  const StaticCampfireImage({super.key, this.color});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (_, box) {
-      return SvgPicture.asset(
-        "assets/img/campfire.svg",
-        //color: context.themeColor,
-        colorFilter: ColorFilter.mode(color ?? context.themeColor, BlendMode.srcIn),
-        placeholderBuilder: (_) => const Placeholder(),
-      ).constrained(maxW: box.maxWidth, maxH: min(180, box.maxHeight * 0.8));
-    });
+    return LayoutBuilder(
+      builder: (_, box) {
+        return SvgPicture.asset(
+          "assets/img/campfire.svg",
+          //color: context.themeColor,
+          colorFilter: ColorFilter.mode(color ?? context.themeColor, BlendMode.srcIn),
+          placeholderBuilder: (_) => const Placeholder(),
+        ).constrained(maxW: box.maxWidth, maxH: min(180, box.maxHeight * 0.8));
+      },
+    );
   }
 }
 
@@ -516,10 +480,7 @@ class _DynamicCampfireImageState extends AnimatedWidgetBaseState<DynamicCampfire
 
   @override
   void initState() {
-    $color = ColorTween(
-      begin: widget.color,
-      end: widget.color,
-    );
+    $color = ColorTween(begin: widget.color, end: widget.color);
     super.initState();
     if ($color.begin != $color.end) {
       controller.forward();
@@ -528,23 +489,20 @@ class _DynamicCampfireImageState extends AnimatedWidgetBaseState<DynamicCampfire
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: buildBar(),
-    );
+    return ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(8)), child: buildBar());
   }
 
   Widget buildBar() {
-    return StaticCampfireImage(
-      color: $color.animate(animation).value,
-    );
+    return StaticCampfireImage(color: $color.animate(animation).value);
   }
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    $color = visitor($color, widget.color, (dynamic value) {
-      assert(false);
-      throw StateError('Constructor will never be called because null is never provided as current tween.');
-    }) as ColorTween;
+    $color =
+        visitor($color, widget.color, (dynamic value) {
+              assert(false);
+              throw StateError('Constructor will never be called because null is never provided as current tween.');
+            })
+            as ColorTween;
   }
 }
