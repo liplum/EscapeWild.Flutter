@@ -290,11 +290,11 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      borderRadius: context.cardBorderRadius,
-      child: widget.child,
-    ).inCard(clip: .hardEdge, elevation: $elevation.evaluate(animation), shape: $shape?.evaluate(animation));
+    return Card.filled(
+      clipBehavior: .hardEdge,
+      shape: $shape?.evaluate(animation),
+      child: InkWell(onTap: widget.onTap, borderRadius: context.cardBorderRadius, child: widget.child),
+    );
   }
 
   @override
