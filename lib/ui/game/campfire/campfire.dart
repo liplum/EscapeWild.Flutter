@@ -490,7 +490,7 @@ class _DynamicCampfireImageState extends AnimatedWidgetBaseState<DynamicCampfire
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(8)), child: buildBar());
+    return ClipRRect(borderRadius: const .all(.circular(8)), child: buildBar());
   }
 
   Widget buildBar() {

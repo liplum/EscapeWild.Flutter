@@ -359,7 +359,7 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
 
   int get stackMass => mass ?? meta.mass;
 
-  ItemStack(this.meta, {int? id, this.mass}) : id = id ?? const Uuid().v4().hashCode;
+  ItemStack(this.meta, {int? id, this.mass}) : id = id ?? const Uuid().v7().hashCode;
 
   String displayName() => meta.l10nName();
 
