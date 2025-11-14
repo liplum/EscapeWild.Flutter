@@ -99,10 +99,232 @@ cancel: Cancel
 alright: Alright
 # Discard something.
 discard: Discard
-action:
+actionResult:
   # When player gets items
   got-items: You got {}.
   # When player gets nothing
   got-nothing: You got nothing.
   # When a tool is broken
   tool-broken: "{} is completely broken, it can't work any more."
+attribute:
+  health: Health
+  food: Food
+  water: Water
+  energy: Energy
+action:
+  # Move forward
+  move: Move
+  # Explore the surroundings
+  explore: Explore
+  gather: Gather
+  get-water: Get Water
+  get-wood: Get Wood
+  get-food: Get Food
+  hunt: Hunt
+  # Go fishing
+  fish: Fish
+  shelter: Shelter
+  campfire: Campfire
+  # When player win the game
+  escape-wild: Escape Wild
+  # When player lose the game
+  stop-heartbeat: Stop Heartbeat
+use-type:
+  use: Use
+  eat: Eat
+  drink: Drink
+  equip: Equip
+tool-type:
+  cutting: Cutting
+  axe: Axe
+  trap: Trap
+  gun: Gun
+  fishing: Fishing
+  lighting: Lighting
+craft-recipe-cat:
+  # Such as axe and trap.
+  tool: Tool
+  survival: Survival
+  food: Food
+  # Fire, burning and combustion
+  fire: Fire
+  # Processing materials
+  refine: Refine
+  medical: Medical
+craft-type:
+  craft: Craft
+  repair: Repair
+  process: Process
+item:
+  empty:
+    name: Empty
+    desc: This is a blank description.
+  energy-bar:
+    name: Energy Bar
+    desc: You're not you when you're hungry.
+  energy-drink:
+    name: Energy Drink
+    desc: Watch out the beast.
+  dirty-water:
+    name: Dirty Water
+    desc: Ugh! It's best to boil it anyway.
+  # The water is clean like the drinking water.
+  clean-water:
+    name: Clean Water
+    desc: Mmmm, a bit sweet.
+  # Although the water looks clear, there is still bacteria.
+  clear-water:
+    name: Clear Water
+    desc: It looks clear.
+  boiled-water:
+    name: Boiled Water
+    desc: 'Title: 10 Health Benefits of Drinking Hot Water'
+  bottled-water:
+    name: Bottled Water
+    desc: A bottle of water. The production date is unknown.
+  plastic-bottle:
+    name: Plastic Bottle
+    desc: The best material, gift from industry.
+  filtered-water:
+    name: Filter Water
+    desc: It looks clean now. What a magic!
+  cut-grass:
+    name: Cut Grass
+    desc: It's not green but still renewable.
+  sticks:
+    name: Sticks
+    desc: You can find them anywhere.
+  log:
+    name: Log
+    desc: It's a piece of wood.
+  nuts:
+    name: Nuts
+    desc: Where is my nutcracker?
+  toasted-nuts:
+    name: Toasted Nuts
+    desc: The surface is a little burnt.
+  berry:
+    name: Berry
+    desc: It reminds me of jam.
+  roasted-berry:
+    name: Roasted Berry
+    desc: Slimy.
+  # https://wikipedia.org/wiki/Hand_drill
+  hand-drill-kit:
+    name: Hand Drill Kit
+    desc: It's not as easy as a TV show to start a fire.
+  survival-knife:
+    name: Survival Knife
+    desc: 'Ad: It offers a Black Anodize 440 stainless steel...'
+  old-axe:
+    name: Old Axe
+    desc: Old but still sharp.
+  stone-axe:
+    name: Stone Axe
+    # The Stone Age
+    desc: I think time travel is possible.
+  old-fish-rod:
+    name: Old Fish Rod
+    desc: Wait and see.
+  old-shotgun:
+    name: Old Shotgun
+    desc: Hope nothing goes wrong when it's critical.
+  bear-trap:
+    name: Bear Trap
+    desc: Wait and see.
+  # https://en.wikipedia.org/wiki/Moss
+  moss:
+    name: Moss
+    desc: "Search Box: Is moss edible?"
+  pine-needle:
+    name: Pine Needle
+    desc: Rich in vitamin C.
+  # Tinder is used to start a fire. It's an easily combustible material.
+  # https://wikipedia.org/wiki/Tinder
+  tinder:
+    name: Tinder
+    desc: An easily combustible material.
+  raw-rabbit:
+    name: Raw Rabbit
+    desc: No fat, rich in protein.
+  cooked-rabbit:
+    name: Cooked Rabbit
+    desc: It tastes a bit like chicken.
+  raw-fish:
+    name: Raw Fish
+    desc: Beware of phishing net.
+  cooked-fish:
+    name: Cooked Fish
+    desc: Beware of fish-bone.
+  stone:
+    name: Stone
+    desc: I don't really want my backpack to be stuffed with this.
+  sharp-stone:
+    name: Sharp Stone
+    desc: I'm pretty sure I'm back in Paleolithic Age.
+  straw-rope:
+    name: Straw Rope
+    desc: Strong, tough and durable.
+  wooden-bowl:
+    name: Wooden Bowl
+    desc: Let's get into the bushes and make a salad!
+  bandage:
+    name: Bandage
+    desc: "Survival Tip: Sterilize your bandage first."
+  first-aid-kit:
+    name: First Aid Kit
+    # https://www.youtube.com/watch?v=qXfPAodBVZQ&ab_channel=OgreJoe
+    # Overwatch `I Need Healing` meme
+    desc: I need healing.
+  # A tomato can.
+  can:
+    name: Can
+    desc: It still smells like tomato.
+  battle-bottle:
+    name: Battle Bottle
+    desc: This is left by a veteran.
+  # Something like ash
+  ember:
+    name: Ember
+    desc: Shh, don't blow out the fire.
+  sand:
+    name: Sand
+    desc: Ashes to ashes, dust to dust.
+  water-filter:
+    name: Water Filter
+    desc: ...
+  bear-meat:
+    name: Bear Meat
+    desc: ...
+  cooked-bear-meat:
+    name: Cooked Bear Meat
+    desc: ...
+  cloth:
+    name: Cloth
+    desc: ...
+  charcoal:
+    name: Charcoal
+    desc: ...
+  unlit-torch:
+    name: Unlit Torch
+    desc: Ignite it, for this night.
+  lit-torch:
+    name: Lit Torch
+    desc: Once the fire burns, it cannot be stopped.
+  fat:
+    name: Fat
+    desc: It's the most efficient form of energy storage.
+route:
+  subtropics:
+    plain:
+      name: Plain
+    forest:
+      name: Forest
+    riverside:
+      name: Riverside
+    cave:
+      name: Cave
+    hut:
+      name: Hut
+    village:
+      name: Village

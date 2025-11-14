@@ -88,9 +88,6 @@ class _PostServiceRunnerState extends State<_PostServiceRunner> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () async {
-      await loadL10n();
-    });
   }
 
   @override
@@ -98,9 +95,6 @@ class _PostServiceRunnerState extends State<_PostServiceRunner> {
     final newLocale = context.locale;
     if (newLocale != lastLocale) {
       lastLocale = newLocale;
-      if (isL10nLoaded) {
-        onLocaleChange();
-      }
     }
     return widget.child;
   }

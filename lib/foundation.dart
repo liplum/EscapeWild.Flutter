@@ -64,7 +64,6 @@ class Measurement {
 final yamlAssetsLoader = YamlAssetLoader();
 final isGameLoaded = ValueNotifier(false);
 var isGameContentLoaded = false;
-var isL10nLoaded = false;
 
 Future<void> loadGameContent() async {
   // load vanilla
@@ -73,18 +72,12 @@ Future<void> loadGameContent() async {
   _checkGameLoadState();
 }
 
-Future<void> loadL10n() async {
-  await Vanilla.instance.loadL10n();
-  isL10nLoaded = true;
-  _checkGameLoadState();
-}
-
 Future<void> onLocaleChange() async {
   await Vanilla.instance.onLocaleChange();
 }
 
 void _checkGameLoadState() {
-  if (isGameContentLoaded && isL10nLoaded) {
+  if (isGameContentLoaded) {
     isGameLoaded.value = true;
   }
 }

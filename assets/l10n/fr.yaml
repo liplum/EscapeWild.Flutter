@@ -96,10 +96,242 @@ cancel: Annuler
 alright: D'accord
 # Discard something.
 discard: Jeter
-action:
+actionResult:
   # When player gets items
   got-items: Vous avez obtenu {}.
   # When player gets nothing
   got-nothing: Vous n'avez rien eu.
   # When a tool is broken
   tool-broken: "{} est complètement cassé, il ne peut plus fonctionner"
+attribute:
+  health: Vie
+  food: Nourriture
+  water: Eau
+  energy: Énergie
+action:
+  # Move forward
+  move:
+    name: Se Déplacer # no direction specified
+    left: Gauche
+    right: Droite
+    up: Haut
+    down: Bas
+    forward: Avant
+    backward: Arrière
+  # Explore the surroundings
+  explore:
+    name: Explorer
+  gather:
+    name: Rassembler
+    get-water: Obtenir de l'Eau
+    get-wood: Obtenir du Bois
+    get-food: Obtenir de la Nourriture
+  hunt:
+    name: Chasser
+    trap: Avec Piège
+    gun: Au Fusil
+  # Go fishing
+  fish:
+    name: Pêcher
+  # When player win the game
+  escape-wild:
+    name: Escape Wild
+  # When player lose the game
+  stop-heartbeat:
+    name: Arrêter le rythme cardiaque
+  shelter:
+    name: Abri
+    sleep-till-tomorrow: Dormir jusqu'à Demain
+    # Reinforce the shelter
+    reinforce: Renforcer
+    # Have a rest
+    rest: Se reposer
+use-type:
+  use: Utiliser
+  eat: Manger
+  drink: Boire
+  equip: Équipper
+tool-type:
+  cutting: Découper
+  axe: Hache
+  trap: Piège
+  gun: Pistolet
+  fishing: Canne à Pêche
+craft-recipe-cat:
+  # Such as axe and trap.
+  tool: Outil
+  survival: Survie
+  food: Alimentation
+  # Fire, burning and combustion
+  fire: Feu
+  # Processing materials
+  refine: Affiner
+  medical: Médical
+craft-type:
+  craft: Fabriquer
+  repair: Réparer
+  process: Process
+item:
+  empty:
+    name: Vide
+    desc: Il s'agit d'une descritpion vide.
+  energy-bar:
+    name: Barre d'Énergie
+    desc: Vous n'êtes pas vous-même lorsque vous avez faim.
+  energy-drink:
+    name: Boisson Énergétique
+    desc: Watch out the beast.
+  dirty-water:
+    name: Eau Sale
+    desc: Beurk ! C'est mieux de la faire bouillir quand même.
+  # The water is clean like the drinking water.
+  clean-water:
+    name: Eau Propre
+    desc: Mmmm, un peu sucré.
+  # Although the water looks clear, there is still bacteria.
+  clear-water:
+    name: Eau Claire
+    desc: Elle a l'air propre.
+  boiled-water:
+    name: Eau Bouillie
+    desc: "Titre: 10 avantages pour la santé de boire de l'eau chaude."
+  bottled-water:
+    name: Eau en Bouteille
+    desc: Une bouteille d'eau. La date de production est inconnue.
+  plastic-bottle:
+    name: Bouteille en Plastique
+    desc: Le meilleur matériau, cadeau de l'industrie.
+  filtered-water:
+    name: Eau Filtrée
+    desc: Elle semble propre maintenant. Quelle magie !
+  cut-grass:
+    name: Herbe Coupée
+    desc: Ce n'est pas vert mais c'est quand même renouvelable
+  sticks:
+    name: Bâtons
+    desc: Vous pouvez en trouver partout.
+  log:
+    name: Bûches
+    desc: C'est un morceau de bois.
+  nuts:
+    name: Noix
+    desc: Où est mon casse-noix ?
+  toasted-nuts:
+    name: Noix Grillées
+    desc: La surface est un peu brûlée.
+  berry:
+    name: Baies
+    desc: Ça me rappelle la confiture
+  roasted-berry:
+    name: Baies Rôties
+    desc: Gluant.
+  # https://wikipedia.org/wiki/Hand_drill
+  hand-drill-kit:
+    name: Hand Drill Kit
+    desc: "Ce n'est pas aussi facile qu'une émission TV d'allumer un feu."
+  survival-knife:
+    name: Couteau de Survie
+    desc: "Pub: Il propose un acier inoxydable 440 anodisé noir."
+  old-axe:
+    name: Vielle Hache
+    desc: Vieux mais toujours aussi vif.
+  stone-axe:
+    name: Hache en Pierre
+    # The Stone Age
+    desc: Je pense que le voyage dans le temps est possible.
+  old-fish-rod:
+    name: Vieille Canne à Pêche
+    desc: Attendez et voyez.
+  old-shotgun:
+    name: Vieux Fusil de chasse
+    desc: Espèrons que rien ne se passera quand ce sera critique.
+  bear-trap:
+    name: Piège à Ours
+    desc: Attendez et voyez.
+  # https://en.wikipedia.org/wiki/Moss
+  moss:
+    name: Mousse
+    desc: "Boîte de Recherche: La mousse est-elle comestible ?"
+  pine-needle:
+    name: Aiguille de Pin
+    desc: Riche en vitamine C.
+  # Tinder is used to start a fire. It's an easily combustible material.
+  # https://wikipedia.org/wiki/Tinder
+  tinder:
+    name: Amadou
+    desc: Un matériau facilement combustible.
+  raw-rabbit:
+    name: Lapin Cru
+    desc: Sans graisse, riche en protéines.
+  cooked-rabbit:
+    name: Lapin Cuit
+    desc: Ça a un peu le goût du poulet.
+  raw-fish:
+    name: Poisson Cru
+    desc: Phishing.
+  cooked-fish:
+    name: Poisson Cuit
+    desc: Attention aux arêtes de poisson.
+  stone:
+    name: Pierre
+    desc: Je ne veux pas vraiment que mon sac à dos soit rempli de ça.
+  sharp-stone:
+    name: Pierre Tranchante
+    desc: Je suis sûr que je suis de retour à l'Âge Paléolithique.
+  straw-rope:
+    name: Corde de paille
+    desc: Solide résistant et durable.
+  wooden-bowl:
+    name: Bol en Bois
+    desc: Allons dans le buissons et faisons une salade.
+  bandage:
+    name: Bandage
+    desc: "Conseille de Survie: Stérilisez d'abord votre bandage."
+  first-aid-kit:
+    name: Trousse de Premiers Secours
+    # https://www.youtube.com/watch?v=qXfPAodBVZQ&ab_channel=OgreJoe
+    # Overwatch `I Need Healing` meme
+    desc: J'ai besoin de soin.
+  # A tomato can.
+  can:
+    name: Boîte
+    desc: Ça sent toujours la tomate.
+  battle-bottle:
+    name: Bouteille de Combat
+    desc: Elle est laissée par un vétéran.
+  # Something like ash
+  ember:
+    name: Braise
+    desc: Chhh, n'éteignez pas le feu.
+  sand:
+    name: Sable
+    desc: Ashes to ashes, dust to dust.
+  water-filter:
+    name: Filtre à Eau
+    desc: ...
+  bear-meat:
+    name: Viande d'Ours
+    desc: ...
+  cooked-bear-meat:
+    name: Viande d'Ours Cuite
+    desc: ...
+  cloth:
+    name: Tissu
+    desc: ...
+  charcoal:
+    name: Charbon de Bois
+    desc: ...
+route:
+  subtropics:
+    plain:
+      name: Plaine
+    forest:
+      name: Forêt
+    riverside:
+      name: Bord de Rivières
+    cave:
+      name: Grotte
+    hut:
+      name: Hutte
+    village:
+      name: Village

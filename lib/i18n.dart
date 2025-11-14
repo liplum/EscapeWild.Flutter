@@ -43,7 +43,7 @@ class I {
 }
 
 class _Action {
-  static const _n = "action";
+  static const _n = "actionResult";
 
   String gotItems(String items) => "$_n.got-items".tr(args: [items]);
 

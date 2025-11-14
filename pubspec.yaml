@@ -74,5 +74,3 @@ flutter:
   assets:
     - assets/
     - assets/l10n/
-    - assets/vanilla/
-    - assets/vanilla/l10n/
