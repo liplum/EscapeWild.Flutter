@@ -57,14 +57,8 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 
   @override
   void initState() {
-    $progress = Tween<double>(
-      begin: widget.value,
-      end: widget.value,
-    );
-    $color = ColorTween(
-      begin: widget.color,
-      end: widget.color,
-    );
+    $progress = Tween<double>(begin: widget.value, end: widget.value);
+    $color = ColorTween(begin: widget.color, end: widget.color);
     super.initState();
     if ($progress.begin != $progress.end) {
       controller.forward();
@@ -73,10 +67,7 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      child: buildBar(),
-    );
+    return ClipRRect(borderRadius: const BorderRadius.all(Radius.circular(8)), child: buildBar());
   }
 
   Widget buildBar() {
@@ -91,14 +82,18 @@ class _AttrProgressState extends AnimatedWidgetBaseState<AttrProgress> {
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    $progress = visitor($progress, widget.value, (dynamic value) {
-      assert(false);
-      throw StateError('Constructor will never be called because null is never provided as current tween.');
-    }) as Tween<double>;
-    $color = visitor($color, widget.color, (dynamic value) {
-      assert(false);
-      throw StateError('Constructor will never be called because null is never provided as current tween.');
-    }) as ColorTween?;
+    $progress =
+        visitor($progress, widget.value, (dynamic value) {
+              assert(false);
+              throw StateError('Constructor will never be called because null is never provided as current tween.');
+            })
+            as Tween<double>;
+    $color =
+        visitor($color, widget.color, (dynamic value) {
+              assert(false);
+              throw StateError('Constructor will never be called because null is never provided as current tween.');
+            })
+            as ColorTween?;
   }
 }
 
@@ -106,32 +101,19 @@ class ItemCellTheme {
   final double? opacity;
   final TextStyle? nameStyle;
 
-  const ItemCellTheme({
-    this.opacity,
-    this.nameStyle,
-  });
+  const ItemCellTheme({this.opacity, this.nameStyle});
 
   double get $opacity => opacity ?? 1;
 
-  ItemCellTheme copyWith({
-    double? opacity,
-    TextStyle? nameStyle,
-  }) =>
-      ItemCellTheme(
-        opacity: opacity ?? this.opacity,
-        nameStyle: nameStyle ?? this.nameStyle,
-      );
+  ItemCellTheme copyWith({double? opacity, TextStyle? nameStyle}) =>
+      ItemCellTheme(opacity: opacity ?? this.opacity, nameStyle: nameStyle ?? this.nameStyle);
 }
 
 class ItemCell extends StatelessWidget {
   final Item item;
   final ItemCellTheme theme;
 
-  const ItemCell(
-    this.item, {
-    super.key,
-    this.theme = const ItemCellTheme(),
-  });
+  const ItemCell(this.item, {super.key, this.theme = const ItemCellTheme()});
 
   @override
   Widget build(BuildContext context) {
@@ -148,20 +130,13 @@ class NullItemCellTheme extends ItemCellTheme {
   /// To show a placeholder on the center
   final String? placeholder;
 
-  const NullItemCellTheme({
-    this.placeholder,
-    super.opacity,
-    super.nameStyle,
-  });
+  const NullItemCellTheme({this.placeholder, super.opacity, super.nameStyle});
 }
 
 class NullItemCell extends StatelessWidget {
   final NullItemCellTheme theme;
 
-  const NullItemCell({
-    super.key,
-    this.theme = const NullItemCellTheme(),
-  });
+  const NullItemCell({super.key, this.theme = const NullItemCellTheme()});
 
   @override
   Widget build(BuildContext context) {
@@ -214,26 +189,21 @@ class ItemStackCellTheme extends ItemCellTheme {
     double? opacity,
     TextStyle? nameStyle,
     EdgeInsetsGeometry? pad,
-  }) =>
-      ItemStackCellTheme(
-        showMass: showMass ?? this.showMass,
-        showProgressBar: showProgressBar ?? this.showProgressBar,
-        progressBarOpacity: progressBarOpacity ?? this.progressBarOpacity,
-        opacity: opacity ?? this.opacity,
-        nameStyle: nameStyle ?? this.nameStyle,
-        pad: pad ?? this.pad,
-      );
+  }) => ItemStackCellTheme(
+    showMass: showMass ?? this.showMass,
+    showProgressBar: showProgressBar ?? this.showProgressBar,
+    progressBarOpacity: progressBarOpacity ?? this.progressBarOpacity,
+    opacity: opacity ?? this.opacity,
+    nameStyle: nameStyle ?? this.nameStyle,
+    pad: pad ?? this.pad,
+  );
 }
 
 class ItemStackCell extends StatelessWidget {
   final ItemStack stack;
   final ItemStackCellTheme theme;
 
-  const ItemStackCell(
-    this.stack, {
-    super.key,
-    this.theme = const ItemStackCellTheme(),
-  });
+  const ItemStackCell(this.stack, {super.key, this.theme = const ItemStackCellTheme()});
 
   @override
   Widget build(BuildContext context) {
@@ -267,11 +237,13 @@ class ItemStackCell extends StatelessWidget {
     final freshnessComp = FreshnessComp.of(stack);
     if (freshnessComp != null) {
       final color = freshnessComp.progressColor(stack, darkMode: ctx.isDarkMode);
-      inStack.add(AnimatedContainer(
-        color: color.withValues(alpha: 0.15),
-        duration: const Duration(milliseconds: 1200),
-        curve: Curves.fastLinearToSlowEaseIn,
-      ).clipRRect(borderRadius: ctx.cardBorderRadius));
+      inStack.add(
+        AnimatedContainer(
+          color: color.withValues(alpha: 0.15),
+          duration: const Duration(milliseconds: 1200),
+          curve: Curves.fastLinearToSlowEaseIn,
+        ).clipRRect(borderRadius: ctx.cardBorderRadius),
+      );
     }
     if (inStack.length == 1) {
       return tile;
@@ -307,14 +279,8 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
 
   @override
   void initState() {
-    $elevation = Tween<double>(
-      begin: widget.elevation ?? 1.0,
-      end: widget.elevation ?? 1.0,
-    );
-    $shape = ShapeBorderTween(
-      begin: widget.shape,
-      end: widget.shape,
-    );
+    $elevation = Tween<double>(begin: widget.elevation ?? 1.0, end: widget.elevation ?? 1.0);
+    $shape = ShapeBorderTween(begin: widget.shape, end: widget.shape);
     super.initState();
     if ($elevation.begin != $elevation.end) {
       controller.forward();
@@ -323,29 +289,26 @@ class _CardButtonState extends AnimatedWidgetBaseState<CardButton> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.child
-        .inkWell(
-          onTap: widget.onTap,
-          borderRadius: context.cardBorderRadius,
-        )
-        .inCard(
-          elevation: $elevation.evaluate(animation),
-          shape: $shape?.evaluate(animation),
-        );
+    return InkWell(
+      onTap: widget.onTap,
+      borderRadius: context.cardBorderRadius,
+      child: widget.child,
+    ).inCard(clip: .hardEdge, elevation: $elevation.evaluate(animation), shape: $shape?.evaluate(animation));
   }
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    $elevation = visitor($elevation, widget.elevation ?? 1.0, (dynamic value) {
-      assert(false);
-      throw StateError('Constructor will never be called because null is never provided as current tween.');
-    }) as Tween<double>;
-    $shape = visitor($shape, widget.shape, (dynamic value) {
-      return ShapeBorderTween(
-        begin: widget.shape,
-        end: widget.shape,
-      );
-    }) as ShapeBorderTween?;
+    $elevation =
+        visitor($elevation, widget.elevation ?? 1.0, (dynamic value) {
+              assert(false);
+              throw StateError('Constructor will never be called because null is never provided as current tween.');
+            })
+            as Tween<double>;
+    $shape =
+        visitor($shape, widget.shape, (dynamic value) {
+              return ShapeBorderTween(begin: widget.shape, end: widget.shape);
+            })
+            as ShapeBorderTween?;
   }
 }
 
@@ -568,7 +531,9 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
       // If player don't have any of them, or backpack is excluded, try to browser all items.
       allMatched = behavior.includingRegistry ? Contents.getMatchedItems(matcher) : const [];
       assert(
-          allMatched.isNotEmpty || !behavior.includingRegistry, "ItemMatcher should match at least one of all items.");
+        allMatched.isNotEmpty || !behavior.includingRegistry,
+        "ItemMatcher should match at least one of all items.",
+      );
       if (allMatched.isNotEmpty) {
         if (widget.random) {
           curIndex = Random(hashCode).i(0, allMatched.length);
@@ -595,10 +560,7 @@ class _DynamicMatchingCellState extends State<DynamicMatchingCell> {
   @override
   Widget build(BuildContext context) {
     // TODO: it doesn't work
-    return AnimatedSwitcher(
-      duration: Durations.medium4,
-      child: buildCell(),
-    );
+    return AnimatedSwitcher(duration: Durations.medium4, child: buildCell());
   }
 
   Widget buildCell() {
@@ -659,10 +621,8 @@ class ItemStackSlot with ChangeNotifier {
 
   ItemStackSlot(this.matcher);
 
-  ItemStackSlot.match({
-    required ItemTypeMatcher typeOnly,
-    required ItemStackMatcher exact,
-  }) : matcher = ItemMatcher(typeOnly: typeOnly, exact: exact);
+  ItemStackSlot.match({required ItemTypeMatcher typeOnly, required ItemStackMatcher exact})
+    : matcher = ItemMatcher(typeOnly: typeOnly, exact: exact);
 
   void toggle(ItemStack newStack) {
     if (newStack == stack) {
@@ -715,13 +675,8 @@ class ItemStackReqCell extends StatelessWidget {
       onTap: satisfyCondition ? onTapSatisfied : onTapUnsatisfied,
       shape: satisfyCondition ? null : context.outlinedCardBorder(),
       child: satisfyCondition
-          ? ItemStackCell(
-              slot.stack,
-              theme: satisfiedTheme,
-            )
-          : NullItemCell(
-              theme: unsatisfiedTheme,
-            ),
+          ? ItemStackCell(slot.stack, theme: satisfiedTheme)
+          : NullItemCell(theme: unsatisfiedTheme),
     );
   }
 }
@@ -757,21 +712,12 @@ class ItemStackReqAutoMatchCell extends StatelessWidget {
       onTap: !satisfyCondition ? onTapUnsatisfied : onTapSatisfied,
       shape: !satisfyCondition ? context.outlinedCardBorder() : null,
       child: satisfyCondition
-          ? ItemStackCell(
-              slot.stack,
-              theme: satisfiedTheme,
-            )
+          ? ItemStackCell(slot.stack, theme: satisfiedTheme)
           : DynamicMatchingCell(
               matcher: slot.matcher,
-              onNotInBackpack: (item) => ItemCell(
-                item,
-                theme: onNotInBackpack.copyWith(opacity: opacityOnMissing),
-              ),
-              onInBackpack: (stack) => ItemStackCell(stack,
-                  theme: onInBackpack.copyWith(
-                    opacity: opacityOnMissing,
-                    showMass: false,
-                  )),
+              onNotInBackpack: (item) => ItemCell(item, theme: onNotInBackpack.copyWith(opacity: opacityOnMissing)),
+              onInBackpack: (stack) =>
+                  ItemStackCell(stack, theme: onInBackpack.copyWith(opacity: opacityOnMissing, showMass: false)),
             ),
     );
   }
@@ -874,10 +820,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
                   context.navigator.pop();
                 },
               ),
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: backpackTitle.text(),
-              ),
+              flexibleSpace: FlexibleSpaceBar(centerTitle: true, title: backpackTitle.text()),
               actions: [
                 if (widget.behavior.showFilterButton)
                   IconButton(
@@ -886,10 +829,8 @@ class _BackpackSheetState extends State<BackpackSheet> {
                         toggleFilter = !toggleFilter;
                       });
                     },
-                    icon: Icon(
-                      toggleFilter ? Icons.filter_alt_rounded : Icons.filter_alt_off_rounded,
-                    ),
-                  )
+                    icon: Icon(toggleFilter ? Icons.filter_alt_rounded : Icons.filter_alt_off_rounded),
+                  ),
               ],
             ),
             buildBackpackView(box),
@@ -910,16 +851,13 @@ class _BackpackSheetState extends State<BackpackSheet> {
     }
     return SliverGrid(
       gridDelegate: context.itemCellGridDelegate,
-      delegate: SliverChildBuilderDelegate(
-        childCount: length,
-        (ctx, i) {
-          if (i < accepted.length) {
-            return buildItem(accepted[i], accepted: true);
-          } else {
-            return buildItem(unaccepted[i - accepted.length], accepted: false);
-          }
-        },
-      ),
+      delegate: SliverChildBuilderDelegate(childCount: length, (ctx, i) {
+        if (i < accepted.length) {
+          return buildItem(accepted[i], accepted: true);
+        } else {
+          return buildItem(unaccepted[i - accepted.length], accepted: false);
+        }
+      }),
     );
   }
 
@@ -932,10 +870,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
           : () async {
               await onSelectItemStack(stack, delegate);
             },
-      child: ItemStackCell(
-        stack,
-        theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha),
-      ),
+      child: ItemStackCell(stack, theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha)),
     );
   }
 
@@ -947,10 +882,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
       $selectedMass.value = selected.stackMass;
       final confirmed = await context.showAnyRequest(
         title: selected.displayName(),
-        builder: (_) => ItemStackMassSelector(
-          template: selected,
-          $selectedMass: $selectedMass,
-        ),
+        builder: (_) => ItemStackMassSelector(template: selected, $selectedMass: $selectedMass),
         primary: "Select",
         secondary: I.cancel,
       );
@@ -988,13 +920,7 @@ class DurationStepper extends StatefulWidget {
   final Ts max;
   final Ts step;
 
-  const DurationStepper({
-    super.key,
-    required this.$cur,
-    required this.min,
-    required this.max,
-    required this.step,
-  });
+  const DurationStepper({super.key, required this.$cur, required this.min, required this.max, required this.step});
 
   @override
   State<DurationStepper> createState() => _DurationStepperState();
@@ -1030,47 +956,36 @@ class _DurationStepperState extends State<DurationStepper> {
 
   Widget buildStepper({required bool isLeft}) {
     if (isLeft) {
-      return buildStepperBtn(
-        Icons.arrow_left_rounded,
-        canStep: () => cur > min,
-        onStep: () => cur -= step,
-      );
+      return buildStepperBtn(Icons.arrow_left_rounded, canStep: () => cur > min, onStep: () => cur -= step);
     } else {
-      return buildStepperBtn(
-        Icons.arrow_right_rounded,
-        canStep: () => cur < max,
-        onStep: () => cur += step,
-      );
+      return buildStepperBtn(Icons.arrow_right_rounded, canStep: () => cur < max, onStep: () => cur += step);
     }
   }
 
-  Widget buildStepperBtn(
-    IconData icon, {
-    required bool Function() canStep,
-    required void Function() onStep,
-  }) {
+  Widget buildStepperBtn(IconData icon, {required bool Function() canStep, required void Function() onStep}) {
     return GestureDetector(
-        onLongPressStart: (_) async {
-          isPressing = true;
-          do {
-            if (canStep()) {
-              onStep();
-            } else {
-              break;
-            }
-            await Future.delayed(const Duration(milliseconds: 100));
-          } while (isPressing);
-        },
-        onLongPressEnd: (_) => setState(() => isPressing = false),
-        child: CardButton(
-          elevation: canStep() ? 5 : 0,
-          onTap: !canStep()
-              ? null
-              : () {
-                  onStep();
-                },
-          child: buildIcon(icon),
-        ));
+      onLongPressStart: (_) async {
+        isPressing = true;
+        do {
+          if (canStep()) {
+            onStep();
+          } else {
+            break;
+          }
+          await Future.delayed(const Duration(milliseconds: 100));
+        } while (isPressing);
+      },
+      onLongPressEnd: (_) => setState(() => isPressing = false),
+      child: CardButton(
+        elevation: canStep() ? 5 : 0,
+        onTap: !canStep()
+            ? null
+            : () {
+                onStep();
+              },
+        child: buildIcon(icon),
+      ),
+    );
   }
 
   Widget buildIcon(IconData icon) {

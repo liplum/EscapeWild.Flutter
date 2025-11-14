@@ -41,7 +41,7 @@ android {
 
     defaultConfig {
         applicationId "net.liplum.escape_wild"
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
