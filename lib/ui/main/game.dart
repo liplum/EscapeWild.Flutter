@@ -83,7 +83,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   Widget buildBtn(String text, [VoidCallback? onTap]) {
-    return ElevatedButton(
+    return FilledButton.tonal(
       onPressed: onTap,
       child: text
           .autoSizeText(

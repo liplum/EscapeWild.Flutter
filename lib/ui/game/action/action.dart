@@ -106,7 +106,7 @@ class _GameActionPageState extends State<GameActionPage> {
       attrs: player.attrs,
       textStyle: context.textTheme.headlineMedium,
       minHeight: 14,
-    ).padAll(12).inCard(elevation: 2);
+    ).padAll(12);
   }
 
   Widget buildJourneyProgress() {

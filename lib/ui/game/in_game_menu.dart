@@ -61,7 +61,7 @@ class _InGameMenuState extends State<_InGameMenu> {
   }
 
   Widget btn(String text, VoidCallback? onTap) {
-    return ElevatedButton(
+    return FilledButton.tonal(
       onPressed: onTap,
       child: text.text(
         style: TextStyle(fontSize: context.textTheme.titleLarge?.fontSize),
