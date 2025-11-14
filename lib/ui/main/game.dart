@@ -6,8 +6,6 @@ import 'package:rettulf/rettulf.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:tabler_icons/tabler_icons.dart';
 
-import 'settings.dart';
-
 part 'game.i18n.dart';
 
 class GamePage extends StatefulWidget {
@@ -28,7 +26,7 @@ class _GamePageState extends State<GamePage> {
         actions: [
           IconButton(
             onPressed: () {
-              context.navigator.push(MaterialPageRoute(builder: (_) => const SettingsPage()));
+              context.push("/settings");
             },
             icon: const Icon(TablerIcons.settings),
           ),

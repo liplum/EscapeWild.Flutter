@@ -3,6 +3,7 @@ import 'package:escape_wild/ui/game/backpack/backpack.dart';
 import 'package:escape_wild/ui/game/craft/craft.dart';
 import 'package:escape_wild/ui/game/index.dart';
 import 'package:escape_wild/ui/main/game.dart';
+import 'package:escape_wild/ui/main/settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,13 +15,7 @@ RoutingConfig buildRoutingConfig() {
   return RoutingConfig(
     routes: [
       GoRoute(path: "/", builder: (ctx, state) => GamePage()),
-      GoRoute(
-        path: "/main",
-        redirect: (ctx, state) {
-          if (state.fullPath == "/main") return "/main/game";
-          return null;
-        },
-      ),
+      GoRoute(path: "/settings", builder: (ctx, state) => SettingsPage()),
       GoRoute(
         path: "/game",
         redirect: (ctx, state) {
