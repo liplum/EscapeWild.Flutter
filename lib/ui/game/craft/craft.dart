@@ -302,7 +302,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
           : () {
               gotoFirstMatchedSlot(item);
             },
-      child: ItemStackCell(item, theme: ItemStackCellTheme(opacity: accepted ? 1.0 : R.disabledAlpha)),
+      child: ItemStackCell(item, theme: .new(opacity: accepted ? 1.0 : R.disabledAlpha)),
     );
   }
 
