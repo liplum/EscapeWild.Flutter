@@ -11,6 +11,7 @@ import 'package:escape_wild/ui/game/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:tabler_icons/tabler_icons.dart';
 
@@ -108,10 +109,10 @@ class _FireStarterAreaState extends State<FireStarterArea> {
   @override
   Widget build(BuildContext context) {
     final widgets = [buildFireStarterCell(), buildStartFireButton()];
-    if (widget.direction == Axis.vertical) {
-      return widgets.column(caa: CrossAxisAlignment.center, maa: MainAxisAlignment.spaceEvenly);
+    if (widget.direction == .vertical) {
+      return widgets.column(caa: .center, maa: .spaceEvenly);
     } else {
-      return widgets.row(caa: CrossAxisAlignment.center, maa: MainAxisAlignment.spaceEvenly);
+      return widgets.row(caa: .center, maa: .spaceEvenly);
     }
   }
 
@@ -134,7 +135,7 @@ class _FireStarterAreaState extends State<FireStarterArea> {
           setState(() {
             fireStarterSlot.toggle(selected);
           });
-          context.navigator.pop();
+          context.pop();
         },
       ),
     );
@@ -262,9 +263,9 @@ class _CookPageState extends State<CookPage> {
       [
         buildCampfireImage(),
         buildFuelState(place.fireState),
-      ].column(maa: MainAxisAlignment.spaceEvenly).flexible(flex: 4),
+      ].column(maa: .spaceEvenly).flexible(flex: 4),
       buildButtons().flexible(flex: 1),
-    ].column(maa: MainAxisAlignment.spaceBetween).padAll(5);
+    ].column(maa: .spaceBetween).padAll(5);
   }
 
   Widget buildCampfireImage() {
@@ -379,14 +380,14 @@ class _CookPageState extends State<CookPage> {
 
   Widget buildButtons() {
     if (fireState.isOff) {
-      return FireStarterArea(place: place, direction: Axis.horizontal, actionLabel: _I.restartFire);
+      return FireStarterArea(place: place, direction: .horizontal, actionLabel: _I.restartFire);
     }
     Widget btn(String text, {required double elevation, VoidCallback? onTap}) {
       return CardButton(
         elevation: elevation,
         onTap: onTap,
         child: text
-            .autoSizeText(maxLines: 1, style: context.textTheme.headlineSmall, textAlign: TextAlign.center)
+            .autoSizeText(maxLines: 1, style: context.textTheme.headlineSmall, textAlign: .center)
             .padAll(10),
       ).expanded();
     }
@@ -399,7 +400,7 @@ class _CookPageState extends State<CookPage> {
       },
     );
     final fuelBtn = btn(_I.fuel, elevation: 5, onTap: onFuel);
-    return [waitBtn, fuelBtn].row(maa: MainAxisAlignment.spaceEvenly).align(at: Alignment.bottomCenter);
+    return [waitBtn, fuelBtn].row(maa: .spaceEvenly).align(at: .bottomCenter);
   }
 
   Future<void> onFuel() async {
@@ -453,7 +454,7 @@ class StaticCampfireImage extends StatelessWidget {
         return SvgPicture.asset(
           "assets/img/campfire.svg",
           //color: context.themeColor,
-          colorFilter: ColorFilter.mode(color ?? context.themeColor, BlendMode.srcIn),
+          colorFilter: .mode(color ?? context.themeColor, .srcIn),
           placeholderBuilder: (_) => const Placeholder(),
         ).constrained(maxW: box.maxWidth, maxH: min(180, box.maxHeight * 0.8));
       },

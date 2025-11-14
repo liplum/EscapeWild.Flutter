@@ -3,6 +3,7 @@ import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:tabler_icons/tabler_icons.dart';
@@ -73,7 +74,7 @@ class _GameCraftPageState extends State<GameCraftPage> {
         return CardButton(
           elevation: isSelected ? 10 : 0,
           child: ListTile(
-            title: cat.l10nName().autoSizeText(maxLines: 1, style: style, textAlign: TextAlign.center),
+            title: cat.l10nName().autoSizeText(maxLines: 1, style: style, textAlign: .center),
             selected: isSelected,
             dense: true,
           ),
@@ -204,7 +205,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
         leading: IconButton(
           icon: const Icon(TablerIcons.x),
           onPressed: () {
-            context.navigator.pop();
+            context.pop();
           },
         ),
         title: recipe.outputItem.l10nName().text(style: context.textTheme.titleLarge),
@@ -241,7 +242,7 @@ class _CraftingSheetState extends State<CraftingSheet> {
       matchedAll &= player.backpack.matchedAny(slot.matcher.exact.bool);
     }
     if (!matchedAll) {
-      context.navigator.pop();
+      context.pop();
     }
   }
 

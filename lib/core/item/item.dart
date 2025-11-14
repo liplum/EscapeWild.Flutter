@@ -340,7 +340,7 @@ class ItemCompPair<T extends Comp> {
 @CopyWith(skipFields: true)
 // @immutable
 class ItemStack with ExtraMixin implements JConvertibleProtocol {
-  static final empty = ItemStack(Item.empty, id: -1);
+  static final empty = ItemStack(.empty, id: -1);
   final int id;
 
   @JsonKey(fromJson: Contents.getItemMetaByName, toJson: Item.getName)
@@ -414,11 +414,11 @@ class ItemStack with ExtraMixin implements JConvertibleProtocol {
   /// ```
   ItemStack split(int massOfPart) {
     assert(massOfPart > 0, "`mass` to split must be more than 0");
-    if (massOfPart <= 0) return empty;
+    if (massOfPart <= 0) return .empty;
     assert(stackMass >= massOfPart, "Self `mass` must be more than `mass` to split.");
-    if (stackMass < massOfPart) return empty;
+    if (stackMass < massOfPart) return .empty;
     assert(canSplit, "${meta.name} can't be split.");
-    if (!canSplit) return empty;
+    if (!canSplit) return .empty;
     final selfMass = stackMass;
     // if self mass is less than or equal to mass to split, return a clone.
     if (selfMass <= massOfPart) return clone();

@@ -7,6 +7,7 @@ import 'package:escape_wild/design/theme.dart';
 import 'package:escape_wild/foundation.dart';
 import 'package:escape_wild/r.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rettulf/rettulf.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
@@ -154,7 +155,7 @@ class NullItemCell extends StatelessWidget {
       placeholder,
       maxLines: 2,
       style: theme.nameStyle ?? ctx.textTheme.titleMedium,
-      textAlign: TextAlign.center,
+      textAlign: .center,
     ).opacity(theme.$opacity).center();
   }
 }
@@ -615,7 +616,7 @@ class ItemStackSlot with ChangeNotifier {
 
   bool get isTypeMatched => isNotEmpty && matcher.typeOnly(stack.meta);
 
-  bool get isEmpty => stack == ItemStack.empty;
+  bool get isEmpty => stack == .empty;
 
   bool get isNotEmpty => !isEmpty;
   final ItemMatcher matcher;
@@ -660,8 +661,8 @@ class ItemStackReqCell extends StatelessWidget {
     required this.slot,
     this.onTapSatisfied,
     this.onTapUnsatisfied,
-    this.satisfiedTheme = const ItemStackCellTheme(),
-    this.unsatisfiedTheme = const NullItemCellTheme(),
+    this.satisfiedTheme = const .new(),
+    this.unsatisfiedTheme = const .new(),
   });
 
   @override
@@ -696,9 +697,9 @@ class ItemStackReqAutoMatchCell extends StatelessWidget {
     required this.slot,
     this.onTapSatisfied,
     this.onTapUnsatisfied,
-    this.satisfiedTheme = const ItemStackCellTheme(),
-    this.onNotInBackpack = const ItemCellTheme(),
-    this.onInBackpack = const ItemStackCellTheme(),
+    this.satisfiedTheme = const .new(),
+    this.onNotInBackpack = const .new(),
+    this.onInBackpack = const .new(),
   });
 
   @override
@@ -811,7 +812,7 @@ class _BackpackSheetState extends State<BackpackSheet> {
               leading: IconButton(
                 icon: const Icon(TablerIcons.x),
                 onPressed: () {
-                  context.navigator.pop();
+                  context.pop();
                 },
               ),
               flexibleSpace: FlexibleSpaceBar(centerTitle: true, title: backpackTitle.text()),

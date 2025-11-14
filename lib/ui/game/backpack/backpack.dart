@@ -99,7 +99,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
                       ItemDetails(stack: selected),
                       buildItems(player.backpack).expanded(),
                       buildButtonArea(selected),
-                    ].column(maa: MainAxisAlignment.spaceBetween))
+                    ].column(maa: .spaceBetween, spacing: 8))
               .safeArea()
               .padAll(5),
     );
@@ -140,7 +140,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
         index = (index % itemCount).clamp(0, itemCount - 1);
         selected = player.backpack[index];
       } else {
-        selected = ItemStack.empty;
+        selected = .empty;
       }
     } else {
       await between();
@@ -157,7 +157,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
             .autoSizeText(
               maxLines: 1,
               style: context.textTheme.headlineSmall?.copyWith(color: color),
-              textAlign: TextAlign.center,
+              textAlign: .center,
             )
             .padAll(10),
       ).expanded();
@@ -284,7 +284,7 @@ class _GameBackpackPageState extends State<GameBackpackPage> {
   Widget buildItem(ItemStack item) {
     final isSelected = selected == item;
     return AnimatedSlide(
-      offset: isSelected ? const Offset(0.015, -0.04) : Offset.zero,
+      offset: isSelected ? const .new(0.015, -0.04) : .zero,
       curve: Curves.easeInOutCubic,
       duration: const Duration(milliseconds: 300),
       child: CardButton(
@@ -307,12 +307,12 @@ UseType _matchBestUseType(Iterable<UsableComp> comps) {
   for (final comp in comps) {
     if (type == null) {
       type = comp.useType;
-    } else if (type == UseType.use) {
+    } else if (type == .use) {
       type = comp.useType;
       break;
     }
   }
-  return type ?? UseType.use;
+  return type ?? .use;
 }
 
 class ItemDetails extends StatefulWidget {
@@ -329,25 +329,25 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   @override
   Widget build(BuildContext context) {
-    return [buildTop(context), buildBottom(context)].column().inCard(elevation: 4);
+    return Card.filled(
+      color: context.colorScheme.surfaceContainer,
+      clipBehavior: .hardEdge,
+      child: [buildTop(context), buildBottom(context).padSymmetric(h: 8, v: 4)].column(caa: .start),
+    );
   }
 
   Widget buildTop(BuildContext ctx) {
     return Container(
-      color: Color.lerp(ctx.theme.cardColor, ctx.colorScheme.secondary, ctx.isLightMode ? 0.2 : 0.15),
+      color: context.colorScheme.surfaceContainerHighest,
       child: ListTile(
         title: stack.displayName().text(style: ctx.textTheme.titleLarge),
         subtitle: stack.meta.l10nDescription().text(),
       ),
-    ).clipRRect(borderRadius: ctx.cardBorderRadiusTop);
+    );
   }
 
   Widget buildBottom(BuildContext ctx) {
-    return ListTile(
-      title: buildStatus(ctx),
-      //subtitle: "AAA".text(),
-      //isThreeLine: true,
-    );
+    return buildStatus(ctx);
   }
 
   Widget buildStatus(BuildContext ctx) {
@@ -359,7 +359,6 @@ class _ItemDetailsState extends State<ItemDetails> {
       entries.add(
         ChoiceChip(
           selected: isToolPref,
-          elevation: 2,
           tooltip: isToolPref ? "Unset default" : "Set default",
           selectedColor: context.fixColorBrightness(context.colorScheme.primary),
           onSelected: (newIsPref) {
@@ -381,9 +380,9 @@ class _ItemDetailsState extends State<ItemDetails> {
       entries.add(
         Chip(
           elevation: 2,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8))),
+          shape: const RoundedRectangleBorder(borderRadius: .all(.circular(8))),
           label: status.name.text(),
-          backgroundColor: Color.lerp(color, ctx.colorScheme.primary, 0.2),
+          backgroundColor: .lerp(color, ctx.colorScheme.primary, 0.2),
         ),
       );
     }
